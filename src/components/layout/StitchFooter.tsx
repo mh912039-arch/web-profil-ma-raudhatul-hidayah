@@ -279,6 +279,10 @@ export function StitchFooter() {
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 font-sans text-[12.5px] text-slate-500">
           <p>© 2026 MA Raudhatul Hidayah. Seluruh Hak Cipta Dilindungi.</p>
           <div className="flex items-center gap-6">
+            <Link href="/admin" className="text-blue-700 font-semibold hover:underline transition-colors">
+              Portal Admin & Guru
+            </Link>
+            <span className="text-slate-300">|</span>
             <Link href="/profil" className="hover:text-slate-800 transition-colors">
               Profil
             </Link>
