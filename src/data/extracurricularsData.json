@@ -1,0 +1,110 @@
+[
+  {
+    "id": 1,
+    "name": "Pramuka Pramudi Pramuka Tara Mandi",
+    "category": "belanegara",
+    "badge": "Gugus Depan MA",
+    "level": "Tingkat MA",
+    "schedule": "Jumat 14.00 WIB",
+    "coach": "A. Khutbi. AR, S.Pd",
+    "role": "Kamabigus & Pembina",
+    "image": "/foto-juara-pramuka.jpeg",
+    "desc": "Pengembangan kemandirian, kepemimpinan sangga, teknik tali-temali (pioneering), morse, sandi, serta penjelajahan alam terbuka yang disiplin."
+  },
+  {
+    "id": 2,
+    "name": "PMR Wira",
+    "category": "belanegara",
+    "badge": "Kemanusiaan & UKS",
+    "level": "Tingkat MA",
+    "schedule": "Sabtu 08.00 WIB",
+    "coach": "Sarnah, S.Pd.I",
+    "role": "Pembina UKS & PMR",
+    "image": "/kelas.jpeg",
+    "desc": "Edukasi pertolongan pertama (PP), kesiapsiagaan darurat bencana, pola hidup bersih dan sehat (PHBS), serta pembinaan kepedulian sosial."
+  },
+  {
+    "id": 3,
+    "name": "Paskibra Madrasah",
+    "category": "belanegara",
+    "badge": "Kedisiplinan & Bela Negara",
+    "level": "Tingkat MA",
+    "schedule": "Kamis 15.30 WIB",
+    "coach": "Drs. Mulyadi",
+    "role": "Instruktur PBB & Bela Negara",
+    "image": "/paskibra.jpeg",
+    "desc": "Latihan peraturan baris-berbaris (PBB) presisi dan variasi formasi, pembiasaan sikap tegap disiplin, serta persiapan petugas upacara resmi."
+  },
+  {
+    "id": 4,
+    "name": "Futsal & Olahraga",
+    "category": "olahraga",
+    "badge": "Olahraga Prestasi",
+    "level": "Tingkat MA",
+    "schedule": "Selasa & Jumat 16.00 WIB",
+    "coach": "Ahmad Nurul Kahfi, SE",
+    "role": "Pelatih Olahraga & Penjaskes",
+    "image": "/hero/slide-3.jpg",
+    "desc": "Pembinaan kebugaran jasmani, teknik olah bola, strategi bertanding sportif, dan kekompakan tim turnamen antarmadrasah."
+  },
+  {
+    "id": 5,
+    "name": "Bola Voli & Bulu Tangkis",
+    "category": "olahraga",
+    "badge": "Kebugaran Fisik",
+    "level": "Tingkat MA",
+    "schedule": "Rabu 15.30 WIB",
+    "coach": "Madrosyid, S.Pd",
+    "role": "Pembina Olahraga",
+    "image": "/hero/slide-1.jpg",
+    "desc": "Latihan servis, smash, passing, koordinasi reflek motorik, serta pembentukan mental sportivitas tangguh di lapangan olahraga."
+  },
+  {
+    "id": 6,
+    "name": "Seni Hadroh & Marawis",
+    "category": "seni",
+    "badge": "Seni Islami Tradisional",
+    "level": "Tingkat MA",
+    "schedule": "Sabtu 13.30 WIB",
+    "coach": "Tajudin, S.Pd.I",
+    "role": "Pembina Seni Hadroh",
+    "image": "/hero/slide-2.jpg",
+    "desc": "Pelatihan ritme pukulan rebana hadroh, olah vokal qasidah shalawat merdu, dan apresiasi kesenian tradisi Islam nusantara."
+  },
+  {
+    "id": 7,
+    "name": "Seni Kaligrafi & BTQ",
+    "category": "seni",
+    "badge": "Estetika Mushaf & Seni",
+    "level": "Tingkat MA",
+    "schedule": "Senin 15.30 WIB",
+    "coach": "Tiska Puspita Dewi, S.Pd.I",
+    "role": "Instruktur BTQ & Kaligrafi",
+    "image": "/kelas.jpeg",
+    "desc": "Bimbingan teknik menulis kaidah khat naskhi, tsuluts, riq’ah, serta eksplorasi karya lukis kaligrafi hiasan mushaf Al-Qur’an."
+  },
+  {
+    "id": 8,
+    "name": "English & Arabic Club",
+    "category": "literasi",
+    "badge": "Bahasa Asing",
+    "level": "Tingkat MA",
+    "schedule": "Rabu 14.00 WIB",
+    "coach": "Siti Khaerunnisa, S.Pd.I",
+    "role": "Pembina Bahasa Asing",
+    "image": "/perpus2.jpeg",
+    "desc": "Mengasah keberanian berbicara bahasa Arab dan Inggris aktif, storytelling, pidato dua bahasa, dan pembekalan komunikasi internasional."
+  },
+  {
+    "id": 9,
+    "name": "Jurnalistik & Literasi",
+    "category": "literasi",
+    "badge": "Literasi Kreatif",
+    "level": "Tingkat MA",
+    "schedule": "Kamis 14.30 WIB",
+    "coach": "Kustyaningsih, S.Pd",
+    "role": "Pembina Redaksi & Literasi",
+    "image": "/perpus2.jpeg",
+    "desc": "Pelatihan teknik wawancara, penulisan reportase kegiatan madrasah, tata letak buletin dinding, dan literasi digital beretika."
+  }
+]

@@ -1,0 +1,135 @@
+{
+  "homepage": {
+    "heroTitle": "MA Raudhatul Hidayah",
+    "heroTagline": "Membentuk Generasi Berkarakter, Beradab, dan Unggul Bernalar",
+    "heroBadge": "Portal Resmi MA Raudhatul Hidayah",
+    "heroBackground": "/foto-semua.jpeg",
+    "schoolLogo": "/school-logo.png",
+    "marqueeText1": "PPDB (Penerimaan Peserta Didik Baru) MA Raudhatul Hidayah Tahun Ajaran 2027/2028 Telah Dibuka!",
+    "marqueeCta1": "DAFTAR SEKARANG!",
+    "marqueeLink1": "/kontak",
+    "marqueeText2": "Kuota Pendaftaran Terbatas • Pembinaan Berbasis Karakter & Kurikulum Merdeka • Mauk Tangerang",
+    "marqueeCta2": "KONSULTASI WA",
+    "marqueeLink2": "https://wa.me/628176614723",
+    "sambutanHeading": "Sambutan Kepala Madrasah",
+    "sambutanSubtitle": "Membina Integritas & Mutu Akademik",
+    "sambutanBadge": "Pimpinan Satuan Pendidikan",
+    "headmasterName": "A. Khutbi. AR, S.Pd",
+    "headmasterRole": "Kepala Madrasah MA Raudhatul Hidayah",
+    "headmasterPhoto": "/kepala-madrasah.jpg",
+    "sambutanText1": "Bismillah walhamdulillah. Assalamu’alaikum Warahmatullahi Wabarakatuh. Selamat datang di portal resmi MA Raudhatul Hidayah jenjang Sekolah Menengah Pertama (SMP). Kami meyakini bahwa pendidikan sejati tidak hanya mengasah kecerdasan kognitif, tetapi juga merawat adab, keteguhan akidah, serta budi pekerti luhur sejak usia transisi remaja.",
+    "sambutanText2": "Melalui integrasi Kurikulum Merdeka yang kontekstual dan kultur pembiasaan Islami, kami berikhtiar membimbing seluruh santri agar aktif bernalar, mencintai ilmu pengetahuan, dan terlatih hidup berdisiplin dalam lingkungan yang aman, ramah anak, serta penuh kehangatan persaudaraan.",
+    "ctaText": "Pelajari Profil & Budaya Sekolah",
+    "ctaLink": "/profil/visi-misi",
+    "stat1Value": "152",
+    "stat1Label": "Santri Aktif MA",
+    "stat2Value": "70",
+    "stat2Label": "Guru & Staf",
+    "stat3Value": "10",
+    "stat3Label": "Prestasi"
+  },
+  "profile": {
+    "name": "MAS Raudhatul Hidayah",
+    "formalName": "Madrasah Aliyah Raudhatul Hidayah",
+    "level": "Sekolah Menengah Pertama (SMP) / MA",
+    "npsn": "69941777",
+    "nsm": "131236030069",
+    "accreditation": "C",
+    "foundedYear": "2015",
+    "address": "Jl. Raya Tanjung Kait No. 33, RT 02 / RW 01",
+    "district": "Mauk",
+    "regency": "Kabupaten Tangerang",
+    "province": "Banten",
+    "postalCode": "15330",
+    "phone": "0817-6614-723",
+    "whatsapp": "628176614723",
+    "email": "info@maraudhatulhidayah.sch.id",
+    "hoursWeekdays": "07.00 – 16.00 WIB",
+    "hoursSaturday": "07.00 – 12.00 WIB",
+    "hoursSunday": "Tutup Layanan Fisik"
+  },
+  "visionMission": {
+    "vision": "Terwujudnya generasi yang beriman dan bertakwa, berakhlak mulia, unggul dalam prestasi akademik dan non-akademik, serta berwawasan lingkungan dan keislaman yang moderat.",
+    "missions": [
+      "Menyelenggarakan proses pembelajaran integratif antara Kurikulum Nasional dan kurikulum kepesantrenan berhaluan Ahlussunnah wal Jama’ah.",
+      "Mengembangkan budaya riset ilmiah, penalaran kritis, dan literasi digital yang berlandaskan etika Islam.",
+      "Membina program pembiasaan ibadah harian, Tahfidzul Quran bersanad, dan kajian kitab turots (kuning).",
+      "Menumbuhkan jiwa kepemimpinan mandiri, kewirausahaan, dan kepedulian lingkungan hidup.",
+      "Membangun tata kelola madrasah yang akuntabel, transparan, dan berbasis teknologi informasi modern.",
+      "membangun anjayyy"
+    ],
+    "pillars": [
+      {
+        "title": "Berakhlak",
+        "desc": "Berbudi luhur & adab santun harian",
+        "icon": "favorite"
+      },
+      {
+        "title": "Berprestasi",
+        "desc": "Unggul akademik & non-akademik",
+        "icon": "workspace_premium"
+      },
+      {
+        "title": "Mandiri",
+        "desc": "Tangguh & berdaya saing personal",
+        "icon": "psychology"
+      },
+      {
+        "title": "Berwawasan",
+        "desc": "Peduli kelestarian lingkungan hidup",
+        "icon": "eco"
+      }
+    ]
+  },
+  "history": {
+    "title": "Dedikasi Membangun Generasi di Mauk",
+    "subtitle": "Tonggak Sejarah",
+    "lead": "Bermula dari kepedulian tulus para tokoh masyarakat terhadap masa depan pendidikan generasi muda di pesisir utara Kabupaten Tangerang, yayasan telah melangkah konsisten menghadirkan akses pendidikan Islam yang berkualitas, beradab, dan terjangkau.",
+    "milestones": [
+      {
+        "title": "Awal Mula Pendidikan Dasar (MIS Raudlatul Hidayah 01)",
+        "badge": "Pondasi Awal",
+        "desc": "Perjalanan dimulai dengan pendirian MIS Raudlatul Hidayah 01 di Kampung Tanjung Anom, Kecamatan Mauk, guna memberikan pondasi akhlak yang kokoh, adab pergaulan, serta kemampuan baca tulis Al-Qur'an bagi putra-putri daerah sekitar."
+      },
+      {
+        "title": "Pendirian Resmi MA Raudhatul Hidayah",
+        "badge": "17 September 2015",
+        "desc": "Guna menampung antusiasme para santri untuk melanjutkan pendidikan menengah yang kokoh dalam syariat dan adaptif dalam sains, MAS Raudlatul Hidayah resmi berdiri pada 17 September 2015 dengan izin operasional lengkap Kementerian Agama dan NPSN 69941777."
+      }
+    ]
+  },
+  "facilities": [
+    {
+      "id": "fac-1",
+      "title": "Ruang Kelas",
+      "subtitle": "KBM Interaktif & Nyaman",
+      "desc": "Ruang kelas yang bersih, sejuk, dan kondusif dengan pencahayaan alami optimal, proyektor multimedia, serta tata letak meja fleksibel untuk kegiatan diskusi dan belajar aktif.",
+      "image": "/kelas.jpeg",
+      "badge": "Sarana Akademik"
+    },
+    {
+      "id": "fac-2",
+      "title": "Perpustakaan",
+      "subtitle": "Literasi & Khazanah Ilmu",
+      "desc": "Koleksi buku Kurikulum Merdeka terlengkap, ensiklopedia sains, referensi umum, ruang baca berkarpet, serta khazanah kitab keagamaan untuk menunjang budaya riset santri.",
+      "image": "/perpus2.jpeg",
+      "badge": "Pusat Sumber Belajar"
+    },
+    {
+      "id": "fac-3",
+      "title": "Musholla Sekolah",
+      "subtitle": "Ibadah ",
+      "desc": "Sarana ibadah representatif untuk pelaksanaan salat fardhu berjamaah, salat dhuha rutin, tadarus dan tahfidz Al-Qur’an harian, serta pembinaan adab santun santri.",
+      "image": "/musholla.jpg",
+      "badge": "Karakter & Spiritual"
+    },
+    {
+      "id": "fac-4",
+      "title": "Lapangan Olahraga",
+      "subtitle": "Kebugaran & Prestasi Terbuka",
+      "desc": "Area lapangan terbuka multifungsi berstandar untuk kegiatan olahraga futsal, basket, voli, upacara bendera mingguan, apel kesiapsiagaan, dan latihan kepanduan pramuka.",
+      "image": "/halaman-sekolah.jpeg",
+      "badge": "Area Multifungsi"
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+[
+  {
+    "id": "ev-1",
+    "title": "Awal Tahun Ajaran Baru 2026/2027 & MATSAMA",
+    "date_range": "14 – 16 Juli 2026",
+    "semester": "Semester Ganjil",
+    "category": "kegiatan",
+    "description": "Masa Ta’aruf Santri Madrasah (MATSAMA) bagi peserta didik baru kelas VII & X."
+  },
+  {
+    "id": "ev-2",
+    "title": "Penilaian Tengah Semester (PTS) Ganjil",
+    "date_range": "21 – 26 September 2026",
+    "semester": "Semester Ganjil",
+    "category": "ujian",
+    "description": "Evaluasi capaian pembelajaran triwulan pertama berbasis komputer (CBT)."
+  },
+  {
+    "id": "ev-3",
+    "title": "Asesmen Akhir Semester (AAS) Ganjil",
+    "date_range": "30 November – 10 Desember 2026",
+    "semester": "Semester Ganjil",
+    "category": "ujian",
+    "description": "Ujian komprehensif seluruh mata pelajaran semester ganjil."
+  },
+  {
+    "id": "ev-4",
+    "title": "Pembagian Rapor & Libur Semester Ganjil",
+    "date_range": "19 Desember 2026 – 2 Januari 2027",
+    "semester": "Semester Ganjil",
+    "category": "libur",
+    "description": "Penyerahan laporan hasil belajar santri kepada wali murid dilanjutkan libur semester."
+  },
+  {
+    "id": "ev-5",
+    "title": "Awal Masuk Semester Genap 2026/2027",
+    "date_range": "4 Januari 2027",
+    "semester": "Semester Genap",
+    "category": "kegiatan",
+    "description": "Hari pertama kegiatan belajar mengajar semester genap."
+  },
+  {
+    "id": "ev-6",
+    "title": "Pembukaan PPDB Gelombang I TA 2027/2028",
+    "date_range": "15 Januari – 31 Maret 2027",
+    "semester": "Semester Genap",
+    "category": "ppdb",
+    "description": "Pendaftaran peserta didik baru jalur prestasi dan afirmasi kuota khusus."
+  },
+  {
+    "id": "ev-7",
+    "title": "Ujian Madrasah (UM) Kelas Akhir IX & XII",
+    "date_range": "12 – 19 April 2027",
+    "semester": "Semester Genap",
+    "category": "ujian",
+    "description": "Penentu kelulusan santri jenjang madrasah aliyah dan sanawiyah."
+  },
+  {
+    "id": "ev-8",
+    "title": "Sidang Pleno Kenaikan Kelas & Kelulusan",
+    "date_range": "18 Juni 2027",
+    "semester": "Semester Genap",
+    "category": "kegiatan",
+    "description": "Rapat dewan guru penentuan kelulusan dan kenaikan kelas peserta didik."
+  }
+]

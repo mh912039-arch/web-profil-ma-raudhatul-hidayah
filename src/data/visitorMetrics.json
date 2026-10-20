@@ -1,0 +1,406 @@
+{
+  "totalAccumulated": 73,
+  "dailyRecords": {
+    "2026-10-19": {
+      "views": 9,
+      "uniques": 3,
+      "hashes": [
+        "sim-lpnso",
+        "sim-7auut",
+        "o75pbq"
+      ],
+      "paths": {
+        "/": 8,
+        "/ppdb": 1
+      }
+    },
+    "2026-10-20": {
+      "views": 62,
+      "uniques": 5,
+      "hashes": [
+        "o75pbq",
+        "q9f02b",
+        "o77qla",
+        "sim-76uss",
+        "sim-eucwn"
+      ],
+      "paths": {
+        "/": 30,
+        "/warta": 5,
+        "/kontak": 4,
+        "/akademik/foto-juara": 4,
+        "/profil/guru-tendik": 5,
+        "/prestasi": 1,
+        "/profil/identitas": 1,
+        "/akademik/ekstrakurikuler": 4,
+        "/akademik/kurikulum": 5,
+        "/profil/visi-misi": 1,
+        "/profil/sejarah": 1,
+        "/profil/fasilitas": 1
+      }
+    },
+    "2026-10-21": {
+      "views": 2,
+      "uniques": 1,
+      "hashes": [
+        "o75pbq"
+      ],
+      "paths": {
+        "/profil/guru-tendik": 1,
+        "/": 1
+      }
+    }
+  },
+  "recentLogs": [
+    {
+      "timestamp": "2026-10-20T12:30:40.042Z",
+      "path": "/",
+      "ipHash": "q9f02b",
+      "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome",
+      "referrer": ""
+    },
+    {
+      "timestamp": "2026-10-20T12:30:41.188Z",
+      "path": "/",
+      "ipHash": "q9f02b",
+      "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome",
+      "referrer": ""
+    },
+    {
+      "timestamp": "2026-10-20T12:30:42.169Z",
+      "path": "/",
+      "ipHash": "q9f02b",
+      "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome",
+      "referrer": ""
+    },
+    {
+      "timestamp": "2026-10-20T12:30:42.968Z",
+      "path": "/",
+      "ipHash": "q9f02b",
+      "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome",
+      "referrer": ""
+    },
+    {
+      "timestamp": "2026-10-20T12:30:57.340Z",
+      "path": "/",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": ""
+    },
+    {
+      "timestamp": "2026-10-20T12:31:07.134Z",
+      "path": "/",
+      "ipHash": "q9f02b",
+      "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome",
+      "referrer": ""
+    },
+    {
+      "timestamp": "2026-10-20T12:31:08.744Z",
+      "path": "/",
+      "ipHash": "q9f02b",
+      "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome",
+      "referrer": ""
+    },
+    {
+      "timestamp": "2026-10-20T12:31:11.104Z",
+      "path": "/",
+      "ipHash": "q9f02b",
+      "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome",
+      "referrer": ""
+    },
+    {
+      "timestamp": "2026-10-20T12:31:16.320Z",
+      "path": "/",
+      "ipHash": "q9f02b",
+      "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome",
+      "referrer": ""
+    },
+    {
+      "timestamp": "2026-10-20T12:32:16.466Z",
+      "path": "/",
+      "ipHash": "q9f02b",
+      "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome",
+      "referrer": ""
+    },
+    {
+      "timestamp": "2026-10-20T12:32:17.547Z",
+      "path": "/",
+      "ipHash": "q9f02b",
+      "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome",
+      "referrer": ""
+    },
+    {
+      "timestamp": "2026-10-20T12:32:18.570Z",
+      "path": "/",
+      "ipHash": "q9f02b",
+      "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome",
+      "referrer": ""
+    },
+    {
+      "timestamp": "2026-10-20T12:33:03.103Z",
+      "path": "/",
+      "ipHash": "o77qla",
+      "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome",
+      "referrer": ""
+    },
+    {
+      "timestamp": "2026-10-20T12:33:15.087Z",
+      "path": "/",
+      "ipHash": "o77qla",
+      "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome",
+      "referrer": ""
+    },
+    {
+      "timestamp": "2026-10-20T12:33:23.090Z",
+      "path": "/",
+      "ipHash": "o77qla",
+      "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome",
+      "referrer": ""
+    },
+    {
+      "timestamp": "2026-10-20T12:33:49.753Z",
+      "path": "/",
+      "ipHash": "o77qla",
+      "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome",
+      "referrer": ""
+    },
+    {
+      "timestamp": "2026-10-20T12:35:27.390Z",
+      "path": "/prestasi",
+      "ipHash": "sim-76uss",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "https://google.com/search?q=ma+raudhatul+hidayah"
+    },
+    {
+      "timestamp": "2026-10-20T12:35:33.805Z",
+      "path": "/profil/identitas",
+      "ipHash": "sim-eucwn",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "https://google.com/search?q=ma+raudhatul+hidayah"
+    },
+    {
+      "timestamp": "2026-10-20T13:04:29.129Z",
+      "path": "/profil/guru-tendik",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/"
+    },
+    {
+      "timestamp": "2026-10-20T13:14:21.067Z",
+      "path": "/warta",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/profil/guru-tendik"
+    },
+    {
+      "timestamp": "2026-10-20T13:14:22.665Z",
+      "path": "/",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/profil/guru-tendik"
+    },
+    {
+      "timestamp": "2026-10-20T13:27:14.784Z",
+      "path": "/",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/profil/guru-tendik"
+    },
+    {
+      "timestamp": "2026-10-20T13:27:21.105Z",
+      "path": "/kontak",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/profil/guru-tendik"
+    },
+    {
+      "timestamp": "2026-10-20T13:27:55.568Z",
+      "path": "/",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/profil/guru-tendik"
+    },
+    {
+      "timestamp": "2026-10-20T13:29:17.787Z",
+      "path": "/akademik/ekstrakurikuler",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/profil/guru-tendik"
+    },
+    {
+      "timestamp": "2026-10-20T13:30:42.659Z",
+      "path": "/akademik/foto-juara",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/profil/guru-tendik"
+    },
+    {
+      "timestamp": "2026-10-20T13:30:47.020Z",
+      "path": "/akademik/ekstrakurikuler",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/profil/guru-tendik"
+    },
+    {
+      "timestamp": "2026-10-20T13:31:21.513Z",
+      "path": "/",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/profil/guru-tendik"
+    },
+    {
+      "timestamp": "2026-10-20T13:32:09.837Z",
+      "path": "/warta",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/profil/guru-tendik"
+    },
+    {
+      "timestamp": "2026-10-20T13:32:14.179Z",
+      "path": "/akademik/foto-juara",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/profil/guru-tendik"
+    },
+    {
+      "timestamp": "2026-10-20T13:33:11.813Z",
+      "path": "/akademik/ekstrakurikuler",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/profil/guru-tendik"
+    },
+    {
+      "timestamp": "2026-10-20T13:46:01.168Z",
+      "path": "/akademik/ekstrakurikuler",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/profil/guru-tendik"
+    },
+    {
+      "timestamp": "2026-10-20T13:47:15.761Z",
+      "path": "/",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/profil/guru-tendik"
+    },
+    {
+      "timestamp": "2026-10-20T13:47:17.672Z",
+      "path": "/",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/profil/guru-tendik"
+    },
+    {
+      "timestamp": "2026-10-20T13:58:15.663Z",
+      "path": "/akademik/foto-juara",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/"
+    },
+    {
+      "timestamp": "2026-10-20T14:01:13.349Z",
+      "path": "/akademik/kurikulum",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/akademik/foto-juara"
+    },
+    {
+      "timestamp": "2026-10-20T14:02:17.315Z",
+      "path": "/profil/visi-misi",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/akademik/foto-juara"
+    },
+    {
+      "timestamp": "2026-10-20T14:02:59.844Z",
+      "path": "/profil/sejarah",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/akademik/foto-juara"
+    },
+    {
+      "timestamp": "2026-10-20T14:03:02.605Z",
+      "path": "/profil/fasilitas",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/akademik/foto-juara"
+    },
+    {
+      "timestamp": "2026-10-20T14:03:06.247Z",
+      "path": "/profil/guru-tendik",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/akademik/foto-juara"
+    },
+    {
+      "timestamp": "2026-10-20T14:03:14.529Z",
+      "path": "/akademik/kurikulum",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/akademik/foto-juara"
+    },
+    {
+      "timestamp": "2026-10-20T14:03:35.968Z",
+      "path": "/profil/guru-tendik",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/akademik/foto-juara"
+    },
+    {
+      "timestamp": "2026-10-20T14:03:43.900Z",
+      "path": "/akademik/kurikulum",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/akademik/foto-juara"
+    },
+    {
+      "timestamp": "2026-10-20T14:06:33.042Z",
+      "path": "/",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/akademik/foto-juara"
+    },
+    {
+      "timestamp": "2026-10-20T14:23:32.747Z",
+      "path": "/",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/akademik/foto-juara"
+    },
+    {
+      "timestamp": "2026-10-20T14:24:09.993Z",
+      "path": "/akademik/kurikulum",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/akademik/foto-juara"
+    },
+    {
+      "timestamp": "2026-10-20T14:38:32.211Z",
+      "path": "/akademik/kurikulum",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/akademik/foto-juara"
+    },
+    {
+      "timestamp": "2026-10-20T14:42:36.111Z",
+      "path": "/profil/guru-tendik",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/akademik/foto-juara"
+    },
+    {
+      "timestamp": "2026-10-20T20:16:59.171Z",
+      "path": "/profil/guru-tendik",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/akademik/foto-juara"
+    },
+    {
+      "timestamp": "2026-10-20T20:18:49.821Z",
+      "path": "/",
+      "ipHash": "o75pbq",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "referrer": "http://localhost:3000/akademik/foto-juara"
+    }
+  ]
+}
