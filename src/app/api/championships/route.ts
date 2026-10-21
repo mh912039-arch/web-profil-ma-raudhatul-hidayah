@@ -122,8 +122,12 @@ export async function POST(request: Request) {
       photos.unshift(newOrUpdatedItem);
     }
 
-    // Save locally
-    await fs.writeFile(dataFilePath, JSON.stringify(photos, null, 2), 'utf-8');
+    // Save locally (best effort)
+    try {
+      await fs.writeFile(dataFilePath, JSON.stringify(photos, null, 2), 'utf-8');
+    } catch (fsErr) {
+      // Safely ignore EROFS on Vercel
+    }
 
     // Also attempt to sync to Supabase safely if valid UUID or new row
     try {

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
+import { supabase } from '@/lib/supabaseClient';
 
 const dataFilePath = path.join(process.cwd(), 'src', 'data', 'extracurricularsData.json');
 
@@ -18,13 +19,40 @@ export interface ExtracurricularItem {
 }
 
 export async function GET() {
+  // 1. Try fetching from Supabase first
+  try {
+    const { data: supaItems, error } = await supabase
+      .from('extracurriculars')
+      .select('*')
+      .order('order_index', { ascending: true });
+
+    if (!error && supaItems && supaItems.length > 0) {
+      const mapped: ExtracurricularItem[] = supaItems.map((item: any) => ({
+        id: item.id,
+        name: item.name,
+        category: item.category || 'belanegara',
+        badge: 'Ekstrakurikuler Unggulan',
+        level: 'Tingkat MA & MTs',
+        schedule: item.schedule || 'Sesuai Jadwal',
+        coach: item.coach || 'Pembina Madrasah',
+        role: 'Pembina Resmi',
+        image: item.image_url || '/hero/slide-1.jpg',
+        desc: item.description || '',
+      }));
+      return NextResponse.json(mapped, {
+        headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate' },
+      });
+    }
+  } catch (err) {
+    console.warn('Notice: Supabase extracurriculars fetch:', err);
+  }
+
+  // 2. Fallback to local JSON
   try {
     const fileContent = await fs.readFile(dataFilePath, 'utf-8');
     const items: ExtracurricularItem[] = JSON.parse(fileContent);
     return NextResponse.json(items, {
-      headers: {
-        'Cache-Control': 'no-store, no-cache, must-revalidate',
-      },
+      headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate' },
     });
   } catch (err) {
     console.warn('Could not read extracurricularsData.json:', err);
@@ -51,7 +79,6 @@ export async function POST(request: Request) {
       items = [];
     }
 
-    // Check if updating existing
     const existingIndex = body.id
       ? items.findIndex((i) => String(i.id) === String(body.id))
       : -1;
@@ -67,7 +94,7 @@ export async function POST(request: Request) {
     } else {
       const newId = items.length > 0 ? Math.max(...items.map((i) => Number(i.id) || 0)) + 1 : 1;
       savedItem = {
-        id: newId,
+        id: body.id || newId,
         name: body.name,
         category: body.category || 'belanegara',
         badge: body.badge || 'Ekstrakurikuler Pilihan',
@@ -81,7 +108,51 @@ export async function POST(request: Request) {
       items.push(savedItem);
     }
 
-    await fs.writeFile(dataFilePath, JSON.stringify(items, null, 2), 'utf-8');
+    // 1. Primary: Save to Supabase
+    try {
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(body.id));
+      if (isUuid) {
+        await supabase
+          .from('extracurriculars')
+          .update({
+            name: savedItem.name,
+            category: savedItem.category,
+            schedule: savedItem.schedule,
+            coach: savedItem.coach,
+            description: savedItem.desc,
+            image_url: savedItem.image,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', body.id);
+      } else {
+        const { data: inserted } = await supabase
+          .from('extracurriculars')
+          .insert({
+            name: savedItem.name,
+            category: savedItem.category,
+            schedule: savedItem.schedule,
+            coach: savedItem.coach,
+            description: savedItem.desc,
+            image_url: savedItem.image,
+            order_index: items.length,
+            is_active: true,
+          })
+          .select()
+          .single();
+        if (inserted?.id) {
+          savedItem.id = inserted.id;
+        }
+      }
+    } catch (supaErr) {
+      console.warn('Notice: Supabase extracurriculars sync:', supaErr);
+    }
+
+    // 2. Best-effort local file write (safe on Vercel)
+    try {
+      await fs.writeFile(dataFilePath, JSON.stringify(items, null, 2), 'utf-8');
+    } catch (fsErr) {
+      // Safely ignore EROFS in serverless environment
+    }
 
     return NextResponse.json({
       success: true,
@@ -113,16 +184,21 @@ export async function DELETE(request: Request) {
       );
     }
 
-    let items: ExtracurricularItem[] = [];
+    // 1. Delete from Supabase safely
+    try {
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(id));
+      if (isUuid) {
+        await supabase.from('extracurriculars').delete().eq('id', id);
+      }
+    } catch (err) {}
+
+    // 2. Best-effort local file delete
     try {
       const fileContent = await fs.readFile(dataFilePath, 'utf-8');
-      items = JSON.parse(fileContent);
-    } catch {
-      items = [];
-    }
-
-    const filtered = items.filter((i) => String(i.id) !== String(id));
-    await fs.writeFile(dataFilePath, JSON.stringify(filtered, null, 2), 'utf-8');
+      const items: ExtracurricularItem[] = JSON.parse(fileContent);
+      const filtered = items.filter((i) => String(i.id) !== String(id));
+      await fs.writeFile(dataFilePath, JSON.stringify(filtered, null, 2), 'utf-8');
+    } catch {}
 
     return NextResponse.json({
       success: true,

@@ -87,10 +87,7 @@ export async function POST(request: Request) {
       isRegistrationOpen: Boolean(body.isRegistrationOpen ?? true),
     };
 
-    // 1. Save persistently to local ppdbData.json
-    await fs.writeFile(dataFilePath, JSON.stringify(updatedData, null, 2), 'utf-8');
-
-    // 2. Sync to Supabase ppdb_settings
+    // 1. Sync to Supabase ppdb_settings first (primary persistent store)
     try {
       await supabase
         .from('ppdb_settings')
@@ -112,6 +109,13 @@ export async function POST(request: Request) {
         });
     } catch (supaErr) {
       console.warn('Failed syncing to Supabase:', supaErr);
+    }
+
+    // 2. Best-effort local file write
+    try {
+      await fs.writeFile(dataFilePath, JSON.stringify(updatedData, null, 2), 'utf-8');
+    } catch (fsErr) {
+      // Safely ignore EROFS in serverless environment
     }
 
     return NextResponse.json({ success: true, data: updatedData });

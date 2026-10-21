@@ -152,9 +152,13 @@ export async function POST(request: Request) {
       created_at: new Date().toISOString(),
     };
 
-    // Save locally (newest at the top)
+    // Save locally (best-effort, safe on Vercel)
     applicants.unshift(newApplicant);
-    await fs.writeFile(dataFilePath, JSON.stringify(applicants, null, 2), 'utf-8');
+    try {
+      await fs.writeFile(dataFilePath, JSON.stringify(applicants, null, 2), 'utf-8');
+    } catch (fsErr) {
+      // Safely ignore EROFS in serverless environment
+    }
 
     // Also attempt to insert to Supabase ppdb_registrations safely
     try {

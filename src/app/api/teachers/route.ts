@@ -66,28 +66,26 @@ export async function GET() {
         is_active: t.is_active !== undefined ? t.is_active : true,
       }));
 
-      // Merge: Local edits have precedence for corresponding order_no or id
-      const localMap = new Map<string, TeacherItem>();
-      localTeachers.forEach((lt) => {
-        if (!lt.jenjang) lt.jenjang = detectJenjang(lt.class_level, lt.code);
-        if (lt.id) localMap.set(String(lt.id), lt);
-        localMap.set(`code-${lt.code}-order-${lt.order_no}`, lt);
+      // Merge: Supabase live data takes precedence over local static JSON
+      const supaMap = new Map<string, TeacherItem>();
+      supaMapped.forEach((st) => {
+        if (st.id) supaMap.set(String(st.id), st);
+        supaMap.set(`code-${st.code}-order-${st.order_no}`, st);
       });
 
-      const merged = supaMapped.map((st) => {
-        const localMatch = localMap.get(String(st.id)) || localMap.get(`code-${st.code}-order-${st.order_no}`);
-        if (localMatch) {
-          return { ...st, ...localMatch, jenjang: localMatch.jenjang || detectJenjang(localMatch.class_level, localMatch.code) };
-        }
-        return st;
-      });
+      const merged: TeacherItem[] = supaMapped.map((st) => ({
+        ...st,
+        jenjang: st.jenjang || detectJenjang(st.class_level, st.code),
+      }));
 
-      // Add any local teachers not in Supabase
+      // Add any local teachers not in Supabase yet
+      const supaCodesAndOrders = new Set(supaMapped.map((s) => `code-${s.code}-order-${s.order_no}`));
       const supaIds = new Set(supaMapped.map((s) => String(s.id)));
       localTeachers.forEach((lt) => {
-        if (!lt.jenjang) lt.jenjang = detectJenjang(lt.class_level, lt.code);
-        if (lt.id && !supaIds.has(String(lt.id))) {
-          merged.push(lt);
+        const jenjang = lt.jenjang || detectJenjang(lt.class_level, lt.code);
+        const key = `code-${lt.code}-order-${lt.order_no}`;
+        if (!supaCodesAndOrders.has(key) && (!lt.id || !supaIds.has(String(lt.id)))) {
+          merged.push({ ...lt, jenjang });
         }
       });
 
@@ -140,27 +138,11 @@ export async function POST(request: Request) {
       updated_at: new Date().toISOString(),
     };
 
-    // Update or insert locally
-    const existingIdx = teachers.findIndex(
-      (t) => (t.id && String(t.id) === String(id)) || Number(t.order_no) === Number(newOrUpdated.order_no)
-    );
-
-    if (existingIdx >= 0) {
-      teachers[existingIdx] = { ...teachers[existingIdx], ...newOrUpdated };
-    } else {
-      teachers.push(newOrUpdated);
-    }
-
-    teachers.sort((a, b) => a.order_no - b.order_no);
-
-    // Save locally
-    await fs.writeFile(dataFilePath, JSON.stringify(teachers, null, 2), 'utf-8');
-
-    // Also sync to Supabase safely
+    // 1. Primary: Save/Update in Supabase
     try {
       const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(body.id));
       if (isUuid) {
-        await supabase
+        const { data: updatedData } = await supabase
           .from('teachers_staff')
           .update({
             order_no: newOrUpdated.order_no,
@@ -173,8 +155,14 @@ export async function POST(request: Request) {
             category_label: newOrUpdated.category_label,
             image_url: newOrUpdated.image_url,
             is_active: newOrUpdated.is_active,
+            updated_at: new Date().toISOString(),
           })
-          .eq('id', body.id);
+          .eq('id', body.id)
+          .select()
+          .single();
+        if (updatedData?.id) {
+          newOrUpdated.id = updatedData.id;
+        }
       } else {
         // Match existing teacher in Supabase by code or order_no
         const { data: existing } = await supabase
@@ -199,6 +187,7 @@ export async function POST(request: Request) {
               category_label: newOrUpdated.category_label,
               image_url: newOrUpdated.image_url,
               is_active: newOrUpdated.is_active,
+              updated_at: new Date().toISOString(),
             })
             .eq('id', matchedId);
         } else {
@@ -227,6 +216,24 @@ export async function POST(request: Request) {
       console.warn('Notice: Supabase teachers_staff sync:', supaErr);
     }
 
+    // 2. Best-effort local file write (ignored safely if filesystem is read-only like Vercel)
+    try {
+      const existingIdx = teachers.findIndex(
+        (t) => (t.id && String(t.id) === String(newOrUpdated.id)) || Number(t.order_no) === Number(newOrUpdated.order_no)
+      );
+
+      if (existingIdx >= 0) {
+        teachers[existingIdx] = { ...teachers[existingIdx], ...newOrUpdated };
+      } else {
+        teachers.push(newOrUpdated);
+      }
+
+      teachers.sort((a, b) => a.order_no - b.order_no);
+      await fs.writeFile(dataFilePath, JSON.stringify(teachers, null, 2), 'utf-8');
+    } catch (fsErr) {
+      // Safely ignore EROFS in production serverless environments
+    }
+
     return NextResponse.json({
       success: true,
       message: `Data guru "${newOrUpdated.name}" berhasil disimpan dan langsung diterapkan ke web profil.`,
@@ -250,14 +257,7 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ success: false, message: 'ID diperlukan' }, { status: 400 });
     }
 
-    let teachers: TeacherItem[] = [];
-    try {
-      const fileContent = await fs.readFile(dataFilePath, 'utf-8');
-      teachers = JSON.parse(fileContent);
-      teachers = teachers.filter((t) => String(t.id) !== String(id) && String(t.order_no) !== String(id));
-      await fs.writeFile(dataFilePath, JSON.stringify(teachers, null, 2), 'utf-8');
-    } catch (err) {}
-
+    // 1. Delete from Supabase safely
     try {
       const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(id));
       if (isUuid) {
@@ -265,6 +265,14 @@ export async function DELETE(request: Request) {
       } else if (!isNaN(Number(id))) {
         await supabase.from('teachers_staff').delete().eq('order_no', Number(id));
       }
+    } catch (err) {}
+
+    // 2. Best-effort local file delete (safely ignore EROFS)
+    try {
+      const fileContent = await fs.readFile(dataFilePath, 'utf-8');
+      let teachers: TeacherItem[] = JSON.parse(fileContent);
+      teachers = teachers.filter((t) => String(t.id) !== String(id) && String(t.order_no) !== String(id));
+      await fs.writeFile(dataFilePath, JSON.stringify(teachers, null, 2), 'utf-8');
     } catch (err) {}
 
     return NextResponse.json({

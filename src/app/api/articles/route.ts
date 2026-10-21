@@ -192,18 +192,7 @@ export async function POST(request: Request) {
       console.warn('Initializing articlesData.json');
     }
 
-    // 2. Upsert in local array
-    const existingIndex = articles.findIndex((a) => a.slug === slug || (body.id && a.id === body.id));
-    if (existingIndex >= 0) {
-      articles[existingIndex] = { ...articles[existingIndex], ...newArticle };
-    } else {
-      articles.unshift(newArticle);
-    }
-
-    // 3. Write persistently to articlesData.json
-    await fs.writeFile(dataFilePath, JSON.stringify(articles, null, 2), 'utf-8');
-
-    // 4. Also try syncing to Supabase
+    // 2. Sync to Supabase first (primary persistent store)
     try {
       await supabase.from('articles').upsert({
         title,
@@ -219,6 +208,19 @@ export async function POST(request: Request) {
       }, { onConflict: 'slug' });
     } catch (supaErr) {
       console.warn('Supabase articles upsert error:', supaErr);
+    }
+
+    // 3. Best-effort local write (safe on Vercel read-only filesystem)
+    try {
+      const existingIndex = articles.findIndex((a) => a.slug === slug || (body.id && a.id === body.id));
+      if (existingIndex >= 0) {
+        articles[existingIndex] = { ...articles[existingIndex], ...newArticle };
+      } else {
+        articles.unshift(newArticle);
+      }
+      await fs.writeFile(dataFilePath, JSON.stringify(articles, null, 2), 'utf-8');
+    } catch (localWriteErr) {
+      // Ignored safely in production serverless environments
     }
 
     return NextResponse.json({ success: true, article: newArticle });

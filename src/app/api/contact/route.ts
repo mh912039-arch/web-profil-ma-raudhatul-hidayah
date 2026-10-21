@@ -97,10 +97,7 @@ export async function POST(request: Request) {
       messages = JSON.parse(fileContent);
     } catch (err) {}
 
-    messages.unshift(newMessage);
-    await fs.writeFile(dataFilePath, JSON.stringify(messages, null, 2), 'utf-8');
-
-    // 2. Also try inserting to Supabase
+    // 1. Primary: Insert into Supabase
     try {
       await supabase.from('contact_messages').insert({
         name: newMessage.name,
@@ -112,6 +109,14 @@ export async function POST(request: Request) {
       });
     } catch (supaErr) {
       console.warn('Supabase contact_messages insert notice:', supaErr);
+    }
+
+    // 2. Best-effort local file write
+    try {
+      messages.unshift(newMessage);
+      await fs.writeFile(dataFilePath, JSON.stringify(messages, null, 2), 'utf-8');
+    } catch (fsErr) {
+      // Safely ignore EROFS on Vercel
     }
 
     return NextResponse.json({

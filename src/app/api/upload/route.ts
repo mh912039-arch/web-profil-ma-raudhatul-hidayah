@@ -6,7 +6,9 @@ import { supabase } from '@/lib/supabaseClient';
 export async function POST(request: Request) {
   try {
     const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-    await fs.mkdir(uploadDir, { recursive: true });
+    try {
+      await fs.mkdir(uploadDir, { recursive: true });
+    } catch {}
 
     const contentType = request.headers.get('content-type') || '';
     let buffer: Buffer | null = null;
@@ -70,10 +72,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, message: 'Gagal memproses berkas gambar' }, { status: 400 });
     }
 
-    // Always create local backup in public/uploads/
-    const localFilePath = path.join(uploadDir, filename);
-    await fs.writeFile(localFilePath, buffer);
-    const localUrl = `/uploads/${filename}`;
+    // Optional local backup in public/uploads/ (best effort, safe on Vercel)
+    let localUrl = `/uploads/${filename}`;
+    try {
+      const localFilePath = path.join(uploadDir, filename);
+      await fs.writeFile(localFilePath, buffer);
+    } catch {}
 
     // 3. Upload to Supabase Storage bucket 'articles'
     let finalUrl = localUrl;

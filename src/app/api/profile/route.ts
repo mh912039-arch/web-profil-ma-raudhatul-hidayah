@@ -110,8 +110,12 @@ export async function POST(request: Request) {
       ...(incoming.facilities ? { facilities: incoming.facilities } : {}),
     };
 
-    // Save locally
-    await fs.writeFile(dataFilePath, JSON.stringify(updatedData, null, 2), 'utf-8');
+    // Save locally (safe on Vercel)
+    try {
+      await fs.writeFile(dataFilePath, JSON.stringify(updatedData, null, 2), 'utf-8');
+    } catch (fsErr) {
+      // Safely ignore EROFS in serverless environments
+    }
 
     // Also attempt to sync relevant profile fields to Supabase
     try {
