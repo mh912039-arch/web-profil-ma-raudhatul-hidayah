@@ -156,54 +156,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
 
   return (
     <div className="space-y-8 animate-in fade-in duration-200">
-      {/* 1. Hero Welcome & Quick Status Banner (Matching Web Profil Navy & Gold) */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#1e3a8a] via-[#172554] to-slate-900 text-white p-6 sm:p-8 shadow-md border border-blue-900/60">
-        <div className="relative z-10 max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-amber-300 text-[11.5px] font-bold tracking-wider uppercase mb-3 border border-white/15">
-            <span>Portal Akademik Resmi</span>
-          </div>
-          <h2 className="font-serif text-[24px] sm:text-[30px] font-bold tracking-tight text-white leading-tight">
-            Selamat Datang di Portal Akademik Resmi MA Raudhatul Hidayah
-          </h2>
-          <p className="font-sans text-[14px] sm:text-[15px] text-slate-300 mt-2 leading-relaxed">
-            Kelola jadwal pelajaran harian, dewan guru, kelas &amp; rombel, informasi SPMB PPDB 2027/2028, serta publikasi website madrasah secara terpadu.
-          </p>
-
-          <div className="flex flex-wrap items-center gap-3 mt-5">
-            <button
-              type="button"
-              onClick={() => setActiveTab('schedules')}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-[13px] transition-all shadow-sm active:scale-95"
-            >
-              <Clock className="w-4 h-4 text-amber-300" />
-              <span>Susun Jadwal Pelajaran</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTab('ppdb')}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-blue-950 font-bold text-[13px] transition-all shadow-sm active:scale-95"
-            >
-              <GraduationCap className="w-4 h-4" />
-              <span>Kelola PPDB 2027/2028</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTab('teachers')}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium text-[13px] border border-white/20 transition-all active:scale-95"
-            >
-              <Users className="w-4 h-4 text-blue-300" />
-              <span>Dewan Guru &amp; Tendik</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Ambient Glow */}
-        <div className="absolute -right-16 -bottom-16 w-80 h-80 rounded-full bg-blue-500/10 blur-3xl pointer-events-none" />
-      </div>
-
-      {/* 2. Grid KPI Metrics Cards */}
+      {/* Grid KPI Metrics Cards */}
       <div>
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-serif text-[18px] font-bold text-slate-900 tracking-tight">
