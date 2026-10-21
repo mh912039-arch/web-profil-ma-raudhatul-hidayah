@@ -243,6 +243,8 @@ export function StitchNavbar() {
 
             <Link
               href="/admin"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/15 hover:bg-white/25 text-white font-medium text-[11px] uppercase tracking-wider transition-all border border-white/20 active:scale-95"
             >
               <LogIn className="w-3 h-3 text-amber-300" />
@@ -423,6 +425,8 @@ export function StitchNavbar() {
           <div className="flex items-center gap-2.5 shrink-0">
             <Link
               href="/admin"
+              target="_blank"
+              rel="noopener noreferrer"
               className="hidden lg:inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-blue-700 hover:bg-blue-800 text-white font-sans text-[12.5px] font-semibold shadow-xs active:scale-95 transition-all"
             >
               <LogIn className="w-3.5 h-3.5 text-amber-300" />
@@ -589,6 +593,8 @@ export function StitchNavbar() {
 
               <Link
                 href="/admin"
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={() => setMobileMenuOpen(false)}
                 className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-900 text-white font-semibold text-[13.5px] active:scale-[0.98] transition-transform shadow-xs"
               >
