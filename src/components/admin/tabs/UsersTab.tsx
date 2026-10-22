@@ -405,19 +405,9 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
       {/* Header & Sub-Tab Navigation */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-md">
-              Manajemen Akses &amp; Audit Sesi
-            </span>
-            <span className="text-xs text-slate-400">•</span>
-            <span className="text-xs font-semibold text-slate-600">Portal Keamanan MA Raudhatul Hidayah</span>
-          </div>
           <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
             Kelola Pengguna, Perangkat &amp; Hak Akses
           </h2>
-          <p className="text-xs sm:text-sm text-slate-600 mt-0.5">
-            Pantau siapa saja yang login, jenis perangkat/browser yang digunakan, dan atur hak akses modul untuk setiap akun.
-          </p>
         </div>
 
         {/* Action Controls */}
