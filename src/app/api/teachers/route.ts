@@ -51,7 +51,10 @@ export async function GET() {
       .order('order_no', { ascending: true });
 
     if (!error && supaTeachers && supaTeachers.length > 0) {
-      const supaMapped: TeacherItem[] = supaTeachers.map((t: any) => ({
+      const validSupaTeachers = supaTeachers.filter(
+        (t: any) => t.code !== 'SYS_AUTH' && t.role !== 'system'
+      );
+      const supaMapped: TeacherItem[] = validSupaTeachers.map((t: any) => ({
         id: t.id,
         order_no: Number(t.order_no),
         code: String(t.code),

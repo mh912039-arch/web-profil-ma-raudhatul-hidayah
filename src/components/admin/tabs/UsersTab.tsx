@@ -124,6 +124,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
   const [visiblePasswords, setVisiblePasswords] = useState<Record<string, boolean>>({});
   const [showEditPassword, setShowEditPassword] = useState(false);
   const [showNewUserPassword, setShowNewUserPassword] = useState(false);
+  const [isSavingPass, setIsSavingPass] = useState(false);
 
   const togglePasswordVisibility = (userId: string) => {
     setVisiblePasswords((prev) => ({ ...prev, [userId]: !prev[userId] }));
@@ -143,11 +144,57 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
     for (let i = 0; i < 6; i++) {
       rand += chars.charAt(Math.floor(Math.random() * chars.length));
     }
-    const prefix = editingUser?.role === 'siswa' ? 'santri' : 'guru';
+    const prefix =
+      editingUser?.role === 'siswa'
+        ? 'santri'
+        : editingUser?.role === 'admin'
+        ? 'adm'
+        : 'guru';
     const newPass = `${prefix}#${rand}`;
     if (editingUser) {
       setEditingUser({ ...editingUser, password: newPass });
       setShowEditPassword(true);
+    }
+  };
+
+  // Simpan kata sandi langsung dari card modal
+  const handleQuickSavePassword = async () => {
+    if (!editingUser) return;
+    const pwd = editingUser.password?.trim();
+    if (!pwd) {
+      showNotification('error', 'Kata sandi tidak boleh kosong.');
+      return;
+    }
+    setIsSavingPass(true);
+    try {
+      const res = await fetch('/api/users', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: editingUser.id,
+          password: pwd,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setUsers((prev) =>
+          prev.map((u) =>
+            u.id === editingUser.id
+              ? { ...u, password: pwd }
+              : u
+          )
+        );
+        showNotification(
+          'success',
+          `Kata sandi baru untuk "${editingUser.name}" berhasil disimpan dan langsung aktif!`
+        );
+      } else {
+        showNotification('error', data.message || 'Gagal menyimpan kata sandi.');
+      }
+    } catch {
+      showNotification('error', 'Terjadi kesalahan jaringan.');
+    } finally {
+      setIsSavingPass(false);
     }
   };
 
@@ -762,11 +809,20 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                           <div className="flex items-center justify-end gap-1.5">
                             <button
                               type="button"
-                              onClick={() => setEditingUser(user)}
+                              onClick={() => {
+                                const fallback =
+                                  user.role === 'admin'
+                                    ? 'admin123'
+                                    : user.role === 'siswa'
+                                    ? 'siswa2026'
+                                    : 'guru2026';
+                                setEditingUser({ ...user, password: user.password || fallback });
+                                setShowEditPassword(true);
+                              }}
                               className="px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-[11.5px] transition-colors border border-blue-200 flex items-center gap-1 active:scale-[0.98]"
                             >
                               <Sliders className="w-3.5 h-3.5" />
-                              <span>Atur Akses</span>
+                              <span>Atur Akses &amp; Sandi</span>
                             </button>
 
                             {user.role !== 'admin' && (
@@ -1034,8 +1090,17 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                               </button>
                               <button
                                 type="button"
-                                onClick={() => setEditingUser(user)}
-                                className="px-3 py-1.5 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-xs transition-colors border border-blue-200 flex items-center gap-1"
+                                onClick={() => {
+                                  const fallback =
+                                    user.role === 'admin'
+                                      ? 'admin123'
+                                      : user.role === 'siswa'
+                                      ? 'siswa2026'
+                                      : 'guru2026';
+                                  setEditingUser({ ...user, password: user.password || fallback });
+                                  setShowEditPassword(true);
+                                }}
+                                className="px-3 py-1.5 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-xs transition-colors border border-blue-200 flex items-center gap-1 active:scale-[0.98]"
                               >
                                 <Sliders className="w-3.5 h-3.5" />
                                 <span>Atur Akses &amp; Sandi</span>
@@ -1168,28 +1233,27 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                   </button>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                   <div className="relative flex-1">
                     <input
                       type={showEditPassword ? 'text' : 'password'}
-                      value={
-                        editingUser.password ??
-                        (editingUser.role === 'admin'
-                          ? 'admin123'
-                          : editingUser.role === 'siswa'
-                          ? 'siswa2026'
-                          : 'guru2026')
-                      }
+                      value={editingUser.password ?? ''}
                       onChange={(e) =>
                         setEditingUser({ ...editingUser, password: e.target.value })
                       }
-                      placeholder="Masukkan kata sandi baru..."
-                      className="w-full pl-3.5 pr-10 py-2.5 text-xs font-mono font-bold text-slate-900 rounded-xl bg-white border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          handleQuickSavePassword();
+                        }
+                      }}
+                      placeholder="Ketik kata sandi baru..."
+                      className="w-full pl-3.5 pr-10 py-2.5 text-xs font-mono font-bold text-slate-900 rounded-xl bg-white border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all"
                     />
                     <button
                       type="button"
                       onClick={() => setShowEditPassword(!showEditPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1 rounded-md"
                       title={showEditPassword ? 'Sembunyikan Kata Sandi' : 'Tampilkan Kata Sandi'}
                     >
                       {showEditPassword ? (
@@ -1200,19 +1264,32 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                     </button>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => copyCredentials(editingUser)}
-                    className="px-3.5 py-2.5 rounded-xl border border-blue-200 bg-white hover:bg-blue-50 text-blue-700 text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 active:scale-95 shadow-2xs"
-                    title="Salin Kredensial Lengkap (Email & Kata Sandi)"
-                  >
-                    <Copy className="w-3.5 h-3.5" />
-                    <span>Salin</span>
-                  </button>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={handleQuickSavePassword}
+                      disabled={isSavingPass}
+                      className="px-4 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 disabled:bg-blue-400 text-white text-xs font-bold transition-all flex items-center gap-1.5 active:scale-95 shadow-xs"
+                      title="Simpan Kata Sandi Ini Sekarang"
+                    >
+                      <Check className="w-3.5 h-3.5" />
+                      <span>{isSavingPass ? 'Menyimpan...' : 'Simpan Sandi'}</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => copyCredentials(editingUser)}
+                      className="px-3.5 py-2.5 rounded-xl border border-blue-200 bg-white hover:bg-blue-50 text-blue-700 text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 active:scale-95 shadow-2xs"
+                      title="Salin Kredensial Lengkap (Email & Kata Sandi)"
+                    >
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Salin</span>
+                    </button>
+                  </div>
                 </div>
 
-                <p className="text-[11px] text-slate-500 leading-relaxed">
-                  Administrator dapat mengubah kata sandi ini sewaktu-waktu. Perubahan langsung aktif saat Anda menekan tombol "Simpan Perubahan Hak Akses".
+                <p className="text-[11.5px] text-slate-600 leading-relaxed">
+                  Ketik kata sandi baru atau klik <span className="font-semibold text-slate-800">Buat Sandi Acak</span>, lalu tekan tombol <span className="font-semibold text-blue-700">Simpan Sandi</span> agar perubahan langsung aktif dan tersimpan permanen.
                 </p>
               </div>
 
@@ -1302,7 +1379,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                 onClick={handleSavePermissions}
                 className="px-5 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold transition-all shadow-sm active:scale-[0.98]"
               >
-                Simpan Perubahan Hak Akses
+                Simpan Seluruh Perubahan (Akses &amp; Sandi)
               </button>
             </div>
           </div>

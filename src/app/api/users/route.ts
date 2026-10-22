@@ -40,15 +40,69 @@ export interface UserSessionItem {
 }
 
 async function readUsers(): Promise<UserAccountItem[]> {
+  let localList: UserAccountItem[] = [];
   try {
     const raw = await fs.readFile(usersFilePath, 'utf-8');
-    return JSON.parse(raw);
+    localList = JSON.parse(raw);
   } catch {
-    return [];
+    localList = [];
   }
+
+  // Sinkronisasi data overrides dari Supabase (persisten di Vercel)
+  try {
+    const { data: supaAuth } = await supabase
+      .from('teachers_staff')
+      .select('education')
+      .eq('code', 'SYS_AUTH')
+      .maybeSingle();
+
+    if (supaAuth && supaAuth.education) {
+      const overrides: Record<string, Partial<UserAccountItem>> = JSON.parse(supaAuth.education);
+      const listMap = new Map<string, UserAccountItem>();
+      localList.forEach((u) => listMap.set(u.id, u));
+
+      for (const [id, ovr] of Object.entries(overrides)) {
+        if (listMap.has(id)) {
+          const cur = listMap.get(id)!;
+          listMap.set(id, { ...cur, ...ovr });
+        } else if (ovr && (ovr as any).name && (ovr as any).email) {
+          listMap.set(id, ovr as UserAccountItem);
+        }
+      }
+      return Array.from(listMap.values());
+    }
+  } catch (err) {
+    // Fallback ke localList jika Supabase error
+  }
+
+  return localList;
 }
 
 async function writeUsers(data: UserAccountItem[]): Promise<void> {
+  // 1. Simpan ke Supabase agar persisten di Vercel serverless
+  try {
+    const overrides: Record<string, Partial<UserAccountItem>> = {};
+    for (const u of data) {
+      overrides[u.id] = {
+        id: u.id,
+        name: u.name,
+        email: u.email,
+        username: u.username,
+        password: u.password,
+        role: u.role,
+        status: u.status,
+        permissions: u.permissions,
+      };
+    }
+    await supabase
+      .from('teachers_staff')
+      .update({ education: JSON.stringify(overrides) })
+      .eq('code', 'SYS_AUTH');
+  } catch (err) {
+    // Silently continue
+  }
+
+  // 2. Best-effort write ke file lokal
   try {
     await fs.writeFile(usersFilePath, JSON.stringify(data, null, 2), 'utf-8');
   } catch (err) {

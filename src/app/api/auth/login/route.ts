@@ -3,6 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { createSessionToken, COOKIE_NAME, UserRole } from '@/lib/auth';
 import { parseUserAgent } from '@/lib/deviceParser';
+import { supabase } from '@/lib/supabaseClient';
 
 const usersFilePath = path.join(process.cwd(), 'src', 'data', 'usersData.json');
 const sessionsFilePath = path.join(process.cwd(), 'src', 'data', 'userSessionsData.json');
@@ -34,6 +35,29 @@ export async function POST(request: Request) {
     try {
       const usersRaw = await fs.readFile(usersFilePath, 'utf-8');
       users = JSON.parse(usersRaw);
+    } catch {}
+
+    // Sinkronisasi data overrides dari Supabase (persisten di Vercel)
+    try {
+      const { data: supaAuth } = await supabase
+        .from('teachers_staff')
+        .select('education')
+        .eq('code', 'SYS_AUTH')
+        .maybeSingle();
+
+      if (supaAuth && supaAuth.education) {
+        const overrides: Record<string, any> = JSON.parse(supaAuth.education);
+        const map = new Map<string, any>();
+        users.forEach((u) => map.set(u.id, u));
+        for (const [id, ovr] of Object.entries(overrides)) {
+          if (map.has(id)) {
+            map.set(id, { ...map.get(id), ...ovr });
+          } else if (ovr && ovr.name && ovr.email) {
+            map.set(id, ovr);
+          }
+        }
+        users = Array.from(map.values());
+      }
     } catch {}
 
     const matchedUser = users.find(
