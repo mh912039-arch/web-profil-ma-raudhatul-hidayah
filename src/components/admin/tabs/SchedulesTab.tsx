@@ -8,7 +8,6 @@ import {
   Trash2,
   Calendar,
   BookOpen,
-  MapPin,
   CheckCircle2,
   AlertCircle,
   X,
@@ -28,9 +27,9 @@ export interface ScheduleItem {
   time_start: string;
   time_end: string;
   subject_name: string;
-  category: string;
+  category?: string;
   teacher_name: string;
-  room: string;
+  room?: string;
 }
 
 interface SchedulesTabProps {
@@ -107,9 +106,7 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
     time_start: '07:30',
     time_end: '08:15',
     subject_name: '',
-    category: 'Mata Pelajaran Wajib',
     teacher_name: teachers[0]?.name || 'Dewan Guru',
-    room: 'Ruang R-201 (Lantai 2)',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -172,9 +169,7 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
       time_start: '07:30',
       time_end: '08:15',
       subject_name: '',
-      category: 'Mata Pelajaran Wajib',
       teacher_name: teachers[0]?.name || 'Dewan Guru',
-      room: 'Ruang Kelas',
     });
     setIsModalOpen(true);
   };
@@ -433,20 +428,19 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
                 <th className="py-3.5 px-4 sm:px-6 w-44">WAKTU & JAM</th>
                 <th className="py-3.5 px-4">MATA PELAJARAN</th>
                 <th className="py-3.5 px-4">GURU PENGAMPU</th>
-                <th className="py-3.5 px-4 hidden md:table-cell">RUANG KELAS</th>
                 {!readOnly && <th className="py-3.5 px-4 text-right">AKSI</th>}
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {isLoading ? (
                 <tr>
-                  <td colSpan={readOnly ? 4 : 5} className="py-12 text-center text-slate-400">
+                  <td colSpan={readOnly ? 3 : 4} className="py-12 text-center text-slate-400">
                     Memuat data jadwal pelajaran...
                   </td>
                 </tr>
               ) : currentSchedules.length === 0 ? (
                 <tr>
-                  <td colSpan={readOnly ? 4 : 5} className="py-12 text-center">
+                  <td colSpan={readOnly ? 3 : 4} className="py-12 text-center">
                     <p className="text-slate-500 font-medium text-sm">
                       Belum ada sesi pelajaran untuk hari {selectedDay} ({selectedRombel}).
                     </p>
@@ -487,14 +481,9 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
 
                     {/* MATA PELAJARAN */}
                     <td className="py-4 px-4">
-                      <div className="flex flex-col">
-                        <span className="font-bold text-slate-900 text-sm">
-                          {item.subject_name}
-                        </span>
-                        <span className="text-[11px] text-slate-500 mt-0.5">
-                          {item.category || 'Mata Pelajaran Wajib'}
-                        </span>
-                      </div>
+                      <span className="font-bold text-slate-900 text-sm">
+                        {item.subject_name}
+                      </span>
                     </td>
 
                     {/* GURU PENGAMPU */}
@@ -504,14 +493,6 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
                         <span className="font-medium text-slate-800 text-xs truncate max-w-xs">
                           {item.teacher_name}
                         </span>
-                      </div>
-                    </td>
-
-                    {/* RUANG KELAS */}
-                    <td className="py-4 px-4 hidden md:table-cell">
-                      <div className="flex items-center gap-1.5 text-slate-600 text-xs">
-                        <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                        <span>{item.room}</span>
                       </div>
                     </td>
 
@@ -720,45 +701,6 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
                     </option>
                   ))}
                 </select>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Kategori Pelajaran
-                  </label>
-                  <select
-                    value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="Pendidikan Agama Islam">Pendidikan Agama Islam</option>
-                    <option value="MIPA">MIPA (Matematika & Sains)</option>
-                    <option value="Tematik & Dasar SD">Tematik & Dasar SD</option>
-                    <option value="Bahasa & Sastra">Bahasa & Sastra</option>
-                    <option value="Bahasa Asing">Bahasa Asing (Arab / Inggris)</option>
-                    <option value="IPS">IPS & Sejarah</option>
-                    <option value="Olahraga & Kesehatan">Olahraga & Kesehatan</option>
-                    <option value="Seni & Budaya">Seni & Budaya</option>
-                    <option value="Teknologi Informasi">Teknologi Informasi / TIK</option>
-                    <option value="Muatan Lokal">Muatan Lokal (BTQ)</option>
-                    <option value="Pembiasaan Karakter">Pembiasaan Karakter</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Ruang Kelas
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.room}
-                    onChange={(e) => setFormData({ ...formData, room: e.target.value })}
-                    placeholder="Ruang Kelas, Laboratorium..."
-                    className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
               </div>
 
               <div className="pt-3 border-t border-slate-200 flex items-center justify-end gap-2">
