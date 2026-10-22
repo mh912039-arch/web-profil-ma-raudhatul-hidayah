@@ -46,7 +46,7 @@ const tabTitles: Record<AdminTab, { title: string; subtitle: string }> = {
   },
   users: {
     title: 'Direktori Pengguna',
-    subtitle: 'Daftar 65 akun terdaftar dewan guru, staf TU, dan pimpinan madrasah',
+    subtitle: 'Daftar akun terdaftar dewan guru, staf TU, santri, dan pimpinan madrasah',
   },
   activation: {
     title: 'Aktivasi Akun Pengguna',

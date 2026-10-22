@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -55,6 +55,7 @@ interface AdminSidebarProps {
   setActiveTab: (tab: AdminTab) => void;
   unreadCount?: number;
   teachersCount?: number;
+  usersCount?: number;
   isOpenMobile: boolean;
   setIsOpenMobile: (open: boolean) => void;
   supabaseConnected: boolean;
@@ -67,6 +68,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   setActiveTab,
   unreadCount = 0,
   teachersCount = 23,
+  usersCount,
   isOpenMobile,
   setIsOpenMobile,
   supabaseConnected,
@@ -79,6 +81,27 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
     activeTab === 'users' || activeTab === 'activation'
   );
   const [openWebsite, setOpenWebsite] = useState(true);
+
+  // Dynamic user counts from real data
+  const [internalUsersCount, setInternalUsersCount] = useState<number | null>(null);
+  const [internalPendingCount, setInternalPendingCount] = useState<number>(0);
+
+  useEffect(() => {
+    if (userRole === 'admin') {
+      fetch('/api/users', { cache: 'no-store' })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data && Array.isArray(data.users)) {
+            setInternalUsersCount(data.users.length);
+            const pending = data.users.filter((u: any) => u.status === 'Nonaktif').length;
+            setInternalPendingCount(pending);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [userRole, activeTab]);
+
+  const displayUsersCount = usersCount ?? internalUsersCount ?? 8;
 
   const handleSelectTab = (tab: AdminTab) => {
     setActiveTab(tab);
@@ -463,7 +486,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
             {openPengguna && (
               <div className="relative pl-3.5 ml-4 border-l-2 border-blue-400 space-y-1 my-1">
-                {/* Direktori Pengguna (badge: 65) */}
+                {/* Direktori Pengguna (real count badge) */}
                 <button
                   type="button"
                   onClick={() => handleSelectTab('users')}
@@ -482,7 +505,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                         : 'bg-slate-200 text-slate-700'
                     }`}
                   >
-                    65
+                    {displayUsersCount}
                   </span>
                 </button>
 
@@ -498,6 +521,17 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                     <Key className={`w-4 h-4 shrink-0 ${getIconClass('activation')}`} />
                     <span className="truncate">Aktivasi Akun Pengguna</span>
                   </div>
+                  {internalPendingCount > 0 && (
+                    <span
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                        activeTab === 'activation'
+                          ? 'bg-white/20 text-white'
+                          : 'bg-amber-100 text-amber-800 border border-amber-200'
+                      }`}
+                    >
+                      {internalPendingCount}
+                    </span>
+                  )}
                 </button>
               </div>
             )}

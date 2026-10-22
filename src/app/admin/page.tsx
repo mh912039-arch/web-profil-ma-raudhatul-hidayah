@@ -136,6 +136,7 @@ export default function AdminDashboardPage() {
   const [championshipPhotos, setChampionshipPhotos] = useState<ChampionshipPhoto[]>([]);
   const [applicants, setApplicants] = useState<PpdbApplicant[]>([]);
   const [messages, setMessages] = useState<ContactMessage[]>([]);
+  const [usersCount, setUsersCount] = useState<number>(8);
   const [homepageData, setHomepageData] = useState<HomepageConfig>({
     heroTitle: 'MA Raudhatul Hidayah',
     heroTagline: 'Membentuk Generasi Berkarakter, Beradab, dan Unggul Bernalar',
@@ -286,6 +287,17 @@ export default function AdminDashboardPage() {
           setMessages(msgJson);
         }
       }
+
+      // 8. Load Registered Users Count
+      try {
+        const userRes = await fetch('/api/users', { cache: 'no-store' });
+        if (userRes.ok) {
+          const userJson = await userRes.json();
+          if (Array.isArray(userJson.users)) {
+            setUsersCount(userJson.users.length);
+          }
+        }
+      } catch {}
 
       setSupabaseConnected(true);
     } catch (err) {
@@ -671,6 +683,7 @@ export default function AdminDashboardPage() {
         }}
         unreadCount={unreadMessagesCount}
         teachersCount={teachers.length}
+        usersCount={usersCount}
         isOpenMobile={isOpenMobile}
         setIsOpenMobile={setIsOpenMobile}
         supabaseConnected={supabaseConnected}
