@@ -94,12 +94,23 @@ async function writeUsers(data: UserAccountItem[]): Promise<void> {
         permissions: u.permissions,
       };
     }
-    await supabase
+    const { data: updated, error: supaErr } = await supabase
       .from('teachers_staff')
       .update({ education: JSON.stringify(overrides) })
-      .eq('code', 'SYS_AUTH');
+      .eq('code', 'SYS_AUTH')
+      .select('id');
+
+    if (supaErr || !updated || updated.length === 0) {
+      await supabase.from('teachers_staff').insert({
+        name: 'Sistem Autentikasi Pengguna',
+        code: 'SYS_AUTH',
+        category_label: 'Sistem',
+        subject_name: 'Security Auth',
+        education: JSON.stringify(overrides),
+      });
+    }
   } catch (err) {
-    // Silently continue
+    console.warn('Gagal sinkronisasi data pengguna ke Supabase:', err);
   }
 
   // 2. Best-effort write ke file lokal
