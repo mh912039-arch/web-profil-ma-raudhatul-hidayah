@@ -388,6 +388,15 @@ export default function AdminDashboardPage() {
         }).catch(() => {});
 
         showToast('success', `Data pendidik "${teacher.name}" berhasil disimpan & langsung aktif di web! Total: ${finalCount} guru.`);
+
+        // Sinkronisasi ulang data terbaru dari server
+        try {
+          const freshRes = await fetch('/api/teachers', { cache: 'no-store' });
+          if (freshRes.ok) {
+            const freshList = await freshRes.json();
+            if (Array.isArray(freshList)) setTeachers(freshList);
+          }
+        } catch {}
       } else {
         showToast('error', resJson.message || 'Gagal menyimpan data guru.');
       }
@@ -424,6 +433,15 @@ export default function AdminDashboardPage() {
         }).catch(() => {});
 
         showToast('success', `Data guru berhasil dihapus. Total sekarang: ${finalCount} guru.`);
+
+        // Sinkronisasi ulang data terbaru dari server
+        try {
+          const freshRes = await fetch('/api/teachers', { cache: 'no-store' });
+          if (freshRes.ok) {
+            const freshList = await freshRes.json();
+            if (Array.isArray(freshList)) setTeachers(freshList);
+          }
+        } catch {}
       }
     } catch (err) {
       showToast('error', 'Gagal menghapus data guru.');

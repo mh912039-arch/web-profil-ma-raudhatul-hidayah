@@ -114,7 +114,7 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
   const fetchSchedules = async () => {
     try {
       setIsLoading(true);
-      const res = await fetch('/api/schedules');
+      const res = await fetch('/api/schedules', { cache: 'no-store' });
       if (res.ok) {
         const data = await res.json();
         setSchedules(data);
@@ -207,6 +207,7 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
           const result = await res.json();
           setSchedules((prev) => prev.map((s) => (s.id === editingItem.id ? result.item : s)));
           setIsModalOpen(false);
+          fetchSchedules();
         }
       } else {
         // Create new
@@ -219,6 +220,7 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
           const result = await res.json();
           setSchedules((prev) => [...prev, result.item]);
           setIsModalOpen(false);
+          fetchSchedules();
         }
       }
     } catch (err) {

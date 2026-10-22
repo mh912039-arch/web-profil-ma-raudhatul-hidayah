@@ -4,6 +4,15 @@ import path from 'path';
 import { supabase } from '@/lib/supabaseClient';
 import { requireAuth } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+const noCacheHeaders = {
+  'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+  Pragma: 'no-cache',
+  Expires: '0',
+};
+
 const dataFilePath = path.join(process.cwd(), 'src', 'data', 'teachersData.json');
 
 export interface TeacherItem {
@@ -27,15 +36,33 @@ export interface TeacherItem {
 function detectJenjang(classLevel: string, code: string): 'sd' | 'smp' | 'sma' {
   const cl = (classLevel || '').toLowerCase();
   const cd = (code || '').toLowerCase();
-  if (cd.startsWith('sd') || cl.includes('sd') || /kelas [1-6]\b/.test(cl)) return 'sd';
-  if (cd.startsWith('smp') || cl.includes('smp') || cl.includes('vii') || cl.includes('viii') || cl.includes('ix')) return 'smp';
+  if (cd.startsWith('sd') || cl.includes('sd') || /kelas (i|ii|iii|iv|v|vi|[1-6])\b/i.test(cl)) return 'sd';
+  if (cd.startsWith('smp') || cl.includes('smp') || cl.includes('vii') || cl.includes('viii') || cl.includes('ix') || /kelas [7-9]\b/.test(cl)) return 'smp';
   return 'sma';
 }
 
-export async function GET() {
-  let localTeachers: TeacherItem[] = [];
+async function readTeachersUnified(): Promise<TeacherItem[]> {
+  // 1. Cek penyimpanan persisten terpadu di Supabase (SYS_TCH)
+  try {
+    const { data: sysTch } = await supabase
+      .from('teachers_staff')
+      .select('education')
+      .eq('code', 'SYS_TCH')
+      .maybeSingle();
 
-  // 1. Read local JSON
+    if (sysTch?.education) {
+      const parsed = JSON.parse(sysTch.education);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        parsed.sort((a, b) => (a.order_no || 0) - (b.order_no || 0));
+        return parsed;
+      }
+    }
+  } catch (err) {
+    console.warn('Notice: Supabase SYS_TCH read:', err);
+  }
+
+  // 2. Fallback: Baca dari baris individual teachers_staff
+  let localTeachers: TeacherItem[] = [];
   try {
     const fileContent = await fs.readFile(dataFilePath, 'utf-8');
     localTeachers = JSON.parse(fileContent);
@@ -43,7 +70,6 @@ export async function GET() {
     console.warn('Could not read teachersData.json:', err);
   }
 
-  // 2. Fetch from Supabase
   try {
     const { data: supaTeachers, error } = await supabase
       .from('teachers_staff')
@@ -70,21 +96,10 @@ export async function GET() {
         is_active: t.is_active !== undefined ? t.is_active : true,
       }));
 
-      // Merge: Supabase live data takes precedence over local static JSON
-      const supaMap = new Map<string, TeacherItem>();
-      supaMapped.forEach((st) => {
-        if (st.id) supaMap.set(String(st.id), st);
-        supaMap.set(`code-${st.code}-order-${st.order_no}`, st);
-      });
-
-      const merged: TeacherItem[] = supaMapped.map((st) => ({
-        ...st,
-        jenjang: st.jenjang || detectJenjang(st.class_level, st.code),
-      }));
-
-      // Add any local teachers not in Supabase yet
       const supaCodesAndOrders = new Set(supaMapped.map((s) => `code-${s.code}-order-${s.order_no}`));
       const supaIds = new Set(supaMapped.map((s) => String(s.id)));
+      const merged: TeacherItem[] = [...supaMapped];
+
       localTeachers.forEach((lt) => {
         const jenjang = lt.jenjang || detectJenjang(lt.class_level, lt.code);
         const key = `code-${lt.code}-order-${lt.order_no}`;
@@ -94,7 +109,7 @@ export async function GET() {
       });
 
       merged.sort((a, b) => a.order_no - b.order_no);
-      return NextResponse.json(merged);
+      return merged;
     }
   } catch (err) {
     console.warn('Notice: Supabase teachers_staff fetch:', err);
@@ -104,7 +119,44 @@ export async function GET() {
     if (!lt.jenjang) lt.jenjang = detectJenjang(lt.class_level, lt.code);
   });
   localTeachers.sort((a, b) => a.order_no - b.order_no);
-  return NextResponse.json(localTeachers);
+  return localTeachers;
+}
+
+async function writeTeachersUnified(list: TeacherItem[]): Promise<void> {
+  // 1. Simpan ke Supabase SYS_TCH agar persisten 100% di Vercel
+  try {
+    const { data: updated, error } = await supabase
+      .from('teachers_staff')
+      .update({ education: JSON.stringify(list) })
+      .eq('code', 'SYS_TCH')
+      .select('id');
+
+    if (error || !updated || updated.length === 0) {
+      await supabase.from('teachers_staff').insert({
+        name: 'System Teachers Store',
+        code: 'SYS_TCH',
+        category_label: 'Sistem',
+        subject_name: 'Teachers',
+        education: JSON.stringify(list),
+        order_no: 9996,
+        role: 'system',
+      });
+    }
+  } catch (err) {
+    console.warn('Failed to sync SYS_TCH to Supabase:', err);
+  }
+
+  // 2. Best-effort write ke file lokal
+  try {
+    await fs.writeFile(dataFilePath, JSON.stringify(list, null, 2), 'utf-8');
+  } catch (err) {
+    // EROFS safe on Vercel
+  }
+}
+
+export async function GET() {
+  const teachers = await readTeachersUnified();
+  return NextResponse.json(teachers, { headers: noCacheHeaders });
 }
 
 export async function POST(request: Request) {
@@ -120,27 +172,24 @@ export async function POST(request: Request) {
     if (!body.name || !body.subject_name) {
       return NextResponse.json(
         { success: false, message: 'Nama guru dan mata pelajaran wajib diisi.' },
-        { status: 400 }
+        { status: 400, headers: noCacheHeaders }
       );
     }
 
-    let teachers: TeacherItem[] = [];
-    try {
-      const fileContent = await fs.readFile(dataFilePath, 'utf-8');
-      teachers = JSON.parse(fileContent);
-    } catch (err) {}
-
+    const currentList = await readTeachersUnified();
     const id = body.id || `teacher-${Date.now()}`;
+    const targetJenjang = body.jenjang || detectJenjang(body.class_level, body.code);
+
     const newOrUpdated: TeacherItem = {
       id,
-      order_no: Number(body.order_no) || (teachers.length + 1),
-      code: String(body.code || (teachers.length + 1)).trim(),
+      order_no: Number(body.order_no) || (currentList.length + 1),
+      code: String(body.code || (currentList.length + 1)).trim(),
       name: body.name.trim(),
       nip: (body.nip || '').trim() || null,
       role: (body.role || 'Dewan Guru').trim(),
       subject_name: body.subject_name.trim(),
       class_level: (body.class_level || 'Semua Kelas').trim(),
-      jenjang: body.jenjang || detectJenjang(body.class_level, body.code),
+      jenjang: targetJenjang,
       category_label: (body.category_label || 'Pendidikan Agama Islam').trim(),
       image_url: (body.image_url || '/hero/slide-1.jpg').trim(),
       education: (body.education || '').trim() || null,
@@ -148,7 +197,7 @@ export async function POST(request: Request) {
       updated_at: new Date().toISOString(),
     };
 
-    // 1. Primary: Save/Update in Supabase
+    // 1. Update/Insert in Supabase individual rows
     try {
       const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(body.id));
       if (isUuid) {
@@ -156,7 +205,7 @@ export async function POST(request: Request) {
           .from('teachers_staff')
           .update({
             order_no: newOrUpdated.order_no,
-            code: newOrUpdated.code,
+            code: newOrUpdated.code.slice(0, 10),
             name: newOrUpdated.name,
             nip: newOrUpdated.nip,
             role: newOrUpdated.role || 'Dewan Guru',
@@ -174,11 +223,10 @@ export async function POST(request: Request) {
           newOrUpdated.id = updatedData.id;
         }
       } else {
-        // Match existing teacher in Supabase by code or order_no
         const { data: existing } = await supabase
           .from('teachers_staff')
           .select('id')
-          .or(`code.eq.${newOrUpdated.code},order_no.eq.${newOrUpdated.order_no}`)
+          .or(`code.eq.${newOrUpdated.code.slice(0, 10)},order_no.eq.${newOrUpdated.order_no}`)
           .limit(1);
 
         if (existing && existing.length > 0) {
@@ -188,7 +236,7 @@ export async function POST(request: Request) {
             .from('teachers_staff')
             .update({
               order_no: newOrUpdated.order_no,
-              code: newOrUpdated.code,
+              code: newOrUpdated.code.slice(0, 10),
               name: newOrUpdated.name,
               nip: newOrUpdated.nip,
               role: newOrUpdated.role || 'Dewan Guru',
@@ -205,7 +253,7 @@ export async function POST(request: Request) {
             .from('teachers_staff')
             .insert({
               order_no: newOrUpdated.order_no,
-              code: newOrUpdated.code,
+              code: newOrUpdated.code.slice(0, 10),
               name: newOrUpdated.name,
               nip: newOrUpdated.nip,
               role: newOrUpdated.role || 'Dewan Guru',
@@ -223,37 +271,39 @@ export async function POST(request: Request) {
         }
       }
     } catch (supaErr) {
-      console.warn('Notice: Supabase teachers_staff sync:', supaErr);
+      console.warn('Notice: Supabase teachers_staff row sync:', supaErr);
     }
 
-    // 2. Best-effort local file write (ignored safely if filesystem is read-only like Vercel)
-    try {
-      const existingIdx = teachers.findIndex(
-        (t) => (t.id && String(t.id) === String(newOrUpdated.id)) || Number(t.order_no) === Number(newOrUpdated.order_no)
-      );
+    // 2. Update unified persistent list
+    const existingIdx = currentList.findIndex(
+      (t) =>
+        (t.id && String(t.id) === String(newOrUpdated.id)) ||
+        (t.id && String(t.id) === String(body.id)) ||
+        (String(t.code) === String(newOrUpdated.code) && (t.jenjang === newOrUpdated.jenjang || !t.jenjang))
+    );
 
-      if (existingIdx >= 0) {
-        teachers[existingIdx] = { ...teachers[existingIdx], ...newOrUpdated };
-      } else {
-        teachers.push(newOrUpdated);
-      }
-
-      teachers.sort((a, b) => a.order_no - b.order_no);
-      await fs.writeFile(dataFilePath, JSON.stringify(teachers, null, 2), 'utf-8');
-    } catch (fsErr) {
-      // Safely ignore EROFS in production serverless environments
+    if (existingIdx >= 0) {
+      currentList[existingIdx] = { ...currentList[existingIdx], ...newOrUpdated };
+    } else {
+      currentList.push(newOrUpdated);
     }
 
-    return NextResponse.json({
-      success: true,
-      message: `Data guru "${newOrUpdated.name}" berhasil disimpan dan langsung diterapkan ke web profil.`,
-      data: newOrUpdated,
-    });
+    currentList.sort((a, b) => a.order_no - b.order_no);
+    await writeTeachersUnified(currentList);
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: `Data guru "${newOrUpdated.name}" (${newOrUpdated.subject_name}) berhasil disimpan dan langsung aktif di web profil.`,
+        data: newOrUpdated,
+      },
+      { headers: noCacheHeaders }
+    );
   } catch (error: any) {
     console.error('Error in teachers POST:', error);
     return NextResponse.json(
       { success: false, message: error.message || 'Gagal menyimpan data guru.' },
-      { status: 500 }
+      { status: 500, headers: noCacheHeaders }
     );
   }
 }
@@ -270,10 +320,10 @@ export async function DELETE(request: Request) {
     const id = searchParams.get('id');
 
     if (!id) {
-      return NextResponse.json({ success: false, message: 'ID diperlukan' }, { status: 400 });
+      return NextResponse.json({ success: false, message: 'ID diperlukan' }, { status: 400, headers: noCacheHeaders });
     }
 
-    // 1. Delete from Supabase safely
+    // 1. Delete from Supabase individual rows
     try {
       const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(id));
       if (isUuid) {
@@ -283,22 +333,21 @@ export async function DELETE(request: Request) {
       }
     } catch (err) {}
 
-    // 2. Best-effort local file delete (safely ignore EROFS)
-    try {
-      const fileContent = await fs.readFile(dataFilePath, 'utf-8');
-      let teachers: TeacherItem[] = JSON.parse(fileContent);
-      teachers = teachers.filter((t) => String(t.id) !== String(id) && String(t.order_no) !== String(id));
-      await fs.writeFile(dataFilePath, JSON.stringify(teachers, null, 2), 'utf-8');
-    } catch (err) {}
+    // 2. Delete from unified persistent store
+    const currentList = await readTeachersUnified();
+    const filtered = currentList.filter(
+      (t) => String(t.id) !== String(id) && String(t.order_no) !== String(id)
+    );
+    await writeTeachersUnified(filtered);
 
     return NextResponse.json({
       success: true,
       message: 'Data guru berhasil dihapus.',
-    });
+    }, { headers: noCacheHeaders });
   } catch (error: any) {
     return NextResponse.json(
       { success: false, message: error.message || 'Gagal menghapus data guru.' },
-      { status: 500 }
+      { status: 500, headers: noCacheHeaders }
     );
   }
 }
