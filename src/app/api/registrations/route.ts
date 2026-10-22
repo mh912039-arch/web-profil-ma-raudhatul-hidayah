@@ -33,7 +33,7 @@ export interface PpdbApplicantItem {
 
 export async function GET() {
   // Keamanan Endpoint: Kunci ketat data privat calon santri hanya untuk Administrator
-  const auth = requireAuth(['admin']);
+  const auth = await requireAuth(['admin']);
   if (!auth.authorized) {
     return auth.response!;
   }
@@ -224,7 +224,7 @@ export async function POST(request: Request) {
 
 export async function PATCH(request: Request) {
   // Hanya Administrator yang dapat memverifikasi status pendaftaran
-  const auth = requireAuth(['admin']);
+  const auth = await requireAuth(['admin']);
   if (!auth.authorized) {
     return auth.response!;
   }
@@ -282,7 +282,7 @@ export async function PATCH(request: Request) {
 
 export async function DELETE(request: Request) {
   // Hanya Administrator yang berhak menghapus data pendaftar
-  const auth = requireAuth(['admin']);
+  const auth = await requireAuth(['admin']);
   if (!auth.authorized) {
     return auth.response!;
   }

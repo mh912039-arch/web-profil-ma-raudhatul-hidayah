@@ -19,7 +19,7 @@ export interface ContactMessage {
 
 export async function GET() {
   // Hanya Administrator yang berhak membaca pesan masuk dan kontak pengunjung
-  const auth = requireAuth(['admin']);
+  const auth = await requireAuth(['admin']);
   if (!auth.authorized) {
     return auth.response!;
   }
@@ -150,7 +150,7 @@ export async function POST(request: Request) {
 
 export async function PATCH(request: Request) {
   // Hanya Administrator yang dapat mengubah status pesan
-  const auth = requireAuth(['admin']);
+  const auth = await requireAuth(['admin']);
   if (!auth.authorized) {
     return auth.response!;
   }
@@ -187,7 +187,7 @@ export async function PATCH(request: Request) {
 
 export async function DELETE(request: Request) {
   // Hanya Administrator yang berhak menghapus pesan masuk
-  const auth = requireAuth(['admin']);
+  const auth = await requireAuth(['admin']);
   if (!auth.authorized) {
     return auth.response!;
   }

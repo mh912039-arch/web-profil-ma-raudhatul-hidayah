@@ -92,7 +92,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   // Hanya Administrator yang berhak mengubah identitas dan profil sekolah
-  const auth = requireAuth(['admin']);
+  const auth = await requireAuth(['admin']);
   if (!auth.authorized) {
     return auth.response!;
   }

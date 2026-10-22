@@ -135,6 +135,7 @@ export async function middleware(request: NextRequest) {
   );
   response.headers.set('Cross-Origin-Opener-Policy', 'same-origin');
   response.headers.set('X-DNS-Prefetch-Control', 'on');
+  response.headers.delete('x-powered-by');
 
   return response;
 }

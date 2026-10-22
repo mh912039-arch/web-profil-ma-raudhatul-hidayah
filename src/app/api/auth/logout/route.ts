@@ -15,7 +15,7 @@ export async function POST(request: Request) {
       }
     } catch {}
 
-    const session = getServerSession();
+    const session = await getServerSession();
     const targetUserId = session?.userId || bodyUserId;
     const targetUsername = session?.username || bodyUsername;
     const targetEmail = session?.email;

@@ -14,9 +14,9 @@ export const dynamic = 'force-dynamic';
 export const dynamicParams = true;
 
 interface NewsDetailPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export interface ArticleItem {
@@ -163,7 +163,8 @@ async function getArticleBySlug(slug: string): Promise<ArticleItem | null> {
 export async function generateMetadata({
   params,
 }: NewsDetailPageProps): Promise<Metadata> {
-  const article = await getArticleBySlug(params.slug);
+  const { slug } = await params;
+  const article = await getArticleBySlug(slug);
   if (!article) return { title: 'Warta Tidak Ditemukan' };
 
   return {
@@ -178,7 +179,8 @@ export async function generateMetadata({
 }
 
 export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
-  const rawArticle = await getArticleBySlug(params.slug);
+  const { slug } = await params;
+  const rawArticle = await getArticleBySlug(slug);
   if (!rawArticle) notFound();
 
   const articles = await getAllArticles();

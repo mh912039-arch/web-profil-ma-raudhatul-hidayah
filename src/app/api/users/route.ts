@@ -14,7 +14,7 @@ export type { UserAccountItem, UserSessionItem };
 
 export async function GET() {
   // Hanya Administrator yang berhak mengelola direktori pengguna dan melihat sesi login
-  const auth = requireAuth(['admin']);
+  const auth = await requireAuth(['admin']);
   if (!auth.authorized) {
     return auth.response!;
   }
@@ -53,7 +53,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const auth = requireAuth(['admin']);
+  const auth = await requireAuth(['admin']);
   if (!auth.authorized) {
     return auth.response!;
   }
@@ -124,7 +124,7 @@ export async function POST(request: Request) {
 }
 
 export async function PATCH(request: Request) {
-  const auth = requireAuth(['admin']);
+  const auth = await requireAuth(['admin']);
   if (!auth.authorized) {
     return auth.response!;
   }
@@ -192,7 +192,7 @@ export async function PATCH(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  const auth = requireAuth(['admin']);
+  const auth = await requireAuth(['admin']);
   if (!auth.authorized) {
     return auth.response!;
   }

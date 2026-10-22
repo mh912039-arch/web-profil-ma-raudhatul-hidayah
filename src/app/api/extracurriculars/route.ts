@@ -63,7 +63,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   // Hanya Admin dan Dewan Guru yang memiliki otorisasi mengelola ekstrakurikuler
-  const auth = requireAuth(['admin', 'guru']);
+  const auth = await requireAuth(['admin', 'guru']);
   if (!auth.authorized) {
     return auth.response!;
   }
@@ -181,7 +181,7 @@ export async function PUT(request: Request) {
 
 export async function DELETE(request: Request) {
   // Hanya Admin dan Dewan Guru yang memiliki otorisasi menghapus ekstrakurikuler
-  const auth = requireAuth(['admin', 'guru']);
+  const auth = await requireAuth(['admin', 'guru']);
   if (!auth.authorized) {
     return auth.response!;
   }

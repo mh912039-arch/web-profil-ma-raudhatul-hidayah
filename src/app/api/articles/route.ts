@@ -143,7 +143,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   // Hanya Admin dan Dewan Guru yang memiliki otorisasi menulis/mengedit warta berita
-  const auth = requireAuth(['admin', 'guru']);
+  const auth = await requireAuth(['admin', 'guru']);
   if (!auth.authorized) {
     return auth.response!;
   }
@@ -239,7 +239,7 @@ export async function POST(request: Request) {
 
 export async function DELETE(request: Request) {
   // Hanya Admin dan Dewan Guru yang memiliki otorisasi menghapus warta berita
-  const auth = requireAuth(['admin', 'guru']);
+  const auth = await requireAuth(['admin', 'guru']);
   if (!auth.authorized) {
     return auth.response!;
   }

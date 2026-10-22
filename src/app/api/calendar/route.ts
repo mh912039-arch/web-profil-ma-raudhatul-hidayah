@@ -45,7 +45,7 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const auth = requireAuth(['admin', 'guru']);
+  const auth = await requireAuth(['admin', 'guru']);
   if (!auth.authorized) {
     return auth.response!;
   }
@@ -74,7 +74,7 @@ export async function POST(req: Request) {
 }
 
 export async function PUT(req: Request) {
-  const auth = requireAuth(['admin', 'guru']);
+  const auth = await requireAuth(['admin', 'guru']);
   if (!auth.authorized) {
     return auth.response!;
   }
@@ -107,7 +107,7 @@ export async function PUT(req: Request) {
 }
 
 export async function DELETE(req: Request) {
-  const auth = requireAuth(['admin', 'guru']);
+  const auth = await requireAuth(['admin', 'guru']);
   if (!auth.authorized) {
     return auth.response!;
   }

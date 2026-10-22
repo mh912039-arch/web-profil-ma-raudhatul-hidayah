@@ -109,7 +109,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   // Hanya Administrator yang dapat menambah atau mengubah data guru
-  const auth = requireAuth(['admin']);
+  const auth = await requireAuth(['admin']);
   if (!auth.authorized) {
     return auth.response!;
   }
@@ -260,7 +260,7 @@ export async function POST(request: Request) {
 
 export async function DELETE(request: Request) {
   // Hanya Administrator yang dapat menghapus data guru
-  const auth = requireAuth(['admin']);
+  const auth = await requireAuth(['admin']);
   if (!auth.authorized) {
     return auth.response!;
   }

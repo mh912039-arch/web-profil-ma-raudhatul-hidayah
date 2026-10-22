@@ -70,9 +70,9 @@ export function verifySessionToken(token: string): SessionData | null {
 /**
  * Dapatkan session pengguna dari server cookies
  */
-export function getServerSession(): SessionData | null {
+export async function getServerSession(): Promise<SessionData | null> {
   try {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const token = cookieStore.get(COOKIE_NAME)?.value;
     if (!token) return null;
     return verifySessionToken(token);
@@ -84,12 +84,12 @@ export function getServerSession(): SessionData | null {
 /**
  * Guard untuk API route: pastikan request memiliki autentikasi valid dan peran (role) yang diizinkan
  */
-export function requireAuth(allowedRoles?: UserRole[]): {
+export async function requireAuth(allowedRoles?: UserRole[]): Promise<{
   authorized: boolean;
   session: SessionData | null;
   response?: NextResponse;
-} {
-  const session = getServerSession();
+}> {
+  const session = await getServerSession();
 
   if (!session) {
     return {

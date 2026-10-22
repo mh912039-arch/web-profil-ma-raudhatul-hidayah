@@ -4,7 +4,7 @@ import { readUsers, writeUsers } from '@/lib/userStore';
 
 export async function POST(request: Request) {
   try {
-    const session = getServerSession();
+    const session = await getServerSession();
 
     if (!session) {
       return NextResponse.json(
