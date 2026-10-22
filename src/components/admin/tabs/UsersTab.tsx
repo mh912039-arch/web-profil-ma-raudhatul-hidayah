@@ -5,6 +5,7 @@ import {
   Users,
   Shield,
   Key,
+  KeyRound,
   Search,
   CheckCircle2,
   UserPlus,
@@ -26,6 +27,9 @@ import {
   UserCheck,
   UserX,
   Trash2,
+  Eye,
+  EyeOff,
+  Copy,
 } from 'lucide-react';
 
 export interface UserAccount {
@@ -33,6 +37,7 @@ export interface UserAccount {
   name: string;
   email: string;
   username?: string;
+  password?: string;
   role: 'admin' | 'guru' | 'siswa';
   status: 'Aktif' | 'Nonaktif';
   permissions: string[];
@@ -104,16 +109,47 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
   const [roleFilter, setRoleFilter] = useState<'all' | 'admin' | 'guru' | 'siswa'>('all');
   const [statusFilter, setStatusFilter] = useState<'all' | 'Aktif' | 'Nonaktif'>('all');
 
-  // Modals state
+  // Modals & Password states
   const [editingUser, setEditingUser] = useState<UserAccount | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newUserForm, setNewUserForm] = useState({
     name: '',
     email: '',
+    password: 'guru2026',
     role: 'guru' as 'admin' | 'guru' | 'siswa',
     status: 'Aktif' as 'Aktif' | 'Nonaktif',
     permissions: PRESETS.guru,
   });
+
+  const [visiblePasswords, setVisiblePasswords] = useState<Record<string, boolean>>({});
+  const [showEditPassword, setShowEditPassword] = useState(false);
+  const [showNewUserPassword, setShowNewUserPassword] = useState(false);
+
+  const togglePasswordVisibility = (userId: string) => {
+    setVisiblePasswords((prev) => ({ ...prev, [userId]: !prev[userId] }));
+  };
+
+  const copyCredentials = (user: { name?: string; email: string; password?: string; role?: string }) => {
+    const fallbackPass = user.role === 'admin' ? 'admin123' : user.role === 'siswa' ? 'siswa2026' : 'guru2026';
+    const pass = user.password || fallbackPass;
+    const text = `Kredensial Login Portal MA Raudhatul Hidayah:\nNama: ${user.name || '-'}\nEmail/ID: ${user.email}\nKata Sandi: ${pass}\nAlamat Portal: https://web-profil-ma-raudhatul-hidayah.vercel.app/masuk`;
+    navigator.clipboard.writeText(text);
+    showNotification('success', `Kredensial untuk "${user.email}" berhasil disalin.`);
+  };
+
+  const generateRandomPassword = () => {
+    const chars = 'abcdefghjkmnpqrstuvwxyz23456789';
+    let rand = '';
+    for (let i = 0; i < 6; i++) {
+      rand += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    const prefix = editingUser?.role === 'siswa' ? 'santri' : 'guru';
+    const newPass = `${prefix}#${rand}`;
+    if (editingUser) {
+      setEditingUser({ ...editingUser, password: newPass });
+      setShowEditPassword(true);
+    }
+  };
 
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
@@ -176,7 +212,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
     }
   };
 
-  // Save Permissions Modal
+  // Save Permissions & Password Modal
   const handleSavePermissions = async () => {
     if (!editingUser) return;
     try {
@@ -189,6 +225,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
           email: editingUser.email,
           role: editingUser.role,
           status: editingUser.status,
+          password: editingUser.password,
           permissions: editingUser.permissions,
         }),
       });
@@ -226,6 +263,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
         setNewUserForm({
           name: '',
           email: '',
+          password: 'guru2026',
           role: 'guru',
           status: 'Aktif',
           permissions: PRESETS.guru,
@@ -573,6 +611,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                   <tr>
                     <th className="py-3.5 px-6">Pengguna &amp; Akun</th>
                     <th className="py-3.5 px-4">Peran Utama</th>
+                    <th className="py-3.5 px-4">Kata Sandi (Password)</th>
                     <th className="py-3.5 px-4">Hak Akses Modul</th>
                     <th className="py-3.5 px-4">Perangkat &amp; Login Terakhir</th>
                     <th className="py-3.5 px-4 text-center">Status</th>
@@ -582,7 +621,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                 <tbody className="divide-y divide-slate-100">
                   {filteredUsers.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="py-12 text-center text-slate-400">
+                      <td colSpan={7} className="py-12 text-center text-slate-400">
                         Tidak ada pengguna yang cocok dengan kriteria pencarian.
                       </td>
                     </tr>
@@ -608,6 +647,49 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
 
                         {/* Peran Utama */}
                         <td className="py-4 px-4">{getRoleBadge(user.role)}</td>
+
+                        {/* Kata Sandi (Password) */}
+                        <td className="py-4 px-4">
+                          <div className="flex items-center gap-1.5">
+                            <div className="px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-200 font-mono text-[11.5px] text-slate-900 flex items-center gap-2 min-w-[110px] justify-between shadow-2xs">
+                              <span className="font-bold">
+                                {visiblePasswords[user.id]
+                                  ? user.password ||
+                                    (user.role === 'admin'
+                                      ? 'admin123'
+                                      : user.role === 'siswa'
+                                      ? 'siswa2026'
+                                      : 'guru2026')
+                                  : '••••••••'}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => togglePasswordVisibility(user.id)}
+                                className="text-slate-400 hover:text-blue-700 transition-colors p-0.5"
+                                title={
+                                  visiblePasswords[user.id]
+                                    ? 'Sembunyikan Kata Sandi'
+                                    : 'Tampilkan Kata Sandi'
+                                }
+                              >
+                                {visiblePasswords[user.id] ? (
+                                  <EyeOff className="w-3.5 h-3.5" />
+                                ) : (
+                                  <Eye className="w-3.5 h-3.5" />
+                                )}
+                              </button>
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={() => copyCredentials(user)}
+                              className="p-1.5 rounded-lg text-slate-400 hover:text-blue-700 hover:bg-blue-50 transition-colors border border-transparent hover:border-blue-200"
+                              title="Salin Kredensial Lengkap (Email & Password)"
+                            >
+                              <Copy className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </td>
 
                         {/* Hak Akses Modul */}
                         <td className="py-4 px-4">
@@ -867,6 +949,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                   <tr>
                     <th className="py-3.5 px-6">Nama Pengguna &amp; Email</th>
                     <th className="py-3.5 px-4">Peran Dimohon</th>
+                    <th className="py-3.5 px-4">Kata Sandi (Password)</th>
                     <th className="py-3.5 px-4">Tanggal Pendaftaran</th>
                     <th className="py-3.5 px-4 text-center">Status</th>
                     <th className="py-3.5 px-6 text-right">Aksi Otorisasi</th>
@@ -875,7 +958,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                 <tbody className="divide-y divide-slate-100">
                   {users.filter((u) => u.status === 'Nonaktif').length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="py-12 text-center text-slate-400">
+                      <td colSpan={6} className="py-12 text-center text-slate-400">
                         <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto mb-2 opacity-80" />
                         <span className="font-semibold block text-slate-700 text-sm">Semua Akun Sudah Aktif</span>
                         <span className="text-xs text-slate-400">Tidak ada akun yang sedang menunggu aktivasi saat ini.</span>
@@ -893,6 +976,48 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                             </div>
                           </td>
                           <td className="py-4 px-4">{getRoleBadge(user.role)}</td>
+                          {/* Kata Sandi (Password) */}
+                          <td className="py-4 px-4">
+                            <div className="flex items-center gap-1.5">
+                              <div className="px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-200 font-mono text-[11.5px] text-slate-900 flex items-center gap-2 min-w-[110px] justify-between shadow-2xs">
+                                <span className="font-bold">
+                                  {visiblePasswords[user.id]
+                                    ? user.password ||
+                                      (user.role === 'admin'
+                                        ? 'admin123'
+                                        : user.role === 'siswa'
+                                        ? 'siswa2026'
+                                        : 'guru2026')
+                                    : '••••••••'}
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => togglePasswordVisibility(user.id)}
+                                  className="text-slate-400 hover:text-blue-700 transition-colors p-0.5"
+                                  title={
+                                    visiblePasswords[user.id]
+                                      ? 'Sembunyikan Kata Sandi'
+                                      : 'Tampilkan Kata Sandi'
+                                  }
+                                >
+                                  {visiblePasswords[user.id] ? (
+                                    <EyeOff className="w-3.5 h-3.5" />
+                                  ) : (
+                                    <Eye className="w-3.5 h-3.5" />
+                                  )}
+                                </button>
+                              </div>
+
+                              <button
+                                type="button"
+                                onClick={() => copyCredentials(user)}
+                                className="p-1.5 rounded-lg text-slate-400 hover:text-blue-700 hover:bg-blue-50 transition-colors border border-transparent hover:border-blue-200"
+                                title="Salin Kredensial Lengkap (Email & Password)"
+                              >
+                                <Copy className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </td>
                           <td className="py-4 px-4 text-slate-500 text-[11.5px] font-mono">
                             {user.created_at
                               ? new Date(user.created_at).toLocaleDateString('id-ID', {
@@ -923,7 +1048,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                                 className="px-3 py-1.5 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-xs transition-colors border border-blue-200 flex items-center gap-1"
                               >
                                 <Sliders className="w-3.5 h-3.5" />
-                                <span>Atur Modul</span>
+                                <span>Atur Akses &amp; Sandi</span>
                               </button>
                             </div>
                           </td>
@@ -1032,6 +1157,73 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                 >
                   {editingUser.status}
                 </button>
+              </div>
+
+              {/* Kata Sandi & Kredensial Login */}
+              <div className="p-4 rounded-2xl bg-gradient-to-r from-blue-50/80 to-slate-50 border border-blue-200/80 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <KeyRound className="w-4 h-4 text-blue-700" />
+                    <span className="text-xs font-bold text-slate-900 uppercase tracking-wide">
+                      Kata Sandi Login Pengguna
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={generateRandomPassword}
+                    className="text-[11px] font-bold text-blue-700 hover:text-blue-900 bg-white border border-blue-200 px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1 active:scale-95 shadow-2xs"
+                  >
+                    <RefreshCw className="w-3 h-3" />
+                    <span>Buat Sandi Acak</span>
+                  </button>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <div className="relative flex-1">
+                    <input
+                      type={showEditPassword ? 'text' : 'password'}
+                      value={
+                        editingUser.password ??
+                        (editingUser.role === 'admin'
+                          ? 'admin123'
+                          : editingUser.role === 'siswa'
+                          ? 'siswa2026'
+                          : 'guru2026')
+                      }
+                      onChange={(e) =>
+                        setEditingUser({ ...editingUser, password: e.target.value })
+                      }
+                      placeholder="Masukkan kata sandi baru..."
+                      className="w-full pl-3.5 pr-10 py-2.5 text-xs font-mono font-bold text-slate-900 rounded-xl bg-white border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowEditPassword(!showEditPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1"
+                      title={showEditPassword ? 'Sembunyikan Kata Sandi' : 'Tampilkan Kata Sandi'}
+                    >
+                      {showEditPassword ? (
+                        <EyeOff className="w-4 h-4" />
+                      ) : (
+                        <Eye className="w-4 h-4" />
+                      )}
+                    </button>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => copyCredentials(editingUser)}
+                    className="px-3.5 py-2.5 rounded-xl border border-blue-200 bg-white hover:bg-blue-50 text-blue-700 text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 active:scale-95 shadow-2xs"
+                    title="Salin Kredensial Lengkap (Email & Kata Sandi)"
+                  >
+                    <Copy className="w-3.5 h-3.5" />
+                    <span>Salin</span>
+                  </button>
+                </div>
+
+                <p className="text-[11px] text-slate-500 leading-relaxed">
+                  Administrator dapat mengubah kata sandi ini sewaktu-waktu. Perubahan langsung aktif saat Anda menekan tombol "Simpan Perubahan Hak Akses".
+                </p>
               </div>
 
               {/* Granular Permissions Checkboxes */}
@@ -1184,11 +1376,18 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                   <select
                     value={newUserForm.role}
                     onChange={(e) => {
-                      const r = e.target.value as any;
+                      const r = e.target.value as 'admin' | 'guru' | 'siswa';
+                      const defaultPass =
+                        r === 'admin'
+                          ? 'admin123'
+                          : r === 'siswa'
+                          ? 'siswa2026'
+                          : 'guru2026';
                       setNewUserForm({
                         ...newUserForm,
                         role: r,
-                        permissions: PRESETS[r as 'admin' | 'guru' | 'siswa'] || [],
+                        password: defaultPass,
+                        permissions: PRESETS[r] || [],
                       });
                     }}
                     className="px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-900 bg-white"
@@ -1203,7 +1402,9 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                   <label className="text-xs font-bold text-slate-800">Status Awal</label>
                   <select
                     value={newUserForm.status}
-                    onChange={(e) => setNewUserForm({ ...newUserForm, status: e.target.value as any })}
+                    onChange={(e) =>
+                      setNewUserForm({ ...newUserForm, status: e.target.value as any })
+                    }
                     className="px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-900 bg-white"
                   >
                     <option value="Aktif">Aktif Langsung</option>
@@ -1212,8 +1413,70 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-blue-50 border border-blue-200 text-[11.5px] text-blue-900">
-                Kata sandi default untuk akun dewan guru adalah <code className="font-mono font-bold bg-white px-1.5 py-0.5 rounded border border-blue-200">guru2026</code> dan untuk siswa adalah <code className="font-mono font-bold bg-white px-1.5 py-0.5 rounded border border-blue-200">siswa2026</code>.
+              {/* Input Kata Sandi Baru */}
+              <div className="flex flex-col gap-1.5 p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                    <KeyRound className="w-3.5 h-3.5 text-blue-700" />
+                    <span>Kata Sandi Akun</span>
+                    <span className="text-rose-500">*</span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const chars = 'abcdefghjkmnpqrstuvwxyz23456789';
+                      let rand = '';
+                      for (let i = 0; i < 5; i++) {
+                        rand += chars.charAt(Math.floor(Math.random() * chars.length));
+                      }
+                      const prefix =
+                        newUserForm.role === 'siswa'
+                          ? 'santri'
+                          : newUserForm.role === 'admin'
+                          ? 'adm'
+                          : 'guru';
+                      setNewUserForm({ ...newUserForm, password: `${prefix}#${rand}` });
+                      setShowNewUserPassword(true);
+                    }}
+                    className="text-[11px] font-bold text-blue-700 hover:text-blue-900 flex items-center gap-1 active:scale-95 bg-white border border-blue-200 px-2 py-0.5 rounded-md shadow-2xs"
+                  >
+                    <RefreshCw className="w-3 h-3" />
+                    <span>Buat Sandi Acak</span>
+                  </button>
+                </div>
+
+                <div className="relative">
+                  <input
+                    type={showNewUserPassword ? 'text' : 'password'}
+                    required
+                    value={newUserForm.password}
+                    onChange={(e) =>
+                      setNewUserForm({ ...newUserForm, password: e.target.value })
+                    }
+                    placeholder="Masukkan kata sandi akun..."
+                    className="w-full pl-3 pr-10 py-2 text-xs font-mono font-bold rounded-xl border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-900"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNewUserPassword(!showNewUserPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1"
+                    title={
+                      showNewUserPassword
+                        ? 'Sembunyikan Kata Sandi'
+                        : 'Tampilkan Kata Sandi'
+                    }
+                  >
+                    {showNewUserPassword ? (
+                      <EyeOff className="w-3.5 h-3.5" />
+                    ) : (
+                      <Eye className="w-3.5 h-3.5" />
+                    )}
+                  </button>
+                </div>
+
+                <p className="text-[11px] text-slate-500 leading-tight">
+                  Kata sandi ini dapat langsung Anda salin dan dibagikan ke guru atau siswa melalui WhatsApp.
+                </p>
               </div>
 
               <div className="pt-2 flex items-center justify-end gap-2">

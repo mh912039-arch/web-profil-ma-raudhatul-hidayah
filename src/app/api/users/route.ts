@@ -12,6 +12,7 @@ export interface UserAccountItem {
   name: string;
   email: string;
   username?: string;
+  password?: string;
   role: 'admin' | 'guru' | 'siswa';
   status: 'Aktif' | 'Nonaktif';
   permissions: string[];
@@ -116,11 +117,13 @@ export async function POST(request: Request) {
 
     const users = await readUsers();
 
+    const defaultPass = body.role === 'admin' ? 'admin123' : body.role === 'siswa' ? 'siswa2026' : 'guru2026';
     const newUser: UserAccountItem = {
       id: body.id || `usr-${Date.now()}`,
       name: body.name.trim(),
       email: body.email.trim().toLowerCase(),
       username: body.username?.trim().toLowerCase() || body.email.split('@')[0],
+      password: (body.password || defaultPass).trim(),
       role: body.role || 'guru',
       status: body.status || 'Aktif',
       permissions: Array.isArray(body.permissions)
@@ -191,7 +194,7 @@ export async function PATCH(request: Request) {
     }
 
     // 2. Aksi Update Akun Pengguna & Hak Akses
-    const { id, role, status, permissions, name, email } = body;
+    const { id, role, status, permissions, name, email, password } = body;
     if (!id) {
       return NextResponse.json(
         { success: false, message: 'ID pengguna wajib disertakan.' },
@@ -215,6 +218,7 @@ export async function PATCH(request: Request) {
       ...(email ? { email: email.trim().toLowerCase() } : {}),
       ...(role ? { role } : {}),
       ...(status ? { status } : {}),
+      ...(password !== undefined ? { password: String(password).trim() } : {}),
       ...(Array.isArray(permissions) ? { permissions } : {}),
     };
 

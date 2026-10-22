@@ -29,51 +29,97 @@ export async function POST(request: Request) {
       );
     }
 
+    // 1. Baca data akun pengguna dari usersData.json
+    let users: any[] = [];
+    try {
+      const usersRaw = await fs.readFile(usersFilePath, 'utf-8');
+      users = JSON.parse(usersRaw);
+    } catch {}
+
+    const matchedUser = users.find(
+      (u) =>
+        (u.email && u.email.toLowerCase() === idLower) ||
+        (u.username && u.username.toLowerCase() === idLower)
+    );
+
     let detectedRole: UserRole | null = null;
     let username = idLower;
 
-    // 1. Verifikasi Admin
-    const adminExpectedPass = process.env.ADMIN_PASSWORD || 'admin123';
-    const isMatchingAdminId =
-      idLower === 'admin' ||
-      idLower === 'tu' ||
-      idLower === 'admin@raudhatulhidayah.sch.id' ||
-      idLower.includes('admin');
-
-    if (isMatchingAdminId && (pass === adminExpectedPass || pass === 'admin')) {
-      detectedRole = 'admin';
-      username = 'Administrator Madrasah (TU)';
-    }
-
-    // 2. Verifikasi Dewan Guru
-    if (!detectedRole) {
-      const guruExpectedPass = process.env.GURU_PASSWORD || 'guru2026';
-      const isMatchingGuruId =
-        idLower.startsWith('19') ||
-        idLower.includes('guru') ||
-        idLower === 'guru@raudhatulhidayah.sch.id' ||
-        idLower.includes('tajudin') ||
-        idLower.includes('madrosyid') ||
-        idLower.includes('siti');
-
-      if (isMatchingGuruId && (pass === guruExpectedPass || pass === 'guru')) {
-        detectedRole = 'guru';
-        username = 'Dewan Guru';
+    if (matchedUser) {
+      // Periksa status aktif
+      if (matchedUser.status === 'Nonaktif') {
+        return NextResponse.json(
+          {
+            success: false,
+            message: 'Akses ditolak: Akun Anda sedang dinonaktifkan oleh Administrator Madrasah.',
+          },
+          { status: 403 }
+        );
       }
-    }
 
-    // 3. Verifikasi Siswa / Santri
-    if (!detectedRole) {
-      const siswaExpectedPass = process.env.SISWA_PASSWORD || 'siswa2026';
-      const isMatchingSiswaId =
-        /^\d+$/.test(idLower) ||
-        idLower.includes('siswa') ||
-        idLower === 'siswa@raudhatulhidayah.sch.id' ||
-        idLower.includes('santri');
+      // Verifikasi kata sandi kustom akun atau kata sandi default perannya
+      const roleDefaultPass =
+        matchedUser.role === 'admin'
+          ? (process.env.ADMIN_PASSWORD || 'admin123')
+          : matchedUser.role === 'guru'
+          ? (process.env.GURU_PASSWORD || 'guru2026')
+          : (process.env.SISWA_PASSWORD || 'siswa2026');
 
-      if (isMatchingSiswaId && (pass === siswaExpectedPass || pass === 'siswa')) {
-        detectedRole = 'siswa';
-        username = `Santri (${idLower})`;
+      const isPassValid =
+        (matchedUser.password && pass === matchedUser.password) ||
+        pass === roleDefaultPass ||
+        (matchedUser.role === 'admin' && pass === 'admin') ||
+        (matchedUser.role === 'guru' && pass === 'guru') ||
+        (matchedUser.role === 'siswa' && pass === 'siswa');
+
+      if (!isPassValid) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: 'Kata sandi yang Anda masukkan salah. Silakan hubungi Administrator jika lupa kata sandi.',
+          },
+          { status: 401 }
+        );
+      }
+
+      detectedRole = matchedUser.role;
+      username = matchedUser.name;
+    } else {
+      // 2. Fallback verifikasi umum jika akun belum tercatat spesifik
+      const adminExpectedPass = process.env.ADMIN_PASSWORD || 'admin123';
+      const isMatchingAdminId =
+        idLower === 'admin' ||
+        idLower === 'tu' ||
+        idLower.includes('admin');
+
+      if (isMatchingAdminId && (pass === adminExpectedPass || pass === 'admin')) {
+        detectedRole = 'admin';
+        username = 'Administrator Madrasah (TU)';
+      }
+
+      if (!detectedRole) {
+        const guruExpectedPass = process.env.GURU_PASSWORD || 'guru2026';
+        const isMatchingGuruId =
+          idLower.startsWith('19') ||
+          idLower.includes('guru');
+
+        if (isMatchingGuruId && (pass === guruExpectedPass || pass === 'guru')) {
+          detectedRole = 'guru';
+          username = 'Dewan Guru';
+        }
+      }
+
+      if (!detectedRole) {
+        const siswaExpectedPass = process.env.SISWA_PASSWORD || 'siswa2026';
+        const isMatchingSiswaId =
+          /^\d+$/.test(idLower) ||
+          idLower.includes('siswa') ||
+          idLower.includes('santri');
+
+        if (isMatchingSiswaId && (pass === siswaExpectedPass || pass === 'siswa')) {
+          detectedRole = 'siswa';
+          username = `Santri (${idLower})`;
+        }
       }
     }
 
@@ -105,35 +151,8 @@ export async function POST(request: Request) {
     });
     const formattedLoginTime = `Hari ini, ${formatter.format(new Date())} WIB`;
 
-    // Check & Update User Account in usersData.json
-    let users: any[] = [];
-    try {
-      const usersRaw = await fs.readFile(usersFilePath, 'utf-8');
-      users = JSON.parse(usersRaw);
-    } catch {}
-
-    const matchedIdx = users.findIndex(
-      (u) =>
-        u.email.toLowerCase() === idLower ||
-        (u.username && u.username.toLowerCase() === idLower) ||
-        u.role === detectedRole
-    );
-
-    let matchedUser = matchedIdx >= 0 ? users[matchedIdx] : null;
-
-    // Cek apakah akun dinonaktifkan oleh administrator
-    if (matchedUser && matchedUser.status === 'Nonaktif') {
-      return NextResponse.json(
-        {
-          success: false,
-          message: 'Akses ditolak: Akun Anda sedang dinonaktifkan oleh Administrator Madrasah.',
-        },
-        { status: 403 }
-      );
-    }
-
+    // Perbarui riwayat login pengguna di usersData.json
     if (matchedUser) {
-      username = matchedUser.name;
       matchedUser.last_login = formattedLoginTime;
       matchedUser.last_device = deviceInfo.display;
       matchedUser.last_device_type = deviceInfo.deviceType;
@@ -145,7 +164,7 @@ export async function POST(request: Request) {
       } catch {}
     }
 
-    // Record login session in userSessionsData.json
+    // Catat log sesi login baru di userSessionsData.json
     try {
       let sessions: any[] = [];
       try {
@@ -169,7 +188,6 @@ export async function POST(request: Request) {
       };
 
       sessions.unshift(newSession);
-      // Keep up to 100 sessions
       if (sessions.length > 100) sessions = sessions.slice(0, 100);
 
       await fs.writeFile(sessionsFilePath, JSON.stringify(sessions, null, 2), 'utf-8');
@@ -188,7 +206,7 @@ export async function POST(request: Request) {
       permissions: matchedUser ? matchedUser.permissions : undefined,
     });
 
-    // Simpan ke HttpOnly Cookie (tidak bisa dibaca/dicuri oleh JavaScript klien)
+    // Simpan ke HttpOnly Cookie
     response.cookies.set({
       name: COOKIE_NAME,
       value: token,
