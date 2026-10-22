@@ -3,8 +3,60 @@ import { createSessionToken, COOKIE_NAME, UserRole } from '@/lib/auth';
 import { parseUserAgent } from '@/lib/deviceParser';
 import { readUsers, writeUsers, readSessions, writeSessions, UserSessionItem } from '@/lib/userStore';
 
+// In-Memory Rate Limiter untuk mencegah serangan Brute-Force & Credential Stuffing
+interface RateLimitRecord {
+  count: number;
+  resetAt: number;
+}
+const loginAttempts = new Map<string, RateLimitRecord>();
+
+function checkRateLimit(ip: string): { allowed: boolean; remainingMinutes: number } {
+  const now = Date.now();
+  const record = loginAttempts.get(ip);
+  if (!record) return { allowed: true, remainingMinutes: 0 };
+  if (now > record.resetAt) {
+    loginAttempts.delete(ip);
+    return { allowed: true, remainingMinutes: 0 };
+  }
+  if (record.count >= 5) {
+    return { allowed: false, remainingMinutes: Math.ceil((record.resetAt - now) / 60000) };
+  }
+  return { allowed: true, remainingMinutes: 0 };
+}
+
+function recordFailedAttempt(ip: string) {
+  const now = Date.now();
+  const record = loginAttempts.get(ip);
+  if (!record || now > record.resetAt) {
+    loginAttempts.set(ip, { count: 1, resetAt: now + 15 * 60 * 1000 }); // Jeda 15 menit
+  } else {
+    record.count += 1;
+  }
+}
+
+function resetFailedAttempts(ip: string) {
+  loginAttempts.delete(ip);
+}
+
 export async function POST(request: Request) {
   try {
+    const cfIp = request.headers.get('cf-connecting-ip');
+    const forwarded = request.headers.get('x-forwarded-for');
+    const realIp = request.headers.get('x-real-ip');
+    const clientIp = cfIp || forwarded?.split(',')[0].trim() || realIp || '127.0.0.1';
+
+    // 1. Proteksi Anti-Brute Force (Maksimal 5x percobaan gagal per 15 menit)
+    const rateCheck = checkRateLimit(clientIp);
+    if (!rateCheck.allowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: `Terlalu banyak percobaan masuk yang gagal. Demi keamanan portal, akses dari perangkat ini dibatasi selama ${rateCheck.remainingMinutes} menit.`,
+        },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const { identifier = '', password = '' } = body;
 
@@ -25,7 +77,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // 1. Baca data akun pengguna (tersinkronisasi lokal & Supabase)
+    // 2. Baca data akun pengguna (tersinkronisasi lokal & Supabase)
     const users = await readUsers();
 
     const matchedUser = users.find(
@@ -59,10 +111,11 @@ export async function POST(request: Request) {
           : (process.env.SISWA_PASSWORD || 'siswa2026'));
 
       if (pass !== expectedPassword) {
+        recordFailedAttempt(clientIp);
         return NextResponse.json(
           {
             success: false,
-            message: 'Kata sandi salah. Harap masukkan kata sandi yang sesuai.',
+            message: 'Kata sandi salah. Harap periksa kembali sandi Anda.',
           },
           { status: 401 }
         );
@@ -71,7 +124,8 @@ export async function POST(request: Request) {
       detectedRole = matchedUser.role;
       username = matchedUser.name;
     } else {
-      // 2. Akun tidak terdaftar di direktori pengguna
+      // 3. Akun tidak terdaftar di direktori pengguna
+      recordFailedAttempt(clientIp);
       return NextResponse.json(
         {
           success: false,
@@ -82,6 +136,7 @@ export async function POST(request: Request) {
     }
 
     if (!detectedRole) {
+      recordFailedAttempt(clientIp);
       return NextResponse.json(
         {
           success: false,
@@ -91,11 +146,10 @@ export async function POST(request: Request) {
       );
     }
 
+    // Login Berhasil: Reset catatan percobaan gagal
+    resetFailedAttempts(clientIp);
+
     // Detect Device, Browser, OS & IP Client
-    const cfIp = request.headers.get('cf-connecting-ip');
-    const forwarded = request.headers.get('x-forwarded-for');
-    const realIp = request.headers.get('x-real-ip');
-    const clientIp = cfIp || forwarded?.split(',')[0].trim() || realIp || '127.0.0.1';
     const userAgentStr = request.headers.get('user-agent') || '';
     const deviceInfo = parseUserAgent(userAgentStr);
 
@@ -172,7 +226,7 @@ export async function POST(request: Request) {
       permissions: matchedUser ? matchedUser.permissions : undefined,
     });
 
-    // Simpan ke HttpOnly Cookie
+    // Simpan ke HttpOnly Cookie (Strict, Secure, Lax)
     response.cookies.set({
       name: COOKIE_NAME,
       value: token,
