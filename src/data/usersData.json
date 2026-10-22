@@ -1,0 +1,163 @@
+[
+  {
+    "id": "usr-1",
+    "name": "Administrator Madrasah (TU)",
+    "email": "admin@raudhatulhidayah.sch.id",
+    "username": "admin",
+    "role": "admin",
+    "status": "Aktif",
+    "permissions": [
+      "overview",
+      "ppdb",
+      "registrations",
+      "teachers",
+      "articles",
+      "achievements",
+      "extracurricular",
+      "schedules",
+      "classes",
+      "calendar",
+      "messages",
+      "profile",
+      "homepage",
+      "users"
+    ],
+    "created_at": "2026-10-01T08:00:00.000Z",
+    "last_login": "Hari ini, 12:51 WIB",
+    "last_device": "Windows 11/10 • Google Chrome",
+    "last_device_type": "desktop",
+    "last_ip": "180.252.164.21",
+    "is_online": true
+  },
+  {
+    "id": "usr-2",
+    "name": "A. Khutbi. AR, S.Pd (Kepala Madrasah)",
+    "email": "kepala@raudhatulhidayah.sch.id",
+    "username": "kepala",
+    "role": "admin",
+    "status": "Aktif",
+    "permissions": [
+      "overview",
+      "ppdb",
+      "registrations",
+      "teachers",
+      "articles",
+      "achievements",
+      "extracurricular",
+      "schedules",
+      "classes",
+      "calendar",
+      "messages",
+      "profile"
+    ],
+    "created_at": "2026-10-02T08:00:00.000Z",
+    "last_login": "Hari ini, 09:30 WIB",
+    "last_device": "macOS (MacBook/iMac) • Apple Safari",
+    "last_device_type": "desktop",
+    "last_ip": "36.72.215.10",
+    "is_online": false
+  },
+  {
+    "id": "usr-3",
+    "name": "TAJUDIN, S.Pd.I",
+    "email": "tajudin@raudhatulhidayah.sch.id",
+    "username": "tajudin",
+    "role": "guru",
+    "status": "Aktif",
+    "permissions": [
+      "schedules",
+      "classes",
+      "calendar",
+      "articles",
+      "achievements",
+      "extracurricular"
+    ],
+    "created_at": "2026-10-05T09:00:00.000Z",
+    "last_login": "Hari ini, 11:15 WIB",
+    "last_device": "Android 14 • Google Chrome",
+    "last_device_type": "mobile",
+    "last_ip": "114.124.201.88",
+    "is_online": true
+  },
+  {
+    "id": "usr-4",
+    "name": "MADROSYID, S.Pd (Kurikulum & TIK)",
+    "email": "madrosyid@raudhatulhidayah.sch.id",
+    "username": "madrosyid",
+    "role": "guru",
+    "status": "Aktif",
+    "permissions": [
+      "schedules",
+      "classes",
+      "calendar",
+      "articles",
+      "achievements"
+    ],
+    "created_at": "2026-10-05T09:30:00.000Z",
+    "last_login": "Kemarin, 14:40 WIB",
+    "last_device": "Windows 11/10 • Microsoft Edge",
+    "last_device_type": "desktop",
+    "last_ip": "180.252.170.45",
+    "is_online": false
+  },
+  {
+    "id": "usr-5",
+    "name": "SITI KHAERUNNISA, S.Pd.I",
+    "email": "siti.k@raudhatulhidayah.sch.id",
+    "username": "sitikhaerunnisa",
+    "role": "guru",
+    "status": "Aktif",
+    "permissions": [
+      "schedules",
+      "classes",
+      "calendar",
+      "articles"
+    ],
+    "created_at": "2026-10-06T10:00:00.000Z",
+    "last_login": "Kemarin, 16:10 WIB",
+    "last_device": "iPhone (iOS) • Apple Safari",
+    "last_device_type": "mobile",
+    "last_ip": "114.125.12.90",
+    "is_online": false
+  },
+  {
+    "id": "usr-6",
+    "name": "AHMAD NURUL KAHFI, SE",
+    "email": "ahmad.kahfi@raudhatulhidayah.sch.id",
+    "username": "ahmadkahfi",
+    "role": "guru",
+    "status": "Aktif",
+    "permissions": [
+      "schedules",
+      "classes",
+      "calendar",
+      "achievements",
+      "extracurricular"
+    ],
+    "created_at": "2026-10-07T11:00:00.000Z",
+    "last_login": "2 hari lalu",
+    "last_device": "Android 13 • Google Chrome",
+    "last_device_type": "mobile",
+    "last_ip": "182.253.88.19",
+    "is_online": false
+  },
+  {
+    "id": "usr-7",
+    "name": "Santri & OSIS MA Raudhatul Hidayah",
+    "email": "siswa@raudhatulhidayah.sch.id",
+    "username": "siswa",
+    "role": "siswa",
+    "status": "Aktif",
+    "permissions": [
+      "schedules",
+      "classes",
+      "calendar"
+    ],
+    "created_at": "2026-10-10T14:00:00.000Z",
+    "last_login": "Hari ini, 07:10 WIB",
+    "last_device": "Android 14 • Google Chrome",
+    "last_device_type": "mobile",
+    "last_ip": "114.124.90.31",
+    "is_online": true
+  }
+]

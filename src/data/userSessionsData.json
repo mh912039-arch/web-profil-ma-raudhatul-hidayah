@@ -1,0 +1,58 @@
+[
+  {
+    "id": "sess-live-001",
+    "user_id": "usr-1",
+    "user_name": "Administrator Madrasah (TU)",
+    "email": "admin@raudhatulhidayah.sch.id",
+    "role": "admin",
+    "device_name": "Laptop Windows 11/10",
+    "browser": "Google Chrome",
+    "os": "Windows 11/10",
+    "device_type": "desktop",
+    "ip_address": "180.252.164.21",
+    "login_time": "2026-10-22T05:51:00.000Z",
+    "status": "active"
+  },
+  {
+    "id": "sess-live-002",
+    "user_id": "usr-3",
+    "user_name": "TAJUDIN, S.Pd.I",
+    "email": "tajudin@raudhatulhidayah.sch.id",
+    "role": "guru",
+    "device_name": "Ponsel Android 14",
+    "browser": "Google Chrome Mobile",
+    "os": "Android 14",
+    "device_type": "mobile",
+    "ip_address": "114.124.201.88",
+    "login_time": "2026-10-22T04:15:00.000Z",
+    "status": "active"
+  },
+  {
+    "id": "sess-live-003",
+    "user_id": "usr-7",
+    "user_name": "Santri & OSIS MA Raudhatul Hidayah",
+    "email": "siswa@raudhatulhidayah.sch.id",
+    "role": "siswa",
+    "device_name": "Ponsel Android 14",
+    "browser": "Google Chrome Mobile",
+    "os": "Android 14",
+    "device_type": "mobile",
+    "ip_address": "114.124.90.31",
+    "login_time": "2026-10-22T00:10:00.000Z",
+    "status": "active"
+  },
+  {
+    "id": "sess-live-004",
+    "user_id": "usr-2",
+    "user_name": "A. Khutbi. AR, S.Pd (Kepala Madrasah)",
+    "email": "kepala@raudhatulhidayah.sch.id",
+    "role": "admin",
+    "device_name": "MacBook Pro",
+    "browser": "Apple Safari",
+    "os": "macOS",
+    "device_type": "desktop",
+    "ip_address": "36.72.215.10",
+    "login_time": "2026-10-22T02:30:00.000Z",
+    "status": "expired"
+  }
+]
