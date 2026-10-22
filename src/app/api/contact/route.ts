@@ -6,6 +6,9 @@ import { requireAuth } from '@/lib/auth';
 
 const dataFilePath = path.join(process.cwd(), 'src', 'data', 'messagesData.json');
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export interface ContactMessage {
   id: string;
   name: string;

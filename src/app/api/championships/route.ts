@@ -6,6 +6,15 @@ import { requireAuth } from '@/lib/auth';
 
 const dataFilePath = path.join(process.cwd(), 'src', 'data', 'championshipsData.json');
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+const noCacheHeaders = {
+  'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+  Pragma: 'no-cache',
+  Expires: '0',
+};
+
 export interface ChampionshipPhotoItem {
   id?: string | number;
   title: string;
@@ -75,13 +84,13 @@ export async function GET() {
         }
       });
 
-      return NextResponse.json(merged);
+      return NextResponse.json(merged, { headers: noCacheHeaders });
     }
   } catch (err) {
     console.warn('Supabase fetch failed for championship_photos:', err);
   }
 
-  return NextResponse.json(localPhotos);
+  return NextResponse.json(localPhotos, { headers: noCacheHeaders });
 }
 
 export async function POST(request: Request) {
@@ -191,12 +200,12 @@ export async function POST(request: Request) {
       success: true,
       message: 'Foto juara berhasil disimpan dan langsung diterapkan ke web profil.',
       data: newOrUpdatedItem,
-    });
+    }, { headers: noCacheHeaders });
   } catch (error: any) {
     console.error('Error in championships POST:', error);
     return NextResponse.json(
       { success: false, message: error.message || 'Gagal menyimpan foto juara.' },
-      { status: 500 }
+      { status: 500, headers: noCacheHeaders }
     );
   }
 }
@@ -213,7 +222,7 @@ export async function DELETE(request: Request) {
     const id = searchParams.get('id');
 
     if (!id) {
-      return NextResponse.json({ success: false, message: 'ID diperlukan' }, { status: 400 });
+      return NextResponse.json({ success: false, message: 'ID diperlukan' }, { status: 400, headers: noCacheHeaders });
     }
 
     let photos: ChampionshipPhotoItem[] = [];
@@ -234,11 +243,11 @@ export async function DELETE(request: Request) {
     return NextResponse.json({
       success: true,
       message: 'Dokumentasi juara berhasil dihapus.',
-    });
+    }, { headers: noCacheHeaders });
   } catch (error: any) {
     return NextResponse.json(
       { success: false, message: error.message || 'Gagal menghapus foto.' },
-      { status: 500 }
+      { status: 500, headers: noCacheHeaders }
     );
   }
 }

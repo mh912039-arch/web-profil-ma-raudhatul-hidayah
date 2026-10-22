@@ -6,6 +6,15 @@ import { requireAuth } from '@/lib/auth';
 
 const dataFilePath = path.join(process.cwd(), 'src', 'data', 'articlesData.json');
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+const noCacheHeaders = {
+  'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+  Pragma: 'no-cache',
+  Expires: '0',
+};
+
 // Interface for unified article structure
 export interface UnifiedArticle {
   id: string;
@@ -112,7 +121,7 @@ export async function GET() {
         created_at: art.created_at || new Date().toISOString(),
       }));
 
-      return NextResponse.json(normalized);
+      return NextResponse.json(normalized, { headers: noCacheHeaders });
     }
   } catch (supaErr) {
     console.warn('Supabase fetch failed for articles:', supaErr);
@@ -138,7 +147,7 @@ export async function GET() {
     created_at: art.created_at || new Date().toISOString(),
   }));
 
-  return NextResponse.json(fallbackNormalized);
+  return NextResponse.json(fallbackNormalized, { headers: noCacheHeaders });
 }
 
 export async function POST(request: Request) {
@@ -230,10 +239,10 @@ export async function POST(request: Request) {
       // Ignored safely in production serverless environments
     }
 
-    return NextResponse.json({ success: true, article: newArticle });
+    return NextResponse.json({ success: true, article: newArticle }, { headers: noCacheHeaders });
   } catch (error) {
     console.error('Error saving article:', error);
-    return NextResponse.json({ success: false, message: 'Gagal menyimpan artikel' }, { status: 500 });
+    return NextResponse.json({ success: false, message: 'Gagal menyimpan artikel' }, { status: 500, headers: noCacheHeaders });
   }
 }
 
@@ -275,9 +284,9 @@ export async function DELETE(request: Request) {
       console.warn('Supabase delete error:', supaErr);
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true }, { headers: noCacheHeaders });
   } catch (error) {
     console.error('Error deleting article:', error);
-    return NextResponse.json({ success: false, message: 'Gagal menghapus artikel' }, { status: 500 });
+    return NextResponse.json({ success: false, message: 'Gagal menghapus artikel' }, { status: 500, headers: noCacheHeaders });
   }
 }

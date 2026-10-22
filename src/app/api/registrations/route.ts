@@ -6,6 +6,9 @@ import { requireAuth } from '@/lib/auth';
 
 const dataFilePath = path.join(process.cwd(), 'src', 'data', 'ppdbRegistrationsData.json');
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export interface PpdbApplicantItem {
   id?: string;
   registration_number: string;

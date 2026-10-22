@@ -170,6 +170,22 @@ export const ClassesTab: React.FC<ClassesTabProps> = ({
   const [editingClass, setEditingClass] = useState<ClassRombel | null>(null);
   const [selectedJenjang, setSelectedJenjang] = useState<'all' | ClassJenjang>('all');
 
+  const fetchClasses = async () => {
+    try {
+      const res = await fetch('/api/classes', { cache: 'no-store' });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          setClassesList(data);
+        }
+      }
+    } catch {}
+  };
+
+  React.useEffect(() => {
+    fetchClasses();
+  }, []);
+
   const filteredClasses = classesList.filter((c) => {
     if (selectedJenjang === 'all') return true;
     return c.jenjang === selectedJenjang;
@@ -177,12 +193,21 @@ export const ClassesTab: React.FC<ClassesTabProps> = ({
 
   const totalSantri = filteredClasses.reduce((acc, c) => acc + c.total_students, 0);
 
-  const handleUpdateHomeroom = (classId: string, newTeacher: string) => {
+  const handleUpdateHomeroom = async (classId: string, newTeacher: string) => {
     if (readOnly) return;
     setClassesList((prev) =>
       prev.map((c) => (c.id === classId ? { ...c, homeroom_teacher: newTeacher } : c))
     );
     setEditingClass(null);
+
+    try {
+      await fetch('/api/classes', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: classId, homeroom_teacher: newTeacher }),
+      });
+      fetchClasses();
+    } catch {}
   };
 
   const getJenjangBadge = (jenjang: ClassJenjang) => {

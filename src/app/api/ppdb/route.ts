@@ -6,6 +6,15 @@ import { requireAuth } from '@/lib/auth';
 
 const dataFilePath = path.join(process.cwd(), 'src', 'data', 'ppdbData.json');
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+const noCacheHeaders = {
+  'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+  Pragma: 'no-cache',
+  Expires: '0',
+};
+
 const defaultData = {
   category: "PENERIMAAN PESERTA DIDIK BARU (PPDB) • MA RAUDHATUL HIDAYAH",
   title: "Membentuk Generasi Berkarakter, Cerdas & Berakhlak Mulia",
@@ -52,7 +61,7 @@ export async function GET() {
         posterUrl: supaData.poster_url || defaultData.posterUrl,
         isRegistrationOpen: Boolean(supaData.is_registration_open ?? true),
       };
-      return NextResponse.json(mapped);
+      return NextResponse.json(mapped, { headers: noCacheHeaders });
     }
   } catch (err) {
     console.warn('Supabase fetch failed, falling back to local file:', err);
@@ -62,7 +71,7 @@ export async function GET() {
   try {
     const fileContent = await fs.readFile(dataFilePath, 'utf-8');
     const data = JSON.parse(fileContent);
-    return NextResponse.json({ ...defaultData, ...data });
+    return NextResponse.json({ ...defaultData, ...data }, { headers: noCacheHeaders });
   } catch (error) {
     console.error('Error reading ppdbData.json, returning default data:', error);
     return NextResponse.json(defaultData);
@@ -125,12 +134,12 @@ export async function POST(request: Request) {
       // Safely ignore EROFS in serverless environment
     }
 
-    return NextResponse.json({ success: true, data: updatedData });
+    return NextResponse.json({ success: true, data: updatedData }, { headers: noCacheHeaders });
   } catch (error) {
     console.error('Error saving PPDB data:', error);
     return NextResponse.json(
       { success: false, message: 'Gagal menyimpan data PPDB' },
-      { status: 500 }
+      { status: 500, headers: noCacheHeaders }
     );
   }
 }

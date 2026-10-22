@@ -6,6 +6,15 @@ import { requireAuth } from '@/lib/auth';
 
 const dataFilePath = path.join(process.cwd(), 'src', 'data', 'homeProfileData.json');
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+const noCacheHeaders = {
+  'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+  Pragma: 'no-cache',
+  Expires: '0',
+};
+
 export async function GET() {
   let data: any = {};
 
@@ -87,7 +96,7 @@ export async function GET() {
     // Non-blocking
   }
 
-  return NextResponse.json(data);
+  return NextResponse.json(data, { headers: noCacheHeaders });
 }
 
 export async function POST(request: Request) {
@@ -223,12 +232,12 @@ export async function POST(request: Request) {
       success: true,
       message: 'Perubahan berhasil disimpan dan langsung diterapkan.',
       data: updatedData,
-    });
+    }, { headers: noCacheHeaders });
   } catch (error: any) {
     console.error('Error in profile POST:', error);
     return NextResponse.json(
       { success: false, message: error.message || 'Gagal menyimpan data profil.' },
-      { status: 500 }
+      { status: 500, headers: noCacheHeaders }
     );
   }
 }

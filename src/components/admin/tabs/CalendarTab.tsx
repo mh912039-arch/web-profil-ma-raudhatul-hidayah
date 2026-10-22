@@ -116,7 +116,7 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
   const fetchEvents = async () => {
     try {
       setIsLoading(true);
-      const res = await fetch('/api/calendar');
+      const res = await fetch('/api/calendar', { cache: 'no-store' });
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data) && data.length > 0) {
@@ -167,6 +167,7 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
       const res = await fetch(`/api/calendar?id=${id}`, { method: 'DELETE' });
       if (res.ok) {
         setEvents((prev) => prev.filter((e) => e.id !== id));
+        fetchEvents();
       }
     } catch (err) {
       console.error('Failed to delete event:', err);
@@ -195,6 +196,7 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
           const result = await res.json();
           setEvents((prev) => prev.map((e) => (e.id === editingEvent.id ? result.item : e)));
           setIsModalOpen(false);
+          fetchEvents();
         }
       } else {
         // Create new
@@ -207,6 +209,7 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
           const result = await res.json();
           setEvents((prev) => [result.item, ...prev]);
           setIsModalOpen(false);
+          fetchEvents();
         }
       }
     } catch (err) {

@@ -6,6 +6,15 @@ import { requireAuth } from '@/lib/auth';
 
 const dataFilePath = path.join(process.cwd(), 'src', 'data', 'extracurricularsData.json');
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+const noCacheHeaders = {
+  'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+  Pragma: 'no-cache',
+  Expires: '0',
+};
+
 export interface ExtracurricularItem {
   id: number | string;
   name: string;
@@ -165,12 +174,12 @@ export async function POST(request: Request) {
       success: true,
       message: 'Ekstrakurikuler berhasil disimpan.',
       item: savedItem,
-    });
+    }, { headers: noCacheHeaders });
   } catch (err: any) {
     console.error('Error saving extracurricular:', err);
     return NextResponse.json(
       { success: false, message: err.message || 'Gagal menyimpan ekstrakurikuler.' },
-      { status: 500 }
+      { status: 500, headers: noCacheHeaders }
     );
   }
 }
@@ -216,12 +225,12 @@ export async function DELETE(request: Request) {
     return NextResponse.json({
       success: true,
       message: 'Ekstrakurikuler berhasil dihapus.',
-    });
+    }, { headers: noCacheHeaders });
   } catch (err: any) {
     console.error('Error deleting extracurricular:', err);
     return NextResponse.json(
       { success: false, message: err.message || 'Gagal menghapus ekstrakurikuler.' },
-      { status: 500 }
+      { status: 500, headers: noCacheHeaders }
     );
   }
 }
