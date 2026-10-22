@@ -57,26 +57,20 @@ export async function POST(request: Request) {
         );
       }
 
-      // Verifikasi kata sandi kustom akun atau kata sandi default perannya
-      const roleDefaultPass =
-        matchedUser.role === 'admin'
+      // Verifikasi kata sandi: HARUS SESUAI dengan kata sandi yang tersimpan di sistem admin
+      const expectedPassword =
+        matchedUser.password ||
+        (matchedUser.role === 'admin'
           ? (process.env.ADMIN_PASSWORD || 'admin123')
           : matchedUser.role === 'guru'
           ? (process.env.GURU_PASSWORD || 'guru2026')
-          : (process.env.SISWA_PASSWORD || 'siswa2026');
+          : (process.env.SISWA_PASSWORD || 'siswa2026'));
 
-      const isPassValid =
-        (matchedUser.password && pass === matchedUser.password) ||
-        pass === roleDefaultPass ||
-        (matchedUser.role === 'admin' && pass === 'admin') ||
-        (matchedUser.role === 'guru' && pass === 'guru') ||
-        (matchedUser.role === 'siswa' && pass === 'siswa');
-
-      if (!isPassValid) {
+      if (pass !== expectedPassword) {
         return NextResponse.json(
           {
             success: false,
-            message: 'Kata sandi yang Anda masukkan salah. Silakan hubungi Administrator jika lupa kata sandi.',
+            message: 'Kata sandi salah. Harap masukkan kata sandi yang sesuai.',
           },
           { status: 401 }
         );
@@ -85,42 +79,14 @@ export async function POST(request: Request) {
       detectedRole = matchedUser.role;
       username = matchedUser.name;
     } else {
-      // 2. Fallback verifikasi umum jika akun belum tercatat spesifik
-      const adminExpectedPass = process.env.ADMIN_PASSWORD || 'admin123';
-      const isMatchingAdminId =
-        idLower === 'admin' ||
-        idLower === 'tu' ||
-        idLower.includes('admin');
-
-      if (isMatchingAdminId && (pass === adminExpectedPass || pass === 'admin')) {
-        detectedRole = 'admin';
-        username = 'Administrator Madrasah (TU)';
-      }
-
-      if (!detectedRole) {
-        const guruExpectedPass = process.env.GURU_PASSWORD || 'guru2026';
-        const isMatchingGuruId =
-          idLower.startsWith('19') ||
-          idLower.includes('guru');
-
-        if (isMatchingGuruId && (pass === guruExpectedPass || pass === 'guru')) {
-          detectedRole = 'guru';
-          username = 'Dewan Guru';
-        }
-      }
-
-      if (!detectedRole) {
-        const siswaExpectedPass = process.env.SISWA_PASSWORD || 'siswa2026';
-        const isMatchingSiswaId =
-          /^\d+$/.test(idLower) ||
-          idLower.includes('siswa') ||
-          idLower.includes('santri');
-
-        if (isMatchingSiswaId && (pass === siswaExpectedPass || pass === 'siswa')) {
-          detectedRole = 'siswa';
-          username = `Santri (${idLower})`;
-        }
-      }
+      // 2. Akun tidak terdaftar di direktori pengguna
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Akun tidak terdaftar di sistem. Silakan periksa kembali email atau username Anda.',
+        },
+        { status: 401 }
+      );
     }
 
     if (!detectedRole) {

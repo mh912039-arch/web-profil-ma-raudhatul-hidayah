@@ -28,25 +28,24 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
   defaultRole = 'admin',
 }) => {
   const router = useRouter();
-  const [identifier, setIdentifier] = useState('admin@raudhatulhidayah.sch.id');
-  const [password, setPassword] = useState('admin123');
+  const [identifier, setIdentifier] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [activeDemo, setActiveDemo] = useState<'admin' | 'guru' | 'siswa'>('admin');
+  const [activeDemo, setActiveDemo] = useState<'admin' | 'guru' | 'siswa' | null>(null);
 
   const fillDemo = (role: 'admin' | 'guru' | 'siswa') => {
     setActiveDemo(role);
     setErrorMessage('');
+    // Kata sandi dikosongkan agar pengguna wajib memasukkan kata sandi yang sesuai
+    setPassword('');
     if (role === 'admin') {
       setIdentifier('admin@raudhatulhidayah.sch.id');
-      setPassword('admin123');
     } else if (role === 'guru') {
-      setIdentifier('198507122010011002');
-      setPassword('guru2026');
+      setIdentifier('guru@raudhatulhidayah.sch.id');
     } else {
-      setIdentifier('0084729105');
-      setPassword('siswa2026');
+      setIdentifier('siswa@raudhatulhidayah.sch.id');
     }
   };
 
@@ -206,11 +205,11 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
           </button>
         </form>
 
-        {/* Demo Accounts Section ("Uji Coba Akun Demo") */}
+        {/* Quick Role Selection */}
         <div className="mt-6 pt-5 border-t border-slate-100">
           <div className="flex items-center justify-between text-[11.5px] mb-2.5">
-            <span className="font-bold text-slate-700">Uji Coba Akun Demo:</span>
-            <span className="text-slate-400 font-medium text-[11px]">Klik untuk isi</span>
+            <span className="font-bold text-slate-700">Pilih Peran Akun:</span>
+            <span className="text-slate-400 font-medium text-[11px]">Isi email otomatis</span>
           </div>
 
           <div className="grid grid-cols-3 gap-2">
@@ -256,6 +255,10 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
               <span className="text-[11.5px] font-bold">Siswa</span>
             </button>
           </div>
+
+          <p className="text-[11px] text-slate-500 text-center mt-2.5 leading-relaxed">
+            Pilih peran untuk mengisi email resmi, lalu masukkan kata sandi yang sesuai dengan akun Anda.
+          </p>
         </div>
       </div>
 

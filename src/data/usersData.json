@@ -60,6 +60,29 @@
     "is_online": false
   },
   {
+    "id": "usr-guru",
+    "name": "Dewan Guru MA Raudhatul Hidayah",
+    "email": "guru@raudhatulhidayah.sch.id",
+    "username": "guru",
+    "password": "guru2026",
+    "role": "guru",
+    "status": "Aktif",
+    "permissions": [
+      "schedules",
+      "classes",
+      "calendar",
+      "articles",
+      "achievements",
+      "extracurricular"
+    ],
+    "created_at": "2026-10-03T08:00:00.000Z",
+    "last_login": "Hari ini, 10:15 WIB",
+    "last_device": "Android 14 • Google Chrome",
+    "last_device_type": "mobile",
+    "last_ip": "114.124.201.88",
+    "is_online": true
+  },
+  {
     "id": "usr-3",
     "name": "TAJUDIN, S.Pd.I",
     "email": "tajudin@raudhatulhidayah.sch.id",
