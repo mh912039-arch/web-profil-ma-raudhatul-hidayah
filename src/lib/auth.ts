@@ -7,6 +7,8 @@ export type UserRole = 'admin' | 'guru' | 'siswa';
 export interface SessionData {
   role: UserRole;
   username: string;
+  userId?: string;
+  email?: string;
   exp: number;
 }
 

@@ -109,6 +109,19 @@ export default function AdminDashboardPage() {
       });
   }, []);
 
+  // Realtime Heartbeat: Jaga status online aktif selama sesi terbuka di browser
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    fetch('/api/auth/heartbeat', { method: 'POST' }).catch(() => {});
+
+    const heartbeatInterval = setInterval(() => {
+      fetch('/api/auth/heartbeat', { method: 'POST' }).catch(() => {});
+    }, 45000);
+
+    return () => clearInterval(heartbeatInterval);
+  }, [isAuthenticated]);
+
   // Data states
   const [ppdbData, setPpdbData] = useState<PpdbData>({
     category: 'PENERIMAAN PESERTA DIDIK BARU (PPDB) • MA RAUDHATUL HIDAYAH',
@@ -659,6 +672,19 @@ export default function AdminDashboardPage() {
       ? 'schedules'
       : activeTab;
 
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch {}
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('mrh_admin_auth');
+      localStorage.removeItem('mrh_user_role');
+      window.location.href = '/masuk';
+    }
+    setIsAuthenticated(false);
+    setUserRole('admin');
+  };
+
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-800 font-sans flex">
       {/* 1. Left Sidebar */}
@@ -688,6 +714,7 @@ export default function AdminDashboardPage() {
         setIsOpenMobile={setIsOpenMobile}
         supabaseConnected={supabaseConnected}
         userRole={userRole}
+        onLogout={handleLogout}
       />
 
       {/* 2. Main Body (Offset by Sidebar width on Desktop) */}
@@ -700,17 +727,7 @@ export default function AdminDashboardPage() {
           isRefreshing={isRefreshing}
           supabaseConnected={supabaseConnected}
           userRole={userRole}
-          onLogout={async () => {
-            try {
-              await fetch('/api/auth/logout', { method: 'POST' });
-            } catch {}
-            if (typeof window !== 'undefined') {
-              localStorage.removeItem('mrh_admin_auth');
-              localStorage.removeItem('mrh_user_role');
-            }
-            setIsAuthenticated(false);
-            setUserRole('admin');
-          }}
+          onLogout={handleLogout}
         />
 
         {/* Global Toast Notification */}

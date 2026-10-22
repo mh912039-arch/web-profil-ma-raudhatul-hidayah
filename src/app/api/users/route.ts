@@ -5,6 +5,7 @@ import {
   writeUsers,
   readSessions,
   writeSessions,
+  isUserOnline,
   UserAccountItem,
   UserSessionItem,
 } from '@/lib/userStore';
@@ -18,8 +19,22 @@ export async function GET() {
     return auth.response!;
   }
 
-  const users = await readUsers();
+  const rawUsers = await readUsers();
   const sessions = await readSessions();
+
+  let hasStatusChange = false;
+  const users = rawUsers.map((u) => {
+    const online = isUserOnline(u);
+    if (u.is_online && !online) {
+      hasStatusChange = true;
+      return { ...u, is_online: false };
+    }
+    return { ...u, is_online: online };
+  });
+
+  if (hasStatusChange) {
+    writeUsers(users).catch(() => {});
+  }
 
   const totalUsers = users.length;
   const activeSessions = sessions.filter((s) => s.status === 'active').length;

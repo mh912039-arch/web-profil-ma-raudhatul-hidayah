@@ -110,6 +110,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState<'all' | 'admin' | 'guru' | 'siswa'>('all');
   const [statusFilter, setStatusFilter] = useState<'all' | 'Aktif' | 'Nonaktif'>('all');
+  const [onlineFilter, setOnlineFilter] = useState<'all' | 'online' | 'offline'>('all');
 
   // Modals & Password states
   const [editingUser, setEditingUser] = useState<UserAccount | null>(null);
@@ -202,8 +203,8 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
 
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
-  const fetchUsersAndSessions = async () => {
-    setIsLoading(true);
+  const fetchUsersAndSessions = async (silent = false) => {
+    if (!silent) setIsLoading(true);
     try {
       const res = await fetch('/api/users', { cache: 'no-store' });
       if (res.ok) {
@@ -214,12 +215,18 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
     } catch (err) {
       console.warn('Gagal memuat data pengguna:', err);
     } finally {
-      setIsLoading(false);
+      if (!silent) setIsLoading(false);
     }
   };
 
   useEffect(() => {
     fetchUsersAndSessions();
+
+    const pollInterval = setInterval(() => {
+      fetchUsersAndSessions(true);
+    }, 15000);
+
+    return () => clearInterval(pollInterval);
   }, []);
 
   useEffect(() => {
@@ -378,10 +385,13 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
 
       const matchRole = roleFilter === 'all' || u.role === roleFilter;
       const matchStatus = statusFilter === 'all' || u.status === statusFilter;
+      const matchOnline =
+        onlineFilter === 'all' ||
+        (onlineFilter === 'online' ? Boolean(u.is_online) : !u.is_online);
 
-      return matchSearch && matchRole && matchStatus;
+      return matchSearch && matchRole && matchStatus && matchOnline;
     });
-  }, [users, searchTerm, roleFilter, statusFilter]);
+  }, [users, searchTerm, roleFilter, statusFilter, onlineFilter]);
 
   const activeSessionsCount = sessions.filter((s) => s.status === 'active').length;
   const activeUsersCount = users.filter((u) => u.is_online).length;
@@ -463,7 +473,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
         <div className="flex items-center gap-2 shrink-0">
           <button
             type="button"
-            onClick={fetchUsersAndSessions}
+            onClick={() => fetchUsersAndSessions()}
             disabled={isLoading}
             className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 text-xs font-semibold transition-all shadow-xs active:scale-[0.98]"
             title="Muat Ulang Data"
@@ -497,44 +507,50 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex flex-col justify-between">
-          <span className="text-[11.5px] font-bold uppercase tracking-wide text-slate-500">
-            Sesi Perangkat Aktif
-          </span>
+        <div className="p-4 rounded-2xl bg-white border border-emerald-300 shadow-xs flex flex-col justify-between bg-gradient-to-br from-white to-emerald-50/40">
+          <div className="flex items-center justify-between">
+            <span className="text-[11.5px] font-bold uppercase tracking-wide text-emerald-800">
+              Pengguna Online
+            </span>
+            <span className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-700 bg-emerald-100/90 px-2 py-0.5 rounded-full">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              Live
+            </span>
+          </div>
           <div className="mt-2 flex items-baseline justify-between">
             <span className="text-2xl sm:text-3xl font-extrabold text-emerald-600">
+              {activeUsersCount}
+            </span>
+            <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-md">
+              Sedang Menggunakan
+            </span>
+          </div>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex flex-col justify-between">
+          <span className="text-[11.5px] font-bold uppercase tracking-wide text-slate-500">
+            Pengguna Offline
+          </span>
+          <div className="mt-2 flex items-baseline justify-between">
+            <span className="text-2xl sm:text-3xl font-extrabold text-slate-600">
+              {Math.max(0, users.length - activeUsersCount)}
+            </span>
+            <span className="text-[11px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">
+              Tidak Aktif
+            </span>
+          </div>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex flex-col justify-between">
+          <span className="text-[11.5px] font-bold uppercase tracking-wide text-slate-500">
+            Sesi Perangkat
+          </span>
+          <div className="mt-2 flex items-baseline justify-between">
+            <span className="text-2xl sm:text-3xl font-extrabold text-blue-700">
               {activeSessionsCount}
             </span>
-            <span className="text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md">
+            <span className="text-[11px] font-semibold text-blue-800 bg-blue-50 px-2 py-0.5 rounded-md">
               Terhubung
-            </span>
-          </div>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex flex-col justify-between">
-          <span className="text-[11.5px] font-bold uppercase tracking-wide text-slate-500">
-            Akun Administrator
-          </span>
-          <div className="mt-2 flex items-baseline justify-between">
-            <span className="text-2xl sm:text-3xl font-extrabold text-blue-800">
-              {users.filter((u) => u.role === 'admin').length}
-            </span>
-            <span className="text-[11px] font-semibold text-blue-900 bg-blue-100 px-2 py-0.5 rounded-md">
-              Akses Penuh
-            </span>
-          </div>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex flex-col justify-between">
-          <span className="text-[11.5px] font-bold uppercase tracking-wide text-slate-500">
-            Dewan Guru &amp; Tendik
-          </span>
-          <div className="mt-2 flex items-baseline justify-between">
-            <span className="text-2xl sm:text-3xl font-extrabold text-slate-800">
-              {users.filter((u) => u.role === 'guru').length}
-            </span>
-            <span className="text-[11px] font-semibold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md">
-              Akademik
             </span>
           </div>
         </div>
@@ -634,9 +650,22 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                   onChange={(e) => setStatusFilter(e.target.value as any)}
                   className="bg-transparent font-bold text-slate-900 focus:outline-none cursor-pointer"
                 >
-                  <option value="all">Semua Status</option>
+                  <option value="all">Semua Akun</option>
                   <option value="Aktif">Aktif</option>
                   <option value="Nonaktif">Nonaktif</option>
+                </select>
+              </div>
+
+              <div className="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 text-xs">
+                <span className="font-semibold text-slate-600">Koneksi:</span>
+                <select
+                  value={onlineFilter}
+                  onChange={(e) => setOnlineFilter(e.target.value as any)}
+                  className="bg-transparent font-bold text-slate-900 focus:outline-none cursor-pointer"
+                >
+                  <option value="all">Semua ({users.length})</option>
+                  <option value="online">Online ({activeUsersCount})</option>
+                  <option value="offline">Offline ({Math.max(0, users.length - activeUsersCount)})</option>
                 </select>
               </div>
             </div>
@@ -670,13 +699,34 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                         {/* Pengguna & Akun */}
                         <td className="py-4 px-6">
                           <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-full bg-blue-100 text-blue-900 font-bold flex items-center justify-center shrink-0 border border-blue-200 text-sm">
-                              {user.name.charAt(0).toUpperCase()}
+                            <div className="relative shrink-0">
+                              <div className="w-9 h-9 rounded-full bg-blue-100 text-blue-900 font-bold flex items-center justify-center border border-blue-200 text-sm">
+                                {user.name.charAt(0).toUpperCase()}
+                              </div>
+                              <span
+                                className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white ${
+                                  user.is_online ? 'bg-emerald-500 ring-2 ring-emerald-200' : 'bg-slate-300'
+                                }`}
+                                title={user.is_online ? 'Sedang Online' : 'Offline'}
+                              />
                             </div>
                             <div className="flex flex-col min-w-0">
-                              <span className="font-bold text-slate-900 text-[13.5px] truncate">
-                                {user.name}
-                              </span>
+                              <div className="flex items-center gap-2">
+                                <span className="font-bold text-slate-900 text-[13.5px] truncate">
+                                  {user.name}
+                                </span>
+                                {user.is_online ? (
+                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                    Online
+                                  </span>
+                                ) : (
+                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-500 border border-slate-200 shrink-0">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                                    Offline
+                                  </span>
+                                )}
+                              </div>
                               <span className="text-slate-500 text-[11.5px] truncate font-mono">
                                 {user.email}
                               </span>
@@ -768,9 +818,16 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                           <div className="flex items-start gap-2">
                             <div className="mt-0.5">{getDeviceIcon(user.last_device_type)}</div>
                             <div className="flex flex-col">
-                              <span className="text-[12px] font-bold text-slate-800">
-                                {user.last_device || 'Belum ada data'}
-                              </span>
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-[12px] font-bold text-slate-800">
+                                  {user.last_device || 'Belum ada data'}
+                                </span>
+                                {user.is_online && (
+                                  <span className="text-[9.5px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded">
+                                    Aktif
+                                  </span>
+                                )}
+                              </div>
                               <div className="flex items-center gap-1.5 text-[11px] text-slate-500 mt-0.5">
                                 <Clock className="w-3 h-3 text-slate-400" />
                                 <span>{user.last_login || '-'}</span>

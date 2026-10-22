@@ -115,6 +115,7 @@ export async function POST(request: Request) {
       matchedUser.last_device_type = deviceInfo.deviceType;
       matchedUser.last_ip = clientIp;
       matchedUser.is_online = true;
+      matchedUser.last_seen = new Date().toISOString();
 
       try {
         await writeUsers(users);
@@ -152,7 +153,15 @@ export async function POST(request: Request) {
 
     // Buat cryptographically signed session token (berlaku 7 hari)
     const maxAge = 7 * 24 * 3600;
-    const token = createSessionToken({ role: detectedRole, username }, maxAge);
+    const token = createSessionToken(
+      {
+        role: detectedRole,
+        username,
+        userId: matchedUser ? matchedUser.id : undefined,
+        email: matchedUser ? matchedUser.email : idLower,
+      },
+      maxAge
+    );
 
     const response = NextResponse.json({
       success: true,

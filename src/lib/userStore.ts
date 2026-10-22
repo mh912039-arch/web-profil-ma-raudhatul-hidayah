@@ -17,8 +17,16 @@ export interface UserAccountItem {
   last_device_type?: 'desktop' | 'mobile' | 'tablet';
   last_ip?: string;
   is_online?: boolean;
+  last_seen?: string;
   nip_nisn?: string;
   note?: string;
+}
+
+export function isUserOnline(user: UserAccountItem): boolean {
+  if (!user.is_online) return false;
+  if (!user.last_seen) return true;
+  const diffMinutes = (Date.now() - new Date(user.last_seen).getTime()) / (1000 * 60);
+  return diffMinutes < 5;
 }
 
 export interface UserSessionItem {
@@ -98,6 +106,7 @@ export async function writeUsers(data: UserAccountItem[]): Promise<void> {
         last_device_type: u.last_device_type,
         last_ip: u.last_ip,
         is_online: u.is_online,
+        last_seen: u.last_seen,
         nip_nisn: u.nip_nisn,
         note: u.note,
       };
