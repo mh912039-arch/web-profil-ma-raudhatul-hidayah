@@ -1,47 +1,15 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs/promises';
-import path from 'path';
 import { requireAuth } from '@/lib/auth';
-import { supabase } from '@/lib/supabaseClient';
+import {
+  readUsers,
+  writeUsers,
+  readSessions,
+  writeSessions,
+  UserAccountItem,
+  UserSessionItem,
+} from '@/lib/userStore';
 
-const usersFilePath = path.join(process.cwd(), 'src', 'data', 'usersData.json');
-const sessionsFilePath = path.join(process.cwd(), 'src', 'data', 'userSessionsData.json');
-
-import { readUsers, writeUsers, UserAccountItem } from '@/lib/userStore';
-
-export type { UserAccountItem };
-
-export interface UserSessionItem {
-  id: string;
-  user_id: string;
-  user_name: string;
-  email: string;
-  role: string;
-  device_name: string;
-  browser: string;
-  os: string;
-  device_type: 'desktop' | 'mobile' | 'tablet';
-  ip_address: string;
-  login_time: string;
-  status: 'active' | 'expired';
-}
-
-async function readSessions(): Promise<UserSessionItem[]> {
-  try {
-    const raw = await fs.readFile(sessionsFilePath, 'utf-8');
-    return JSON.parse(raw);
-  } catch {
-    return [];
-  }
-}
-
-async function writeSessions(data: UserSessionItem[]): Promise<void> {
-  try {
-    await fs.writeFile(sessionsFilePath, JSON.stringify(data, null, 2), 'utf-8');
-  } catch (err) {
-    // EROFS safe on Vercel
-  }
-}
+export type { UserAccountItem, UserSessionItem };
 
 export async function GET() {
   // Hanya Administrator yang berhak mengelola direktori pengguna dan melihat sesi login

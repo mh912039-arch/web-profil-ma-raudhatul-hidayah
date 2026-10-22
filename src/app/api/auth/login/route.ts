@@ -1,12 +1,7 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs/promises';
-import path from 'path';
 import { createSessionToken, COOKIE_NAME, UserRole } from '@/lib/auth';
 import { parseUserAgent } from '@/lib/deviceParser';
-import { supabase } from '@/lib/supabaseClient';
-import { readUsers, writeUsers } from '@/lib/userStore';
-
-const sessionsFilePath = path.join(process.cwd(), 'src', 'data', 'userSessionsData.json');
+import { readUsers, writeUsers, readSessions, writeSessions, UserSessionItem } from '@/lib/userStore';
 
 export async function POST(request: Request) {
   try {
@@ -104,17 +99,16 @@ export async function POST(request: Request) {
     const userAgentStr = request.headers.get('user-agent') || '';
     const deviceInfo = parseUserAgent(userAgentStr);
 
-    const nowIso = new Date().toISOString();
-    const formatter = new Intl.DateTimeFormat('id-ID', {
+    const timeFormatter = new Intl.DateTimeFormat('id-ID', {
       timeZone: 'Asia/Jakarta',
       hour: '2-digit',
       minute: '2-digit',
-      day: 'numeric',
-      month: 'short',
+      hour12: false,
     });
-    const formattedLoginTime = `Hari ini, ${formatter.format(new Date())} WIB`;
+    const timeStr = timeFormatter.format(new Date()).replace('.', ':');
+    const formattedLoginTime = `Hari ini, ${timeStr} WIB`;
 
-    // Perbarui riwayat login pengguna di usersData.json
+    // Perbarui riwayat login pengguna di Supabase & local
     if (matchedUser) {
       matchedUser.last_login = formattedLoginTime;
       matchedUser.last_device = deviceInfo.display;
@@ -124,18 +118,16 @@ export async function POST(request: Request) {
 
       try {
         await writeUsers(users);
-      } catch {}
+      } catch (err) {
+        console.warn('Gagal menyimpan update pengguna saat login:', err);
+      }
     }
 
-    // Catat log sesi login baru di userSessionsData.json
+    // Catat log sesi login baru di Supabase & local
     try {
-      let sessions: any[] = [];
-      try {
-        const sessRaw = await fs.readFile(sessionsFilePath, 'utf-8');
-        sessions = JSON.parse(sessRaw);
-      } catch {}
+      let sessions = await readSessions();
 
-      const newSession = {
+      const newSession: UserSessionItem = {
         id: `sess-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
         user_id: matchedUser ? matchedUser.id : `usr-${detectedRole}`,
         user_name: username,
@@ -146,15 +138,17 @@ export async function POST(request: Request) {
         os: deviceInfo.os,
         device_type: deviceInfo.deviceType,
         ip_address: clientIp,
-        login_time: nowIso,
+        login_time: new Date().toISOString(),
         status: 'active',
       };
 
       sessions.unshift(newSession);
       if (sessions.length > 100) sessions = sessions.slice(0, 100);
 
-      await fs.writeFile(sessionsFilePath, JSON.stringify(sessions, null, 2), 'utf-8');
-    } catch {}
+      await writeSessions(sessions);
+    } catch (err) {
+      console.warn('Gagal menyimpan sesi login:', err);
+    }
 
     // Buat cryptographically signed session token (berlaku 7 hari)
     const maxAge = 7 * 24 * 3600;

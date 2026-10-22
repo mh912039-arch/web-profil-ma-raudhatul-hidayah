@@ -18,7 +18,7 @@ export function parseUserAgent(uaString: string | null | undefined): DeviceInfo 
   const ua = uaString.toLowerCase();
 
   // 1. Detect OS
-  let os = 'Sistem Lainnya';
+  let os = 'Perangkat Lainnya';
   if (ua.includes('windows nt 10.0') || ua.includes('windows nt 11.0')) {
     os = 'Windows 11/10';
   } else if (ua.includes('windows')) {
@@ -38,11 +38,17 @@ export function parseUserAgent(uaString: string | null | undefined): DeviceInfo 
 
   // 2. Detect Browser
   let browser = 'Peramban Web';
-  if (ua.includes('edg/') || ua.includes('edge/')) {
+  if (ua.includes('edg/') || ua.includes('edge/') || ua.includes('edgios/')) {
     browser = 'Microsoft Edge';
   } else if (ua.includes('opr/') || ua.includes('opera/')) {
     browser = 'Opera';
-  } else if (ua.includes('chrome/') && !ua.includes('edg/')) {
+  } else if (ua.includes('samsungbrowser/')) {
+    browser = 'Samsung Internet';
+  } else if (ua.includes('crios/')) {
+    browser = 'Google Chrome';
+  } else if (ua.includes('fxios/')) {
+    browser = 'Mozilla Firefox';
+  } else if (ua.includes('chrome/') && !ua.includes('edg/') && !ua.includes('opr/')) {
     browser = 'Google Chrome';
   } else if (ua.includes('firefox/')) {
     browser = 'Mozilla Firefox';

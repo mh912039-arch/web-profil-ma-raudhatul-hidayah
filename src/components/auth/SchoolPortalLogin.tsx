@@ -344,8 +344,6 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
               </button>
             </form>
 
-
-
             {/* Registration Prompt Section */}
             <div className="mt-5 pt-4 border-t border-slate-100 text-center">
               <p className="text-[12px] text-slate-600 font-medium">

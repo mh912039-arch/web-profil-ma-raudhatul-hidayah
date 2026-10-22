@@ -52,7 +52,7 @@ export async function GET() {
 
     if (!error && supaTeachers && supaTeachers.length > 0) {
       const validSupaTeachers = supaTeachers.filter(
-        (t: any) => t.code !== 'SYS_AUTH' && t.role !== 'system'
+        (t: any) => !String(t.code || '').startsWith('SYS_') && t.role !== 'system'
       );
       const supaMapped: TeacherItem[] = validSupaTeachers.map((t: any) => ({
         id: t.id,
