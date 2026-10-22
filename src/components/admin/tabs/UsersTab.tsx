@@ -47,6 +47,8 @@ export interface UserAccount {
   last_device_type?: 'desktop' | 'mobile' | 'tablet';
   last_ip?: string;
   is_online?: boolean;
+  nip_nisn?: string;
+  note?: string;
 }
 
 export interface UserSession {
@@ -1019,6 +1021,12 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                             <div className="flex flex-col">
                               <span className="font-bold text-slate-900 text-sm">{user.name}</span>
                               <span className="text-slate-500 text-xs font-mono">{user.email}</span>
+                              {user.nip_nisn && user.nip_nisn !== '-' && (
+                                <span className="text-[11px] text-slate-600 mt-0.5">
+                                  ID: <span className="font-mono font-medium">{user.nip_nisn}</span>
+                                  {user.note && user.note !== '-' ? ` • ${user.note}` : ''}
+                                </span>
+                              )}
                             </div>
                           </td>
                           <td className="py-4 px-4">{getRoleBadge(user.role)}</td>
@@ -1079,11 +1087,12 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                             </span>
                           </td>
                           <td className="py-4 px-6 text-right">
-                            <div className="flex items-center justify-end gap-2">
+                            <div className="flex items-center justify-end gap-1.5">
                               <button
                                 type="button"
                                 onClick={() => handleToggleUserStatus(user)}
                                 className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition-all shadow-xs active:scale-[0.98] flex items-center gap-1.5"
+                                title="Setujui dan Aktifkan Akun"
                               >
                                 <UserCheck className="w-3.5 h-3.5" />
                                 <span>Aktifkan Sekarang</span>
@@ -1101,9 +1110,18 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                                   setShowEditPassword(true);
                                 }}
                                 className="px-3 py-1.5 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-xs transition-colors border border-blue-200 flex items-center gap-1 active:scale-[0.98]"
+                                title="Ubah Peran, Hak Akses & Kata Sandi"
                               >
                                 <Sliders className="w-3.5 h-3.5" />
                                 <span>Atur Akses &amp; Sandi</span>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteUser(user)}
+                                className="p-1.5 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors border border-transparent hover:border-rose-200"
+                                title="Tolak & Hapus Permohonan Akun"
+                              >
+                                <Trash2 className="w-4 h-4" />
                               </button>
                             </div>
                           </td>

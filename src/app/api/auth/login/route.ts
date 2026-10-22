@@ -4,8 +4,8 @@ import path from 'path';
 import { createSessionToken, COOKIE_NAME, UserRole } from '@/lib/auth';
 import { parseUserAgent } from '@/lib/deviceParser';
 import { supabase } from '@/lib/supabaseClient';
+import { readUsers, writeUsers } from '@/lib/userStore';
 
-const usersFilePath = path.join(process.cwd(), 'src', 'data', 'usersData.json');
 const sessionsFilePath = path.join(process.cwd(), 'src', 'data', 'userSessionsData.json');
 
 export async function POST(request: Request) {
@@ -30,35 +30,8 @@ export async function POST(request: Request) {
       );
     }
 
-    // 1. Baca data akun pengguna dari usersData.json
-    let users: any[] = [];
-    try {
-      const usersRaw = await fs.readFile(usersFilePath, 'utf-8');
-      users = JSON.parse(usersRaw);
-    } catch {}
-
-    // Sinkronisasi data overrides dari Supabase (persisten di Vercel)
-    try {
-      const { data: supaAuth } = await supabase
-        .from('teachers_staff')
-        .select('education')
-        .eq('code', 'SYS_AUTH')
-        .maybeSingle();
-
-      if (supaAuth && supaAuth.education) {
-        const overrides: Record<string, any> = JSON.parse(supaAuth.education);
-        const map = new Map<string, any>();
-        users.forEach((u) => map.set(u.id, u));
-        for (const [id, ovr] of Object.entries(overrides)) {
-          if (map.has(id)) {
-            map.set(id, { ...map.get(id), ...ovr });
-          } else if (ovr && ovr.name && ovr.email) {
-            map.set(id, ovr);
-          }
-        }
-        users = Array.from(map.values());
-      }
-    } catch {}
+    // 1. Baca data akun pengguna (tersinkronisasi lokal & Supabase)
+    const users = await readUsers();
 
     const matchedUser = users.find(
       (u) =>
@@ -75,7 +48,7 @@ export async function POST(request: Request) {
         return NextResponse.json(
           {
             success: false,
-            message: 'Akses ditolak: Akun Anda sedang dinonaktifkan oleh Administrator Madrasah.',
+            message: 'Akses belum aktif: Akun Anda sedang menunggu konfirmasi atau aktivasi dari Administrator Madrasah. Silakan hubungi TU/Administrator sekolah untuk persetujuan akun.',
           },
           { status: 403 }
         );
@@ -150,7 +123,7 @@ export async function POST(request: Request) {
       matchedUser.is_online = true;
 
       try {
-        await fs.writeFile(usersFilePath, JSON.stringify(users, null, 2), 'utf-8');
+        await writeUsers(users);
       } catch {}
     }
 
