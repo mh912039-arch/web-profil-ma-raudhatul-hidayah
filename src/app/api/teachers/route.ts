@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
 import { supabase } from '@/lib/supabaseClient';
+import { requireAuth } from '@/lib/auth';
 
 const dataFilePath = path.join(process.cwd(), 'src', 'data', 'teachersData.json');
 
@@ -104,6 +105,12 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  // Hanya Administrator yang dapat menambah atau mengubah data guru
+  const auth = requireAuth(['admin']);
+  if (!auth.authorized) {
+    return auth.response!;
+  }
+
   try {
     const body = await request.json();
 
@@ -249,6 +256,12 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  // Hanya Administrator yang dapat menghapus data guru
+  const auth = requireAuth(['admin']);
+  if (!auth.authorized) {
+    return auth.response!;
+  }
+
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');

@@ -45,6 +45,9 @@ export const PpdbRegistrationModal: React.FC<PpdbRegistrationModalProps> = ({
     registration_path: string;
   } | null>(null);
 
+  // Anti-bot honeypot state
+  const [honeypot, setHoneypot] = useState('');
+
   // 1 & 2. Identitas Siswa & Orang Tua
   const [formData, setFormData] = useState({
     full_name: '',
@@ -180,6 +183,7 @@ export const PpdbRegistrationModal: React.FC<PpdbRegistrationModalProps> = ({
         ...formData,
         registration_path: registrationPath,
         documents,
+        hp_website: honeypot,
       };
 
       const res = await fetch('/api/registrations', {
@@ -335,6 +339,18 @@ export const PpdbRegistrationModal: React.FC<PpdbRegistrationModalProps> = ({
           ) : (
             /* REGISTRATION FORM */
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Anti-Bot Honeypot Protection */}
+              <div style={{ display: 'none', position: 'absolute', left: '-9999px', opacity: 0 }} aria-hidden="true">
+                <input
+                  type="text"
+                  name="hp_website"
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
+                  tabIndex={-1}
+                  autoComplete="off"
+                />
+              </div>
+
               {errorMessage && (
                 <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-[13px] font-medium flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />

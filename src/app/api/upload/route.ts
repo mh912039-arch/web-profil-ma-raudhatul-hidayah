@@ -72,6 +72,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, message: 'Gagal memproses berkas gambar' }, { status: 400 });
     }
 
+    // Batasan keamanan: maksimal ukuran berkas 10 MB untuk mencegah penyalahgunaan storage
+    const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
+    if (buffer.length > MAX_UPLOAD_BYTES) {
+      return NextResponse.json(
+        { success: false, message: 'Ukuran berkas melebihi batas maksimum 10 MB.' },
+        { status: 400 }
+      );
+    }
+
     // Optional local backup in public/uploads/ (best effort, safe on Vercel)
     let localUrl = `/uploads/${filename}`;
     try {

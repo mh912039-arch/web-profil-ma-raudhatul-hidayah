@@ -13,6 +13,7 @@ export default function KontakPage() {
     contact: '',
     subject: '',
     message: '',
+    hp_website: '',
   });
 
   const [profileInfo, setProfileInfo] = useState({
@@ -66,7 +67,7 @@ export default function KontakPage() {
       setIsSubmitting(false);
       setFormSubmitted(true);
       setTimeout(() => {
-        setFormData({ name: '', contact: '', subject: '', message: '' });
+        setFormData({ name: '', contact: '', subject: '', message: '', hp_website: '' });
       }, 500);
     }
   };
@@ -294,6 +295,18 @@ export default function KontakPage() {
                   </p>
 
                   <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                    {/* Anti-Bot Honeypot Protection */}
+                    <div style={{ display: 'none', position: 'absolute', left: '-9999px', opacity: 0 }} aria-hidden="true">
+                      <input
+                        type="text"
+                        name="hp_website"
+                        value={formData.hp_website}
+                        onChange={(e) => setFormData({ ...formData, hp_website: e.target.value })}
+                        tabIndex={-1}
+                        autoComplete="off"
+                      />
+                    </div>
+
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="flex flex-col gap-1.5">
                         <label className="font-sans text-[13px] font-semibold text-primary" htmlFor="name">

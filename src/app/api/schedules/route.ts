@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { requireAuth } from '@/lib/auth';
 
 const schedulesFilePath = path.join(process.cwd(), 'src', 'data', 'schedulesData.json');
 
@@ -60,6 +61,11 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
+  const auth = requireAuth(['admin', 'guru']);
+  if (!auth.authorized) {
+    return auth.response!;
+  }
+
   try {
     const body = await req.json();
     const schedules = getSchedules();
@@ -88,6 +94,11 @@ export async function POST(req: Request) {
 }
 
 export async function PUT(req: Request) {
+  const auth = requireAuth(['admin', 'guru']);
+  if (!auth.authorized) {
+    return auth.response!;
+  }
+
   try {
     const body = await req.json();
     const schedules = getSchedules();
@@ -112,6 +123,11 @@ export async function PUT(req: Request) {
 }
 
 export async function DELETE(req: Request) {
+  const auth = requireAuth(['admin', 'guru']);
+  if (!auth.authorized) {
+    return auth.response!;
+  }
+
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');

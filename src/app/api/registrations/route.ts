@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
 import { supabase } from '@/lib/supabaseClient';
+import { requireAuth } from '@/lib/auth';
 
 const dataFilePath = path.join(process.cwd(), 'src', 'data', 'ppdbRegistrationsData.json');
 
@@ -31,6 +32,12 @@ export interface PpdbApplicantItem {
 }
 
 export async function GET() {
+  // Keamanan Endpoint: Kunci ketat data privat calon santri hanya untuk Administrator
+  const auth = requireAuth(['admin']);
+  if (!auth.authorized) {
+    return auth.response!;
+  }
+
   let localList: PpdbApplicantItem[] = [];
 
   // 1. Read local JSON
@@ -106,6 +113,14 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
+
+    // Anti-Bot Honeypot Protection: tolak bot pengirim spam secara otomatis
+    if (body.hp_website || body.bot_field || body.website) {
+      return NextResponse.json({
+        success: true,
+        message: 'Formulir pendaftaran berhasil dikirim dan tersimpan di database.',
+      });
+    }
 
     if (!body.full_name || !body.full_name.trim()) {
       return NextResponse.json(
@@ -208,6 +223,12 @@ export async function POST(request: Request) {
 }
 
 export async function PATCH(request: Request) {
+  // Hanya Administrator yang dapat memverifikasi status pendaftaran
+  const auth = requireAuth(['admin']);
+  if (!auth.authorized) {
+    return auth.response!;
+  }
+
   try {
     const body = await request.json();
     const { id, status, registration_path, documents, admin_notes } = body;
@@ -260,6 +281,12 @@ export async function PATCH(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  // Hanya Administrator yang berhak menghapus data pendaftar
+  const auth = requireAuth(['admin']);
+  if (!auth.authorized) {
+    return auth.response!;
+  }
+
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');

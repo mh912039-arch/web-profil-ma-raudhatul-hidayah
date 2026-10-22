@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { requireAuth } from '@/lib/auth';
 
 const calendarFilePath = path.join(process.cwd(), 'src', 'data', 'calendarData.json');
 
@@ -44,6 +45,11 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  const auth = requireAuth(['admin', 'guru']);
+  if (!auth.authorized) {
+    return auth.response!;
+  }
+
   try {
     const body = await req.json();
     const events = getEvents();
@@ -68,6 +74,11 @@ export async function POST(req: Request) {
 }
 
 export async function PUT(req: Request) {
+  const auth = requireAuth(['admin', 'guru']);
+  if (!auth.authorized) {
+    return auth.response!;
+  }
+
   try {
     const body = await req.json();
     const events = getEvents();
@@ -96,6 +107,11 @@ export async function PUT(req: Request) {
 }
 
 export async function DELETE(req: Request) {
+  const auth = requireAuth(['admin', 'guru']);
+  if (!auth.authorized) {
+    return auth.response!;
+  }
+
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');

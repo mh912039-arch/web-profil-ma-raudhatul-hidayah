@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
 import { supabase } from '@/lib/supabaseClient';
+import { requireAuth } from '@/lib/auth';
 
 const dataFilePath = path.join(process.cwd(), 'src', 'data', 'messagesData.json');
 
@@ -17,6 +18,12 @@ export interface ContactMessage {
 }
 
 export async function GET() {
+  // Hanya Administrator yang berhak membaca pesan masuk dan kontak pengunjung
+  const auth = requireAuth(['admin']);
+  if (!auth.authorized) {
+    return auth.response!;
+  }
+
   let localMessages: ContactMessage[] = [];
 
   // 1. Read local messages
@@ -67,6 +74,14 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
+
+    // Anti-Bot Honeypot Protection: tolak bot pengirim spam secara otomatis
+    if (body.hp_website || body.bot_field || body.website) {
+      return NextResponse.json({
+        success: true,
+        message: 'Pesan berhasil dikirim dan tersimpan.',
+      });
+    }
 
     if (!body.name || !body.message) {
       return NextResponse.json(
@@ -134,6 +149,12 @@ export async function POST(request: Request) {
 }
 
 export async function PATCH(request: Request) {
+  // Hanya Administrator yang dapat mengubah status pesan
+  const auth = requireAuth(['admin']);
+  if (!auth.authorized) {
+    return auth.response!;
+  }
+
   try {
     const body = await request.json();
     const { id, status } = body;
@@ -165,6 +186,12 @@ export async function PATCH(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  // Hanya Administrator yang berhak menghapus pesan masuk
+  const auth = requireAuth(['admin']);
+  if (!auth.authorized) {
+    return auth.response!;
+  }
+
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');

@@ -50,7 +50,7 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage('');
 
@@ -66,56 +66,36 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
 
     setIsSubmitting(true);
 
-    // Simulate authenticating and redirecting
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ identifier, password }),
+      });
 
-      const idLower = identifier.toLowerCase().trim();
-      const isAdmin =
-        idLower.includes('admin') ||
-        idLower === 'tu' ||
-        idLower === 'admin@raudhatulhidayah.sch.id' ||
-        password === 'admin123' ||
-        password === 'admin';
+      const data = await res.json();
 
-      const isGuru =
-        idLower.startsWith('19') ||
-        idLower.includes('guru') ||
-        password === 'guru2026';
-
-      if (isAdmin) {
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('mrh_admin_auth', 'true');
-          localStorage.setItem('mrh_user_role', 'admin');
-        }
-        if (onLoginSuccess) {
-          onLoginSuccess('admin');
-        } else {
-          router.push('/admin');
-        }
-      } else if (isGuru) {
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('mrh_admin_auth', 'true');
-          localStorage.setItem('mrh_user_role', 'guru');
-        }
-        if (onLoginSuccess) {
-          onLoginSuccess('guru');
-        } else {
-          router.push('/admin?tab=schedules');
-        }
-      } else {
-        // Siswa: hanya bisa cek jadwal pelajaran
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('mrh_admin_auth', 'true');
-          localStorage.setItem('mrh_user_role', 'siswa');
-        }
-        if (onLoginSuccess) {
-          onLoginSuccess('siswa');
-        } else {
-          router.push('/admin?tab=schedules');
-        }
+      if (!res.ok || !data.success) {
+        setErrorMessage(data.message || 'Identitas atau kata sandi tidak cocok.');
+        return;
       }
-    }, 350);
+
+      // Simpan role di localStorage untuk sinkronisasi state instan di browser
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('mrh_admin_auth', 'true');
+        localStorage.setItem('mrh_user_role', data.role);
+      }
+
+      if (onLoginSuccess) {
+        onLoginSuccess(data.role);
+      } else {
+        router.push(data.role === 'admin' ? '/admin' : '/admin?tab=schedules');
+      }
+    } catch (err) {
+      setErrorMessage('Gagal menghubungi server. Periksa koneksi internet Anda.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

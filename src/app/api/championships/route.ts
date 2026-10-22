@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
 import { supabase } from '@/lib/supabaseClient';
+import { requireAuth } from '@/lib/auth';
 
 const dataFilePath = path.join(process.cwd(), 'src', 'data', 'championshipsData.json');
 
@@ -84,6 +85,12 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  // Hanya Admin dan Dewan Guru yang memiliki otorisasi menambah/mengedit prestasi
+  const auth = requireAuth(['admin', 'guru']);
+  if (!auth.authorized) {
+    return auth.response!;
+  }
+
   try {
     const body = await request.json();
 
@@ -195,6 +202,12 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  // Hanya Admin dan Dewan Guru yang memiliki otorisasi menghapus dokumentasi prestasi
+  const auth = requireAuth(['admin', 'guru']);
+  if (!auth.authorized) {
+    return auth.response!;
+  }
+
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');

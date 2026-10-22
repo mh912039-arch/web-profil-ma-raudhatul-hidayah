@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
 import { supabase } from '@/lib/supabaseClient';
+import { requireAuth } from '@/lib/auth';
 
 const dataFilePath = path.join(process.cwd(), 'src', 'data', 'homeProfileData.json');
 
@@ -90,6 +91,12 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  // Hanya Administrator yang berhak mengubah identitas dan profil sekolah
+  const auth = requireAuth(['admin']);
+  if (!auth.authorized) {
+    return auth.response!;
+  }
+
   try {
     const incoming = await request.json();
 

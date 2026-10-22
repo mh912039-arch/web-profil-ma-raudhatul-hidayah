@@ -79,17 +79,34 @@ export default function AdminDashboardPage() {
   const [targetRombelForSchedule, setTargetRombelForSchedule] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const auth = localStorage.getItem('mrh_admin_auth');
-      const role = (localStorage.getItem('mrh_user_role') as 'admin' | 'guru' | 'siswa') || 'admin';
-      setIsAuthenticated(auth === 'true');
-      setUserRole(role);
-      if (role === 'siswa') {
-        setActiveTab((prev) => (SISWA_ALLOWED_TABS.includes(prev) ? prev : 'schedules'));
-      } else if (role === 'guru') {
-        setActiveTab((prev) => (GURU_ALLOWED_TABS.includes(prev) ? prev : 'schedules'));
-      }
-    }
+    // Verifikasi sesi server-side (HttpOnly cookie)
+    fetch('/api/auth/session', { cache: 'no-store' })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.authenticated && data.role) {
+          setIsAuthenticated(true);
+          setUserRole(data.role);
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('mrh_admin_auth', 'true');
+            localStorage.setItem('mrh_user_role', data.role);
+          }
+          if (data.role === 'siswa') {
+            setActiveTab((prev) => (SISWA_ALLOWED_TABS.includes(prev) ? prev : 'schedules'));
+          } else if (data.role === 'guru') {
+            setActiveTab((prev) => (GURU_ALLOWED_TABS.includes(prev) ? prev : 'schedules'));
+          }
+        } else {
+          // Sesi server tidak valid atau belum login
+          setIsAuthenticated(false);
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem('mrh_admin_auth');
+            localStorage.removeItem('mrh_user_role');
+          }
+        }
+      })
+      .catch(() => {
+        setIsAuthenticated(false);
+      });
   }, []);
 
   // Data states
@@ -670,7 +687,10 @@ export default function AdminDashboardPage() {
           isRefreshing={isRefreshing}
           supabaseConnected={supabaseConnected}
           userRole={userRole}
-          onLogout={() => {
+          onLogout={async () => {
+            try {
+              await fetch('/api/auth/logout', { method: 'POST' });
+            } catch {}
             if (typeof window !== 'undefined') {
               localStorage.removeItem('mrh_admin_auth');
               localStorage.removeItem('mrh_user_role');
