@@ -43,7 +43,6 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [activeDemo, setActiveDemo] = useState<'admin' | 'guru' | 'siswa' | null>(null);
 
   // --- REGISTER STATES ---
   const [regRole, setRegRole] = useState<'guru' | 'siswa'>('guru');
@@ -61,20 +60,6 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
     roleLabel: string;
     email: string;
   } | null>(null);
-
-  const fillDemo = (role: 'admin' | 'guru' | 'siswa') => {
-    setActiveDemo(role);
-    setErrorMessage('');
-    // Kata sandi dikosongkan agar pengguna wajib memasukkan kata sandi yang sesuai
-    setPassword('');
-    if (role === 'admin') {
-      setIdentifier('admin@raudhatulhidayah.sch.id');
-    } else if (role === 'guru') {
-      setIdentifier('guru@raudhatulhidayah.sch.id');
-    } else {
-      setIdentifier('siswa@raudhatulhidayah.sch.id');
-    }
-  };
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -359,61 +344,7 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
               </button>
             </form>
 
-            {/* Quick Role Selection */}
-            <div className="mt-6 pt-5 border-t border-slate-100">
-              <div className="flex items-center justify-between text-[11.5px] mb-2.5">
-                <span className="font-bold text-slate-700">Pilih Peran Akun:</span>
-                <span className="text-slate-400 font-medium text-[11px]">Isi email otomatis</span>
-              </div>
 
-              <div className="grid grid-cols-3 gap-2">
-                {/* Admin */}
-                <button
-                  type="button"
-                  onClick={() => fillDemo('admin')}
-                  className={`p-2.5 rounded-xl border text-slate-700 transition-all flex flex-col items-center justify-center gap-1 active:scale-95 cursor-pointer ${
-                    activeDemo === 'admin'
-                      ? 'border-blue-600 bg-blue-50/70 text-blue-900 ring-1 ring-blue-600/30'
-                      : 'border-slate-200 bg-slate-50/80 hover:bg-slate-100'
-                  }`}
-                >
-                  <ShieldCheck className="w-4 h-4 text-blue-700" />
-                  <span className="text-[11.5px] font-bold">Admin</span>
-                </button>
-
-                {/* Guru */}
-                <button
-                  type="button"
-                  onClick={() => fillDemo('guru')}
-                  className={`p-2.5 rounded-xl border text-slate-700 transition-all flex flex-col items-center justify-center gap-1 active:scale-95 cursor-pointer ${
-                    activeDemo === 'guru'
-                      ? 'border-sky-600 bg-sky-50/70 text-sky-900 ring-1 ring-sky-600/30'
-                      : 'border-slate-200 bg-slate-50/80 hover:bg-slate-100'
-                  }`}
-                >
-                  <UserCheck className="w-4 h-4 text-sky-700" />
-                  <span className="text-[11.5px] font-bold">Guru</span>
-                </button>
-
-                {/* Siswa */}
-                <button
-                  type="button"
-                  onClick={() => fillDemo('siswa')}
-                  className={`p-2.5 rounded-xl border text-slate-700 transition-all flex flex-col items-center justify-center gap-1 active:scale-95 cursor-pointer ${
-                    activeDemo === 'siswa'
-                      ? 'border-emerald-600 bg-emerald-50/70 text-emerald-900 ring-1 ring-emerald-600/30'
-                      : 'border-slate-200 bg-slate-50/80 hover:bg-slate-100'
-                  }`}
-                >
-                  <GraduationCap className="w-4 h-4 text-emerald-700" />
-                  <span className="text-[11.5px] font-bold">Siswa</span>
-                </button>
-              </div>
-
-              <p className="text-[11px] text-slate-500 text-center mt-2.5 leading-relaxed">
-                Pilih peran untuk mengisi email resmi, lalu masukkan kata sandi yang sesuai dengan akun Anda.
-              </p>
-            </div>
 
             {/* Registration Prompt Section */}
             <div className="mt-5 pt-4 border-t border-slate-100 text-center">
