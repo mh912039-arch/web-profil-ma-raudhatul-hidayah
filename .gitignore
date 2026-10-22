@@ -29,3 +29,4 @@ Thumbs.db
 *.py
 figma_embed.html
 *.pdf
+*.traineddata

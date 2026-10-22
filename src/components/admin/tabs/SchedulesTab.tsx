@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Clock,
   Plus,
@@ -16,6 +16,13 @@ import {
   Users,
   GraduationCap,
   School,
+  Image as ImageIcon,
+  Camera,
+  Maximize2,
+  RefreshCw,
+  ScanLine,
+  Eye,
+  UploadCloud,
 } from 'lucide-react';
 import { TeacherRecord } from './TeachersTab';
 
@@ -30,6 +37,12 @@ export interface ScheduleItem {
   category?: string;
   teacher_name: string;
   room?: string;
+}
+
+interface SchedulePhotoInfo {
+  photo_url: string | null;
+  updated_at: string | null;
+  caption?: string;
 }
 
 interface SchedulesTabProps {
@@ -87,6 +100,20 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
   const [selectedDay, setSelectedDay] = useState<string>('Rabu');
   const [isLoading, setIsLoading] = useState(true);
 
+  // Photo & OCR state
+  const [schedulePhoto, setSchedulePhoto] = useState<SchedulePhotoInfo | null>(null);
+  const [isZoomOpen, setIsZoomOpen] = useState(false);
+  const [isScanning, setIsScanning] = useState(false);
+  const [scanProgress, setScanProgress] = useState(0);
+  const [scanStatusText, setScanStatusText] = useState('');
+  const [scanNotification, setScanNotification] = useState<{
+    message: string;
+    count: number;
+    rombel: string;
+  } | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
   useEffect(() => {
     if (initialRombel) {
       setSelectedRombel(initialRombel);
@@ -96,7 +123,7 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
     }
   }, [initialRombel]);
 
-  // Modal State
+  // Modal State for manual add/edit
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<ScheduleItem | null>(null);
   const [formData, setFormData] = useState<Partial<ScheduleItem>>({
@@ -126,8 +153,22 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
     }
   };
 
+  // Fetch Schedule Photo
+  const fetchSchedulePhoto = async () => {
+    try {
+      const res = await fetch('/api/schedules/photo', { cache: 'no-store' });
+      if (res.ok) {
+        const data = await res.json();
+        setSchedulePhoto(data);
+      }
+    } catch (err) {
+      console.warn('Failed to load schedule photo:', err);
+    }
+  };
+
   useEffect(() => {
     fetchSchedules();
+    fetchSchedulePhoto();
   }, []);
 
   // Filter rombels by active jenjang level
@@ -157,6 +198,134 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
     return schedules.filter(
       (s) => isRombelMatch(s.class_rombel, selectedRombel) && s.day === day
     ).length;
+  };
+
+  // Photo File Change Handler
+  const handlePhotoFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    await processSchedulePhoto(file);
+    e.target.value = '';
+  };
+
+  // Intelligent OCR & Auto-Update Handler
+  const processSchedulePhoto = async (file: File) => {
+    try {
+      setIsScanning(true);
+      setScanProgress(15);
+      setScanStatusText('Mengunggah berkas foto dokumen jadwal...');
+
+      // 1. Upload via /api/upload
+      const uploadFormData = new FormData();
+      uploadFormData.append('file', file);
+      const uploadRes = await fetch('/api/upload', {
+        method: 'POST',
+        body: uploadFormData,
+      });
+
+      if (!uploadRes.ok) {
+        const errJson = await uploadRes.json().catch(() => ({}));
+        throw new Error(errJson.message || 'Gagal mengunggah foto');
+      }
+
+      const uploadData = await uploadRes.json();
+      const photoUrl = uploadData.url;
+
+      // 2. Simpan URL foto ke SYS_SCHIMG
+      await fetch('/api/schedules/photo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          photo_url: photoUrl,
+          caption: `Foto Jadwal Resmi ${selectedRombel}`,
+        }),
+      });
+
+      setSchedulePhoto({
+        photo_url: photoUrl,
+        updated_at: new Date().toISOString(),
+        caption: `Foto Jadwal Resmi ${selectedRombel}`,
+      });
+
+      setScanProgress(35);
+      setScanStatusText('Membaca citra & menjalankan OCR pengenalan teks...');
+
+      // 3. OCR via tesseract.js worker
+      let extractedOcrText = '';
+      try {
+        const { createWorker } = await import('tesseract.js');
+        const worker = await createWorker(['ind', 'eng'], undefined, {
+          logger: (m) => {
+            if (m.status === 'recognizing text') {
+              const p = Math.min(85, Math.round(35 + m.progress * 45));
+              setScanProgress(p);
+              setScanStatusText(`Mengenali struktur jadwal: ${Math.round(m.progress * 100)}%`);
+            }
+          },
+        });
+        const res = await worker.recognize(photoUrl || file);
+        await worker.terminate();
+        extractedOcrText = res.data.text || '';
+      } catch (ocrErr) {
+        console.warn('Client OCR warning, falling back to server parsing:', ocrErr);
+      }
+
+      setScanProgress(85);
+      setScanStatusText('Memproses mata pelajaran, jam, dan guru...');
+
+      // 4. Kirim ke /api/schedules/scan dengan autoApply: true
+      const scanRes = await fetch('/api/schedules/scan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          imageUrl: photoUrl,
+          text: extractedOcrText,
+          targetRombel: selectedRombel,
+          autoApply: true,
+        }),
+      });
+
+      if (!scanRes.ok) {
+        const errData = await scanRes.json().catch(() => ({}));
+        throw new Error(errData.message || 'Gagal memproses jadwal');
+      }
+
+      const scanData = await scanRes.json();
+      setScanProgress(100);
+      setScanStatusText('Jadwal seluruhnya berhasil diperbarui!');
+
+      // Refresh data
+      await fetchSchedules();
+      await fetchSchedulePhoto();
+
+      const count = scanData.schedules?.length || scanData.count || 0;
+      setScanNotification({
+        message: `Jadwal resmi untuk ${selectedRombel} berhasil diperbarui dari foto (${count} sesi pelajaran aktif).`,
+        count,
+        rombel: selectedRombel,
+      });
+
+      setTimeout(() => {
+        setIsScanning(false);
+      }, 800);
+    } catch (err: any) {
+      console.error('Error processing schedule photo:', err);
+      alert(`Pemberitahuan: ${err.message || 'Gagal memproses foto jadwal'}`);
+      setIsScanning(false);
+    }
+  };
+
+  // Delete schedule photo
+  const handleDeletePhoto = async () => {
+    if (!confirm('Apakah Anda yakin ingin menghapus foto dokumen jadwal ini?')) return;
+    try {
+      const res = await fetch('/api/schedules/photo', { method: 'DELETE' });
+      if (res.ok) {
+        setSchedulePhoto(null);
+      }
+    } catch (err) {
+      console.error('Failed to delete photo:', err);
+    }
   };
 
   const handleOpenAdd = (presetSession?: number) => {
@@ -232,6 +401,16 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
 
   return (
     <div className="space-y-6">
+      {/* Hidden File Input for Photo Upload / Mobile Camera */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        onChange={handlePhotoFileChange}
+        className="hidden"
+      />
+
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
         <div>
@@ -239,23 +418,168 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
           <p className="text-sm text-slate-600 mt-1">
             {readOnly
               ? 'Informasi jadwal mata pelajaran resmi seluruh rombel kelas (hanya akun Admin yang dapat mengubah jadwal).'
-              : 'Susun jadwal mata pelajaran harian untuk setiap rombel kelas jenjang SD, SMP, dan SMA / MA.'}
+              : 'Susun jadwal mata pelajaran harian atau unggah foto jadwal untuk pembaruan otomatis.'}
           </p>
         </div>
 
         {!readOnly && (
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold shadow-xs transition-all active:scale-[0.98]"
+            >
+              <Camera className="w-4 h-4" />
+              <span>Unggah Foto Jadwal (Scan Otomatis)</span>
+            </button>
+
             <button
               type="button"
               onClick={() => handleOpenAdd()}
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-all active:scale-[0.98]"
             >
               <Plus className="w-4 h-4" />
-              <span>Tambah Sesi Baru</span>
+              <span>Tambah Sesi Manual</span>
             </button>
           </div>
         )}
       </div>
+
+      {/* Photo Banner Card */}
+      {schedulePhoto?.photo_url ? (
+        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 transition-all">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
+            <div className="flex items-start gap-4">
+              {/* Thumbnail with overlay zoom button */}
+              <div
+                onClick={() => setIsZoomOpen(true)}
+                className="relative group cursor-pointer w-28 h-24 sm:w-36 sm:h-28 rounded-xl overflow-hidden border border-slate-200 bg-slate-100 shrink-0"
+              >
+                <img
+                  src={schedulePhoto.photo_url}
+                  alt="Foto Jadwal Resmi"
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                  <Maximize2 className="w-5 h-5 drop-shadow-sm" />
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-blue-50 border border-blue-200/80 text-[11px] font-bold text-blue-700">
+                  <ImageIcon className="w-3.5 h-3.5" />
+                  <span>DOKUMEN FOTO JADWAL RESMI</span>
+                </div>
+                <h3 className="text-base font-bold text-slate-900 leading-tight">
+                  {schedulePhoto.caption || 'Foto Dokumen Jadwal Resmi Satuan Pendidikan'}
+                </h3>
+                <p className="text-xs text-slate-500">
+                  {schedulePhoto.updated_at
+                    ? `Terakhir diperbarui: ${new Date(schedulePhoto.updated_at).toLocaleDateString('id-ID', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })} WIB`
+                    : 'Tersimpan di sistem cloud'}
+                </p>
+                <div className="pt-1">
+                  <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-md">
+                    Sinkron dengan Jadwal Digital
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setIsZoomOpen(true)}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors"
+              >
+                <Eye className="w-3.5 h-3.5" />
+                <span>Lihat Layar Penuh</span>
+              </button>
+              <a
+                href={schedulePhoto.photo_url}
+                target="_blank"
+                rel="noreferrer"
+                download="jadwal-pelajaran-resmi.jpg"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Unduh Foto</span>
+              </a>
+              {!readOnly && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-semibold transition-colors"
+                  >
+                    <ScanLine className="w-3.5 h-3.5" />
+                    <span>Ganti Foto & Scan Ulang</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleDeletePhoto}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-semibold transition-colors"
+                    title="Hapus Foto Jadwal"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      ) : !readOnly ? (
+        <div className="bg-white rounded-2xl border-2 border-dashed border-slate-300 hover:border-blue-400 p-6 transition-all text-center">
+          <div className="max-w-md mx-auto space-y-3">
+            <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-200 text-blue-600 flex items-center justify-center mx-auto">
+              <Camera className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-slate-900">
+                Unggah Foto Jadwal Pelajaran (Pindai Otomatis)
+              </h3>
+              <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                Pilih atau potret foto lembar jadwal resmi. Sistem otomatis membaca hari, jam, mata pelajaran, dan guru, lalu langsung memperbarui seluruh tabel jadwal kelas.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-all active:scale-[0.98]"
+            >
+              <UploadCloud className="w-4 h-4" />
+              <span>Pilih / Ambil Foto Jadwal</span>
+            </button>
+          </div>
+        </div>
+      ) : null}
+
+      {/* Scan Result Notification */}
+      {scanNotification && (
+        <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex items-start justify-between gap-3 animate-in fade-in duration-200">
+          <div className="flex items-start gap-3">
+            <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+            <div>
+              <h4 className="text-xs font-bold text-emerald-900">Pembaruan Jadwal Otomatis Sukses</h4>
+              <p className="text-xs text-emerald-700 mt-0.5">{scanNotification.message}</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setScanNotification(null)}
+            className="text-emerald-500 hover:text-emerald-800 p-1"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
       {/* Rombel Selector Pills with SD / SMP / SMA Level Switcher */}
       <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
@@ -281,7 +605,7 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
               type="button"
               onClick={() => {
                 setSelectedLevel('sd');
-                setSelectedRombel('SD - Kelas 1');
+                setSelectedRombel('SD - Kelas I');
               }}
               className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
                 selectedLevel === 'sd'
@@ -543,6 +867,74 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
         )}
       </div>
 
+      {/* Lightbox Zoom Modal for Photo */}
+      {isZoomOpen && schedulePhoto?.photo_url && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/90 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="relative max-w-5xl w-full max-h-[90vh] flex flex-col items-center">
+            <div className="w-full flex items-center justify-between text-white pb-3">
+              <div className="flex items-center gap-2">
+                <ImageIcon className="w-4 h-4 text-blue-400" />
+                <span className="text-sm font-semibold truncate">
+                  {schedulePhoto.caption || 'Foto Dokumen Jadwal Resmi'}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <a
+                  href={schedulePhoto.photo_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  download="jadwal-pelajaran-resmi.jpg"
+                  className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors flex items-center gap-1.5 text-xs font-semibold"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Unduh Foto</span>
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setIsZoomOpen(false)}
+                  className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors"
+                  aria-label="Tutup"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+            <div className="w-full overflow-auto max-h-[82vh] rounded-2xl border border-white/20 bg-black/40 flex items-center justify-center p-2">
+              <img
+                src={schedulePhoto.photo_url}
+                alt="Foto Jadwal Resmi Layar Penuh"
+                className="max-w-full max-h-[80vh] object-contain rounded-xl shadow-2xl"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Scan & OCR Progress Modal */}
+      {isScanning && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+          <div className="bg-white w-full max-w-md rounded-2xl shadow-xl border border-slate-200 p-6 space-y-4 animate-in fade-in zoom-in-95 duration-200 text-center">
+            <div className="w-14 h-14 rounded-2xl bg-blue-50 border border-blue-200 text-blue-600 flex items-center justify-center mx-auto animate-pulse">
+              <ScanLine className="w-7 h-7" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="font-bold text-slate-900 text-base">Memindai Jadwal dari Foto</h3>
+              <p className="text-xs text-slate-500">{scanStatusText}</p>
+            </div>
+            <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+              <div
+                className="bg-blue-600 h-2.5 rounded-full transition-all duration-300 ease-out"
+                style={{ width: `${scanProgress}%` }}
+              />
+            </div>
+            <div className="flex justify-between items-center text-[11px] font-semibold text-slate-500">
+              <span>Rombel Target: {selectedRombel}</span>
+              <span>{scanProgress}%</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Modal Add / Edit Schedule */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
@@ -681,7 +1073,7 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
                   type="text"
                   value={formData.subject_name}
                   onChange={(e) => setFormData({ ...formData, subject_name: e.target.value })}
-                  placeholder="Contoh: Matematika, Tematik SD, Fiqih, Bahasa Inggris..."
+                  placeholder="Contoh: Matematika, Fiqih, Bahasa Inggris, dll"
                   className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
