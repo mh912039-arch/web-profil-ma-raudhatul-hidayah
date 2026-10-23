@@ -79,7 +79,7 @@ export const HeroSection: React.FC = () => {
           {/* Eyebrow Badge */}
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-semibold tracking-wider uppercase mb-5 backdrop-blur-sm">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Sekolah Menengah Pertama (SMP) — Akreditasi A</span>
+            <span>Madrasah Aliyah (MA) — Terakreditasi</span>
           </div>
 
           {/* Main Display Headline matching Figma */}
@@ -90,7 +90,7 @@ export const HeroSection: React.FC = () => {
 
           {/* Subtitle in Indonesian */}
           <p className="text-stone-200 text-sm sm:text-base lg:text-lg leading-relaxed mb-8 max-w-xl font-normal drop-shadow">
-            Membina akidah, mengasah nalar, dan menegakkan akhlakul karimah. Pendidikan tingkat sekolah menengah pertama (SMP) berbasis Kurikulum Merdeka dan pembiasaan karakter di Kecamatan Mauk, Kabupaten Tangerang.
+            Membina akidah, mengasah nalar, dan menegakkan akhlakul karimah. Pendidikan tingkat Madrasah Aliyah (MA) berbasis Kurikulum Merdeka dan pembiasaan karakter di Kecamatan Mauk, Kabupaten Tangerang.
           </p>
 
           {/* Action Buttons matching Figma */}

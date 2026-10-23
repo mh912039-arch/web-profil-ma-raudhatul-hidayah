@@ -32,7 +32,7 @@ export const EditorialFooter: React.FC = () => {
             </Link>
 
             <p className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-sm">
-              Lembaga pendidikan formal tingkat Sekolah Menengah Pertama (SMP) yang memadukan Kurikulum Merdeka nasional, pembinaan karakter & adab islami, serta bimbingan kesiapan menuju SMA/SMK/MA favorit.
+              Lembaga pendidikan formal tingkat Madrasah Aliyah (MA) yang memadukan Kurikulum Merdeka nasional, pembinaan karakter & adab islami, serta bimbingan kesiapan menuju SMA/SMK/MA favorit.
             </p>
 
             {/* Badges */}

@@ -71,7 +71,7 @@ export const EditorialHero: React.FC = () => {
                 <span className="text-amber-800">Menegakkan Akhlak.</span>
               </h1>
               <p className="text-slate-600 text-sm sm:text-base lg:text-lg leading-relaxed max-w-2xl font-normal pt-1">
-                Lembaga pendidikan formal tingkat Sekolah Menengah Pertama (SMP) berbasis Kurikulum Merdeka di Kecamatan Mauk, Kabupaten Tangerang. Menyeimbangkan pembiasaan adab, kecerdasan nalar kritis, dan kesiapan melangkah ke jenjang sekolah lanjutan impian.
+                Lembaga pendidikan formal tingkat Madrasah Aliyah (MA) berbasis Kurikulum Merdeka di Kecamatan Mauk, Kabupaten Tangerang. Menyeimbangkan pembiasaan adab, kecerdasan nalar kritis, dan kesiapan melangkah ke jenjang sekolah lanjutan impian.
               </p>
             </div>
 

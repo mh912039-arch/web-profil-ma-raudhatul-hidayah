@@ -6,9 +6,9 @@ const pillars = [
   {
     number: '01',
     icon: BookOpen,
-    title: 'Kurikulum Merdeka SMP',
+    title: 'Kurikulum Merdeka MA',
     description:
-      'Pembelajaran interaktif yang menumbuhkan nalar kritis, kemampuan literasi, numerasi, dan dasar-dasar ilmu pengetahuan bagi siswa sekolah menengah pertama.',
+      'Pembelajaran interaktif yang menumbuhkan nalar kritis, kemampuan literasi, numerasi, dan keunggulan ilmu pengetahuan bagi santri Madrasah Aliyah.',
     linkHref: '/akademik',
     linkLabel: 'Lihat Kurikulum',
   },

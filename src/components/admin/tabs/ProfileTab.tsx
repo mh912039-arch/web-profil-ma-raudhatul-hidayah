@@ -88,7 +88,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
     profile: {
       name: data.profile?.name || 'MAS Raudhatul Hidayah',
       formalName: data.profile?.formalName || 'Madrasah Aliyah Swasta Raudhatul Hidayah',
-      level: data.profile?.level || 'Sekolah Menengah Pertama (SMP) / MA',
+      level: data.profile?.level || 'Madrasah Aliyah (MA)',
       npsn: data.profile?.npsn || '6994888',
       nsm: data.profile?.nsm || '131236030045',
       accreditation: data.profile?.accreditation || 'C',
@@ -106,7 +106,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
       hoursSunday: data.profile?.hoursSunday || 'Tutup Layanan Fisik',
     },
     visionMission: {
-      vision: data.visionMission?.vision || 'Terwujudnya Peserta Didik SMP yang Berakhlak Mulia, Berprestasi, Mandiri, dan Berwawasan Lingkungan',
+      vision: data.visionMission?.vision || 'Terwujudnya Peserta Didik Madrasah yang Berakhlak Mulia, Berprestasi, Mandiri, dan Berwawasan Lingkungan',
       missions: data.visionMission?.missions || [
         'Menyelenggarakan proses pembelajaran integratif antara Kurikulum Nasional dan kurikulum kepesantrenan.',
         'Mengembangkan budaya riset ilmiah, penalaran kritis, dan literasi digital yang berlandaskan etika Islam.',
@@ -134,7 +134,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
         profile: {
           name: data.profile.name || 'MAS Raudhatul Hidayah',
           formalName: data.profile.formalName || 'Madrasah Aliyah Swasta Raudhatul Hidayah',
-          level: data.profile.level || 'Sekolah Menengah Pertama (SMP) / MA',
+          level: data.profile.level || 'Madrasah Aliyah (MA)',
           npsn: data.profile.npsn || '6994888',
           nsm: data.profile.nsm || '131236030045',
           accreditation: data.profile.accreditation || 'C',

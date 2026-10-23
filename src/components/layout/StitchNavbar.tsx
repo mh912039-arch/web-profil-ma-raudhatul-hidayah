@@ -269,11 +269,6 @@ export function StitchNavbar() {
               <span className="font-serif text-[17px] sm:text-[19px] font-bold text-slate-900 tracking-wide leading-tight group-hover:text-blue-700 transition-colors">
                 MAS Raudhatul Hidayah
               </span>
-              <div className="flex items-center gap-1.5">
-                <span className="font-sans text-[10.5px] font-semibold text-slate-500 uppercase tracking-widest">
-                  Jenjang Menengah Pertama (SMP)
-                </span>
-              </div>
             </div>
           </Link>
 

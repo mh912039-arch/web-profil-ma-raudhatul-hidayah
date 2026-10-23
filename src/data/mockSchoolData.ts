@@ -124,7 +124,7 @@ export interface SchoolData {
 export const schoolData: SchoolData = {
   profile: {
     name: 'MAS Raudhatul Hidayah',
-    level: 'Jenjang Sekolah Menengah Pertama (SMP) Berbasis Karakter & Kurikulum Nasional',
+    level: 'Jenjang Madrasah Aliyah (MA) Berbasis Karakter & Kurikulum Merdeka',
     accreditation: 'Akreditasi A (Unggul)',
     npsn: '69941777',
     nsm: '131232010045',

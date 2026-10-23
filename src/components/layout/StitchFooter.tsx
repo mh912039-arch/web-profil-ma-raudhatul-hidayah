@@ -36,7 +36,7 @@ interface FooterProfile {
 const defaultProfile: FooterProfile = {
   name: 'MAS Raudhatul Hidayah',
   formalName: 'Madrasah Aliyah Swasta Raudhatul Hidayah',
-  level: 'Sekolah Menengah Pertama (SMP) / MA',
+  level: 'Madrasah Aliyah (MA)',
   npsn: '6994888',
   nsm: '131236030045',
   accreditation: 'C',

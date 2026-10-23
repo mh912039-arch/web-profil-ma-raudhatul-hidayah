@@ -32,7 +32,7 @@ export const Footer: React.FC = () => {
             </Link>
 
             <p className="text-xs sm:text-sm text-stone-300 leading-relaxed max-w-sm">
-              Lembaga pendidikan Islam tingkat Sekolah Menengah Pertama (SMP) yang memadukan Kurikulum Merdeka, pembentukan karakter dan adab islami, serta bimbingan kesiapan menuju SMA/SMK/MA favorit.
+              Lembaga pendidikan Islam tingkat Madrasah Aliyah (MA) yang memadukan Kurikulum Merdeka, pembentukan karakter dan adab islami, serta bimbingan kesiapan menuju perguruan tinggi dan kemandirian masa depan.
             </p>
 
             {/* Badges */}

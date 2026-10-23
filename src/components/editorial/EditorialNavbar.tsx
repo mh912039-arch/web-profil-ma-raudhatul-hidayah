@@ -75,7 +75,7 @@ const navItems: NavItem[] = [
       },
       {
         title: 'Projek Profil Pelajar (P5)',
-        description: 'Pengembangan karakter dan kemandirian siswa SMP',
+        description: 'Pengembangan karakter dan kemandirian santri MA',
         href: '/akademik#program-smp',
         icon: <Target className="w-4 h-4 text-amber-600" />,
       },
@@ -192,7 +192,7 @@ export const EditorialNavbar: React.FC = () => {
                   MAS RAUDHATUL HIDAYAH
                 </span>
                 <span className="text-[11px] text-slate-500 font-medium tracking-wide">
-                  Sekolah Menengah Pertama (SMP) · Terakreditasi A
+                  Madrasah Aliyah (MA) · Terakreditasi A
                 </span>
               </div>
             </Link>
