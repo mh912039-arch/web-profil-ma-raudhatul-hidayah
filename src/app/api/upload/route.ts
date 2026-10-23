@@ -3,6 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { supabase } from '@/lib/supabaseClient';
 import { deleteStorageFile } from '@/lib/storageHelper';
+import { requireAuth } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -145,6 +146,12 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  // Hanya Administrator dan Dewan Guru yang berhak menghapus berkas dari storage
+  const auth = await requireAuth(['admin', 'guru']);
+  if (!auth.authorized) {
+    return auth.response!;
+  }
+
   try {
     const { searchParams } = new URL(request.url);
     const target = searchParams.get('url') || searchParams.get('filename');
