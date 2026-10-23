@@ -2,41 +2,7 @@ import { NextResponse } from 'next/server';
 import { createSessionToken, COOKIE_NAME, UserRole, verifyPassword, hashPassword } from '@/lib/auth';
 import { parseUserAgent } from '@/lib/deviceParser';
 import { readUsers, writeUsers, readSessions, writeSessions, UserSessionItem } from '@/lib/userStore';
-
-// In-Memory Rate Limiter untuk mencegah serangan Brute-Force & Credential Stuffing
-interface RateLimitRecord {
-  count: number;
-  resetAt: number;
-}
-const loginAttempts = new Map<string, RateLimitRecord>();
-
-function checkRateLimit(ip: string): { allowed: boolean; remainingMinutes: number } {
-  const now = Date.now();
-  const record = loginAttempts.get(ip);
-  if (!record) return { allowed: true, remainingMinutes: 0 };
-  if (now > record.resetAt) {
-    loginAttempts.delete(ip);
-    return { allowed: true, remainingMinutes: 0 };
-  }
-  if (record.count >= 5) {
-    return { allowed: false, remainingMinutes: Math.ceil((record.resetAt - now) / 60000) };
-  }
-  return { allowed: true, remainingMinutes: 0 };
-}
-
-function recordFailedAttempt(ip: string) {
-  const now = Date.now();
-  const record = loginAttempts.get(ip);
-  if (!record || now > record.resetAt) {
-    loginAttempts.set(ip, { count: 1, resetAt: now + 15 * 60 * 1000 }); // Jeda 15 menit
-  } else {
-    record.count += 1;
-  }
-}
-
-function resetFailedAttempts(ip: string) {
-  loginAttempts.delete(ip);
-}
+import { checkRateLimit, recordFailedAttempt, resetRateLimit } from '@/lib/rateLimiter';
 
 export async function POST(request: Request) {
   try {
@@ -45,23 +11,32 @@ export async function POST(request: Request) {
     const realIp = request.headers.get('x-real-ip');
     const clientIp = cfIp || forwarded?.split(',')[0].trim() || realIp || '127.0.0.1';
 
-    // 1. Proteksi Anti-Brute Force (Maksimal 5x percobaan gagal per 15 menit)
-    const rateCheck = checkRateLimit(clientIp);
-    if (!rateCheck.allowed) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: `Terlalu banyak percobaan masuk yang gagal. Demi keamanan portal, akses dari perangkat ini dibatasi selama ${rateCheck.remainingMinutes} menit.`,
-        },
-        { status: 429 }
-      );
-    }
-
-    const body = await request.json();
+    const body = await request.json().catch(() => ({}));
     const { identifier = '', password = '' } = body;
 
     const idLower = String(identifier).trim().toLowerCase();
     const pass = String(password).trim();
+
+    // 1. Proteksi Anti-Brute Force Tingkat Lanjut (Dual Tracking: IP & Identifier)
+    const rateCheck = await checkRateLimit(clientIp, idLower);
+    if (!rateCheck.allowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          locked: true,
+          remainingSeconds: rateCheck.remainingSeconds,
+          remainingMinutes: rateCheck.remainingMinutes,
+          message: `Terlalu banyak percobaan masuk yang gagal. Demi keamanan portal, akses dibatasi sementara selama ${rateCheck.remainingMinutes} menit.`,
+          details: rateCheck.lockedReason,
+        },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': String(rateCheck.remainingSeconds),
+          },
+        }
+      );
+    }
 
     if (!idLower) {
       return NextResponse.json(
@@ -101,7 +76,7 @@ export async function POST(request: Request) {
         );
       }
 
-      // Verifikasi kata sandi: HARUS SESUAI dengan kata sandi yang tersimpan di sistem admin
+      // Verifikasi kata sandi
       const expectedPassword =
         matchedUser.password ||
         (matchedUser.role === 'admin'
@@ -111,13 +86,44 @@ export async function POST(request: Request) {
           : (process.env.SISWA_PASSWORD || 'siswa2026'));
 
       if (!verifyPassword(pass, expectedPassword)) {
-        recordFailedAttempt(clientIp);
+        const attempt = await recordFailedAttempt(clientIp, idLower);
+
+        // Catat insiden keamanan jika terkunci karena brute-force
+        if (attempt.locked) {
+          try {
+            let sessions = await readSessions();
+            const alertSession: UserSessionItem = {
+              id: `sec-lock-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+              user_id: matchedUser.id,
+              user_name: matchedUser.name,
+              email: matchedUser.email,
+              role: matchedUser.role,
+              device_name: 'Peringatan Keamanan: Percobaan Masuk Diblokir (Brute-Force)',
+              browser: 'Sistem Pertahanan Rate-Limit',
+              os: 'Security Gateway',
+              device_type: 'desktop',
+              ip_address: clientIp,
+              login_time: new Date().toISOString(),
+              status: 'expired',
+            };
+            sessions.unshift(alertSession);
+            if (sessions.length > 100) sessions = sessions.slice(0, 100);
+            await writeSessions(sessions);
+          } catch {
+            // non-blocking
+          }
+        }
+
         return NextResponse.json(
           {
             success: false,
-            message: 'Kata sandi salah. Harap periksa kembali sandi Anda.',
+            locked: attempt.locked,
+            remainingAttempts: attempt.remainingAttempts,
+            remainingSeconds: attempt.remainingSeconds,
+            remainingMinutes: attempt.remainingMinutes,
+            message: attempt.feedbackMessage,
           },
-          { status: 401 }
+          { status: attempt.locked ? 429 : 401 }
         );
       }
 
@@ -131,29 +137,41 @@ export async function POST(request: Request) {
       username = matchedUser.name;
     } else {
       // 3. Akun tidak terdaftar di direktori pengguna
-      recordFailedAttempt(clientIp);
+      const attempt = await recordFailedAttempt(clientIp, idLower);
       return NextResponse.json(
         {
           success: false,
-          message: 'Akun tidak terdaftar di sistem. Silakan periksa kembali email atau username Anda.',
+          locked: attempt.locked,
+          remainingAttempts: attempt.remainingAttempts,
+          remainingSeconds: attempt.remainingSeconds,
+          remainingMinutes: attempt.remainingMinutes,
+          message: attempt.locked
+            ? attempt.feedbackMessage
+            : 'Akun tidak terdaftar di sistem. Silakan periksa kembali email atau username Anda.',
         },
-        { status: 401 }
+        { status: attempt.locked ? 429 : 401 }
       );
     }
 
     if (!detectedRole) {
-      recordFailedAttempt(clientIp);
+      const attempt = await recordFailedAttempt(clientIp, idLower);
       return NextResponse.json(
         {
           success: false,
-          message: 'Identitas akun atau kata sandi tidak cocok. Pastikan data yang dimasukkan benar.',
+          locked: attempt.locked,
+          remainingAttempts: attempt.remainingAttempts,
+          remainingSeconds: attempt.remainingSeconds,
+          remainingMinutes: attempt.remainingMinutes,
+          message: attempt.locked
+            ? attempt.feedbackMessage
+            : 'Identitas akun atau kata sandi tidak cocok. Pastikan data yang dimasukkan benar.',
         },
-        { status: 401 }
+        { status: attempt.locked ? 429 : 401 }
       );
     }
 
-    // Login Berhasil: Reset catatan percobaan gagal
-    resetFailedAttempts(clientIp);
+    // Login Berhasil: Reset seluruh catatan percobaan gagal untuk IP & Akun ini
+    await resetRateLimit(clientIp, idLower);
 
     // Detect Device, Browser, OS & IP Client
     const userAgentStr = request.headers.get('user-agent') || '';

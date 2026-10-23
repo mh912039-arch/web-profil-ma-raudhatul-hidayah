@@ -30,6 +30,7 @@ import {
   Eye,
   EyeOff,
   Copy,
+  Unlock,
 } from 'lucide-react';
 
 export interface UserAccount {
@@ -106,6 +107,8 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
 
   const [users, setUsers] = useState<UserAccount[]>([]);
   const [sessions, setSessions] = useState<UserSession[]>([]);
+  const [rateLimits, setRateLimits] = useState<any[]>([]);
+  const [serverTime, setServerTime] = useState<number>(Date.now());
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState<'all' | 'admin' | 'guru' | 'siswa'>('all');
@@ -219,11 +222,67 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
     }
   };
 
+  const fetchRateLimits = async () => {
+    try {
+      const res = await fetch('/api/auth/rate-limit');
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data)) {
+          setRateLimits(json.data);
+          if (json.serverTime) setServerTime(json.serverTime);
+        }
+      }
+    } catch {
+      // non-blocking
+    }
+  };
+
+  const handleUnlockTarget = async (key: string) => {
+    try {
+      const res = await fetch('/api/auth/rate-limit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'unlock', key }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        showNotification('success', json.message);
+        fetchRateLimits();
+      } else {
+        showNotification('error', json.message || 'Gagal membuka kunci.');
+      }
+    } catch {
+      showNotification('error', 'Terjadi kesalahan jaringan.');
+    }
+  };
+
+  const handleClearAllRateLimits = async () => {
+    if (!confirm('Apakah Anda yakin ingin mereset seluruh pembatasan login dan membuka semua kunci?')) return;
+    try {
+      const res = await fetch('/api/auth/rate-limit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'clear_all' }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        showNotification('success', json.message);
+        fetchRateLimits();
+      } else {
+        showNotification('error', json.message || 'Gagal mereset pembatasan.');
+      }
+    } catch {
+      showNotification('error', 'Terjadi kesalahan jaringan.');
+    }
+  };
+
   useEffect(() => {
     fetchUsersAndSessions();
+    fetchRateLimits();
 
     const pollInterval = setInterval(() => {
       fetchUsersAndSessions(true);
+      fetchRateLimits();
     }, 15000);
 
     return () => clearInterval(pollInterval);
@@ -1037,6 +1096,97 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
       ========================================================================= */}
       {activeSubTab === 'sessions' && (
         <div className="space-y-4">
+          {/* Widget Pertahanan Anti-Brute Force */}
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
+            <div className="p-4 sm:p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-start gap-3">
+                <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center shrink-0 mt-0.5">
+                  <ShieldAlert className="w-5 h-5 text-blue-800" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h3 className="text-sm font-bold text-slate-900">
+                      Sistem Pertahanan Rate-Limit &amp; Anti Brute-Force
+                    </h3>
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      Proteksi Dual-Layer Aktif
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+                    Pengawasan real-time otomatis terhadap serangan tebak sandi. Membatasi maksimal 5 kegagalan per IP atau per Akun dalam 15 menit.
+                  </p>
+                </div>
+              </div>
+
+              {rateLimits.filter((r) => r.lockedUntil && r.lockedUntil > serverTime).length > 0 && (
+                <button
+                  type="button"
+                  onClick={handleClearAllRateLimits}
+                  className="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-xs flex items-center gap-1.5 shrink-0 transition-colors active:scale-95 cursor-pointer"
+                >
+                  <Unlock className="w-3.5 h-3.5" />
+                  <span>Buka Semua Blokir</span>
+                </button>
+              )}
+            </div>
+
+            {/* Locked Targets List or Clean State */}
+            <div className="p-4 bg-slate-50/50">
+              {rateLimits.filter((r) => r.lockedUntil && r.lockedUntil > serverTime).length === 0 ? (
+                <div className="flex items-center gap-2.5 text-xs text-slate-600 bg-white p-3 rounded-xl border border-slate-200/80">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>
+                    Tidak ada alamat IP atau akun yang sedang terblokir saat ini. Seluruh jalur masuk portal berjalan normal dan terlindungi.
+                  </span>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-amber-900">
+                    Daftar IP / Akun yang Sedang Dibatasi:
+                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                    {rateLimits
+                      .filter((r) => r.lockedUntil && r.lockedUntil > serverTime)
+                      .map((item) => {
+                        const remainingMin = Math.ceil((item.lockedUntil - serverTime) / 60000);
+                        return (
+                          <div
+                            key={item.key}
+                            className="p-3 rounded-xl bg-white border border-amber-300 shadow-2xs flex items-center justify-between gap-3"
+                          >
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2">
+                                <span className="font-mono font-bold text-xs text-slate-900 truncate">
+                                  {item.target}
+                                </span>
+                                <span className="text-[10px] font-bold px-2 py-0.2 rounded bg-amber-100 text-amber-900 border border-amber-200 uppercase">
+                                  {item.type === 'ip' ? 'Alamat IP' : 'Akun'}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-1.5 text-[11px] text-slate-500 mt-1">
+                                <Clock className="w-3 h-3 text-amber-600" />
+                                <span>Terkunci {remainingMin} menit ({item.attempts}x salah)</span>
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleUnlockTarget(item.key)}
+                              className="px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 font-bold text-xs flex items-center gap-1 transition-colors shrink-0 active:scale-95 cursor-pointer"
+                              title="Buka kunci manual"
+                            >
+                              <Unlock className="w-3 h-3" />
+                              <span>Buka</span>
+                            </button>
+                          </div>
+                        );
+                      })}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
           <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4 flex items-start gap-3">
             <ShieldCheck className="w-5 h-5 text-blue-700 shrink-0 mt-0.5" />
             <div className="text-xs text-blue-900 leading-relaxed">

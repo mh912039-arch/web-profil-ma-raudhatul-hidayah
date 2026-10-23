@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -21,6 +21,8 @@ import {
   Mail,
   BookOpen,
   Hash,
+  ShieldAlert,
+  Clock,
 } from 'lucide-react';
 
 interface SchoolPortalLoginProps {
@@ -43,6 +45,31 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [warningAttempts, setWarningAttempts] = useState<number | null>(null);
+  const [lockoutSeconds, setLockoutSeconds] = useState<number>(0);
+
+  // Hitung mundur live saat perangkat/akun terkunci oleh proteksi brute-force
+  useEffect(() => {
+    if (lockoutSeconds <= 0) return;
+    const timer = setInterval(() => {
+      setLockoutSeconds((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          setErrorMessage('');
+          setWarningAttempts(null);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [lockoutSeconds]);
+
+  const formatCountdown = (totalSeconds: number): string => {
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+    return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  };
 
   // --- REGISTER STATES ---
   const [regRole, setRegRole] = useState<'guru' | 'siswa'>('guru');
@@ -63,7 +90,9 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (lockoutSeconds > 0) return;
     setErrorMessage('');
+    setWarningAttempts(null);
 
     if (!identifier.trim()) {
       setErrorMessage('Silakan masukkan NISN, NIP, atau Email Anda.');
@@ -86,10 +115,29 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
 
       const data = await res.json();
 
-      if (!res.ok || !data.success) {
-        setErrorMessage(data.message || 'Identitas atau kata sandi tidak cocok.');
+      // Periksa status 429 atau indikator terkunci
+      if (res.status === 429 || data.locked) {
+        setLockoutSeconds(data.remainingSeconds || 900);
+        setErrorMessage(
+          data.message || 'Terlalu banyak percobaan masuk yang keliru. Akses dibatasi sementara.'
+        );
+        setWarningAttempts(null);
         return;
       }
+
+      if (!res.ok || !data.success) {
+        setErrorMessage(data.message || 'Identitas atau kata sandi tidak cocok.');
+        if (data.remainingAttempts && data.remainingAttempts <= 2) {
+          setWarningAttempts(data.remainingAttempts);
+        } else {
+          setWarningAttempts(null);
+        }
+        return;
+      }
+
+      // Reset state lockout saat berhasil
+      setLockoutSeconds(0);
+      setWarningAttempts(null);
 
       // Simpan role di localStorage untuk sinkronisasi state instan di browser
       if (typeof window !== 'undefined') {
@@ -267,13 +315,46 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
               </p>
             </div>
 
-            {/* Error Alert */}
-            {errorMessage && (
-              <div className="mb-5 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium flex items-start gap-2 animate-in fade-in duration-150">
-                <AlertCircle className="w-4 h-4 shrink-0 text-rose-600 mt-0.5" />
-                <span className="leading-relaxed">{errorMessage}</span>
+            {/* Error Alert / Lockout Countdown Box */}
+            {lockoutSeconds > 0 ? (
+              <div className="mb-5 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-950 text-xs flex flex-col gap-2.5 animate-in fade-in duration-200">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 font-bold text-amber-900 text-[13px]">
+                    <ShieldAlert className="w-4 h-4 text-amber-700 shrink-0" />
+                    <span>Akses Dibatasi Sementara</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 font-mono font-bold text-[12.5px] bg-amber-100/90 text-amber-950 px-2.5 py-0.5 rounded-lg border border-amber-300">
+                    <Clock className="w-3.5 h-3.5 text-amber-700" />
+                    <span>{formatCountdown(lockoutSeconds)}</span>
+                  </div>
+                </div>
+                <p className="leading-relaxed text-slate-700 text-[12px]">
+                  Batas maksimal percobaan salah tercapai. Demi melindungi sistem dan data madrasah dari akses tidak sah, formulir masuk ditangguhkan sementara. Sistem akan membuka kunci secara otomatis saat hitungan mundur selesai.
+                </p>
               </div>
-            )}
+            ) : errorMessage ? (
+              <div
+                className={`mb-5 p-3 rounded-xl border text-xs font-medium flex items-start gap-2.5 animate-in fade-in duration-150 ${
+                  warningAttempts && warningAttempts <= 2
+                    ? 'bg-amber-50 border-amber-300 text-amber-900'
+                    : 'bg-rose-50 border-rose-200 text-rose-700'
+                }`}
+              >
+                {warningAttempts && warningAttempts <= 2 ? (
+                  <ShieldAlert className="w-4 h-4 shrink-0 text-amber-600 mt-0.5" />
+                ) : (
+                  <AlertCircle className="w-4 h-4 shrink-0 text-rose-600 mt-0.5" />
+                )}
+                <div className="flex-1">
+                  <p className="leading-relaxed">{errorMessage}</p>
+                  {warningAttempts && warningAttempts <= 2 && (
+                    <p className="mt-1 text-[11px] font-semibold text-amber-800">
+                      Peringatan: Kesempatan tersisa {warningAttempts} kali sebelum perangkat/akun dibekukan selama 15 menit.
+                    </p>
+                  )}
+                </div>
+              </div>
+            ) : null}
 
             <form onSubmit={handleLoginSubmit} className="space-y-4">
               {/* Field 1: Identifier */}
@@ -287,8 +368,9 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
                     type="text"
                     value={identifier}
                     onChange={(e) => setIdentifier(e.target.value)}
+                    disabled={lockoutSeconds > 0}
                     placeholder="Masukkan NISN, NIP, atau Email"
-                    className="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white text-slate-900 text-[13.5px] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-800/20 focus:border-blue-800 transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white text-slate-900 text-[13.5px] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-800/20 focus:border-blue-800 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                     required
                   />
                 </div>
@@ -305,14 +387,16 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    disabled={lockoutSeconds > 0}
                     placeholder="••••••••••••"
-                    className="w-full pl-10 pr-10 py-2.5 sm:py-3 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white text-slate-900 text-[13.5px] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-800/20 focus:border-blue-800 transition-all font-mono"
+                    className="w-full pl-10 pr-10 py-2.5 sm:py-3 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white text-slate-900 text-[13.5px] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-800/20 focus:border-blue-800 transition-all font-mono disabled:opacity-60 disabled:cursor-not-allowed"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3.5 top-3 text-slate-400 hover:text-slate-600 transition-colors p-0.5"
+                    disabled={lockoutSeconds > 0}
+                    className="absolute right-3.5 top-3 text-slate-400 hover:text-slate-600 transition-colors p-0.5 disabled:opacity-40"
                     aria-label={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
                   >
                     {showPassword ? (
@@ -327,10 +411,15 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
               {/* Submit Button */}
               <button
                 type="submit"
-                disabled={isSubmitting}
-                className="w-full mt-2 py-3 sm:py-3.5 rounded-xl bg-blue-900 hover:bg-blue-800 active:scale-[0.98] text-white font-bold text-[14px] flex items-center justify-center gap-2 shadow-xs transition-all duration-200 disabled:opacity-60 cursor-pointer"
+                disabled={isSubmitting || lockoutSeconds > 0}
+                className="w-full mt-2 py-3 sm:py-3.5 rounded-xl bg-blue-900 hover:bg-blue-800 active:scale-[0.98] text-white font-bold text-[14px] flex items-center justify-center gap-2 shadow-xs transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
               >
-                {isSubmitting ? (
+                {lockoutSeconds > 0 ? (
+                  <>
+                    <Lock className="w-4 h-4 text-slate-300" />
+                    <span>Terkunci Sementara ({formatCountdown(lockoutSeconds)})</span>
+                  </>
+                ) : isSubmitting ? (
                   <>
                     <RefreshCw className="w-4 h-4 animate-spin" />
                     <span>Memverifikasi Akun...</span>
