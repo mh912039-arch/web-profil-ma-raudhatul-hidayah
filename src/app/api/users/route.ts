@@ -174,7 +174,9 @@ export async function PATCH(request: Request) {
       ...(email ? { email: email.trim().toLowerCase() } : {}),
       ...(role ? { role } : {}),
       ...(status ? { status } : {}),
-      ...(password ? { password: hashPassword(String(password).trim()) } : {}),
+      ...(password && String(password).trim() !== '' && !String(password).startsWith('h256:')
+        ? { password: hashPassword(String(password).trim()) }
+        : {}),
       ...(Array.isArray(permissions) ? { permissions } : {}),
     };
 

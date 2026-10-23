@@ -134,8 +134,8 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
   };
 
   const copyCredentials = (user: { name?: string; email: string; password?: string; role?: string }) => {
-    const fallbackPass = user.role === 'admin' ? 'admin123' : user.role === 'siswa' ? 'siswa2026' : 'guru2026';
-    const pass = user.password || fallbackPass;
+    const isHashed = user.password?.startsWith('h256:');
+    const pass = isHashed ? '(Tersimpan aman terenkripsi - atur sandi baru di tombol Atur Sandi jika lupa)' : (user.password || '-');
     const text = `Kredensial Login Portal MAS Raudhatul Hidayah:\nNama: ${user.name || '-'}\nEmail/ID: ${user.email}\nKata Sandi: ${pass}\nAlamat Portal: https://web-profil-ma-raudhatul-hidayah.vercel.app/masuk`;
     navigator.clipboard.writeText(text);
     showNotification('success', `Kredensial untuk "${user.email}" berhasil disalin.`);
@@ -164,8 +164,8 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
   const handleQuickSavePassword = async () => {
     if (!editingUser) return;
     const pwd = editingUser.password?.trim();
-    if (!pwd) {
-      showNotification('error', 'Kata sandi tidak boleh kosong.');
+    if (!pwd || pwd.startsWith('h256:')) {
+      showNotification('error', 'Ketik kata sandi baru atau klik Buat Sandi Acak terlebih dahulu.');
       return;
     }
     setIsSavingPass(true);
@@ -272,23 +272,29 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
   const handleSavePermissions = async () => {
     if (!editingUser) return;
     try {
+      const payload: Record<string, any> = {
+        id: editingUser.id,
+        name: editingUser.name,
+        email: editingUser.email,
+        role: editingUser.role,
+        status: editingUser.status,
+        permissions: editingUser.permissions,
+      };
+
+      // Hanya kirim kata sandi jika pengguna mengetikkan kata sandi baru (bukan hash)
+      if (editingUser.password && editingUser.password.trim() && !editingUser.password.startsWith('h256:')) {
+        payload.password = editingUser.password.trim();
+      }
+
       const res = await fetch('/api/users', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: editingUser.id,
-          name: editingUser.name,
-          email: editingUser.email,
-          role: editingUser.role,
-          status: editingUser.status,
-          password: editingUser.password,
-          permissions: editingUser.permissions,
-        }),
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (res.ok && data.success) {
         setUsers((prev) =>
-          prev.map((u) => (u.id === editingUser.id ? editingUser : u))
+          prev.map((u) => (u.id === editingUser.id ? { ...u, ...payload } : u))
         );
         showNotification('success', data.message);
         setEditingUser(null);
@@ -743,12 +749,9 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                             <div className="px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-200 font-mono text-[11.5px] text-slate-900 flex items-center gap-2 min-w-[110px] justify-between shadow-2xs">
                               <span className="font-bold">
                                 {visiblePasswords[user.id]
-                                  ? user.password ||
-                                    (user.role === 'admin'
-                                      ? 'admin123'
-                                      : user.role === 'siswa'
-                                      ? 'siswa2026'
-                                      : 'guru2026')
+                                  ? user.password && !user.password.startsWith('h256:')
+                                    ? user.password
+                                    : '•••••••• (Terenkripsi)'
                                   : '••••••••'}
                               </span>
                               <button
@@ -869,13 +872,8 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                             <button
                               type="button"
                               onClick={() => {
-                                const fallback =
-                                  user.role === 'admin'
-                                    ? 'admin123'
-                                    : user.role === 'siswa'
-                                    ? 'siswa2026'
-                                    : 'guru2026';
-                                setEditingUser({ ...user, password: user.password || fallback });
+                                const isHashed = user.password?.startsWith('h256:');
+                                setEditingUser({ ...user, password: isHashed ? '' : (user.password || '') });
                                 setShowEditPassword(true);
                               }}
                               className="px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-[11.5px] transition-colors border border-blue-200 flex items-center gap-1 active:scale-[0.98]"
@@ -1157,13 +1155,8 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                               <button
                                 type="button"
                                 onClick={() => {
-                                  const fallback =
-                                    user.role === 'admin'
-                                      ? 'admin123'
-                                      : user.role === 'siswa'
-                                      ? 'siswa2026'
-                                      : 'guru2026';
-                                  setEditingUser({ ...user, password: user.password || fallback });
+                                  const isHashed = user.password?.startsWith('h256:');
+                                  setEditingUser({ ...user, password: isHashed ? '' : (user.password || '') });
                                   setShowEditPassword(true);
                                 }}
                                 className="px-3 py-1.5 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-xs transition-colors border border-blue-200 flex items-center gap-1 active:scale-[0.98]"
