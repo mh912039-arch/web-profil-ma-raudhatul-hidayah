@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createSessionToken, COOKIE_NAME, UserRole } from '@/lib/auth';
+import { createSessionToken, COOKIE_NAME, UserRole, verifyPassword, hashPassword } from '@/lib/auth';
 import { parseUserAgent } from '@/lib/deviceParser';
 import { readUsers, writeUsers, readSessions, writeSessions, UserSessionItem } from '@/lib/userStore';
 
@@ -110,7 +110,7 @@ export async function POST(request: Request) {
           ? (process.env.GURU_PASSWORD || 'guru2026')
           : (process.env.SISWA_PASSWORD || 'siswa2026'));
 
-      if (pass !== expectedPassword) {
+      if (!verifyPassword(pass, expectedPassword)) {
         recordFailedAttempt(clientIp);
         return NextResponse.json(
           {
@@ -119,6 +119,12 @@ export async function POST(request: Request) {
           },
           { status: 401 }
         );
+      }
+
+      // Auto-upgrade sandi plaintext menjadi hash kriptografis jika belum terenkripsi
+      if (matchedUser.password && !matchedUser.password.startsWith('h256:')) {
+        matchedUser.password = hashPassword(pass);
+        writeUsers(users).catch((err) => console.warn('Could not auto-hash password:', err));
       }
 
       detectedRole = matchedUser.role;

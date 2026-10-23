@@ -123,3 +123,27 @@ export async function requireAuth(allowedRoles?: UserRole[]): Promise<{
 }
 
 export { COOKIE_NAME };
+
+/**
+ * Hash kata sandi menggunakan HMAC-SHA256 dengan secret key salt
+ */
+export function hashPassword(plainText: string): string {
+  const hash = crypto.createHmac('sha256', SECRET_KEY).update(plainText).digest('hex');
+  return `h256:${hash}`;
+}
+
+/**
+ * Verifikasi kata sandi dengan proteksi timing attack
+ */
+export function verifyPassword(plainText: string, storedPassword?: string): boolean {
+  if (!storedPassword) return false;
+  if (storedPassword.startsWith('h256:')) {
+    const hash = hashPassword(plainText);
+    const providedBuf = Buffer.from(hash);
+    const expectedBuf = Buffer.from(storedPassword);
+    if (providedBuf.length !== expectedBuf.length) return false;
+    return crypto.timingSafeEqual(providedBuf, expectedBuf);
+  }
+  // Backward compatible untuk password teks biasa
+  return plainText === storedPassword;
+}

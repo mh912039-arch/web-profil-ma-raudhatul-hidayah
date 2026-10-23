@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { requireAuth } from '@/lib/auth';
+import { requireAuth, hashPassword } from '@/lib/auth';
 import {
   readUsers,
   writeUsers,
@@ -79,7 +79,7 @@ export async function POST(request: Request) {
       name: body.name.trim(),
       email: body.email.trim().toLowerCase(),
       username: body.username?.trim().toLowerCase() || body.email.split('@')[0],
-      password: (body.password || defaultPass).trim(),
+      password: hashPassword((body.password || defaultPass).trim()),
       role: body.role || 'guru',
       status: body.status || 'Aktif',
       permissions: Array.isArray(body.permissions)
@@ -174,7 +174,7 @@ export async function PATCH(request: Request) {
       ...(email ? { email: email.trim().toLowerCase() } : {}),
       ...(role ? { role } : {}),
       ...(status ? { status } : {}),
-      ...(password !== undefined ? { password: String(password).trim() } : {}),
+      ...(password ? { password: hashPassword(String(password).trim()) } : {}),
       ...(Array.isArray(permissions) ? { permissions } : {}),
     };
 
