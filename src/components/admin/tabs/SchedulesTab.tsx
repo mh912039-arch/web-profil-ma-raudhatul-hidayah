@@ -758,8 +758,8 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
           )}
         </div>
 
-        {/* Schedule Table View */}
-        <div className="overflow-x-auto">
+        {/* Schedule Table View (Desktop) & Cards (Mobile) */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left text-xs">
             {/* Deep Navy Table Header Matching Web Profil Topbar */}
             <thead className="bg-[#1e3a8a] text-white uppercase text-[11px] tracking-wider font-semibold">
@@ -863,6 +863,80 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile View: Touch-Friendly Responsive Cards */}
+        <div className="md:hidden divide-y divide-slate-100">
+          {isLoading ? (
+            <div className="py-12 text-center text-slate-400 text-xs">
+              Memuat data jadwal pelajaran...
+            </div>
+          ) : currentSchedules.length === 0 ? (
+            <div className="py-10 px-4 text-center space-y-2">
+              <p className="text-slate-500 font-medium text-xs">
+                Belum ada sesi pelajaran untuk hari {selectedDay} ({selectedRombel}).
+              </p>
+              {!readOnly && (
+                <button
+                  type="button"
+                  onClick={() => handleOpenAdd(1)}
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-blue-600 text-white text-xs font-semibold shadow-xs hover:bg-blue-700 transition-colors"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Tambah Sesi Pertama</span>
+                </button>
+              )}
+            </div>
+          ) : (
+            currentSchedules.map((item) => (
+              <div key={item.id} className="p-4 space-y-2.5 hover:bg-slate-50/80 transition-colors">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 font-mono text-xs font-bold text-slate-800">
+                    <Clock className="w-3.5 h-3.5 text-blue-600" />
+                    <span>{item.time_start} – {item.time_end}</span>
+                  </div>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                    Jam ke-{item.session_no}
+                  </span>
+                </div>
+
+                <div>
+                  <h4 className="font-bold text-slate-900 text-sm leading-tight">{item.subject_name}</h4>
+                  <p className="text-xs text-slate-600 font-medium mt-0.5 flex items-center gap-1">
+                    <span className="text-slate-400">Guru:</span>
+                    <span>{item.teacher_name}</span>
+                  </p>
+                </div>
+
+                <div className="flex items-center justify-between text-xs pt-1 border-t border-slate-100">
+                  <span className="text-[11px] text-slate-400">
+                    {item.room || 'Ruang Kelas'} {item.category ? `• ${item.category}` : ''}
+                  </span>
+
+                  {!readOnly && (
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => handleOpenEdit(item)}
+                        className="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 text-xs font-bold transition-colors inline-flex items-center gap-1"
+                      >
+                        <Edit2 className="w-3 h-3" />
+                        <span>Edit</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(item.id)}
+                        className="p-1 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                        title="Hapus Sesi"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
         </div>
 
         {/* Bottom Full-Width Add Button (Hanya tampil untuk Admin) */}

@@ -69,19 +69,19 @@ export async function GET() {
         return NextResponse.json(supaMapped);
       }
 
-      // Local photos ALWAYS take precedence over stale Supabase records!
-      const localMap = new Map<string, ChampionshipPhotoItem>();
-      localPhotos.forEach((lp) => {
-        if (lp.id) localMap.set(String(lp.id), lp);
+      // Supabase records are the primary cloud store (contain latest live admin edits)
+      const supaMap = new Map<string, ChampionshipPhotoItem>();
+      supaMapped.forEach((sp) => {
+        if (sp.id) supaMap.set(String(sp.id), sp);
       });
 
-      // Keep all local photos (which contain admin's edits)
-      const merged: ChampionshipPhotoItem[] = [...localPhotos];
+      // Start with all Supabase photos
+      const merged: ChampionshipPhotoItem[] = [...supaMapped];
 
-      // Append any truly new Supabase records that do not exist locally
-      supaMapped.forEach((sp) => {
-        if (sp.id && !localMap.has(String(sp.id))) {
-          merged.push(sp);
+      // Append any fallback local photos that do not exist yet in Supabase
+      localPhotos.forEach((lp) => {
+        if (lp.id && !supaMap.has(String(lp.id))) {
+          merged.push(lp);
         }
       });
 

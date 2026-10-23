@@ -86,20 +86,20 @@ export async function GET() {
         return NextResponse.json(supaMapped);
       }
 
-      // Local articles ALWAYS take precedence over stale Supabase records!
-      const localSlugMap = new Map<string, UnifiedArticle>();
-      localArticles.forEach((la) => {
-        if (la.slug) localSlugMap.set(la.slug, la);
-        if (la.id) localSlugMap.set(String(la.id), la);
+      // Supabase records are the primary cloud store (contain latest live admin edits)
+      const supaSlugMap = new Map<string, UnifiedArticle>();
+      supaMapped.forEach((sa) => {
+        if (sa.slug) supaSlugMap.set(sa.slug, sa);
+        if (sa.id) supaSlugMap.set(String(sa.id), sa);
       });
 
-      // Keep all local articles (containing latest admin edits)
-      const merged: UnifiedArticle[] = [...localArticles];
+      // Start with all Supabase articles
+      const merged: UnifiedArticle[] = [...supaMapped];
 
-      // Append any truly new Supabase records not present locally
-      supaMapped.forEach((sa) => {
-        if (sa.slug && !localSlugMap.has(sa.slug) && !localSlugMap.has(String(sa.id))) {
-          merged.push(sa);
+      // Append any fallback local articles that do not exist yet in Supabase
+      localArticles.forEach((la) => {
+        if (la.slug && !supaSlugMap.has(la.slug) && (!la.id || !supaSlugMap.has(String(la.id)))) {
+          merged.push(la);
         }
       });
 

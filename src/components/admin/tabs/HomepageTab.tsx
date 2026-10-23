@@ -759,6 +759,21 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
             </div>
           </div>
         </div>
+
+        {/* Bottom Save Action for Mobile & Desktop */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-slate-100">
+          <span className="text-xs text-slate-500 font-medium">
+            Perubahan tampilan beranda akan langsung aktif di web dan tersimpan ke Supabase.
+          </span>
+          <button
+            type="submit"
+            disabled={isSaving}
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-sans text-xs sm:text-[13px] font-bold shadow-sm transition-all active:scale-95 disabled:opacity-50 w-full sm:w-auto"
+          >
+            <Save className={`w-4 h-4 ${isSaving ? 'animate-spin' : ''}`} />
+            <span>{isSaving ? 'Menyimpan...' : 'Simpan Tampilan Depan'}</span>
+          </button>
+        </div>
       </div>
     </form>
   );

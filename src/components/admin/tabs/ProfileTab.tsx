@@ -909,6 +909,21 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
           </div>
         </div>
       )}
+
+      {/* Bottom Save Bar for Mobile & Desktop */}
+      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <span className="text-xs text-slate-500 font-medium">
+          Perubahan profil dan fasilitas akan langsung tersimpan ke Supabase &amp; diterapkan di seluruh web.
+        </span>
+        <button
+          type="submit"
+          disabled={isSaving}
+          className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-sans text-xs sm:text-[13px] font-bold transition-all shadow-xs active:scale-95 disabled:opacity-50 w-full sm:w-auto"
+        >
+          <Save className={`w-4 h-4 ${isSaving ? 'animate-spin' : ''}`} />
+          <span>{isSaving ? 'Menyimpan...' : isFacilities ? 'Simpan Fasilitas & Sarpras' : 'Simpan Profil Web'}</span>
+        </button>
+      </div>
     </form>
   );
 };

@@ -25,73 +25,98 @@ export async function GET() {
     console.warn('Could not read homeProfileData.json:', err);
   }
 
-  // Also try to read from Supabase school_profile
+  // 1. Read from Supabase school_profile (primary database)
   try {
     const { data: supaProfile, error } = await supabase
       .from('school_profile')
       .select('*')
       .eq('id', 1)
-      .single();
+      .maybeSingle();
 
     if (!error && supaProfile) {
       if (!data.profile) data.profile = {};
-      if (!data.profile.name && supaProfile.name) data.profile.name = supaProfile.name;
-      if (!data.profile.formalName && supaProfile.formal_name) data.profile.formalName = supaProfile.formal_name;
-      if (!data.profile.npsn && supaProfile.npsn) data.profile.npsn = supaProfile.npsn;
-      if (!data.profile.nsm && supaProfile.nsm) data.profile.nsm = supaProfile.nsm;
-      if (!data.profile.accreditation && supaProfile.accreditation) data.profile.accreditation = supaProfile.accreditation;
-      if (!data.profile.foundedYear && supaProfile.founded_year) data.profile.foundedYear = supaProfile.founded_year;
-      if (!data.profile.address && supaProfile.address) data.profile.address = supaProfile.address;
-      if (!data.profile.district && supaProfile.district) data.profile.district = supaProfile.district;
-      if (!data.profile.regency && supaProfile.regency) data.profile.regency = supaProfile.regency;
-      if (!data.profile.phone && supaProfile.phone) data.profile.phone = supaProfile.phone;
-      if (!data.profile.whatsapp && supaProfile.whatsapp) data.profile.whatsapp = supaProfile.whatsapp;
-      if (!data.profile.email && supaProfile.email) data.profile.email = supaProfile.email;
-      if ((!data.visionMission || !data.visionMission.vision) && supaProfile.vision) {
+      if (supaProfile.name) data.profile.name = supaProfile.name;
+      if (supaProfile.formal_name) data.profile.formalName = supaProfile.formal_name;
+      if (supaProfile.level) data.profile.level = supaProfile.level;
+      if (supaProfile.npsn) data.profile.npsn = supaProfile.npsn;
+      if (supaProfile.nsm) data.profile.nsm = supaProfile.nsm;
+      if (supaProfile.accreditation) data.profile.accreditation = supaProfile.accreditation;
+      if (supaProfile.founded_year) data.profile.foundedYear = supaProfile.founded_year;
+      if (supaProfile.address) data.profile.address = supaProfile.address;
+      if (supaProfile.district) data.profile.district = supaProfile.district;
+      if (supaProfile.regency) data.profile.regency = supaProfile.regency;
+      if (supaProfile.province) data.profile.province = supaProfile.province;
+      if (supaProfile.postal_code) data.profile.postalCode = supaProfile.postal_code;
+      if (supaProfile.phone) data.profile.phone = supaProfile.phone;
+      if (supaProfile.whatsapp) data.profile.whatsapp = supaProfile.whatsapp;
+      if (supaProfile.email) data.profile.email = supaProfile.email;
+      if (supaProfile.vision) {
         if (!data.visionMission) data.visionMission = {};
         data.visionMission.vision = supaProfile.vision;
       }
     }
+  } catch (err) {
+    console.warn('Supabase school_profile read:', err);
+  }
 
-    // Try reading homepage_config from Supabase
-    try {
-      const { data: supaHome } = await supabase
-        .from('homepage_config')
-        .select('*')
-        .eq('id', 1)
-        .maybeSingle();
+  // 2. Read persistent homepage configuration from SYS_HOME
+  try {
+    const { data: sysHome } = await supabase
+      .from('teachers_staff')
+      .select('education')
+      .eq('code', 'SYS_HOME')
+      .maybeSingle();
 
-      if (supaHome) {
-        if (!data.homepage) data.homepage = {};
-        if (supaHome.hero_title) data.homepage.heroTitle = supaHome.hero_title;
-        if (supaHome.hero_tagline) data.homepage.heroTagline = supaHome.hero_tagline;
-        if (supaHome.hero_badge) data.homepage.heroBadge = supaHome.hero_badge;
-        if (supaHome.hero_background) data.homepage.heroBackground = supaHome.hero_background;
-        if (supaHome.school_logo) data.homepage.schoolLogo = supaHome.school_logo;
-        if (supaHome.marquee_text1) data.homepage.marqueeText1 = supaHome.marquee_text1;
-        if (supaHome.marquee_cta1) data.homepage.marqueeCta1 = supaHome.marquee_cta1;
-        if (supaHome.marquee_link1) data.homepage.marqueeLink1 = supaHome.marquee_link1;
-        if (supaHome.marquee_text2) data.homepage.marqueeText2 = supaHome.marquee_text2;
-        if (supaHome.marquee_cta2) data.homepage.marqueeCta2 = supaHome.marquee_cta2;
-        if (supaHome.marquee_link2) data.homepage.marqueeLink2 = supaHome.marquee_link2;
-        if (supaHome.sambutan_heading) data.homepage.sambutanHeading = supaHome.sambutan_heading;
-        if (supaHome.sambutan_subtitle) data.homepage.sambutanSubtitle = supaHome.sambutan_subtitle;
-        if (supaHome.sambutan_badge) data.homepage.sambutanBadge = supaHome.sambutan_badge;
-        if (supaHome.headmaster_name) data.homepage.headmasterName = supaHome.headmaster_name;
-        if (supaHome.headmaster_role) data.homepage.headmasterRole = supaHome.headmaster_role;
-        if (supaHome.headmaster_photo) data.homepage.headmasterPhoto = supaHome.headmaster_photo;
-        if (supaHome.sambutan_text1) data.homepage.sambutanText1 = supaHome.sambutan_text1;
-        if (supaHome.sambutan_text2) data.homepage.sambutanText2 = supaHome.sambutan_text2;
-        if (supaHome.cta_text) data.homepage.ctaText = supaHome.cta_text;
-        if (supaHome.cta_link) data.homepage.ctaLink = supaHome.cta_link;
-        if (supaHome.stat1_value) data.homepage.stat1Value = supaHome.stat1_value;
-        if (supaHome.stat1_label) data.homepage.stat1Label = supaHome.stat1_label;
-        if (supaHome.stat2_value) data.homepage.stat2Value = supaHome.stat2_value;
-        if (supaHome.stat2_label) data.homepage.stat2Label = supaHome.stat2_label;
-        if (supaHome.stat3_value) data.homepage.stat3Value = supaHome.stat3_value;
-        if (supaHome.stat3_label) data.homepage.stat3Label = supaHome.stat3_label;
+    if (sysHome?.education) {
+      const parsedHome = JSON.parse(sysHome.education);
+      if (parsedHome && typeof parsedHome === 'object') {
+        data.homepage = { ...(data.homepage || {}), ...parsedHome };
       }
-    } catch (e) {}
+    }
+  } catch (err) {
+    console.warn('Notice: SYS_HOME read:', err);
+  }
+
+  // 3. Read persistent extended profile data from SYS_PROF (vision-mission, history, facilities)
+  try {
+    const { data: sysProf } = await supabase
+      .from('teachers_staff')
+      .select('education')
+      .eq('code', 'SYS_PROF')
+      .maybeSingle();
+
+    if (sysProf?.education) {
+      const parsedProf = JSON.parse(sysProf.education);
+      if (parsedProf && typeof parsedProf === 'object') {
+        if (parsedProf.profile) data.profile = { ...(data.profile || {}), ...parsedProf.profile };
+        if (parsedProf.visionMission) data.visionMission = { ...(data.visionMission || {}), ...parsedProf.visionMission };
+        if (parsedProf.history) data.history = { ...(data.history || {}), ...parsedProf.history };
+        if (Array.isArray(parsedProf.facilities) && parsedProf.facilities.length > 0) {
+          data.facilities = parsedProf.facilities;
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('Notice: SYS_PROF read:', err);
+  }
+
+  // 4. Try reading facilities table from Supabase if present
+  try {
+    const { data: supaFacilities, error: facErr } = await supabase
+      .from('facilities')
+      .select('*')
+      .order('order_index', { ascending: true });
+
+    if (!facErr && supaFacilities && supaFacilities.length > 0) {
+      data.facilities = supaFacilities.map((f: any) => ({
+        id: f.id,
+        title: f.name,
+        subtitle: f.category || 'Akademik',
+        desc: f.description || '',
+        image: f.image_url || '/kelas.jpeg',
+        badge: f.category || 'Fasilitas Unggulan',
+      }));
+    }
   } catch (err) {
     // Non-blocking
   }
@@ -157,43 +182,65 @@ export async function POST(request: Request) {
         logo_url: home.schoolLogo,
       });
 
-      // Sync homepage_config if table exists
+      // 1. Primary Persistent Store: Save homepage config into Supabase teachers_staff (SYS_HOME)
       if (updatedData.homepage) {
         try {
-          await supabase.from('homepage_config').upsert({
-            id: 1,
-            hero_title: home.heroTitle,
-            hero_tagline: home.heroTagline,
-            hero_badge: home.heroBadge,
-            hero_background: home.heroBackground,
-            school_logo: home.schoolLogo,
-            marquee_text1: home.marqueeText1,
-            marquee_cta1: home.marqueeCta1,
-            marquee_link1: home.marqueeLink1,
-            marquee_text2: home.marqueeText2,
-            marquee_cta2: home.marqueeCta2,
-            marquee_link2: home.marqueeLink2,
-            sambutan_heading: home.sambutanHeading,
-            sambutan_subtitle: home.sambutanSubtitle,
-            sambutan_badge: home.sambutanBadge,
-            headmaster_name: home.headmasterName,
-            headmaster_role: home.headmasterRole,
-            headmaster_photo: home.headmasterPhoto,
-            sambutan_text1: home.sambutanText1,
-            sambutan_text2: home.sambutanText2,
-            cta_text: home.ctaText,
-            cta_link: home.ctaLink,
-            stat1_value: home.stat1Value,
-            stat1_label: home.stat1Label,
-            stat2_value: home.stat2Value,
-            stat2_label: home.stat2Label,
-            stat3_value: home.stat3Value,
-            stat3_label: home.stat3Label,
-          });
-        } catch (e) {}
+          const homeJson = JSON.stringify(updatedData.homepage);
+          const { data: updatedHome } = await supabase
+            .from('teachers_staff')
+            .update({ education: homeJson, updated_at: new Date().toISOString() })
+            .eq('code', 'SYS_HOME')
+            .select('id');
+
+          if (!updatedHome || updatedHome.length === 0) {
+            await supabase.from('teachers_staff').insert({
+              name: 'System Homepage Store',
+              code: 'SYS_HOME',
+              category_label: 'Sistem',
+              subject_name: 'Homepage',
+              education: homeJson,
+              order_no: 9995,
+              role: 'system',
+              is_active: false,
+            });
+          }
+        } catch (e) {
+          console.warn('Notice: SYS_HOME sync:', e);
+        }
       }
 
-      // Also update school_profile stats if numbers are valid
+      // 2. Primary Persistent Store: Save extended profile into Supabase teachers_staff (SYS_PROF)
+      try {
+        const profPayload = {
+          profile: updatedData.profile,
+          visionMission: updatedData.visionMission,
+          history: updatedData.history,
+          facilities: updatedData.facilities,
+        };
+        const profJson = JSON.stringify(profPayload);
+        const { data: updatedProf } = await supabase
+          .from('teachers_staff')
+          .update({ education: profJson, updated_at: new Date().toISOString() })
+          .eq('code', 'SYS_PROF')
+          .select('id');
+
+        if (!updatedProf || updatedProf.length === 0) {
+          await supabase.from('teachers_staff').insert({
+            name: 'System Profile Store',
+            code: 'SYS_PROF',
+            category_label: 'Sistem',
+            subject_name: 'Profile',
+            education: profJson,
+            order_no: 9994,
+            role: 'system',
+            is_active: false,
+          });
+        }
+      } catch (e) {
+        console.warn('Notice: SYS_PROF sync:', e);
+      }
+
+      // 3. Update school_profile stats if numbers are valid
       if (updatedData.homepage) {
         try {
           const numStudents = parseInt(home.stat1Value);
@@ -208,7 +255,7 @@ export async function POST(request: Request) {
         } catch (e) {}
       }
 
-      // Sync facilities if present
+      // 4. Sync facilities if present
       if (Array.isArray(updatedData.facilities)) {
         for (const fac of updatedData.facilities) {
           const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(fac.id));

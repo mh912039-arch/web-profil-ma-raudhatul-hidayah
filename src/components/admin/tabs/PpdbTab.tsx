@@ -313,6 +313,21 @@ export const PpdbTab: React.FC<PpdbTabProps> = ({
                 required
               />
             </div>
+
+            {/* Bottom Actions for Mobile & Desktop */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-slate-100">
+              <span className="text-xs text-slate-500 font-medium">
+                Pembaruan akan langsung tersimpan ke Supabase & aktif di website.
+              </span>
+              <button
+                type="submit"
+                disabled={isSaving}
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-sans text-[13px] font-bold shadow-sm transition-all active:scale-95 disabled:opacity-50 w-full sm:w-auto"
+              >
+                <Save className={`w-4 h-4 ${isSaving ? 'animate-spin' : ''}`} />
+                <span>{isSaving ? 'Menyimpan...' : 'Simpan Pembaruan PPDB'}</span>
+              </button>
+            </div>
           </div>
         </form>
       ) : (

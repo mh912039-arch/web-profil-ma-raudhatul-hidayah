@@ -438,7 +438,9 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <>
+            {/* Desktop View Table */}
+            <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-slate-50/80 border-b border-slate-200 text-[11.5px] font-bold uppercase tracking-wider text-slate-500">
@@ -546,7 +548,105 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
               </tbody>
             </table>
           </div>
-        )}
+
+          {/* Mobile View: Touch-Friendly Responsive Cards */}
+          <div className="md:hidden divide-y divide-slate-100">
+            {filteredApplicants.map((app) => {
+              const cleanPhone = sanitizeWhatsAppPhone(app.parent_whatsapp);
+              const docCount = Object.values(app.documents || {}).filter(Boolean).length;
+
+              return (
+                <div key={app.id || app.registration_number} className="p-4 space-y-3 hover:bg-slate-50/80 transition-colors">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <span className="font-mono text-xs font-bold text-blue-700 block">
+                        {app.registration_number}
+                      </span>
+                      <h4 className="font-bold text-slate-900 text-sm">{app.full_name}</h4>
+                      <span className="text-[11px] font-mono text-slate-500">
+                        NISN: {app.nisn || '-'} ({app.gender === 'P' ? 'Putri' : 'Putra'})
+                      </span>
+                    </div>
+
+                    <div className="shrink-0">
+                      {jalurBadge(app.registration_path)}
+                    </div>
+                  </div>
+
+                  <div className="text-xs text-slate-600 space-y-1 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400">Asal:</span>
+                      <span className="font-medium text-slate-800 truncate max-w-[200px]">{app.previous_school || '-'}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400">Wali:</span>
+                      <span className="font-medium text-slate-800">{app.parent_name}</span>
+                    </div>
+                    {cleanPhone && (
+                      <div className="flex items-center justify-between pt-0.5">
+                        <span className="text-slate-400">No. WA:</span>
+                        <a
+                          href={`https://wa.me/${cleanPhone}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="font-mono text-emerald-700 font-bold hover:underline"
+                        >
+                          +{cleanPhone}
+                        </a>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-100">
+                    {/* Status Dropdown */}
+                    <select
+                      value={app.status}
+                      onChange={(e) => {
+                        const newStatus = e.target.value as PpdbApplicant['status'];
+                        const targetId = app.id || app.registration_number;
+                        if (targetId) {
+                          onUpdateStatus(targetId, newStatus);
+                          if (newStatus === 'accepted' || newStatus === 'rejected') {
+                            openWhatsAppNotice(app, newStatus);
+                          }
+                        }
+                      }}
+                      className="px-2 py-1.5 rounded-lg bg-slate-50 border border-slate-300 text-xs font-semibold text-slate-800 focus:outline-none"
+                    >
+                      <option value="submitted">Menunggu</option>
+                      <option value="verified">Verifikasi</option>
+                      <option value="accepted">Diterima</option>
+                      <option value="rejected">Tolak</option>
+                    </select>
+
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => setDetailApplicant(app)}
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-bold transition-all"
+                        title="Lihat Berkas"
+                      >
+                        <FileText className="w-3.5 h-3.5 text-blue-600" />
+                        <span>Berkas ({docCount})</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => openWhatsAppNotice(app, app.status)}
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300/80 text-xs font-bold transition-all"
+                        title="Kirim WA"
+                      >
+                        <MessageSquare className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>WA</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
       </div>
 
       {/* ====================================================================
