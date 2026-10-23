@@ -15,7 +15,7 @@ export const IdentityBento: React.FC = () => {
             Visi, Misi & Falsafah Nilai Pendidikan
           </h2>
           <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
-            Fondasi kelembagaan MA Raudhatul Hidayah yang menuntun arah kurikulum, pembinaan karakter santri, dan tata kelola madrasah unggul.
+            Fondasi kelembagaan MAS Raudhatul Hidayah yang menuntun arah kurikulum, pembinaan karakter santri, dan tata kelola madrasah unggul.
           </p>
         </div>
 

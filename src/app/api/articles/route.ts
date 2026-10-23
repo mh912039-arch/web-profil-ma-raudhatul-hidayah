@@ -67,7 +67,7 @@ export async function GET() {
         title: row.title,
         category: row.category || 'Berita Sekolah',
         date: row.published_at ? new Date(row.published_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Terbaru',
-        author: row.author || 'Humas MA Raudhatul Hidayah',
+        author: row.author || 'Humas MAS Raudhatul Hidayah',
         summary: row.excerpt || (row.content ? row.content.slice(0, 150) + '...' : ''),
         lead: row.excerpt || row.title,
         paragraphs: row.content ? row.content.split('\n\n').filter((p: string) => p.trim()) : [row.title],
@@ -110,7 +110,7 @@ export async function GET() {
         title: art.title || 'Warta Madrasah',
         category: art.category || 'Prestasi',
         date: art.date || 'Terbaru',
-        author: art.author || 'Humas MA Raudhatul Hidayah',
+        author: art.author || 'Humas MAS Raudhatul Hidayah',
         excerpt: art.excerpt || art.summary || (art.content ? art.content.slice(0, 160) : art.title),
         summary: art.summary || art.excerpt || (art.content ? art.content.slice(0, 160) : art.title),
         content: art.content || (Array.isArray(art.paragraphs) ? art.paragraphs.join('\n\n') : (art.summary || art.title || '')),
@@ -136,7 +136,7 @@ export async function GET() {
     title: art.title || 'Warta Madrasah',
     category: art.category || 'Prestasi',
     date: art.date || 'Terbaru',
-    author: art.author || 'Humas MA Raudhatul Hidayah',
+    author: art.author || 'Humas MAS Raudhatul Hidayah',
     excerpt: art.excerpt || art.summary || (art.content ? art.content.slice(0, 160) : art.title),
     summary: art.summary || art.excerpt || (art.content ? art.content.slice(0, 160) : art.title),
     content: art.content || (Array.isArray(art.paragraphs) ? art.paragraphs.join('\n\n') : (art.summary || art.title || '')),
@@ -170,7 +170,7 @@ export async function POST(request: Request) {
     const content = body.content?.trim() || body.summary?.trim() || title;
     const summary = body.summary?.trim() || body.excerpt?.trim() || content.slice(0, 160);
     const category = body.category?.trim() || 'Prestasi';
-    const author = body.author?.trim() || 'Humas MA Raudhatul Hidayah';
+    const author = body.author?.trim() || 'Humas MAS Raudhatul Hidayah';
     const imageUrl = body.imageUrl || body.cover_image || '/foto-juara.jpeg';
     const isFeatured = Boolean(body.is_featured ?? false);
     const isPublished = Boolean(body.is_published ?? true);
@@ -192,7 +192,7 @@ export async function POST(request: Request) {
       lead: summary,
       paragraphs: content.split('\n\n').filter((p: string) => p.trim()),
       content,
-      tags: [category, 'MA Raudhatul Hidayah', 'Mauk'],
+      tags: [category, 'MAS Raudhatul Hidayah', 'Mauk'],
       imageUrl,
       cover_image: imageUrl,
       is_featured: isFeatured,

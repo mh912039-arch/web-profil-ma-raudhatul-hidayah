@@ -183,7 +183,7 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
         <div className="w-20 h-20 bg-white p-2.5 rounded-2xl border border-slate-200/90 shadow-xs flex items-center justify-center mx-auto mb-3.5 transition-transform hover:scale-105 duration-200">
           <Image
             src="/school-logo.png"
-            alt="Logo MA Raudhatul Hidayah"
+            alt="Logo MAS Raudhatul Hidayah"
             width={64}
             height={64}
             className="w-auto h-auto max-h-16 object-contain"
@@ -192,7 +192,7 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
         </div>
 
         <h1 className="font-serif text-[22px] sm:text-[24px] font-bold text-slate-900 tracking-tight uppercase leading-snug">
-          MA RAUDHATUL HIDAYAH
+          MAS RAUDHATUL HIDAYAH
         </h1>
       </div>
 

@@ -24,9 +24,9 @@ const workSans = Work_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'MA Raudhatul Hidayah — Membentuk Generasi Berkarakter, Cerdas & Berintegritas',
-  description: 'Portal Resmi MA Raudhatul Hidayah (Madrasah Aliyah). NPSN: 69941777, Mauk Tangerang Banten. Berlandaskan adab, Kurikulum Merdeka, dan keunggulan akademik.',
-  keywords: 'MA Raudhatul Hidayah, Madrasah Aliyah Raudhatul Hidayah, Profil Madrasah Mauk, Tangerang Banten, Kurikulum Merdeka, NPSN 69941777',
+  title: 'MAS Raudhatul Hidayah — Membentuk Generasi Berkarakter, Cerdas & Berintegritas',
+  description: 'Portal Resmi MAS Raudhatul Hidayah (Madrasah Aliyah). NPSN: 69941777, Mauk Tangerang Banten. Berlandaskan adab, Kurikulum Merdeka, dan keunggulan akademik.',
+  keywords: 'MAS Raudhatul Hidayah, Madrasah Aliyah Swasta Raudhatul Hidayah, Profil Madrasah Mauk, Tangerang Banten, Kurikulum Merdeka, NPSN 69941777',
 };
 
 import { VisitorTracker } from '@/components/analytics/VisitorTracker';

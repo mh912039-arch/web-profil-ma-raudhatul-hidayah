@@ -41,7 +41,7 @@ export const EditorialGreeting: React.FC = () => {
                   {headmaster.name}
                 </div>
                 <div className="text-xs font-semibold text-amber-800 mt-0.5">
-                  Kepala Sekolah MA Raudhatul Hidayah
+                  Kepala Sekolah MAS Raudhatul Hidayah
                 </div>
                 <div className="text-[11px] font-mono text-slate-400 mt-1">
                   NIP. {headmaster.nip}
@@ -65,7 +65,7 @@ export const EditorialGreeting: React.FC = () => {
             <div className="space-y-4 text-slate-600 text-sm sm:text-base leading-relaxed">
               <p>
                 Bismillahirrohmanirrohim. Assalamu’alaikum Warahmatullahi Wabarakatuh.
-                Selamat datang di portal informasi resmi MA Raudhatul Hidayah. Kami meyakini bahwa masa Sekolah Menengah Pertama (SMP) adalah fase paling menentukan dalam pembentukan karakter, logika berpikir, dan kemandirian seorang anak.
+                Selamat datang di portal informasi resmi MAS Raudhatul Hidayah. Kami meyakini bahwa masa Sekolah Menengah Pertama (SMP) adalah fase paling menentukan dalam pembentukan karakter, logika berpikir, dan kemandirian seorang anak.
               </p>
               <p>
                 Melalui penerapan Kurikulum Merdeka yang integratif dengan nilai-nilai kepesantrenan Ahlussunnah wal Jama’ah, kami mendampingi setiap siswa agar memiliki pemahaman akidah yang lurus, kebiasaan ibadah yang disiplin, serta kecakapan literasi dan sains yang siap bersaing saat melangkah ke jenjang SMA, SMK, maupun MA unggulan.

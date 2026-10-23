@@ -1,7 +1,7 @@
 -- ==============================================================================
--- SKEMA BASIS DATA SUPABASE — MA RAUDHATUL HIDAYAH (WEBSITE PROFIL & CMS ADMIN)
+-- SKEMA BASIS DATA SUPABASE — MAS RAUDHATUL HIDAYAH (WEBSITE PROFIL & CMS ADMIN)
 -- ==============================================================================
--- Proyek: Website Resmi & Dashboard Admin CMS MA Raudhatul Hidayah
+-- Proyek: Website Resmi & Dashboard Admin CMS MAS Raudhatul Hidayah
 -- Engine: PostgreSQL / Supabase
 -- Fitur: RLS (Row Level Security), Timestamps Trigger, Storage Buckets, & Seed Data
 -- ==============================================================================
@@ -36,8 +36,8 @@ CREATE TABLE IF NOT EXISTS public.admin_profiles (
 -- ==============================================================================
 CREATE TABLE IF NOT EXISTS public.school_profile (
     id INT PRIMARY KEY DEFAULT 1 CHECK (id = 1),
-    name TEXT NOT NULL DEFAULT 'MA Raudhatul Hidayah',
-    formal_name TEXT NOT NULL DEFAULT 'Madrasah Aliyah Raudhatul Hidayah',
+    name TEXT NOT NULL DEFAULT 'MAS Raudhatul Hidayah',
+    formal_name TEXT NOT NULL DEFAULT 'Madrasah Aliyah Swasta Raudhatul Hidayah',
     level TEXT NOT NULL DEFAULT 'Madrasah Aliyah (MA)',
     npsn VARCHAR(20) DEFAULT '69980315',
     nsm VARCHAR(20) DEFAULT '131236030045',
@@ -77,13 +77,13 @@ CREATE TABLE IF NOT EXISTS public.school_profile (
 CREATE TABLE IF NOT EXISTS public.headmaster_greeting (
     id INT PRIMARY KEY DEFAULT 1 CHECK (id = 1),
     name TEXT NOT NULL DEFAULT 'Drs. H. Mulyadi',
-    title TEXT NOT NULL DEFAULT 'Kepala Madrasah Aliyah Raudhatul Hidayah',
+    title TEXT NOT NULL DEFAULT 'Kepala Madrasah Aliyah Swasta Raudhatul Hidayah',
     degrees TEXT DEFAULT 'S.Pd.I, M.Pd',
     photo_url TEXT DEFAULT '/kepala-madrasah.jpg',
     greeting_title TEXT NOT NULL DEFAULT 'Menyiapkan Insan Kamil di Era Transformasi Digital',
     greeting_paragraphs JSONB DEFAULT '[
         "Assalamu’alaikum Warahmatullahi Wabarakatuh. Puji syukur senantiasa kita panjatkan ke hadirat Allah SWT atas segala limpahan rahmat, hidayah, dan inayah-Nya.",
-        "Selamat datang di gerbang resmi website MA Raudhatul Hidayah Mauk. Madrasah kami hadir sebagai kawah candradimuka pendidikan Islam modern yang mengintegrasikan keluhuran adab salaf dengan keunggulan sains masa kini.",
+        "Selamat datang di gerbang resmi website MAS Raudhatul Hidayah Mauk. Madrasah kami hadir sebagai kawah candradimuka pendidikan Islam modern yang mengintegrasikan keluhuran adab salaf dengan keunggulan sains masa kini.",
         "Melalui implementasi Kurikulum Merdeka Terpadu Fase E & F, kami berkomitmen mendampingi setiap santri agar tidak hanya cakap secara kognitif, melainkan teguh akidahnya dan santun pekertinya."
     ]'::jsonb,
     closing_quote TEXT DEFAULT 'Pendidikan sejati bukan sekadar menjejalkan pengetahuan ke benak murid, melainkan menyalakan lentera akhlak dan memandu mereka menemukan kebermaknaan hidup.',
@@ -95,11 +95,11 @@ CREATE TABLE IF NOT EXISTS public.headmaster_greeting (
 -- ==============================================================================
 CREATE TABLE IF NOT EXISTS public.ppdb_settings (
     id INT PRIMARY KEY DEFAULT 1 CHECK (id = 1),
-    category TEXT NOT NULL DEFAULT 'PENERIMAAN PESERTA DIDIK BARU (PPDB) • MA RAUDHATUL HIDAYAH',
+    category TEXT NOT NULL DEFAULT 'PENERIMAAN PESERTA DIDIK BARU (PPDB) • MAS RAUDHATUL HIDAYAH',
     title TEXT NOT NULL DEFAULT 'Membentuk Generasi Berkarakter, Cerdas & Berakhlak Mulia',
     academic_year VARCHAR(20) NOT NULL DEFAULT '2027/2028',
     badge_text VARCHAR(50) NOT NULL DEFAULT 'TELAH DIBUKA!',
-    description TEXT NOT NULL DEFAULT 'MA Raudhatul Hidayah hadir sebagai kawah candradimuka yang mendampingi setiap murid untuk bertumbuh menjadi generasi yang tangguh, unggul, dan berkarakter islami. Melalui pembelajaran kontekstual berbasis Kurikulum Merdeka yang bermakna serta pembiasaan adab luhur kepesantrenan, santri didorong untuk menemukan potensi, mengembangkan bakat, dan meraih prestasi terbaiknya.',
+    description TEXT NOT NULL DEFAULT 'MAS Raudhatul Hidayah hadir sebagai kawah candradimuka yang mendampingi setiap murid untuk bertumbuh menjadi generasi yang tangguh, unggul, dan berkarakter islami. Melalui pembelajaran kontekstual berbasis Kurikulum Merdeka yang bermakna serta pembiasaan adab luhur kepesantrenan, santri didorong untuk menemukan potensi, mengembangkan bakat, dan meraih prestasi terbaiknya.',
     features JSONB DEFAULT '[
         "Kurikulum Merdeka Terpadu (Fase E & F)",
         "Pembentukan Karakter & Adab Islami",
@@ -189,7 +189,7 @@ CREATE TABLE IF NOT EXISTS public.articles (
     excerpt TEXT,
     content TEXT NOT NULL,
     category VARCHAR(50) DEFAULT 'Prestasi',
-    author TEXT DEFAULT 'Humas MA Raudhatul Hidayah',
+    author TEXT DEFAULT 'Humas MAS Raudhatul Hidayah',
     cover_image TEXT DEFAULT '/foto-juara.jpeg',
     image_caption TEXT,
     is_featured BOOLEAN DEFAULT FALSE,
@@ -429,15 +429,15 @@ USING (bucket_id = 'school-media')
 WITH CHECK (bucket_id = 'school-media');
 
 -- ==============================================================================
--- 21. SEED DATA AWAL (DATA NYATA MA RAUDHATUL HIDAYAH SIAP DIGUNAKAN)
+-- 21. SEED DATA AWAL (DATA NYATA MAS RAUDHATUL HIDAYAH SIAP DIGUNAKAN)
 -- ==============================================================================
 
 -- 21.1 Profil Sekolah
 INSERT INTO public.school_profile (id, name, formal_name, level, npsn, nsm, accreditation, founded_year, address, village, district, regency, province, postal_code, phone, whatsapp, email, maps_embed_url, stats_active_students, stats_certified_teachers)
 VALUES (
     1,
-    'MA Raudhatul Hidayah',
-    'Madrasah Aliyah Raudhatul Hidayah',
+    'MAS Raudhatul Hidayah',
+    'Madrasah Aliyah Swasta Raudhatul Hidayah',
     'Madrasah Aliyah (MA)',
     '69980315',
     '131236030045',
@@ -463,7 +463,7 @@ INSERT INTO public.headmaster_greeting (id, name, title, degrees, photo_url, gre
 VALUES (
     1,
     'Drs. H. Mulyadi',
-    'Kepala Madrasah Aliyah Raudhatul Hidayah',
+    'Kepala Madrasah Aliyah Swasta Raudhatul Hidayah',
     'S.Pd.I, M.Pd',
     '/kepala-madrasah.jpg',
     'Menyiapkan Insan Kamil di Era Transformasi Digital'
@@ -474,11 +474,11 @@ ON CONFLICT (id) DO NOTHING;
 INSERT INTO public.ppdb_settings (id, category, title, academic_year, badge_text, description, contact_wa, contact_phone, registration_link, poster_url, is_registration_open)
 VALUES (
     1,
-    'PENERIMAAN PESERTA DIDIK BARU (PPDB) • MA RAUDHATUL HIDAYAH',
+    'PENERIMAAN PESERTA DIDIK BARU (PPDB) • MAS RAUDHATUL HIDAYAH',
     'Membentuk Generasi Berkarakter, Cerdas & Berakhlak Mulia',
     '2027/2028',
     'TELAH DIBUKA!',
-    'MA Raudhatul Hidayah hadir sebagai kawah candradimuka yang mendampingi setiap murid untuk bertumbuh menjadi generasi yang tangguh, unggul, dan berkarakter islami. Melalui pembelajaran kontekstual berbasis Kurikulum Merdeka yang bermakna serta pembiasaan adab luhur kepesantrenan, santri didorong untuk menemukan potensi, mengembangkan bakat, dan meraih prestasi terbaiknya.',
+    'MAS Raudhatul Hidayah hadir sebagai kawah candradimuka yang mendampingi setiap murid untuk bertumbuh menjadi generasi yang tangguh, unggul, dan berkarakter islami. Melalui pembelajaran kontekstual berbasis Kurikulum Merdeka yang bermakna serta pembiasaan adab luhur kepesantrenan, santri didorong untuk menemukan potensi, mengembangkan bakat, dan meraih prestasi terbaiknya.',
     '628176614723',
     '0817-6614-723',
     'https://wa.me/628176614723?text=Halo%20Panitia%20PPDB%20MA%20Raudhatul%20Hidayah,%20saya%20ingin%20mendaftar%20dan%20konsultasi%20PPDB%202027/2028',
@@ -526,9 +526,9 @@ ON CONFLICT (slug) DO NOTHING;
 -- 21.6 Data Foto Juara Ekstrakurikuler
 INSERT INTO public.championship_photos (title, event_name, date_label, category, image_url, caption, order_index)
 VALUES
-('Kontingen Juara Umum Gebyar Ramadhan', 'Gebyar Ramadhan 1447 H Gerakan Pramuka Kwarran Mauk', '14 April 2026', 'Pramuka Penegak', '/foto-juara.jpeg', 'Kontingen Pramuka Penegak MA Raudhatul Hidayah mengangkat trofi kejuaraan bersama seluruh jajaran panitia di panggung utama.', 1),
+('Kontingen Juara Umum Gebyar Ramadhan', 'Gebyar Ramadhan 1447 H Gerakan Pramuka Kwarran Mauk', '14 April 2026', 'Pramuka Penegak', '/foto-juara.jpeg', 'Kontingen Pramuka Penegak MAS Raudhatul Hidayah mengangkat trofi kejuaraan bersama seluruh jajaran panitia di panggung utama.', 1),
 ('Srikandi Pramuka Penegak Berprestasi', 'Malam Puncak Penganugerahan Kwarran Mauk', '14 April 2026', 'Pramuka Putri', '/foto-juara-pramuka.jpeg', 'Dua santriwati berprestasi didampingi pembina regu tersenyum bangga memegang piala penghargaan kategori ketangkasan kepramukaan.', 2),
-('Penyerahan Trofi Bergilir Kehormatan', 'Prosesi Penganugerahan Pemenang Kwarran Mauk', '14 April 2026', 'Pramuka Putra & Putri', '/foto-semua-juara.jpeg', 'Momen khidmat penyerahan trofi bergilir juara oleh dewan juri kehormatan kepada perwakilan santri MA Raudhatul Hidayah.', 3)
+('Penyerahan Trofi Bergilir Kehormatan', 'Prosesi Penganugerahan Pemenang Kwarran Mauk', '14 April 2026', 'Pramuka Putra & Putri', '/foto-semua-juara.jpeg', 'Momen khidmat penyerahan trofi bergilir juara oleh dewan juri kehormatan kepada perwakilan santri MAS Raudhatul Hidayah.', 3)
 ON CONFLICT DO NOTHING;
 
 -- 21.7 Data Sarana & Prasarana Fasilitas
@@ -545,33 +545,33 @@ INSERT INTO public.articles (slug, title, excerpt, content, category, author, co
 VALUES
 (
     'kontingen-pramuka-ma-raudhatul-hidayah-sapu-bersih-juara-gebyar-ramadhan-1447-h',
-    'Kontingen Pramuka MA Raudhatul Hidayah Sapu Bersih Juara pada Gebyar Ramadhan 1447 H',
-    'Prestasi membanggakan kembali ditorehkan santri MA Raudhatul Hidayah dengan meraih juara umum pada ajang kepramukaan se-Kecamatan Mauk.',
-    'Alhamdulillah, puji syukur ke hadirat Allah SWT. Kontingen Gugus Depan Pramuka Penegak MA Raudhatul Hidayah berhasil membuktikan ketangguhan dan kekompakannya dalam ajang Gebyar Ramadhan 1447 H Gerakan Pramuka Kwartir Ranting Mauk. Dalam kompetisi yang diikuti oleh puluhan pangkalan sekolah dan madrasah se-Kabupaten Tangerang bagian utara ini, santri MA Raudhatul Hidayah sukses memborong gelar juara di berbagai mata lomba kepramukaan dan ketangkasan regu.',
+    'Kontingen Pramuka MAS Raudhatul Hidayah Sapu Bersih Juara pada Gebyar Ramadhan 1447 H',
+    'Prestasi membanggakan kembali ditorehkan santri MAS Raudhatul Hidayah dengan meraih juara umum pada ajang kepramukaan se-Kecamatan Mauk.',
+    'Alhamdulillah, puji syukur ke hadirat Allah SWT. Kontingen Gugus Depan Pramuka Penegak MAS Raudhatul Hidayah berhasil membuktikan ketangguhan dan kekompakannya dalam ajang Gebyar Ramadhan 1447 H Gerakan Pramuka Kwartir Ranting Mauk. Dalam kompetisi yang diikuti oleh puluhan pangkalan sekolah dan madrasah se-Kabupaten Tangerang bagian utara ini, santri MAS Raudhatul Hidayah sukses memborong gelar juara di berbagai mata lomba kepramukaan dan ketangkasan regu.',
     'Prestasi',
-    'Humas MA Raudhatul Hidayah',
+    'Humas MAS Raudhatul Hidayah',
     '/foto-juara.jpeg',
     true,
     true
 ),
 (
     'kekompakan-kontingen-pramuka-ma-raudhatul-hidayah-panggung-kehormatan-kwarran-mauk',
-    'Kekompakan Kontingen Pramuka MA Raudhatul Hidayah Memukau Panggung Kehormatan',
+    'Kekompakan Kontingen Pramuka MAS Raudhatul Hidayah Memukau Panggung Kehormatan',
     'Semangat kebersamaan dan kedisiplinan santri membuahkan apresiasi tinggi dari para pembina dan dewan juri kehormatan.',
-    'Pemandangan membanggakan tersaji di panggung kehormatan Kwarran Mauk saat santriwati MA Raudhatul Hidayah melangkah dengan penuh percaya diri menerima trofi penghargaan. Latihan intensif selama berminggu-minggu di bawah arahan dewan pembina terbayar lunas dengan prestasi yang mengharumkan nama madrasah dan yayasan.',
+    'Pemandangan membanggakan tersaji di panggung kehormatan Kwarran Mauk saat santriwati MAS Raudhatul Hidayah melangkah dengan penuh percaya diri menerima trofi penghargaan. Latihan intensif selama berminggu-minggu di bawah arahan dewan pembina terbayar lunas dengan prestasi yang mengharumkan nama madrasah dan yayasan.',
     'Prestasi',
-    'Humas MA Raudhatul Hidayah',
+    'Humas MAS Raudhatul Hidayah',
     '/foto-juara-pramuka.jpeg',
     false,
     true
 ),
 (
     'momen-khidmat-penyerahan-trofi-santri-ma-raudhatul-hidayah-panggung-utama-kwarran-mauk',
-    'Momen Khidmat Penyerahan Trofi Kejuaraan Santri MA Raudhatul Hidayah di Panggung Utama',
-    'Dokumentasi resmi prosesi penganugerahan trofi kemenangan kontingen MA Raudhatul Hidayah.',
+    'Momen Khidmat Penyerahan Trofi Kejuaraan Santri MAS Raudhatul Hidayah di Panggung Utama',
+    'Dokumentasi resmi prosesi penganugerahan trofi kemenangan kontingen MAS Raudhatul Hidayah.',
     'Prosesi penyerahan piala berlangsung penuh keharuan dan kebanggaan. Dewan juri mengapresiasi tidak hanya keterampilan teknis kepramukaan para santri, melainkan adab santun dan ketertiban barisan yang ditunjukkan sepanjang perhelatan kompetisi.',
     'Prestasi',
-    'Humas MA Raudhatul Hidayah',
+    'Humas MAS Raudhatul Hidayah',
     '/foto-semua-juara.jpeg',
     false,
     true

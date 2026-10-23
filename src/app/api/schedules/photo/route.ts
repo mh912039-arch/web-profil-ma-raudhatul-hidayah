@@ -44,7 +44,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const photoUrl = body.photo_url;
-    const caption = body.caption || 'Jadwal Pelajaran Resmi MA Raudhatul Hidayah';
+    const caption = body.caption || 'Jadwal Pelajaran Resmi MAS Raudhatul Hidayah';
 
     if (!photoUrl) {
       return NextResponse.json({ success: false, message: 'URL foto jadwal diperlukan.' }, { status: 400, headers: noCacheHeaders });

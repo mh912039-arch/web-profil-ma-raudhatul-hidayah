@@ -23,12 +23,12 @@ export interface PpdbData {
 }
 
 const defaultPpdbData: PpdbData = {
-  category: 'PENERIMAAN PESERTA DIDIK BARU (PPDB) • MA RAUDHATUL HIDAYAH',
+  category: 'PENERIMAAN PESERTA DIDIK BARU (PPDB) • MAS RAUDHATUL HIDAYAH',
   title: 'Membentuk Generasi Berkarakter, Cerdas & Berakhlak Mulia',
   academicYear: '2027/2028',
   badgeText: 'TELAH DIBUKA!',
   description:
-    'MA Raudhatul Hidayah hadir sebagai kawah candradimuka yang mendampingi setiap murid untuk bertumbuh menjadi generasi yang tangguh, unggul, dan berkarakter islami. Melalui pembelajaran kontekstual berbasis Kurikulum Merdeka yang bermakna serta pembiasaan adab luhur kepesantrenan, santri didorong untuk menemukan potensi, mengembangkan bakat, dan meraih prestasi terbaiknya.',
+    'MAS Raudhatul Hidayah hadir sebagai kawah candradimuka yang mendampingi setiap murid untuk bertumbuh menjadi generasi yang tangguh, unggul, dan berkarakter islami. Melalui pembelajaran kontekstual berbasis Kurikulum Merdeka yang bermakna serta pembiasaan adab luhur kepesantrenan, santri didorong untuk menemukan potensi, mengembangkan bakat, dan meraih prestasi terbaiknya.',
   features: [
     'Kurikulum Merdeka Terpadu (Fase E & F)',
     'Pembentukan Karakter & Adab Islami',
@@ -96,7 +96,7 @@ export function PpdbSection({ onOpenRegister }: PpdbSectionProps) {
               {/* Background Official SPMB Poster */}
               <Image
                 src="/poster-ppdb.jpeg"
-                alt="Brosur Poster Resmi SPMB MA Raudhatul Hidayah"
+                alt="Brosur Poster Resmi SPMB MAS Raudhatul Hidayah"
                 fill
                 className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
                 priority

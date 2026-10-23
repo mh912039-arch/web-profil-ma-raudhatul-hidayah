@@ -145,7 +145,7 @@ export const VisitorAnalyticsSection: React.FC = () => {
             </span>
           </div>
           <p className="text-[12.5px] text-slate-500 mt-0.5">
-            Data trafik riil pengunjung halaman profil publik MA Raudhatul Hidayah saat diakses melalui domain resmi.
+            Data trafik riil pengunjung halaman profil publik MAS Raudhatul Hidayah saat diakses melalui domain resmi.
           </p>
         </div>
 

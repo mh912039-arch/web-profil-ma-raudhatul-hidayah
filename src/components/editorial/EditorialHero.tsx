@@ -16,7 +16,7 @@ const slides: HeroSlide[] = [
     id: 1,
     image: '/hero/slide-1.jpg',
     label: 'Gedung Utama',
-    caption: 'Halaman Depan MA Raudhatul Hidayah, Jl. Raya Tanjung Kait, Mauk',
+    caption: 'Halaman Depan MAS Raudhatul Hidayah, Jl. Raya Tanjung Kait, Mauk',
   },
   {
     id: 2,
@@ -176,7 +176,7 @@ export const EditorialHero: React.FC = () => {
 
               {/* Slide Progress Ticker */}
               <div className="flex items-center justify-between px-3 py-2.5 mt-1 text-[11px] text-slate-500 font-mono">
-                <span>Kampus MA Raudhatul Hidayah</span>
+                <span>Kampus MAS Raudhatul Hidayah</span>
                 <div className="flex gap-1.5">
                   {slides.map((_, idx) => (
                     <button

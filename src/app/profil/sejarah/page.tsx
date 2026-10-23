@@ -16,7 +16,7 @@ const defaultHistory = {
       desc: 'Perjalanan dimulai dengan pendirian MIS Raudlatul Hidayah 01 di Kampung Tanjung Anom, Kecamatan Mauk, guna memberikan pondasi akhlak yang kokoh, adab pergaulan, serta kemampuan baca tulis Al-Qur\'an bagi putra-putri daerah sekitar.',
     },
     {
-      title: 'Pendirian Resmi MA Raudhatul Hidayah',
+      title: 'Pendirian Resmi MAS Raudhatul Hidayah',
       badge: '17 September 2015',
       desc: 'Guna menampung antusiasme para santri untuk melanjutkan pendidikan menengah yang kokoh dalam syariat dan adaptif dalam sains, MAS Raudlatul Hidayah resmi berdiri pada 17 September 2015 dengan izin operasional lengkap Kementerian Agama dan NPSN 6994888.',
     },
@@ -97,7 +97,7 @@ export default function SejarahPage() {
                 <div className="relative rounded-2xl overflow-hidden shadow-lg border border-surface-container aspect-[4/3]">
                   <Image
                     src="/hero/slide-2.jpg"
-                    alt="Kompleks Sekolah MA Raudhatul Hidayah di Mauk Tangerang"
+                    alt="Kompleks Sekolah MAS Raudhatul Hidayah di Mauk Tangerang"
                     fill
                     className="object-cover"
                   />

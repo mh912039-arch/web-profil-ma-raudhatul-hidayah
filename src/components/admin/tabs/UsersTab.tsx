@@ -136,7 +136,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
   const copyCredentials = (user: { name?: string; email: string; password?: string; role?: string }) => {
     const fallbackPass = user.role === 'admin' ? 'admin123' : user.role === 'siswa' ? 'siswa2026' : 'guru2026';
     const pass = user.password || fallbackPass;
-    const text = `Kredensial Login Portal MA Raudhatul Hidayah:\nNama: ${user.name || '-'}\nEmail/ID: ${user.email}\nKata Sandi: ${pass}\nAlamat Portal: https://web-profil-ma-raudhatul-hidayah.vercel.app/masuk`;
+    const text = `Kredensial Login Portal MAS Raudhatul Hidayah:\nNama: ${user.name || '-'}\nEmail/ID: ${user.email}\nKata Sandi: ${pass}\nAlamat Portal: https://web-profil-ma-raudhatul-hidayah.vercel.app/masuk`;
     navigator.clipboard.writeText(text);
     showNotification('success', `Kredensial untuk "${user.email}" berhasil disalin.`);
   };

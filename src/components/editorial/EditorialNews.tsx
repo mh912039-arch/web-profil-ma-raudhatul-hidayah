@@ -21,7 +21,7 @@ export const EditorialNews: React.FC = () => {
               Warta & Dinamika Terkini Sekolah
             </h2>
             <p className="text-slate-600 text-sm sm:text-base mt-2 max-w-2xl">
-              Catatan prestasi siswa, agenda pembiasaan akhlak, serta siaran informasi kelembagaan MA Raudhatul Hidayah.
+              Catatan prestasi siswa, agenda pembiasaan akhlak, serta siaran informasi kelembagaan MAS Raudhatul Hidayah.
             </p>
           </div>
 

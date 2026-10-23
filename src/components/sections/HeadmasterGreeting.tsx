@@ -49,7 +49,7 @@ export const HeadmasterGreeting: React.FC = () => {
 
             <div className="space-y-4 text-stone-600 leading-relaxed text-sm sm:text-base mb-6">
               <p>
-                Bismillah walhamdulillah. Selamat datang di portal resmi MA Raudhatul Hidayah. Kami meyakini bahwa pendidikan sejati tidak hanya mengasah kecerdasan intelektual, tetapi juga menumbuhkan kepekaan nurani, keteguhan akidah, dan akhlakul karimah.
+                Bismillah walhamdulillah. Selamat datang di portal resmi MAS Raudhatul Hidayah. Kami meyakini bahwa pendidikan sejati tidak hanya mengasah kecerdasan intelektual, tetapi juga menumbuhkan kepekaan nurani, keteguhan akidah, dan akhlakul karimah.
               </p>
               <p>
                 Di lingkungan sekolah kami, setiap siswa didorong untuk berani bereksplorasi dalam ilmu pengetahuan dan nalar kritis, sembari tetap berakar kuat pada nilai-nilai adab, akhlakul karimah, dan budi pekerti luhur.

@@ -106,7 +106,7 @@ export default function FasilitasPage() {
                     </div>
 
                     <div className="pt-4 border-t border-surface-container flex items-center justify-between text-[12.5px] text-slate-500 font-medium">
-                      <span>MA Raudhatul Hidayah</span>
+                      <span>MAS Raudhatul Hidayah</span>
                       <span className="text-secondary font-semibold">Tersedia &amp; Terawat</span>
                     </div>
                   </div>

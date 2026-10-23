@@ -183,13 +183,13 @@ export const EditorialNavbar: React.FC = () => {
               <div className="w-12 h-12 rounded-xl bg-slate-900 p-2 flex items-center justify-center flex-shrink-0 shadow-sm group-hover:bg-slate-800 transition-colors">
                 <img
                   src="/school-logo.png"
-                  alt="Logo MA Raudhatul Hidayah"
+                  alt="Logo MAS Raudhatul Hidayah"
                   className="w-full h-full object-contain"
                 />
               </div>
               <div className="flex flex-col">
                 <span className="font-display font-extrabold text-base sm:text-lg text-slate-950 tracking-tight leading-tight group-hover:text-amber-700 transition-colors">
-                  MA RAUDHATUL HIDAYAH
+                  MAS RAUDHATUL HIDAYAH
                 </span>
                 <span className="text-[11px] text-slate-500 font-medium tracking-wide">
                   Sekolah Menengah Pertama (SMP) · Terakreditasi A

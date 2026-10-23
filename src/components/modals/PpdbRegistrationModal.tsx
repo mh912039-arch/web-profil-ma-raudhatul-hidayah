@@ -225,7 +225,7 @@ export const PpdbRegistrationModal: React.FC<PpdbRegistrationModalProps> = ({
 
   const waPanitiaUrl = registeredData
     ? `https://wa.me/628176614723?text=${encodeURIComponent(
-        `Assalamu'alaikum Panitia PPDB MA Raudhatul Hidayah,\nSaya orang tua/wali dari santri *${registeredData.full_name}* ingin konfirmasi pendaftaran online.\nNo. Registrasi: *${registeredData.registration_number}* (${jalurNameMap[registeredData.registration_path] || 'PPDB Online'}).\nMohon informasi tahapan verifikasi berkas selanjutnya. Terima kasih.`
+        `Assalamu'alaikum Panitia PPDB MAS Raudhatul Hidayah,\nSaya orang tua/wali dari santri *${registeredData.full_name}* ingin konfirmasi pendaftaran online.\nNo. Registrasi: *${registeredData.registration_number}* (${jalurNameMap[registeredData.registration_path] || 'PPDB Online'}).\nMohon informasi tahapan verifikasi berkas selanjutnya. Terima kasih.`
       )}`
     : 'https://wa.me/628176614723';
 
@@ -257,7 +257,7 @@ export const PpdbRegistrationModal: React.FC<PpdbRegistrationModalProps> = ({
             </div>
           </div>
           <p className="font-sans text-[12.5px] text-slate-300 max-w-2xl">
-            MA Raudhatul Hidayah Mauk • Lengkapi identitas, pilih jalur seleksi, dan unggah berkas persyaratan calon santri.
+            MAS Raudhatul Hidayah Mauk • Lengkapi identitas, pilih jalur seleksi, dan unggah berkas persyaratan calon santri.
           </p>
         </div>
 

@@ -34,8 +34,8 @@ interface FooterProfile {
 }
 
 const defaultProfile: FooterProfile = {
-  name: 'MA Raudhatul Hidayah',
-  formalName: 'Madrasah Aliyah Raudhatul Hidayah',
+  name: 'MAS Raudhatul Hidayah',
+  formalName: 'Madrasah Aliyah Swasta Raudhatul Hidayah',
   level: 'Sekolah Menengah Pertama (SMP) / MA',
   npsn: '6994888',
   nsm: '131236030045',
@@ -79,7 +79,7 @@ export function StitchFooter() {
               <div className="relative w-12 h-12 shrink-0 flex items-center justify-center transition-transform duration-200 hover:scale-105">
                 <Image
                   src="/school-logo.png"
-                  alt="Logo MA Raudhatul Hidayah"
+                  alt="Logo MAS Raudhatul Hidayah"
                   width={46}
                   height={46}
                   className="object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
@@ -90,7 +90,7 @@ export function StitchFooter() {
                   {profile.name}
                 </span>
                 <span className="text-[11px] text-blue-700 uppercase tracking-widest font-semibold">
-                  {profile.formalName || 'Madrasah Aliyah Raudhatul Hidayah'}
+                  {profile.formalName || 'Madrasah Aliyah Swasta Raudhatul Hidayah'}
                 </span>
               </div>
             </div>
@@ -268,7 +268,7 @@ export function StitchFooter() {
                   rel="noopener noreferrer"
                   className="hover:text-blue-700 transition-colors"
                 >
-                  MA Raudhatul Hidayah
+                  MAS Raudhatul Hidayah
                 </a>
               </div>
             </div>
@@ -277,7 +277,7 @@ export function StitchFooter() {
 
         {/* Bottom Bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 font-sans text-[12.5px] text-slate-500">
-          <p>© 2026 MA Raudhatul Hidayah. Seluruh Hak Cipta Dilindungi.</p>
+          <p>© 2026 MAS Raudhatul Hidayah. Seluruh Hak Cipta Dilindungi.</p>
           <div className="flex items-center gap-6">
             <Link
               href="/admin"

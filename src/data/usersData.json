@@ -61,7 +61,7 @@
   },
   {
     "id": "usr-guru",
-    "name": "Dewan Guru MA Raudhatul Hidayah",
+    "name": "Dewan Guru MAS Raudhatul Hidayah",
     "email": "guru@raudhatulhidayah.sch.id",
     "username": "guru",
     "password": "guru2026",
@@ -172,7 +172,7 @@
   },
   {
     "id": "usr-7",
-    "name": "Santri & OSIS MA Raudhatul Hidayah",
+    "name": "Santri & OSIS MAS Raudhatul Hidayah",
     "email": "siswa@raudhatulhidayah.sch.id",
     "username": "siswa",
     "password": "siswa2026",

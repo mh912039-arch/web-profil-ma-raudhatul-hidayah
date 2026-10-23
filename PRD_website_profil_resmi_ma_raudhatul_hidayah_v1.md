@@ -1,19 +1,19 @@
-# PRD — Website Profil Resmi MA Raudhatul Hidayah
+# PRD — Website Profil Resmi MAS Raudhatul Hidayah
 
 ## 1. Overview
 
 ### 1.1 Problem Statement & Konteks Lapangan
-MA Raudhatul Hidayah saat ini menghadapi tantangan signifikan dalam menyajikan informasi institusi secara digital. Ketiadaan sistem manajemen terpusat mengakibatkan keterlambatan pembaruan berita kegiatan, ketidaksesuaian data kurikulum akademik, serta lambatnya akses galeri dokumentasi bagi calon peserta didik dan orang tua siswa. Pengelola madrasah memerlukan infrastruktur digital yang andal untuk mengelola konten teks dan media secara mandiri tanpa ketergantungan pada pengembang eksternal.
+MAS Raudhatul Hidayah saat ini menghadapi tantangan signifikan dalam menyajikan informasi institusi secara digital. Ketiadaan sistem manajemen terpusat mengakibatkan keterlambatan pembaruan berita kegiatan, ketidaksesuaian data kurikulum akademik, serta lambatnya akses galeri dokumentasi bagi calon peserta didik dan orang tua siswa. Pengelola madrasah memerlukan infrastruktur digital yang andal untuk mengelola konten teks dan media secara mandiri tanpa ketergantungan pada pengembang eksternal.
 
 Selain itu, kompleksitas pengelolaan struktur organisasi dan profil tenaga pendidik menuntut adanya antarmuka administratif berbasis Headless CMS yang aman, terstruktur, dan mudah dioperasikan oleh Super Admin. Keterbatasan sistem saat ini memicu risiko penyebaran informasi yang tidak akurat, merusak kredibilitas institusi di mata masyarakat luas serta instansi pendidikan terkait.
 
 Oleh karena itu, diperlukan perancangan platform website profil resmi berbasis arsitektur modern menggunakan Next.js dan Supabase yang mampu menyajikan data secara cepat, konsisten, serta mendukung pembaruan informasi profil madrasah, program Kurikulum Merdeka, serta galeri kegiatan secara real-time.
 
 ### 1.2 Hipotesis Solusi & Alur Kunci
-Jika MA Raudhatul Hidayah menyediakan platform profil resmi berbasis Headless CMS dengan pembaruan konten real-time, maka tingkat kunjungan orang tua dan transparansi informasi akademik akan meningkat sebesar 45 persen dalam tiga bulan pertama peluncuran.
+Jika MAS Raudhatul Hidayah menyediakan platform profil resmi berbasis Headless CMS dengan pembaruan konten real-time, maka tingkat kunjungan orang tua dan transparansi informasi akademik akan meningkat sebesar 45 persen dalam tiga bulan pertama peluncuran.
 
 ### 1.3 Keunggulan Strategis & Keselarasan Solusi
-Inisiatif ini selaras dengan strategi digitalisasi institusi pendidikan Islam modern, memperkuat posisi MA Raudhatul Hidayah sebagai madrasah unggulan yang transparan, akuntabel, dan adaptif terhadap perkembangan teknologi informasi.
+Inisiatif ini selaras dengan strategi digitalisasi institusi pendidikan Islam modern, memperkuat posisi MAS Raudhatul Hidayah sebagai madrasah unggulan yang transparan, akuntabel, dan adaptif terhadap perkembangan teknologi informasi.
 
 ### 1.4 Target Persona & Pengguna Sistem
 Super Admin / Tim IT Madrasah
@@ -44,7 +44,7 @@ Super Admin / Tim IT Madrasah
 
 - Antarmuka sederhana dan ramah untuk Super Admin / Tim IT Madrasah (navigasi intuitif, alur ringkas, istilah mudah dipahami).
 - Responsif: nyaman dan optimal dipakai di perangkat mobile/HP, tablet, maupun laptop/desktop untuk menunjang fleksibilitas Super Admin / Tim IT Madrasah.
-- Keamanan Data: data website profil resmi ma raudhatul hidayah terisolasi dan hanya bisa diakses oleh akun terautentikasi sesuai hak akses (terproteksi sesi login aman).
+- Keamanan Data: data website profil resmi mas raudhatul hidayah terisolasi dan hanya bisa diakses oleh akun terautentikasi sesuai hak akses (terproteksi sesi login aman).
 - Penyimpanan Berkas Media: file rekaman audio tersimpan aman di penyimpanan awan/storage dengan integritas berkas terjamin dan pemutaran kembali lancar.
 - Integritas Riwayat: riwayat pencatatan dan aktivitas tidak hilang (didukung mekanisme soft-delete dan jejak audit) untuk akuntabilitas data.
 - Proses simpan dan pemuatan data terasa cepat (< 2 detik) agar tidak mengganggu aktivitas harian pengguna.
@@ -132,7 +132,7 @@ Dasbor Admin & Laporan Analitik — menyajikan rekapitulasi performa bisnis dan 
 
 Alur utama yang akan dilalui pengguna, disusun mengikuti urutan fase:
 
-1. **Daftar & Masuk (FASE 1 – tersedia lebih awal sebagai pondasi akses)**: Pengguna (Super Admin / Tim IT Madrasah) membuat akun, lalu login ke dalam sistem. Setelah berhasil masuk, pengguna melengkapi konfigurasi profil awal dan preferensi kerja pada Website Profil Resmi MA Raudhatul Hidayah.
+1. **Daftar & Masuk (FASE 1 – tersedia lebih awal sebagai pondasi akses)**: Pengguna (Super Admin / Tim IT Madrasah) membuat akun, lalu login ke dalam sistem. Setelah berhasil masuk, pengguna melengkapi konfigurasi profil awal dan preferensi kerja pada Website Profil Resmi MAS Raudhatul Hidayah.
 
 2. **Autentikasi & Manajemen Peran Super Admin (FASE 1)**: Pengguna membuka halaman **Autentikasi & Manajemen Peran Super Admin** untuk mengelola fitur **Super Admin Login** dan **Role-Based Access Control**. Pengguna memasukkan parameter yang dibutuhkan, lalu sistem memvalidasi kelengkapan data dan memperbarui status secara realtime.
 
@@ -350,7 +350,7 @@ erDiagram
 
 ## 7. Tech Stack
 
-Karena pilihan teknologi diserahkan ke AI, berikut rekomendasi yang paling cocok untuk aplikasi website profil resmi ma raudhatul hidayah skala kecil — sederhana, cepat dibangun, dan mudah dirawat.
+Karena pilihan teknologi diserahkan ke AI, berikut rekomendasi yang paling cocok untuk aplikasi website profil resmi mas raudhatul hidayah skala kecil — sederhana, cepat dibangun, dan mudah dirawat.
 
 - **Framework (Frontend + Backend):** Next.js (App Router) — menangani antarmuka sekaligus logika server dalam satu proyek.
 - **UI & Styling:** Tailwind CSS + shadcn/ui — komponen siap pakai yang rapi, cepat, dan konsisten; cocok untuk tampilan dashboard dan tabel yang perlu enak dibaca.

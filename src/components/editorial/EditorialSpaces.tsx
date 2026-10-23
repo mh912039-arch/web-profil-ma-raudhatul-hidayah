@@ -17,7 +17,7 @@ export const EditorialSpaces: React.FC = () => {
               Lingkungan Pendidikan yang Nyata & Kondusif
             </h2>
             <p className="text-slate-600 text-sm sm:text-base mt-2 max-w-2xl">
-              Sarana otentik di lingkungan sekolah MA Raudhatul Hidayah yang dirawat untuk kenyamanan belajar dan tumbuh kembang siswa.
+              Sarana otentik di lingkungan sekolah MAS Raudhatul Hidayah yang dirawat untuk kenyamanan belajar dan tumbuh kembang siswa.
             </p>
           </div>
 
@@ -40,7 +40,7 @@ export const EditorialSpaces: React.FC = () => {
               <div className="relative h-64 sm:h-72 w-full overflow-hidden bg-slate-200">
                 <img
                   src="/perpus2.jpeg"
-                  alt="Perpustakaan & Khazanah Turots MA Raudhatul Hidayah"
+                  alt="Perpustakaan & Khazanah Turots MAS Raudhatul Hidayah"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   loading="lazy"
                 />
@@ -74,7 +74,7 @@ export const EditorialSpaces: React.FC = () => {
               <div className="relative h-64 sm:h-72 w-full overflow-hidden bg-slate-200">
                 <img
                   src="/kelas.jpeg"
-                  alt="Ruang Kelas Pembelajaran MA Raudhatul Hidayah"
+                  alt="Ruang Kelas Pembelajaran MAS Raudhatul Hidayah"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   loading="lazy"
                 />
@@ -108,7 +108,7 @@ export const EditorialSpaces: React.FC = () => {
               <div className="lg:col-span-5 relative h-56 sm:h-64 lg:h-full min-h-[220px] overflow-hidden bg-slate-200">
                 <img
                   src="/hero/slide-2.jpg"
-                  alt="Halaman Sekolah MA Raudhatul Hidayah"
+                  alt="Halaman Sekolah MAS Raudhatul Hidayah"
                   className="w-full h-full object-cover"
                   loading="lazy"
                 />
@@ -120,7 +120,7 @@ export const EditorialSpaces: React.FC = () => {
               <div className="lg:col-span-7 p-6 sm:p-8 space-y-3">
                 <div className="flex items-center gap-2 text-xs font-mono text-slate-500">
                   <MapPin className="w-3.5 h-3.5 text-amber-700" />
-                  <span>Kompleks Gedung MA Raudhatul Hidayah, Tanjung Anom</span>
+                  <span>Kompleks Gedung MAS Raudhatul Hidayah, Tanjung Anom</span>
                 </div>
                 <h3 className="font-display text-xl sm:text-2xl font-bold text-slate-950">
                   Halaman Sekolah & Area Aktivitas Bersama

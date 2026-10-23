@@ -147,7 +147,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             <div className="relative w-10 h-10 rounded-xl bg-white p-1 flex items-center justify-center shrink-0 border border-blue-200 shadow-xs">
               <Image
                 src="/school-logo.png"
-                alt="Emblem MA Raudhatul Hidayah"
+                alt="Emblem MAS Raudhatul Hidayah"
                 width={36}
                 height={36}
                 className="object-contain"
@@ -155,7 +155,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             </div>
             <div className="flex flex-col min-w-0">
               <span className="font-serif text-[14px] font-bold text-slate-900 tracking-tight truncate group-hover:text-blue-700 transition-colors">
-                MA RAUDHATUL HIDAYAH
+                MAS RAUDHATUL HIDAYAH
               </span>
               <span className="text-[11px] font-semibold text-blue-700 tracking-wide">
                 {userRole === 'siswa'

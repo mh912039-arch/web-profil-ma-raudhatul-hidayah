@@ -17,7 +17,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
   description,
   currentBreadcrumb,
   imageUrl = '/hero/slide-1.jpg',
-  imageAlt = 'MA Raudhatul Hidayah',
+  imageAlt = 'MAS Raudhatul Hidayah',
 }) => {
   return (
     <section className="bg-stone-50/80 border-b border-stone-200/80 py-12 lg:py-16">

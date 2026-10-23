@@ -14,7 +14,7 @@ const slides: HeroSlide[] = [
   {
     id: 1,
     image: '/hero/slide-1.jpg',
-    alt: 'Halaman Depan Kampus MA Raudhatul Hidayah',
+    alt: 'Halaman Depan Kampus MAS Raudhatul Hidayah',
   },
   {
     id: 2,
@@ -24,7 +24,7 @@ const slides: HeroSlide[] = [
   {
     id: 3,
     image: '/hero/slide-3.jpg',
-    alt: 'Galeri Prestasi Santri MA Raudhatul Hidayah',
+    alt: 'Galeri Prestasi Santri MAS Raudhatul Hidayah',
   },
 ];
 
@@ -43,7 +43,7 @@ export const HeroSection: React.FC = () => {
     <section
       id="beranda"
       className="relative min-h-[520px] sm:min-h-[580px] lg:min-h-[640px] flex items-center overflow-hidden bg-stone-950 text-white"
-      aria-label="Beranda MA Raudhatul Hidayah"
+      aria-label="Beranda MAS Raudhatul Hidayah"
     >
       {/* Background Photo Carousel (3 Foto Sekolah Asli Bergiliran Otomatis) */}
       <div className="absolute inset-0 z-0">
@@ -85,7 +85,7 @@ export const HeroSection: React.FC = () => {
           {/* Main Display Headline matching Figma */}
           <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white mb-5 leading-[1.12] drop-shadow-md">
             Selamat Datang di <br className="hidden sm:inline" />
-            <span className="text-emerald-300">MA Raudhatul Hidayah</span>
+            <span className="text-emerald-300">MAS Raudhatul Hidayah</span>
           </h1>
 
           {/* Subtitle in Indonesian */}

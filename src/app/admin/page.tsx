@@ -22,7 +22,7 @@ import { PpdbData } from '@/components/sections/PpdbSection';
 import { supabase } from '@/lib/supabaseClient';
 import { CheckCircle2, AlertCircle, X } from 'lucide-react';
 
-// Default initial teachers (22 dewan guru resmi MA Raudhatul Hidayah)
+// Default initial teachers (22 dewan guru resmi MAS Raudhatul Hidayah)
 const initial22Teachers: TeacherRecord[] = [
   { order_no: 1, code: '1', name: 'TAJUDIN, S.Pd.I', subject_name: "QUR'AN-HADITS", class_level: 'Semua Kelas', category_label: 'Pendidikan Agama Islam', image_url: '/hero/slide-3.jpg', is_active: true },
   { order_no: 2, code: '2', name: 'JAKARIA, S.Pd.I', subject_name: 'AQIDAH-AKHLAK', class_level: 'Semua Kelas', category_label: 'Pendidikan Agama Islam', image_url: '/kelas.jpeg', is_active: true },
@@ -124,11 +124,11 @@ export default function AdminDashboardPage() {
 
   // Data states
   const [ppdbData, setPpdbData] = useState<PpdbData>({
-    category: 'PENERIMAAN PESERTA DIDIK BARU (PPDB) • MA RAUDHATUL HIDAYAH',
+    category: 'PENERIMAAN PESERTA DIDIK BARU (PPDB) • MAS RAUDHATUL HIDAYAH',
     title: 'Membentuk Generasi Berkarakter, Cerdas & Berakhlak Mulia',
     academicYear: '2027/2028',
     badgeText: 'TELAH DIBUKA!',
-    description: 'MA Raudhatul Hidayah hadir sebagai kawah candradimuka yang mendampingi setiap murid untuk bertumbuh menjadi generasi yang tangguh, unggul, dan berkarakter islami.',
+    description: 'MAS Raudhatul Hidayah hadir sebagai kawah candradimuka yang mendampingi setiap murid untuk bertumbuh menjadi generasi yang tangguh, unggul, dan berkarakter islami.',
     features: [
       'Kurikulum Merdeka Terpadu (Fase E & F)',
       'Pembentukan Karakter & Adab Islami',
@@ -151,12 +151,12 @@ export default function AdminDashboardPage() {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [usersCount, setUsersCount] = useState<number>(8);
   const [homepageData, setHomepageData] = useState<HomepageConfig>({
-    heroTitle: 'MA Raudhatul Hidayah',
+    heroTitle: 'MAS Raudhatul Hidayah',
     heroTagline: 'Membentuk Generasi Berkarakter, Beradab, dan Unggul Bernalar',
-    heroBadge: 'Portal Resmi MA Raudhatul Hidayah',
+    heroBadge: 'Portal Resmi MAS Raudhatul Hidayah',
     heroBackground: '/foto-semua.jpeg',
     schoolLogo: '/school-logo.png',
-    marqueeText1: 'PPDB (Penerimaan Peserta Didik Baru) MA Raudhatul Hidayah Tahun Ajaran 2027/2028 Telah Dibuka!',
+    marqueeText1: 'PPDB (Penerimaan Peserta Didik Baru) MAS Raudhatul Hidayah Tahun Ajaran 2027/2028 Telah Dibuka!',
     marqueeCta1: 'DAFTAR SEKARANG!',
     marqueeLink1: '/kontak',
     marqueeText2: 'Kuota Pendaftaran Terbatas • Pembinaan Berbasis Karakter & Kurikulum Merdeka • Mauk Tangerang',
@@ -166,9 +166,9 @@ export default function AdminDashboardPage() {
     sambutanSubtitle: 'Membina Integritas & Mutu Akademik',
     sambutanBadge: 'Pimpinan Satuan Pendidikan',
     headmasterName: 'A. Khutbi. AR, S.Pd',
-    headmasterRole: 'Kepala Madrasah MA Raudhatul Hidayah',
+    headmasterRole: 'Kepala Madrasah MAS Raudhatul Hidayah',
     headmasterPhoto: '/kepala-madrasah.jpg',
-    sambutanText1: 'Bismillah walhamdulillah. Assalamu’alaikum Warahmatullahi Wabarakatuh. Selamat datang di portal resmi MA Raudhatul Hidayah jenjang Sekolah Menengah Pertama (SMP). Kami meyakini bahwa pendidikan sejati tidak hanya mengasah kecerdasan kognitif, tetapi juga merawat adab, keteguhan akidah, serta budi pekerti luhur sejak usia transisi remaja.',
+    sambutanText1: 'Bismillah walhamdulillah. Assalamu’alaikum Warahmatullahi Wabarakatuh. Selamat datang di portal resmi MAS Raudhatul Hidayah jenjang Sekolah Menengah Pertama (SMP). Kami meyakini bahwa pendidikan sejati tidak hanya mengasah kecerdasan kognitif, tetapi juga merawat adab, keteguhan akidah, serta budi pekerti luhur sejak usia transisi remaja.',
     sambutanText2: 'Melalui integrasi Kurikulum Merdeka yang kontekstual dan kultur pembiasaan Islami, kami berikhtiar membimbing seluruh santri agar aktif bernalar, mencintai ilmu pengetahuan, dan terlatih hidup berdisiplin dalam lingkungan yang aman, ramah anak, serta penuh kehangatan persaudaraan.',
     ctaText: 'Pelajari Profil & Budaya Sekolah',
     ctaLink: '/profil/visi-misi',
@@ -182,8 +182,8 @@ export default function AdminDashboardPage() {
 
   const [fullProfileData, setFullProfileData] = useState<FullProfileData>({
     profile: {
-      name: 'MA Raudhatul Hidayah',
-      formalName: 'Madrasah Aliyah Raudhatul Hidayah',
+      name: 'MAS Raudhatul Hidayah',
+      formalName: 'Madrasah Aliyah Swasta Raudhatul Hidayah',
       level: 'Sekolah Menengah Pertama (SMP) / MA',
       npsn: '6994888',
       nsm: '131236030045',

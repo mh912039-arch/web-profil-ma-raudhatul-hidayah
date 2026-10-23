@@ -10,7 +10,7 @@ import initialChampionships from '@/data/championshipsData.json';
 const defaultAchievements = (initialChampionships as any[]).map((d: any) => ({
   id: d.id,
   title: d.title,
-  student: d.sub || 'Santri MA Raudhatul Hidayah',
+  student: d.sub || 'Santri MAS Raudhatul Hidayah',
   grade: d.category || 'Prestasi Santri',
   year: d.date_label || '2026',
   badge: d.badge || 'Juara',
@@ -41,7 +41,7 @@ export default function PrestasiPage() {
           const mapped = data.map((d: any) => ({
             id: d.id,
             title: d.title,
-            student: d.sub || 'Santri MA Raudhatul Hidayah',
+            student: d.sub || 'Santri MAS Raudhatul Hidayah',
             grade: d.category || 'Prestasi Santri',
             year: d.date_label || '2026',
             badge: d.badge || 'Juara',
@@ -99,7 +99,7 @@ export default function PrestasiPage() {
                   </span>
                 </div>
                 <h1 className="font-display text-[30px] sm:text-[40px] font-extrabold text-on-primary tracking-tight leading-tight">
-                  Galeri Prestasi &amp; Jejak Juara Santri MA Raudhatul Hidayah
+                  Galeri Prestasi &amp; Jejak Juara Santri MAS Raudhatul Hidayah
                 </h1>
                 <p className="font-sans text-[15.5px] text-on-primary-container leading-relaxed">
                   Menempa keunggulan intelektual, ketangkasan raga, dan budi pekerti luhur santri madrasah aliyah untuk peradaban masa depan.
@@ -254,7 +254,7 @@ export default function PrestasiPage() {
                 Distribusi Lulusan ke SMA / SMK / MA Favorit
               </h2>
               <p className="font-sans text-[15px] text-on-surface-variant mt-1 leading-relaxed">
-                Lulusan SMP MA Raudhatul Hidayah berhasil bersaing dan diterima di berbagai sekolah menengah tingkat atas negeri maupun unggulan di Banten dan sekitarnya.
+                Lulusan SMP MAS Raudhatul Hidayah berhasil bersaing dan diterima di berbagai sekolah menengah tingkat atas negeri maupun unggulan di Banten dan sekitarnya.
               </p>
             </div>
 

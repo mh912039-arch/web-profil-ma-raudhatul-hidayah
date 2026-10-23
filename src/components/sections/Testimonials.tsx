@@ -13,7 +13,7 @@ export const Testimonials: React.FC = () => {
             Amanah & Suara Komunitas Madrasah
           </h2>
           <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
-            Refleksi nyata dari para wali santri dan alumni yang telah menuntaskan masa studi di MA Raudhatul Hidayah.
+            Refleksi nyata dari para wali santri dan alumni yang telah menuntaskan masa studi di MAS Raudhatul Hidayah.
           </p>
         </div>
 

@@ -89,7 +89,7 @@ export default function KontakPage() {
                   Layanan Informasi &amp; Kontak Resmi
                 </h1>
                 <p className="font-sans text-[15.5px] text-on-primary-container leading-relaxed">
-                  Pusat komunikasi terpadu MA Raudhatul Hidayah. Kami siap melayani pertanyaan kelembagaan, permohonan administrasi akademik, serta konsultasi wali murid dengan santun dan solutif.
+                  Pusat komunikasi terpadu MAS Raudhatul Hidayah. Kami siap melayani pertanyaan kelembagaan, permohonan administrasi akademik, serta konsultasi wali murid dengan santun dan solutif.
                 </p>
               </div>
             </div>
@@ -112,7 +112,7 @@ export default function KontakPage() {
                       Alamat Sekolah Utama
                     </span>
                     <h3 className="font-display text-[17px] font-bold text-primary mt-0.5">
-                      MA Raudhatul Hidayah
+                      MAS Raudhatul Hidayah
                     </h3>
                     <p className="font-sans text-[13.5px] text-on-surface-variant mt-1 leading-relaxed">
                       {profileInfo.address}
@@ -236,7 +236,7 @@ export default function KontakPage() {
                     </div>
                     <div className="flex flex-col">
                       <span className="font-bold text-primary group-hover:text-secondary transition-colors">
-                        MA Raudhatul Hidayah
+                        MAS Raudhatul Hidayah
                       </span>
                       <span className="text-[11px] text-on-surface-variant">TikTok Kreatif Santri</span>
                     </div>

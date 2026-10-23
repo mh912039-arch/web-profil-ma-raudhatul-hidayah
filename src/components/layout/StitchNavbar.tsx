@@ -271,7 +271,7 @@ export function StitchNavbar() {
             <div className="relative w-10 h-10 shrink-0 flex items-center justify-center transition-transform duration-200 group-hover:scale-105">
               <Image
                 src="/school-logo.png"
-                alt="Emblem MA Raudhatul Hidayah"
+                alt="Emblem MAS Raudhatul Hidayah"
                 width={40}
                 height={40}
                 className="object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
@@ -280,7 +280,7 @@ export function StitchNavbar() {
             </div>
             <div className="flex flex-col">
               <span className="font-serif text-[17px] sm:text-[19px] font-bold text-slate-900 tracking-wide leading-tight group-hover:text-blue-700 transition-colors">
-                MA Raudhatul Hidayah
+                MAS Raudhatul Hidayah
               </span>
               <div className="flex items-center gap-1.5">
                 <span className="font-sans text-[10.5px] font-semibold text-slate-500 uppercase tracking-widest">

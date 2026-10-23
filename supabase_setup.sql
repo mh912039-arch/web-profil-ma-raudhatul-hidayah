@@ -1,5 +1,5 @@
 -- ====================================================================
--- SQL SINKRONISASI LENGKAP SUPABASE MA RAUDHATUL HIDAYAH
+-- SQL SINKRONISASI LENGKAP SUPABASE MAS RAUDHATUL HIDAYAH
 -- Salin dan jalankan script ini di:
 -- Supabase Dashboard -> SQL Editor -> New query -> Run
 -- ====================================================================

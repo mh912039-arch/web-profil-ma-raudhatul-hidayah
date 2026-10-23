@@ -123,7 +123,7 @@ export interface SchoolData {
 
 export const schoolData: SchoolData = {
   profile: {
-    name: 'MA Raudhatul Hidayah',
+    name: 'MAS Raudhatul Hidayah',
     level: 'Jenjang Sekolah Menengah Pertama (SMP) Berbasis Karakter & Kurikulum Nasional',
     accreditation: 'Akreditasi A (Unggul)',
     npsn: '69941777',
@@ -146,13 +146,13 @@ export const schoolData: SchoolData = {
   headmaster: {
     name: 'A. Khutbi. AR, S.Pd',
     nip: '-',
-    title: 'Kepala Madrasah MA Raudhatul Hidayah',
+    title: 'Kepala Madrasah MAS Raudhatul Hidayah',
     degrees: 'Pendidikan & Manajemen Madrasah',
     photoUrl: '/kepala-madrasah.jpg',
     greetingTitle: 'Meneguhkan Karakter Qurani di Era Transformasi Digital',
     greetingParagraphs: [
       'Bismillahirrohmanirrohim. Assalamu’alaikum Warahmatullahi Wabarakatuh. Segala puji bagi Allah Subhanahu Wa Ta’ala atas segala limpahan rahmat, hidayah, dan taufik-Nya yang senantiasa menaungi ikhtiar kita dalam mendidik generasi penerus peradaban.',
-      'MA Raudhatul Hidayah hadir bukan sekadar sebagai institusi transfer ilmu pengetahuan umum, melainkan kawah candradimuka yang menyeimbangkan antara kedalaman pemahaman agama Islam (tafaqquh fiddin), integritas moral, serta kecakapan sains dan teknologi abad ke-21.',
+      'MAS Raudhatul Hidayah hadir bukan sekadar sebagai institusi transfer ilmu pengetahuan umum, melainkan kawah candradimuka yang menyeimbangkan antara kedalaman pemahaman agama Islam (tafaqquh fiddin), integritas moral, serta kecakapan sains dan teknologi abad ke-21.',
       'Melalui integrasi Kurikulum Merdeka Kemenag dan kurikulum kepesantrenan, kami berkomitmen mendampingi setiap peserta didik agar memiliki akidah yang lurus, pemikiran kritis, serta kepekaan sosial yang tinggi. Semoga website profil resmi ini menjadi jendela informasi yang transparan dan bermanfaat bagi seluruh masyarakat luas.',
     ],
     closingQuote: 'Ilmu tanpa adab ibarat pohon tanpa buah; adab tanpa ilmu ibarat pelita tanpa minyak.',
@@ -313,7 +313,7 @@ export const schoolData: SchoolData = {
       event: 'Olimpiade Humaniora Nasional UIN Sunan Kalijaga',
       level: 'Nasional',
       year: '2023',
-      recipient: 'Tim Riset Sosial MA Raudhatul Hidayah',
+      recipient: 'Tim Riset Sosial MAS Raudhatul Hidayah',
       category: 'Sains',
     },
     {
@@ -329,39 +329,39 @@ export const schoolData: SchoolData = {
   news: [
     {
       id: 'news-pramuka-gebyar-ramadhan-1447',
-      title: 'Torehkan Sejarah Gemilang: Kontingen MA Raudhatul Hidayah Sapu Bersih Juara pada Gebyar Ramadhan 1447 H Kwarran Mauk',
+      title: 'Torehkan Sejarah Gemilang: Kontingen MAS Raudhatul Hidayah Sapu Bersih Juara pada Gebyar Ramadhan 1447 H Kwarran Mauk',
       slug: 'kontingen-pramuka-ma-raudhatul-hidayah-sapu-bersih-juara-gebyar-ramadhan-1447-h',
       category: 'Prestasi',
       date: '14 April 2026',
       time: '21:30 WIB',
-      author: 'Humas MA Raudhatul Hidayah',
+      author: 'Humas MAS Raudhatul Hidayah',
       authorRole: 'Biro Publikasi & Informasi Madrasah',
       readTime: '4 Menit Baca',
-      summary: 'Kontingen santri MA Raudhatul Hidayah berhasil memboyong deretan trofi piala kejuaraan pada malam Gebyar Ramadhan 1447 H Kwartir Ranting Gerakan Pramuka Mauk Tahun 2026.',
-      lead: 'Malam puncak penganugerahan Gebyar Ramadhan 1447 H Kwartir Ranting Gerakan Pramuka Mauk menjadi momen penuh kebanggaan bagi MA Raudhatul Hidayah saat kontingen santri madrasah dipanggil berulang kali ke atas panggung utama untuk menerima deretan piala kejuaraan.',
+      summary: 'Kontingen santri MAS Raudhatul Hidayah berhasil memboyong deretan trofi piala kejuaraan pada malam Gebyar Ramadhan 1447 H Kwartir Ranting Gerakan Pramuka Mauk Tahun 2026.',
+      lead: 'Malam puncak penganugerahan Gebyar Ramadhan 1447 H Kwartir Ranting Gerakan Pramuka Mauk menjadi momen penuh kebanggaan bagi MAS Raudhatul Hidayah saat kontingen santri madrasah dipanggil berulang kali ke atas panggung utama untuk menerima deretan piala kejuaraan.',
       paragraphs: [
         'Ajang bergengsi Gebyar Ramadhan 1447 H yang diselenggarakan oleh Kwartir Ranting Gerakan Pramuka Mauk mempertemukan delegasi pramuka penegak dan pelajar terbaik dari berbagai gugus depan se-wilayah Mauk dan sekitarnya. Kompetisi tahunan ini menguji ketangkasan kepramukaan, wawasan keislaman, pidato syiar, serta kepemimpinan regu santri.',
-        'Melalui persiapan yang matang dan disiplin latihan di bawah bimbingan para pembina madrasah, santri putra dan putri MA Raudhatul Hidayah tampil memukau di hadapan dewan juri dan berhasil merebut posisi teratas di berbagai mata lomba.',
-        'Kepala Madrasah MA Raudhatul Hidayah, A. Khutbi. AR, S.Pd, menyampaikan apresiasi mendalam atas dedikasi dan kerja keras para santri. Beliau menekankan bahwa prestasi ini merupakan bukti nyata integrasi antara nilai-nilai luhur kepesantrenan dan semangat dasadarma kepramukaan.',
+        'Melalui persiapan yang matang dan disiplin latihan di bawah bimbingan para pembina madrasah, santri putra dan putri MAS Raudhatul Hidayah tampil memukau di hadapan dewan juri dan berhasil merebut posisi teratas di berbagai mata lomba.',
+        'Kepala Madrasah MAS Raudhatul Hidayah, A. Khutbi. AR, S.Pd, menyampaikan apresiasi mendalam atas dedikasi dan kerja keras para santri. Beliau menekankan bahwa prestasi ini merupakan bukti nyata integrasi antara nilai-nilai luhur kepesantrenan dan semangat dasadarma kepramukaan.',
         'Keberhasilan menyapu bersih piala kejuaraan ini disambut dengan rasa syukur mendalam oleh seluruh dewan guru dan santri, sekaligus memotivasi generasi muda madrasah untuk senantiasa berprestasi di tingkat kabupaten hingga provinsi.',
       ],
       quote: {
-        text: 'Prestasi ini membuktikan bahwa pembinaan karakter, adab santri, dan kecakapan kepramukaan di MA Raudhatul Hidayah mampu melahirkan generasi berdaya saing tinggi yang berakhlak mulia.',
+        text: 'Prestasi ini membuktikan bahwa pembinaan karakter, adab santri, dan kecakapan kepramukaan di MAS Raudhatul Hidayah mampu melahirkan generasi berdaya saing tinggi yang berakhlak mulia.',
         speaker: 'A. Khutbi. AR, S.Pd',
-        role: 'Kepala Madrasah MA Raudhatul Hidayah',
+        role: 'Kepala Madrasah MAS Raudhatul Hidayah',
       },
       keyPoints: [
-        'Kontingen MA Raudhatul Hidayah berhasil memboyong deretan trofi piala kemenangan.',
+        'Kontingen MAS Raudhatul Hidayah berhasil memboyong deretan trofi piala kemenangan.',
         'Juara diraih pada cabang lomba keagamaan, pidato syiar, dan ketangkasan kepramukaan.',
         'Apresiasi resmi diberikan langsung oleh jajaran pimpinan Kwartir Ranting Gerakan Pramuka Mauk.',
       ],
       tags: ['PrestasiSantri', 'PramukaPenegak', 'KwarranMauk', 'GebyarRamadhan', 'JuaraUmum'],
       imageUrl: '/foto-semua-juara.jpeg',
-      imageCaption: 'Santri berprestasi MA Raudhatul Hidayah berpose bangga memegang trofi piala kemenangan Gebyar Ramadhan 1447 H Kwarran Mauk.',
+      imageCaption: 'Santri berprestasi MAS Raudhatul Hidayah berpose bangga memegang trofi piala kemenangan Gebyar Ramadhan 1447 H Kwarran Mauk.',
       additionalImages: [
         {
           url: '/foto-juara-pramuka.jpeg',
-          caption: 'Kontingen Pramuka Penegak MA Raudhatul Hidayah bersama pembina di panggung kehormatan.',
+          caption: 'Kontingen Pramuka Penegak MAS Raudhatul Hidayah bersama pembina di panggung kehormatan.',
         },
         {
           url: '/foto-juara.jpeg',
@@ -371,7 +371,7 @@ export const schoolData: SchoolData = {
     },
     {
       id: 'news-kontingen-pramuka-pembina-ramadhan',
-      title: 'Kekompakan Kontingen Pramuka MA Raudhatul Hidayah di Panggung Kehormatan Kwarran Mauk',
+      title: 'Kekompakan Kontingen Pramuka MAS Raudhatul Hidayah di Panggung Kehormatan Kwarran Mauk',
       slug: 'kekompakan-kontingen-pramuka-ma-raudhatul-hidayah-panggung-kehormatan-kwarran-mauk',
       category: 'Kegiatan',
       date: '15 April 2026',
@@ -379,17 +379,17 @@ export const schoolData: SchoolData = {
       author: 'Bidang Pembinaan Kesiswaan',
       authorRole: 'Koordinator Ekstrakurikuler MA',
       readTime: '3 Menit Baca',
-      summary: 'Potret kekompakan dan dedikasi kontingen Pramuka Penegak MA Raudhatul Hidayah bersama pembina usai menorehkan prestasi gemilang pada Gebyar Ramadhan 1447 H.',
-      lead: 'Pramuka Penegak Gugus Depan MA Raudhatul Hidayah menunjukkan kekompakan luar biasa saat menerima penghargaan di panggung kehormatan Kwartir Ranting Gerakan Pramuka Mauk Tahun 2026.',
+      summary: 'Potret kekompakan dan dedikasi kontingen Pramuka Penegak MAS Raudhatul Hidayah bersama pembina usai menorehkan prestasi gemilang pada Gebyar Ramadhan 1447 H.',
+      lead: 'Pramuka Penegak Gugus Depan MAS Raudhatul Hidayah menunjukkan kekompakan luar biasa saat menerima penghargaan di panggung kehormatan Kwartir Ranting Gerakan Pramuka Mauk Tahun 2026.',
       paragraphs: [
-        'Didampingi oleh pembina kesiswaan dan pelatih kepramukaan, para santri penegak MA Raudhatul Hidayah berbaris rapi mengenakan seragam pramuka lengkap berhasduk merah putih sembari memegang piala-piala kemenangan.',
+        'Didampingi oleh pembina kesiswaan dan pelatih kepramukaan, para santri penegak MAS Raudhatul Hidayah berbaris rapi mengenakan seragam pramuka lengkap berhasduk merah putih sembari memegang piala-piala kemenangan.',
         'Kegiatan Gebyar Ramadhan Kwarran Mauk menjadi ajang silaturahmi sekaligus pembuktian kualitas latihan rutin mingguan di madrasah, mulai dari teknik kepanduan, semaphore, morse, hingga ketahanan mental santri di alam terbuka.',
         'Ke depan, pihak madrasah berkomitmen untuk terus memfasilitasi dan memperluas ruang partisipasi santri dalam berbagai ajang kepanduan dan kompetisi pelajar tingkat daerah maupun nasional.',
       ],
       quote: {
         text: 'Kerja sama tim dan adab santri adalah fondasi utama kami. Kemenangan ini kami persembahkan untuk seluruh keluarga besar madrasah.',
         speaker: 'Sarnah, S.Pd.I',
-        role: 'Pembina Kesiswaan MA Raudhatul Hidayah',
+        role: 'Pembina Kesiswaan MAS Raudhatul Hidayah',
       },
       keyPoints: [
         'Kekompakan dan disiplin tinggi ditunjukkan oleh seluruh anggota kontingen.',
@@ -398,7 +398,7 @@ export const schoolData: SchoolData = {
       ],
       tags: ['PramukaPenegak', 'KwarranMauk', 'KegiatanSantri', 'Ekstrakurikuler', 'GebyarRamadhan'],
       imageUrl: '/foto-juara-pramuka.jpeg',
-      imageCaption: 'Kontingen Pramuka Penegak MA Raudhatul Hidayah bersama pembina di panggung utama Gebyar Ramadhan 1447 H.',
+      imageCaption: 'Kontingen Pramuka Penegak MAS Raudhatul Hidayah bersama pembina di panggung utama Gebyar Ramadhan 1447 H.',
       additionalImages: [
         {
           url: '/foto-semua-juara.jpeg',
@@ -408,7 +408,7 @@ export const schoolData: SchoolData = {
     },
     {
       id: 'news-momen-penyerahan-trofi-ramadhan-1447',
-      title: 'Momen Khidmat Penyerahan Trofi: Santri MA Raudhatul Hidayah Terima Apresiasi Panggung Utama Kwarran Mauk',
+      title: 'Momen Khidmat Penyerahan Trofi: Santri MAS Raudhatul Hidayah Terima Apresiasi Panggung Utama Kwarran Mauk',
       slug: 'momen-khidmat-penyerahan-trofi-santri-ma-raudhatul-hidayah-panggung-utama-kwarran-mauk',
       category: 'Berita Sekolah',
       date: '15 April 2026',
@@ -416,8 +416,8 @@ export const schoolData: SchoolData = {
       author: 'Tim Jurnalistik Santri',
       authorRole: 'Redaksi Berita Madrasah',
       readTime: '3 Menit Baca',
-      summary: 'Prosesi khidmat penyerahan piala penghargaan kepada perwakilan santri MA Raudhatul Hidayah di panggung utama Gebyar Ramadhan 1447 H Kwartir Ranting Mauk.',
-      lead: 'Sorotan cahaya dan tepuk tangan hadirin mengiringi perwakilan santri MA Raudhatul Hidayah saat menerima trofi kejuaraan di panggung utama Gebyar Ramadhan 1447 H Kwarran Mauk.',
+      summary: 'Prosesi khidmat penyerahan piala penghargaan kepada perwakilan santri MAS Raudhatul Hidayah di panggung utama Gebyar Ramadhan 1447 H Kwartir Ranting Mauk.',
+      lead: 'Sorotan cahaya dan tepuk tangan hadirin mengiringi perwakilan santri MAS Raudhatul Hidayah saat menerima trofi kejuaraan di panggung utama Gebyar Ramadhan 1447 H Kwarran Mauk.',
       paragraphs: [
         'Mengenakan busana muslim dan peci rapi, santri perwakilan madrasah menerima trofi dari pimpinan panitia pelaksana Kwartir Ranting Gerakan Pramuka Mauk dengan penuh takzim.',
         'Penghargaan ini merupakan hasil dari penilaian ketat dewan juri dalam cabang perlombaan syiar Islam dan kepramukaan yang menekankan ketelitian, penghayatan materi, serta kefasihan penyampaian.',
@@ -426,7 +426,7 @@ export const schoolData: SchoolData = {
       quote: {
         text: 'Berani tampil dan memberikan yang terbaik adalah pelajaran paling berharga dari setiap ajang kompetisi.',
         speaker: 'Ahmad Nurul Kahfi, SE',
-        role: 'Staf Kesiswaan MA Raudhatul Hidayah',
+        role: 'Staf Kesiswaan MAS Raudhatul Hidayah',
       },
       keyPoints: [
         'Penyerahan trofi secara langsung di hadapan seluruh peserta kwartir ranting.',
@@ -435,7 +435,7 @@ export const schoolData: SchoolData = {
       ],
       tags: ['PenyerahanTrofi', 'KwarranMauk', 'SantriBerprestasi', 'BeritaSekolah'],
       imageUrl: '/foto-juara.jpeg',
-      imageCaption: 'Perwakilan santri MA Raudhatul Hidayah saat menerima trofi kejuaraan di panggung utama Kwarran Mauk.',
+      imageCaption: 'Perwakilan santri MAS Raudhatul Hidayah saat menerima trofi kejuaraan di panggung utama Kwarran Mauk.',
       additionalImages: [
         {
           url: '/foto-semua-juara.jpeg',
@@ -445,26 +445,26 @@ export const schoolData: SchoolData = {
     },
     {
       id: 'news-1',
-      title: 'Santri MA Raudhatul Hidayah Raih Prestasi Gemilang pada KSM Tingkat Provinsi 2024',
+      title: 'Santri MAS Raudhatul Hidayah Raih Prestasi Gemilang pada KSM Tingkat Provinsi 2024',
       slug: 'santri-raih-prestasi-ksm-provinsi-2024',
       category: 'Prestasi',
       date: '02 Oktober 2024',
       time: '08:30 WIB',
-      author: 'Humas MA Raudhatul Hidayah',
+      author: 'Humas MAS Raudhatul Hidayah',
       authorRole: 'Biro Publikasi & Informasi Madrasah',
       readTime: '4 Menit Baca',
       summary: 'Muhammad Farhan Az-Zuhdi berhasil meraih podium pertama dalam cabang Biologi Terintegrasi dan melaju ke kompetisi tingkat nasional mewakili Banten.',
-      lead: 'Prestasi gemilang kembali ditorehkan oleh santri MA Raudhatul Hidayah dalam ajang bergengsi Kompetisi Sains Madrasah (KSM) tingkat Provinsi Banten yang digelar oleh Kantor Wilayah Kementerian Agama RI.',
+      lead: 'Prestasi gemilang kembali ditorehkan oleh santri MAS Raudhatul Hidayah dalam ajang bergengsi Kompetisi Sains Madrasah (KSM) tingkat Provinsi Banten yang digelar oleh Kantor Wilayah Kementerian Agama RI.',
       paragraphs: [
-        'Dalam kompetisi yang berlangsung ketat selama tiga hari di Serang tersebut, ananda Muhammad Farhan Az-Zuhdi, santri kelas XII MIPA MA Raudhatul Hidayah, dinobatkan sebagai Juara Pertama pada cabang Biologi Terintegrasi setelah mengungguli ratusan delegasi madrasah aliyah terbaik se-Provinsi Banten.',
-        'Materi ujian KSM Biologi Terintegrasi menguji kemampuan analisis biosains tingkat lanjut yang dikontekstualisasikan dengan fikih thaharah, kajian ayat-ayat kauniyah dalam Al-Quran, serta metodologi ijtihad ulama terkait sains modern. Keberhasilan Farhan membuktikan bahwa integrasi antara kurikulum sains nasional dan kajian turots kepesantrenan di MA Raudhatul Hidayah membuahkan hasil yang sangat nyata.',
+        'Dalam kompetisi yang berlangsung ketat selama tiga hari di Serang tersebut, ananda Muhammad Farhan Az-Zuhdi, santri kelas XII MIPA MAS Raudhatul Hidayah, dinobatkan sebagai Juara Pertama pada cabang Biologi Terintegrasi setelah mengungguli ratusan delegasi madrasah aliyah terbaik se-Provinsi Banten.',
+        'Materi ujian KSM Biologi Terintegrasi menguji kemampuan analisis biosains tingkat lanjut yang dikontekstualisasikan dengan fikih thaharah, kajian ayat-ayat kauniyah dalam Al-Quran, serta metodologi ijtihad ulama terkait sains modern. Keberhasilan Farhan membuktikan bahwa integrasi antara kurikulum sains nasional dan kajian turots kepesantrenan di MAS Raudhatul Hidayah membuahkan hasil yang sangat nyata.',
         'Kepala Madrasah, A. Khutbi. AR, S.Pd, menyampaikan rasa syukur dan apresiasi yang mendalam saat menyambut kepulangan delegasi di kampus madrasah. Beliau menegaskan bahwa pencapaian ini adalah buah dari kerja keras kolaboratif antara santri, pembimbing olimpiade, serta doa para asatidz dan orang tua.',
         'Kini, Farhan tengah menjalani program karantina intensif di Laboratorium Sains Terpadu madrasah bersama dosen pakar dari ITB dan IPB guna mempersiapkan diri melaju ke KSM Tingkat Nasional yang akan digelar pada bulan November mendatang.',
       ],
       quote: {
         text: 'Keberhasilan ini membuktikan bahwa anak santri yang mengaji kitab kuning setiap ba’da subuh memiliki ketajaman nalar sains yang setara, bahkan melampaui standar kompetisi sains nasional.',
         speaker: 'A. Khutbi. AR, S.Pd',
-        role: 'Kepala Madrasah MA Raudhatul Hidayah',
+        role: 'Kepala Madrasah MAS Raudhatul Hidayah',
       },
       keyPoints: [
         'Juara 1 KSM Banten cabang Biologi Terintegrasi diraih Muhammad Farhan Az-Zuhdi.',
@@ -486,7 +486,7 @@ export const schoolData: SchoolData = {
       authorRole: 'Koordinator Kurikulum Merdeka',
       readTime: '5 Menit Baca',
       summary: 'Seluruh peserta didik kelas X dan XI memamerkan inovasi olahan herbal pesantren, madu trigona mandiri, dan teknologi tata kelola air hidroponik ramah lingkungan.',
-      lead: 'Halaman utama MA Raudhatul Hidayah disulap menjadi ruang pameran inovasi kreatif santri dalam rangka puncak Gelar Karya Projek Penguatan Profil Pelajar Pancasila dan Profil Pelajar Rahmatan Lil Alamin (P5-PPRA).',
+      lead: 'Halaman utama MAS Raudhatul Hidayah disulap menjadi ruang pameran inovasi kreatif santri dalam rangka puncak Gelar Karya Projek Penguatan Profil Pelajar Pancasila dan Profil Pelajar Rahmatan Lil Alamin (P5-PPRA).',
       paragraphs: [
         'Kegiatan tahunan ini mengusung dua tema kolaboratif: "Kearifan Lokal Pesantren" dan "Kewirausahaan Berkelanjutan Berbasis Syariah". Sebanyak 12 stan pameran menampilkan produk-produk hasil riset kelompok santri kelas X dan XI yang dibina selama tiga bulan penuh.',
         'Di antara inovasi yang menarik perhatian para dewan juri dan pengunjung adalah formula minuman herbal instan dari rimpang jahe merah dan temulawak kebun madrasah, sabun cuci ramah lingkungan berbahan dasar minyak jelantah terfiltrasi karbon aktif arang sekam, serta miniatur smart greenhouse berbasis sensor kelembaban tanah Arduino.',
@@ -505,7 +505,7 @@ export const schoolData: SchoolData = {
       ],
       tags: ['KurikulumMerdeka', 'P5PPRA', 'KearifanLokal', 'InovasiSantri', 'Kewirausahaan'],
       imageUrl: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1200&q=80',
-      imageCaption: 'Suasana stan pameran produk herbal dan teknologi pertanian mandiri karya santri MA Raudhatul Hidayah.',
+      imageCaption: 'Suasana stan pameran produk herbal dan teknologi pertanian mandiri karya santri MAS Raudhatul Hidayah.',
     },
     {
       id: 'news-3',
@@ -550,12 +550,12 @@ export const schoolData: SchoolData = {
       authorRole: 'Koordinator Studi Lanjut SMP',
       readTime: '3 Menit Baca',
       summary: 'Tim Bimbingan Konseling memaparkan pemetaan nilai rapor dan pembobotan sertifikat prestasi untuk siswa kelas IX menuju sekolah lanjutan impian.',
-      lead: 'Layanan Bimbingan Konseling (BK) MA Raudhatul Hidayah menggelar workshop intensif Sosialisasi Persiapan Asesmen dan Pilihan Sekolah Lanjutan jenjang SMA/SMK/MA tahun ajaran baru.',
+      lead: 'Layanan Bimbingan Konseling (BK) MAS Raudhatul Hidayah menggelar workshop intensif Sosialisasi Persiapan Asesmen dan Pilihan Sekolah Lanjutan jenjang SMA/SMK/MA tahun ajaran baru.',
       paragraphs: [
         'Kegiatan yang bertempat di Aula Pertemuan Sekolah ini menghadirkan siswa kelas IX beserta wali murid untuk menyamakan persepsi dan strategi dalam menghadapi persiapan asesmen akhir serta penerimaan peserta didik baru (PPDB) jenjang menengah atas.',
         'Koordinator BK menjelaskan secara transparan sistem pemeringkatan nilai rapor semester 1 hingga 5, jalur zonasi, jalur prestasi akademik dan non-akademik, serta validasi sertifikat kejuaraan dan tahfidz Al-Quran yang menjadi nilai tambah masuk sekolah negeri favorit.',
         'Selain itu, sekolah juga menyosialisasikan program pendampingan intensif berupa try-out berkala materi asesmen sumatif, konsultasi pemilihan jurusan di SMK/SMA, dan pemetaan bakat minat siswa.',
-        'Dengan persiapan yang matang dan terarah sejak awal semester, MA Raudhatul Hidayah berkomitmen mengantarkan setiap lulusan diterima di sekolah menengah atas impian mereka.',
+        'Dengan persiapan yang matang dan terarah sejak awal semester, MAS Raudhatul Hidayah berkomitmen mengantarkan setiap lulusan diterima di sekolah menengah atas impian mereka.',
       ],
       quote: {
         text: 'Kami mendampingi setiap siswa satu per satu. Memilih sekolah lanjutan adalah langkah awal penting bagi pembentukan masa depan mereka.',
@@ -640,7 +640,7 @@ export const schoolData: SchoolData = {
       authorRole: 'Biro Publikasi & Humas',
       readTime: '4 Menit Baca',
       summary: 'Rangkaian perlombaan antarkelas cabang sains, kaligrafi, dan futsal mencapai babak final dengan antusiasme yang meriah.',
-      lead: 'Hari ketiga ajang tahunan Gelar Prestasi Santri berlangsung semarak di lapangan utama dan gedung olahraga MA Raudhatul Hidayah.',
+      lead: 'Hari ketiga ajang tahunan Gelar Prestasi Santri berlangsung semarak di lapangan utama dan gedung olahraga MAS Raudhatul Hidayah.',
       paragraphs: [
         'Seluruh santri menunjukkan sportivitas tinggi dalam berbagai cabang perlombaan, mulai dari olimpiade matematika madrasah hingga musabaqah tilawatil quran.',
         'Pemberian piagam penghargaan dilakukan langsung oleh perwakilan dewan guru kepada para juara di masing-masing kategori.',
@@ -678,11 +678,11 @@ export const schoolData: SchoolData = {
     },
     {
       id: 'gal-3',
-      title: 'Latihan Rutin Pramuka Penegak MA Raudhatul Hidayah',
+      title: 'Latihan Rutin Pramuka Penegak MAS Raudhatul Hidayah',
       category: 'Kesiswaan',
       date: 'September 2024',
       imageUrl: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1000&q=80',
-      caption: 'Pelatihan pembuatan pionering tali-temali dan formasi baris berbaris di halaman sekolah MA Raudhatul Hidayah.',
+      caption: 'Pelatihan pembuatan pionering tali-temali dan formasi baris berbaris di halaman sekolah MAS Raudhatul Hidayah.',
     },
     {
       id: 'gal-4',
@@ -706,7 +706,7 @@ export const schoolData: SchoolData = {
       category: 'Akademik',
       date: 'Agustus 2024',
       imageUrl: '/kelas.jpeg',
-      caption: 'Suasana kegiatan belajar mengajar interaktif siswa MA Raudhatul Hidayah di dalam ruang kelas.',
+      caption: 'Suasana kegiatan belajar mengajar interaktif siswa MAS Raudhatul Hidayah di dalam ruang kelas.',
     },
   ],
   testimonials: [
@@ -715,15 +715,15 @@ export const schoolData: SchoolData = {
       name: 'Dr. H. Bambang Irawan, M.Kes',
       role: 'Wali Murid Santri MA',
       status: 'Dokter Spesialis & Wali Murid Kelas XI',
-      message: 'Saya sangat bersyukur mempercayakan pendidikan putra kami di MA Raudhatul Hidayah. Keseimbangan antara pembiasaan adab dan ibadah harian dengan pembelajaran aktif Kurikulum Merdeka Fase E & F sangat riil dirasakan anak kami.',
+      message: 'Saya sangat bersyukur mempercayakan pendidikan putra kami di MAS Raudhatul Hidayah. Keseimbangan antara pembiasaan adab dan ibadah harian dengan pembelajaran aktif Kurikulum Merdeka Fase E & F sangat riil dirasakan anak kami.',
       avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
     },
     {
       id: 'test-2',
       name: 'Fatimah Zahra, S.Kom',
-      role: 'Alumni MA Raudhatul Hidayah',
+      role: 'Alumni MAS Raudhatul Hidayah',
       status: 'Lulusan MA RH — Melanjutkan ke Perguruan Tinggi Negeri',
-      message: 'Pendidikan karakter, adab, dan kedisiplinan belajar di MA Raudhatul Hidayah menjadi bekal fondasi yang sangat kuat ketika saya melanjutkan ke jenjang universitas negeri favorit hingga berkarier profesional.',
+      message: 'Pendidikan karakter, adab, dan kedisiplinan belajar di MAS Raudhatul Hidayah menjadi bekal fondasi yang sangat kuat ketika saya melanjutkan ke jenjang universitas negeri favorit hingga berkarier profesional.',
       avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
     },
     {

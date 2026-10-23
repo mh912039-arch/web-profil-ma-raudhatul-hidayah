@@ -86,8 +86,8 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
 }) => {
   const [formData, setFormData] = useState<FullProfileData>({
     profile: {
-      name: data.profile?.name || 'MA Raudhatul Hidayah',
-      formalName: data.profile?.formalName || 'Madrasah Aliyah Raudhatul Hidayah',
+      name: data.profile?.name || 'MAS Raudhatul Hidayah',
+      formalName: data.profile?.formalName || 'Madrasah Aliyah Swasta Raudhatul Hidayah',
       level: data.profile?.level || 'Sekolah Menengah Pertama (SMP) / MA',
       npsn: data.profile?.npsn || '6994888',
       nsm: data.profile?.nsm || '131236030045',
@@ -132,8 +132,8 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
     if (data && data.profile) {
       setFormData({
         profile: {
-          name: data.profile.name || 'MA Raudhatul Hidayah',
-          formalName: data.profile.formalName || 'Madrasah Aliyah Raudhatul Hidayah',
+          name: data.profile.name || 'MAS Raudhatul Hidayah',
+          formalName: data.profile.formalName || 'Madrasah Aliyah Swasta Raudhatul Hidayah',
           level: data.profile.level || 'Sekolah Menengah Pertama (SMP) / MA',
           npsn: data.profile.npsn || '6994888',
           nsm: data.profile.nsm || '131236030045',

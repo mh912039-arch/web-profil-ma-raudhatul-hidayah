@@ -307,7 +307,7 @@ export const AchievementsTab: React.FC<AchievementsTabProps> = ({
                     type="text"
                     value={formData.sub}
                     onChange={(e) => setFormData({ ...formData, sub: e.target.value })}
-                    placeholder="Contoh: Santri Putra & Putri MA Raudhatul Hidayah"
+                    placeholder="Contoh: Santri Putra & Putri MAS Raudhatul Hidayah"
                     className="px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[13px]"
                   />
                 </div>
