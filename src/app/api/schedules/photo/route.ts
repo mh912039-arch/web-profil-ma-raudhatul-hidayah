@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/auth';
 import { supabase } from '@/lib/supabaseClient';
+import { deleteStorageFile } from '@/lib/storageHelper';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -49,6 +50,25 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, message: 'URL foto jadwal diperlukan.' }, { status: 400, headers: noCacheHeaders });
     }
 
+    // 1. Ambil foto lama jika ada untuk dibersihkan dari Supabase Storage (Garbage Collection)
+    try {
+      const { data: oldRow } = await supabase
+        .from('teachers_staff')
+        .select('education')
+        .eq('code', 'SYS_SCHIMG')
+        .maybeSingle();
+
+      if (oldRow?.education) {
+        const parsedOld = JSON.parse(oldRow.education);
+        const oldUrl = parsedOld?.photo_url;
+        if (oldUrl && oldUrl !== photoUrl) {
+          await deleteStorageFile(oldUrl);
+        }
+      }
+    } catch (cleanupErr) {
+      console.warn('Notice: Old schedule photo cleanup skipped:', cleanupErr);
+    }
+
     const payload = {
       photo_url: photoUrl,
       caption,
@@ -93,6 +113,22 @@ export async function DELETE() {
   }
 
   try {
+    // 1. Ambil foto yang sedang aktif untuk dihapus dari Storage
+    try {
+      const { data: oldRow } = await supabase
+        .from('teachers_staff')
+        .select('education')
+        .eq('code', 'SYS_SCHIMG')
+        .maybeSingle();
+
+      if (oldRow?.education) {
+        const parsedOld = JSON.parse(oldRow.education);
+        if (parsedOld?.photo_url) {
+          await deleteStorageFile(parsedOld.photo_url);
+        }
+      }
+    } catch {}
+
     const payload = { photo_url: null, updated_at: new Date().toISOString() };
     await supabase
       .from('teachers_staff')
@@ -104,7 +140,7 @@ export async function DELETE() {
 
     return NextResponse.json({
       success: true,
-      message: 'Foto jadwal resmi berhasil dihapus.',
+      message: 'Foto jadwal resmi berhasil dihapus dari sistem dan storage.',
     }, { headers: noCacheHeaders });
   } catch (err: any) {
     return NextResponse.json({ success: false, message: err.message }, { status: 500, headers: noCacheHeaders });

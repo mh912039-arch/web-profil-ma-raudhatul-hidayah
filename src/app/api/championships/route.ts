@@ -3,6 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { supabase } from '@/lib/supabaseClient';
 import { requireAuth } from '@/lib/auth';
+import { deleteStorageFile } from '@/lib/storageHelper';
 
 const dataFilePath = path.join(process.cwd(), 'src', 'data', 'championshipsData.json');
 
@@ -229,6 +230,10 @@ export async function DELETE(request: Request) {
     try {
       const fileContent = await fs.readFile(dataFilePath, 'utf-8');
       photos = JSON.parse(fileContent);
+      const targetPhoto = photos.find((p) => String(p.id) === String(id));
+      if (targetPhoto?.image_url) {
+        await deleteStorageFile(targetPhoto.image_url);
+      }
       photos = photos.filter((p) => String(p.id) !== String(id));
       await fs.writeFile(dataFilePath, JSON.stringify(photos, null, 2), 'utf-8');
     } catch (err) {}
@@ -236,6 +241,11 @@ export async function DELETE(request: Request) {
     try {
       const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(id));
       if (isUuid) {
+        // Cek gambar di Supabase sebelum dihapus jika ada
+        const { data: supaRow } = await supabase.from('championship_photos').select('image_url').eq('id', id).maybeSingle();
+        if (supaRow?.image_url) {
+          await deleteStorageFile(supaRow.image_url);
+        }
         await supabase.from('championship_photos').delete().eq('id', id);
       }
     } catch (err) {}

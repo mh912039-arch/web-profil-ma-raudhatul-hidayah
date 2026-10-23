@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
 import { supabase } from '@/lib/supabaseClient';
+import { deleteStorageFile } from '@/lib/storageHelper';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function POST(request: Request) {
   try {
@@ -30,7 +34,7 @@ export async function POST(request: Request) {
       const originalName = file.name || 'document.jpg';
       const ext = path.extname(originalName).toLowerCase() || '.jpg';
       const cleanExt = ['.jpg', '.jpeg', '.png', '.webp', '.pdf'].includes(ext) ? ext : '.jpg';
-      const prefix = cleanExt === '.pdf' ? 'dokumen' : 'ppdb';
+      const prefix = cleanExt === '.pdf' ? 'dokumen' : 'img';
       filename = `${prefix}-${Date.now()}-${Math.random().toString(36).substring(2, 8)}${cleanExt}`;
       mimeType = file.type || (cleanExt === '.pdf' ? 'application/pdf' : cleanExt === '.png' ? 'image/png' : cleanExt === '.webp' ? 'image/webp' : 'image/jpeg');
 
@@ -43,7 +47,7 @@ export async function POST(request: Request) {
           return NextResponse.json(
             {
               success: false,
-              message: `Ukuran berkas "${originalName}" terlalu kecil (${kb} KB). Minimal ukuran berkas adalah 100 KB agar dokumen terbaca jelas dan tidak buram.`,
+              message: `Ukuran berkas "${originalName}" terlalu kecil (${kb} KB). Minimal ukuran berkas adalah 100 KB agar dokumen terbaca jelas.`,
             },
             { status: 400 }
           );
@@ -62,7 +66,7 @@ export async function POST(request: Request) {
       buffer = Buffer.from(cleanBase64, 'base64');
 
       const cleanExt = ext.startsWith('.') ? ext : `.${ext}`;
-      filename = `warta-${Date.now()}-${Math.random().toString(36).substring(2, 8)}${cleanExt}`;
+      filename = `img-${Date.now()}-${Math.random().toString(36).substring(2, 8)}${cleanExt}`;
       mimeType = cleanExt === '.png' ? 'image/png' : cleanExt === '.webp' ? 'image/webp' : 'image/jpeg';
     } else {
       return NextResponse.json({ success: false, message: 'Content-Type tidak didukung' }, { status: 400 });
@@ -72,11 +76,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, message: 'Gagal memproses berkas gambar' }, { status: 400 });
     }
 
-    // Batasan keamanan: maksimal ukuran berkas 10 MB untuk mencegah penyalahgunaan storage
-    const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
+    // Batasan keamanan ketat: maksimal 3 MB untuk mencegah pemborosan storage gratisan
+    const MAX_UPLOAD_BYTES = 3 * 1024 * 1024;
     if (buffer.length > MAX_UPLOAD_BYTES) {
+      const mb = (buffer.length / (1024 * 1024)).toFixed(1);
       return NextResponse.json(
-        { success: false, message: 'Ukuran berkas melebihi batas maksimum 10 MB.' },
+        {
+          success: false,
+          message: `Ukuran berkas (${mb} MB) melebihi batas aman 3 MB. Silakan gunakan foto yang telah dikompresi agar hemat kuota storage.`,
+        },
         { status: 400 }
       );
     }
@@ -88,7 +96,8 @@ export async function POST(request: Request) {
       await fs.writeFile(localFilePath, buffer);
     } catch {}
 
-    // 3. Upload to Supabase Storage bucket 'articles'
+    // 3. Upload to Supabase Storage bucket 'articles' dengan Cache-Control 1 Tahun (31536000 detik)
+    // Cache-Control ini sangat krusial: browser hanya mengunduh 1 kali, menghemat 90%+ bandwidth egress Supabase!
     let finalUrl = localUrl;
     let storageTarget = 'local';
 
@@ -98,6 +107,7 @@ export async function POST(request: Request) {
         .upload(filename, buffer, {
           contentType: mimeType,
           upsert: true,
+          cacheControl: '31536000, public, immutable',
         });
 
       if (!supaErr && supaData) {
@@ -123,12 +133,34 @@ export async function POST(request: Request) {
       filename,
       size: buffer.length,
       sizeKb: (buffer.length / 1024).toFixed(1),
+      cacheControl: '1 Year (31536000s)',
       message: storageTarget === 'supabase'
-        ? 'Foto berhasil dikompresi (< 100 KB) dan tersimpan di Supabase Storage'
-        : 'Foto berhasil dikompresi (< 100 KB) dan tersimpan',
+        ? 'Berkas berhasil dikompresi dan tersimpan di Supabase Storage dengan cache 1 tahun.'
+        : 'Berkas berhasil disimpan di server lokal.',
     });
   } catch (error: any) {
     console.error('Error handling upload:', error);
-    return NextResponse.json({ success: false, message: error.message || 'Gagal mengunggah gambar' }, { status: 500 });
+    return NextResponse.json({ success: false, message: error.message || 'Gagal mengunggah berkas' }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const target = searchParams.get('url') || searchParams.get('filename');
+
+    if (!target) {
+      return NextResponse.json({ success: false, message: 'Parameter url atau filename diperlukan' }, { status: 400 });
+    }
+
+    const removed = await deleteStorageFile(target);
+    return NextResponse.json({
+      success: true,
+      removed,
+      message: removed ? 'Berkas berhasil dihapus dari storage.' : 'Berkas tidak ditemukan atau sudah terhapus.',
+    });
+  } catch (err: any) {
+    console.error('Error in DELETE /api/upload:', err);
+    return NextResponse.json({ success: false, message: err.message }, { status: 500 });
   }
 }

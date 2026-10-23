@@ -112,7 +112,7 @@ export const PpdbRegistrationModal: React.FC<PpdbRegistrationModalProps> = ({
     });
 
     const MIN_SIZE_BYTES = 100 * 1024; // 100 KB = 102,400 bytes
-    const MAX_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
+    const MAX_SIZE_BYTES = 3 * 1024 * 1024; // 3 MB batas aman storage gratisan
 
     // Strict validation: Minimal 100 KB
     if (file.size < MIN_SIZE_BYTES) {
@@ -125,12 +125,12 @@ export const PpdbRegistrationModal: React.FC<PpdbRegistrationModalProps> = ({
       return;
     }
 
-    // Maximum limit: 10 MB
+    // Maximum limit: 3 MB
     if (file.size > MAX_SIZE_BYTES) {
       const actualSizeMb = (file.size / (1024 * 1024)).toFixed(1);
       setDocErrors((prev) => ({
         ...prev,
-        [field]: `Ukuran berkas "${file.name}" terlalu besar (${actualSizeMb} MB). Maksimal ukuran berkas adalah 10 MB.`,
+        [field]: `Ukuran berkas "${file.name}" terlalu besar (${actualSizeMb} MB). Maksimal ukuran berkas adalah 3 MB agar hemat ruang penyimpanan.`,
       }));
       e.target.value = '';
       return;

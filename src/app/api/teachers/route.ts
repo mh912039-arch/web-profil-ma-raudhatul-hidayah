@@ -3,6 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { supabase } from '@/lib/supabaseClient';
 import { requireAuth } from '@/lib/auth';
+import { deleteStorageFile } from '@/lib/storageHelper';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -335,6 +336,12 @@ export async function DELETE(request: Request) {
 
     // 2. Delete from unified persistent store
     const currentList = await readTeachersUnified();
+    const targetTeacher = currentList.find(
+      (t) => String(t.id) === String(id) || String(t.order_no) === String(id)
+    );
+    if (targetTeacher?.image_url) {
+      await deleteStorageFile(targetTeacher.image_url);
+    }
     const filtered = currentList.filter(
       (t) => String(t.id) !== String(id) && String(t.order_no) !== String(id)
     );

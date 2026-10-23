@@ -25,6 +25,7 @@ import {
   UploadCloud,
 } from 'lucide-react';
 import { TeacherRecord } from './TeachersTab';
+import { compressImageBelow100Kb } from '@/lib/imageCompression';
 
 export interface ScheduleItem {
   id: string;
@@ -212,12 +213,24 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
   const processSchedulePhoto = async (file: File) => {
     try {
       setIsScanning(true);
-      setScanProgress(15);
+      setScanProgress(10);
+      setScanStatusText('Mengompresi foto (< 100 KB) agar hemat storage...');
+
+      // Kompresi otomatis di sisi browser sebelum dikirim
+      let uploadFile: Blob = file;
+      try {
+        const compressed = await compressImageBelow100Kb(file, 1600);
+        uploadFile = compressed.blob;
+      } catch (cErr) {
+        console.warn('Notice: Client compression fallback to raw file:', cErr);
+      }
+
+      setScanProgress(20);
       setScanStatusText('Mengunggah berkas foto dokumen jadwal...');
 
       // 1. Upload via /api/upload
       const uploadFormData = new FormData();
-      uploadFormData.append('file', file);
+      uploadFormData.append('file', uploadFile, file.name.replace(/\.[^/.]+$/, '.jpg'));
       const uploadRes = await fetch('/api/upload', {
         method: 'POST',
         body: uploadFormData,

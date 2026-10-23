@@ -3,6 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { supabase } from '@/lib/supabaseClient';
 import { requireAuth } from '@/lib/auth';
+import { deleteStorageFile } from '@/lib/storageHelper';
 
 const dataFilePath = path.join(process.cwd(), 'src', 'data', 'articlesData.json');
 
@@ -262,7 +263,25 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ success: false, message: 'ID atau Slug wajib disertakan' }, { status: 400 });
     }
 
-    // 1. Delete from local JSON
+    // 1. Ambil artikel untuk dibersihkan foto cover-nya dari storage jika ada
+    try {
+      let targetArticle: any = null;
+      if (slug) {
+        const { data } = await supabase.from('articles').select('cover_image, image_url').eq('slug', slug).maybeSingle();
+        targetArticle = data;
+      } else if (id) {
+        const { data } = await supabase.from('articles').select('cover_image, image_url').eq('id', id).maybeSingle();
+        targetArticle = data;
+      }
+      const imageToClean = targetArticle?.cover_image || targetArticle?.image_url;
+      if (imageToClean) {
+        await deleteStorageFile(imageToClean);
+      }
+    } catch (cleanupErr) {
+      console.warn('Notice: Article image cleanup skipped:', cleanupErr);
+    }
+
+    // 2. Delete from local JSON
     let articles: UnifiedArticle[] = [];
     try {
       const fileContent = await fs.readFile(dataFilePath, 'utf-8');
@@ -273,7 +292,7 @@ export async function DELETE(request: Request) {
       console.warn('Error reading articles for deletion:', err);
     }
 
-    // 2. Delete from Supabase safely
+    // 3. Delete from Supabase safely
     try {
       if (slug) {
         await supabase.from('articles').delete().eq('slug', slug);
