@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import { getIpGeolocation, GeoIpInfo } from './geoIp';
+import { supabase } from './supabaseClient';
 
 export interface SecurityIncidentData {
   targetAccount: string;
@@ -148,13 +149,36 @@ function buildSecurityAlertHtml(
 }
 
 /**
- * Inisialisasi Transporter Nodemailer (Mendukung Gmail SMTP & Generic SMTP)
+ * Inisialisasi Transporter Nodemailer (Mendukung Gmail SMTP, Vercel Env, dan Supabase Database Fallback)
  */
-function createEmailTransporter() {
-  const host = process.env.SMTP_HOST || 'smtp.gmail.com';
-  const port = Number(process.env.SMTP_PORT || 465);
-  const user = process.env.SMTP_USER || process.env.GMAIL_USER || 'pkm28979@gmail.com';
-  const pass = process.env.SMTP_PASS || process.env.GMAIL_APP_PASS || process.env.SMTP_PASSWORD;
+async function createEmailTransporter() {
+  let host = process.env.SMTP_HOST || 'smtp.gmail.com';
+  let port = Number(process.env.SMTP_PORT || 465);
+  let user = process.env.SMTP_USER || process.env.GMAIL_USER || 'pkm28979@gmail.com';
+  let pass = process.env.SMTP_PASS || process.env.GMAIL_APP_PASS || process.env.SMTP_PASSWORD;
+
+  // Jika env variable di Vercel belum disetel, ambil dari Supabase database
+  if (!pass) {
+    try {
+      const { data } = await supabase
+        .from('teachers_staff')
+        .select('education')
+        .eq('code', 'SYS_SMTP')
+        .maybeSingle();
+
+      if (data && data.education) {
+        const parsed = JSON.parse(data.education);
+        if (parsed && parsed.pass) {
+          pass = parsed.pass;
+          user = parsed.user || user;
+          host = parsed.host || host;
+          port = Number(parsed.port || port);
+        }
+      }
+    } catch {
+      // non-blocking
+    }
+  }
 
   if (!pass) {
     return null; // SMTP belum dikonfigurasi kata sandi aplikasinya
@@ -212,8 +236,8 @@ export async function sendSecurityAlertEmail(
   // 3. Bangun HTML Email
   const htmlContent = buildSecurityAlertHtml(data, geoInfo, timeFormatted);
 
-  // 4. Periksa transporter SMTP
-  const transporter = createEmailTransporter();
+  // 4. Periksa transporter SMTP (Mendukung async Supabase fallback)
+  const transporter = await createEmailTransporter();
 
   if (!transporter) {
     // Mode Simulasi / Logging jika SMTP_PASS belum dimasukkan ke .env
