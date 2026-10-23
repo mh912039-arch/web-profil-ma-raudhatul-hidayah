@@ -31,6 +31,9 @@ import {
   EyeOff,
   Copy,
   Unlock,
+  Mail,
+  MapPin,
+  Send,
 } from 'lucide-react';
 
 export interface UserAccount {
@@ -109,6 +112,8 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
   const [sessions, setSessions] = useState<UserSession[]>([]);
   const [rateLimits, setRateLimits] = useState<any[]>([]);
   const [serverTime, setServerTime] = useState<number>(Date.now());
+  const [targetAlertEmail, setTargetAlertEmail] = useState<string>('pkm28979@gmail.com');
+  const [isTestingAlert, setIsTestingAlert] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState<'all' | 'admin' | 'guru' | 'siswa'>('all');
@@ -230,10 +235,38 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
         if (json.success && Array.isArray(json.data)) {
           setRateLimits(json.data);
           if (json.serverTime) setServerTime(json.serverTime);
+          if (json.targetEmail) setTargetAlertEmail(json.targetEmail);
         }
       }
     } catch {
       // non-blocking
+    }
+  };
+
+  const handleTestSecurityAlert = async () => {
+    setIsTestingAlert(true);
+    try {
+      const res = await fetch('/api/auth/rate-limit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'test_alert' }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        const loc = json.geoInfo
+          ? `${json.geoInfo.city}, ${json.geoInfo.region}`
+          : 'Indonesia';
+        showNotification(
+          'success',
+          `Simulasi teruji: Email diarahkan ke ${json.recipient || targetAlertEmail}. Lokasi: ${loc}. Koordinat & tautan peta Google Maps berhasil digenerate.`
+        );
+      } else {
+        showNotification('error', json.message || 'Gagal menguji notifikasi keamanan.');
+      }
+    } catch {
+      showNotification('error', 'Terjadi kesalahan jaringan.');
+    } finally {
+      setIsTestingAlert(false);
     }
   };
 
@@ -1119,16 +1152,38 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                 </div>
               </div>
 
-              {rateLimits.filter((r) => r.lockedUntil && r.lockedUntil > serverTime).length > 0 && (
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="flex items-center gap-1.5 text-[11.5px] text-slate-600 bg-slate-100 px-2.5 py-1.5 rounded-xl border border-slate-200">
+                  <Mail className="w-3.5 h-3.5 text-blue-800" />
+                  <span>Email Alert: <strong className="text-slate-900 font-mono">{targetAlertEmail}</strong></span>
+                </div>
+
                 <button
                   type="button"
-                  onClick={handleClearAllRateLimits}
-                  className="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-xs flex items-center gap-1.5 shrink-0 transition-colors active:scale-95 cursor-pointer"
+                  onClick={handleTestSecurityAlert}
+                  disabled={isTestingAlert}
+                  className="px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 font-bold text-xs flex items-center gap-1.5 shrink-0 transition-colors active:scale-95 cursor-pointer disabled:opacity-60"
+                  title="Kirim simulasi email peringatan keamanan ke alamat email terdaftar"
                 >
-                  <Unlock className="w-3.5 h-3.5" />
-                  <span>Buka Semua Blokir</span>
+                  {isTestingAlert ? (
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <Send className="w-3.5 h-3.5" />
+                  )}
+                  <span>Uji Notifikasi Alert</span>
                 </button>
-              )}
+
+                {rateLimits.filter((r) => r.lockedUntil && r.lockedUntil > serverTime).length > 0 && (
+                  <button
+                    type="button"
+                    onClick={handleClearAllRateLimits}
+                    className="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-xs flex items-center gap-1.5 shrink-0 transition-colors active:scale-95 cursor-pointer"
+                  >
+                    <Unlock className="w-3.5 h-3.5" />
+                    <span>Buka Semua Blokir</span>
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Locked Targets List or Clean State */}

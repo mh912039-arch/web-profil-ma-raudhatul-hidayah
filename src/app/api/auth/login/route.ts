@@ -3,6 +3,7 @@ import { createSessionToken, COOKIE_NAME, UserRole, verifyPassword, hashPassword
 import { parseUserAgent } from '@/lib/deviceParser';
 import { readUsers, writeUsers, readSessions, writeSessions, UserSessionItem } from '@/lib/userStore';
 import { checkRateLimit, recordFailedAttempt, resetRateLimit } from '@/lib/rateLimiter';
+import { sendSecurityAlertEmail } from '@/lib/securityMailer';
 
 export async function POST(request: Request) {
   try {
@@ -10,6 +11,9 @@ export async function POST(request: Request) {
     const forwarded = request.headers.get('x-forwarded-for');
     const realIp = request.headers.get('x-real-ip');
     const clientIp = cfIp || forwarded?.split(',')[0].trim() || realIp || '127.0.0.1';
+
+    const userAgentStr = request.headers.get('user-agent') || '';
+    const deviceInfo = parseUserAgent(userAgentStr);
 
     const body = await request.json().catch(() => ({}));
     const { identifier = '', password = '' } = body;
@@ -52,6 +56,43 @@ export async function POST(request: Request) {
       );
     }
 
+    // Helper: Catat audit & Kirim Email Peringatan Keamanan saat Terkunci
+    const handleLockoutIncident = async (targetUser?: any) => {
+      try {
+        let sessions = await readSessions();
+        const alertSession: UserSessionItem = {
+          id: `sec-lock-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+          user_id: targetUser ? targetUser.id : 'unauthorized',
+          user_name: targetUser ? targetUser.name : `Target: ${idLower}`,
+          email: targetUser ? targetUser.email : idLower,
+          role: targetUser ? targetUser.role : 'siswa',
+          device_name: 'Peringatan Keamanan: Terkunci Otomatis (Anti Brute-Force)',
+          browser: `${deviceInfo.browser} (${deviceInfo.os})`,
+          os: deviceInfo.os,
+          device_type: deviceInfo.deviceType,
+          ip_address: clientIp,
+          login_time: new Date().toISOString(),
+          status: 'expired',
+        };
+        sessions.unshift(alertSession);
+        if (sessions.length > 100) sessions = sessions.slice(0, 100);
+        await writeSessions(sessions);
+      } catch {
+        // non-blocking
+      }
+
+      // Kirim Notifikasi Email Darurat Asinkron dengan Koordinat Google Maps
+      sendSecurityAlertEmail({
+        targetAccount: idLower,
+        ipAddress: clientIp,
+        userAgent: userAgentStr,
+        deviceInfo: `${deviceInfo.os} (${deviceInfo.browser})`,
+        attemptCount: 5,
+      }).catch((err) => {
+        console.warn('[SECURITY] Gagal mengirim email alert insiden:', err);
+      });
+    };
+
     // 2. Baca data akun pengguna (tersinkronisasi lokal & Supabase)
     const users = await readUsers();
 
@@ -88,30 +129,8 @@ export async function POST(request: Request) {
       if (!verifyPassword(pass, expectedPassword)) {
         const attempt = await recordFailedAttempt(clientIp, idLower);
 
-        // Catat insiden keamanan jika terkunci karena brute-force
         if (attempt.locked) {
-          try {
-            let sessions = await readSessions();
-            const alertSession: UserSessionItem = {
-              id: `sec-lock-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-              user_id: matchedUser.id,
-              user_name: matchedUser.name,
-              email: matchedUser.email,
-              role: matchedUser.role,
-              device_name: 'Peringatan Keamanan: Percobaan Masuk Diblokir (Brute-Force)',
-              browser: 'Sistem Pertahanan Rate-Limit',
-              os: 'Security Gateway',
-              device_type: 'desktop',
-              ip_address: clientIp,
-              login_time: new Date().toISOString(),
-              status: 'expired',
-            };
-            sessions.unshift(alertSession);
-            if (sessions.length > 100) sessions = sessions.slice(0, 100);
-            await writeSessions(sessions);
-          } catch {
-            // non-blocking
-          }
+          handleLockoutIncident(matchedUser);
         }
 
         return NextResponse.json(
@@ -138,6 +157,11 @@ export async function POST(request: Request) {
     } else {
       // 3. Akun tidak terdaftar di direktori pengguna
       const attempt = await recordFailedAttempt(clientIp, idLower);
+
+      if (attempt.locked) {
+        handleLockoutIncident();
+      }
+
       return NextResponse.json(
         {
           success: false,
@@ -155,6 +179,11 @@ export async function POST(request: Request) {
 
     if (!detectedRole) {
       const attempt = await recordFailedAttempt(clientIp, idLower);
+
+      if (attempt.locked) {
+        handleLockoutIncident();
+      }
+
       return NextResponse.json(
         {
           success: false,
@@ -172,10 +201,6 @@ export async function POST(request: Request) {
 
     // Login Berhasil: Reset seluruh catatan percobaan gagal untuk IP & Akun ini
     await resetRateLimit(clientIp, idLower);
-
-    // Detect Device, Browser, OS & IP Client
-    const userAgentStr = request.headers.get('user-agent') || '';
-    const deviceInfo = parseUserAgent(userAgentStr);
 
     const timeFormatter = new Intl.DateTimeFormat('id-ID', {
       timeZone: 'Asia/Jakarta',
