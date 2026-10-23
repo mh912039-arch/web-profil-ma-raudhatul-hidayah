@@ -285,7 +285,7 @@ export function StitchFooter() {
               rel="noopener noreferrer"
               className="text-blue-700 font-semibold hover:underline transition-colors"
             >
-              Portal Admin & Guru
+              Portal Masuk
             </Link>
             <span className="text-slate-300">|</span>
             <Link href="/profil" className="hover:text-slate-800 transition-colors">
