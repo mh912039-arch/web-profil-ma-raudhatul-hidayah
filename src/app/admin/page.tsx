@@ -736,7 +736,7 @@ export default function AdminDashboardPage() {
       />
 
       {/* 2. Main Body (Offset by Sidebar width on Desktop) */}
-      <div className="flex-1 lg:pl-72 flex flex-col min-w-0 min-h-screen">
+      <div className="flex-1 lg:pl-72 flex flex-col min-w-0 max-w-full overflow-x-hidden min-h-screen">
         {/* Sticky Header */}
         <AdminHeader
           activeTab={effectiveActiveTab}
@@ -776,7 +776,7 @@ export default function AdminDashboardPage() {
         )}
 
         {/* Content View Tabs */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+        <main className="flex-1 p-3 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto min-w-0 overflow-x-hidden">
           {userRole === 'admin' && effectiveActiveTab === 'overview' && (
             <OverviewTab
               setActiveTab={setActiveTab}

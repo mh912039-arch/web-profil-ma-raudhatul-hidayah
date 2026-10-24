@@ -335,14 +335,14 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200">
+    <div className="space-y-4 sm:space-y-6 w-full max-w-full min-w-0 overflow-hidden animate-in fade-in duration-200">
       {/* Header Bar */}
-      <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
           <h3 className="font-serif text-[18px] font-bold text-slate-900">
             Pendaftar PPDB Online
           </h3>
-          <p className="text-[13px] text-slate-500">
+          <p className="text-[12.5px] sm:text-[13px] text-slate-500">
             Verifikasi berkas persyaratan (KK, Akta, Ijazah), biodata, dan status seleksi ({applicants.length} pendaftar)
           </p>
         </div>
@@ -373,55 +373,60 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
             });
             setIsModalOpen(true);
           }}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-sans text-[13px] font-bold transition-all shadow-xs active:scale-95"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-sans text-xs sm:text-[13px] font-bold transition-all shadow-xs active:scale-95 shrink-0 self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
-          <span>Input Pendaftar Manual</span>
+          <span>Input Pendaftar</span>
         </button>
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5 pointer-events-none" />
+      <div className="bg-white p-3 sm:p-4 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row gap-2.5 sm:gap-3">
+        <div className="relative flex-1 min-w-0">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
-            placeholder="Cari nomor registrasi, nama santri, NISN, atau orang tua..."
+            placeholder="Cari nomor registrasi, nama, NISN, atau ortu..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[13px] font-medium text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+            className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 font-medium text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
           />
         </div>
 
-        {/* Filter Jalur */}
-        <div className="flex items-center gap-2 shrink-0">
-          <select
-            value={pathFilter}
-            onChange={(e) => setPathFilter(e.target.value)}
-            className="px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[12.5px] font-medium text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
-          >
-            <option value="Semua">Semua Jalur</option>
-            <option value="domisili">Jalur Domisili</option>
-            <option value="afirmasi">Jalur Afirmasi</option>
-            <option value="prestasi">Jalur Prestasi</option>
-            <option value="mutasi">Jalur Mutasi</option>
-          </select>
-        </div>
+        {/* Filter Controls Row */}
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar w-full sm:w-auto pb-0.5 sm:pb-0 shrink-0">
+          {/* Filter Jalur */}
+          <div className="flex items-center gap-1 bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200 text-xs shrink-0">
+            <span className="font-semibold text-slate-500 text-[11px]">Jalur:</span>
+            <select
+              value={pathFilter}
+              onChange={(e) => setPathFilter(e.target.value)}
+              className="bg-transparent font-bold text-slate-800 focus:outline-none cursor-pointer text-xs"
+            >
+              <option value="Semua">Semua Jalur</option>
+              <option value="domisili">Domisili</option>
+              <option value="afirmasi">Afirmasi</option>
+              <option value="prestasi">Prestasi</option>
+              <option value="mutasi">Mutasi</option>
+            </select>
+          </div>
 
-        {/* Filter Status */}
-        <div className="flex items-center gap-2 shrink-0">
-          <Filter className="w-4 h-4 text-slate-400" />
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[12.5px] font-medium text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
-          >
-            <option value="Semua">Semua Status</option>
-            <option value="submitted">Menunggu Verifikasi</option>
-            <option value="verified">Terverifikasi</option>
-            <option value="accepted">Diterima</option>
-            <option value="rejected">Ditolak</option>
-          </select>
+          {/* Filter Status */}
+          <div className="flex items-center gap-1 bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200 text-xs shrink-0">
+            <Filter className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+            <span className="font-semibold text-slate-500 text-[11px]">Status:</span>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="bg-transparent font-bold text-slate-800 focus:outline-none cursor-pointer text-xs"
+            >
+              <option value="Semua">Semua Status</option>
+              <option value="submitted">Menunggu</option>
+              <option value="verified">Terverifikasi</option>
+              <option value="accepted">Diterima</option>
+              <option value="rejected">Ditolak</option>
+            </select>
+          </div>
         </div>
       </div>
 

@@ -533,7 +533,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 w-full max-w-full min-w-0 overflow-hidden">
       {/* Toast Notification */}
       {notification && (
         <div
@@ -559,12 +559,15 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
         </div>
       )}
 
-      {/* Header & Sub-Tab Navigation */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200">
-        <div>
-          <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+      {/* Header & Action Controls */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
+        <div className="min-w-0">
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight truncate">
             Kelola Pengguna, Perangkat &amp; Hak Akses
           </h2>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Manajemen akun admin, pendidik, santri, dan kontrol keamanan sesi login.
+          </p>
         </div>
 
         {/* Action Controls */}
@@ -573,7 +576,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
             type="button"
             onClick={() => fetchUsersAndSessions()}
             disabled={isLoading}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 text-xs font-semibold transition-all shadow-xs active:scale-[0.98]"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 text-xs font-semibold transition-all shadow-2xs active:scale-[0.98]"
             title="Muat Ulang Data"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-blue-600' : 'text-slate-500'}`} />
@@ -583,91 +586,104 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
           <button
             type="button"
             onClick={() => setIsAddModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold transition-all shadow-sm active:scale-[0.98]"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold transition-all shadow-xs active:scale-[0.98]"
           >
-            <UserPlus className="w-4 h-4" />
-            <span>Tambah Pengguna</span>
+            <UserPlus className="w-4 h-4 shrink-0" />
+            <span className="whitespace-nowrap">Tambah Pengguna</span>
           </button>
         </div>
       </div>
 
       {/* Metric Summary Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-        <div className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex flex-col justify-between">
-          <span className="text-[11.5px] font-bold uppercase tracking-wide text-slate-500">
-            Total Pengguna
-          </span>
-          <div className="mt-2 flex items-baseline justify-between">
-            <span className="text-2xl sm:text-3xl font-extrabold text-slate-900">{users.length}</span>
-            <span className="text-[11px] font-semibold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
+        {/* Card 1: Total Pengguna */}
+        <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white border border-slate-200/90 shadow-2xs flex flex-col justify-between min-w-0">
+          <div className="flex items-center justify-between gap-1">
+            <span className="text-[10.5px] sm:text-[11.5px] font-bold uppercase tracking-wide text-slate-500 truncate">
+              Total Pengguna
+            </span>
+            <span className="text-[10px] sm:text-[11px] font-semibold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded shrink-0">
               Terdaftar
             </span>
           </div>
+          <div className="mt-2 flex items-baseline justify-between">
+            <span className="text-xl sm:text-3xl font-extrabold text-slate-900">{users.length}</span>
+            <span className="text-[10.5px] text-slate-400 font-medium hidden sm:inline">Akun</span>
+          </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white border border-emerald-300 shadow-xs flex flex-col justify-between bg-gradient-to-br from-white to-emerald-50/40">
-          <div className="flex items-center justify-between">
-            <span className="text-[11.5px] font-bold uppercase tracking-wide text-emerald-800">
-              Pengguna Online
+        {/* Card 2: Pengguna Online */}
+        <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white border border-emerald-300 shadow-2xs flex flex-col justify-between min-w-0 bg-gradient-to-br from-white to-emerald-50/40">
+          <div className="flex items-center justify-between gap-1">
+            <span className="text-[10.5px] sm:text-[11.5px] font-bold uppercase tracking-wide text-emerald-800 truncate">
+              Online
             </span>
-            <span className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-700 bg-emerald-100/90 px-2 py-0.5 rounded-full">
+            <span className="flex items-center gap-1 text-[9.5px] sm:text-[10px] font-bold text-emerald-700 bg-emerald-100/90 px-1.5 py-0.5 rounded-full shrink-0">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
               Live
             </span>
           </div>
           <div className="mt-2 flex items-baseline justify-between">
-            <span className="text-2xl sm:text-3xl font-extrabold text-emerald-600">
+            <span className="text-xl sm:text-3xl font-extrabold text-emerald-600">
               {activeUsersCount}
             </span>
-            <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-md">
-              Sedang Menggunakan
+            <span className="text-[10px] sm:text-[11px] font-bold text-emerald-800 bg-emerald-100/80 px-1.5 py-0.5 rounded shrink-0">
+              Aktif
             </span>
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex flex-col justify-between">
-          <span className="text-[11.5px] font-bold uppercase tracking-wide text-slate-500">
-            Pengguna Offline
-          </span>
+        {/* Card 3: Pengguna Offline */}
+        <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white border border-slate-200/90 shadow-2xs flex flex-col justify-between min-w-0">
+          <div className="flex items-center justify-between gap-1">
+            <span className="text-[10.5px] sm:text-[11.5px] font-bold uppercase tracking-wide text-slate-500 truncate">
+              Offline
+            </span>
+            <span className="text-[10px] sm:text-[11px] font-semibold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded shrink-0">
+              Offline
+            </span>
+          </div>
           <div className="mt-2 flex items-baseline justify-between">
-            <span className="text-2xl sm:text-3xl font-extrabold text-slate-600">
+            <span className="text-xl sm:text-3xl font-extrabold text-slate-600">
               {Math.max(0, users.length - activeUsersCount)}
             </span>
-            <span className="text-[11px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">
-              Tidak Aktif
-            </span>
+            <span className="text-[10.5px] text-slate-400 font-medium hidden sm:inline">Tidak Aktif</span>
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex flex-col justify-between">
-          <span className="text-[11.5px] font-bold uppercase tracking-wide text-slate-500">
-            Sesi Perangkat
-          </span>
+        {/* Card 4: Sesi Perangkat */}
+        <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white border border-slate-200/90 shadow-2xs flex flex-col justify-between min-w-0">
+          <div className="flex items-center justify-between gap-1">
+            <span className="text-[10.5px] sm:text-[11.5px] font-bold uppercase tracking-wide text-slate-500 truncate">
+              Sesi Login
+            </span>
+            <span className="text-[10px] sm:text-[11px] font-semibold text-blue-800 bg-blue-50 px-1.5 py-0.5 rounded shrink-0">
+              Koneksi
+            </span>
+          </div>
           <div className="mt-2 flex items-baseline justify-between">
-            <span className="text-2xl sm:text-3xl font-extrabold text-blue-700">
+            <span className="text-xl sm:text-3xl font-extrabold text-blue-700">
               {activeSessionsCount}
             </span>
-            <span className="text-[11px] font-semibold text-blue-800 bg-blue-50 px-2 py-0.5 rounded-md">
-              Terhubung
-            </span>
+            <span className="text-[10.5px] text-slate-400 font-medium hidden sm:inline">Perangkat</span>
           </div>
         </div>
       </div>
 
-      {/* Sub-Tab Navigation Bar */}
-      <div className="flex border-b border-slate-200 gap-2">
+      {/* Sub-Tab Navigation Bar (Horizontal Touch-Scrollable) */}
+      <div className="flex items-center gap-1.5 sm:gap-2 border-b border-slate-200 overflow-x-auto no-scrollbar pb-1 -mx-3.5 px-3.5 sm:mx-0 sm:px-0">
         <button
           type="button"
           onClick={() => setActiveSubTab('directory')}
-          className={`flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-bold border-b-2 transition-colors ${
+          className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-bold border-b-2 transition-colors shrink-0 whitespace-nowrap ${
             activeSubTab === 'directory'
               ? 'border-blue-700 text-blue-700'
               : 'border-transparent text-slate-500 hover:text-slate-900 hover:border-slate-300'
           }`}
         >
-          <Users className="w-4 h-4" />
-          <span>Direktori Pengguna &amp; Hak Akses</span>
-          <span className="px-2 py-0.5 text-[11px] rounded-full bg-slate-100 text-slate-700">
+          <Users className="w-4 h-4 shrink-0" />
+          <span>Direktori Pengguna</span>
+          <span className="px-1.5 py-0.5 text-[11px] rounded-full bg-slate-100 text-slate-700 font-semibold">
             {users.length}
           </span>
         </button>
@@ -675,15 +691,15 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
         <button
           type="button"
           onClick={() => setActiveSubTab('sessions')}
-          className={`flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-bold border-b-2 transition-colors ${
+          className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-bold border-b-2 transition-colors shrink-0 whitespace-nowrap ${
             activeSubTab === 'sessions'
               ? 'border-blue-700 text-blue-700'
               : 'border-transparent text-slate-500 hover:text-slate-900 hover:border-slate-300'
           }`}
         >
-          <Laptop className="w-4 h-4" />
-          <span>Riwayat Sesi &amp; Perangkat Login</span>
-          <span className="px-2 py-0.5 text-[11px] rounded-full bg-emerald-100 text-emerald-800 font-extrabold">
+          <Laptop className="w-4 h-4 shrink-0" />
+          <span>Sesi &amp; Perangkat</span>
+          <span className="px-1.5 py-0.5 text-[11px] rounded-full bg-emerald-100 text-emerald-800 font-extrabold">
             {activeSessionsCount} Aktif
           </span>
         </button>
@@ -691,17 +707,17 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
         <button
           type="button"
           onClick={() => setActiveSubTab('activation')}
-          className={`flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-bold border-b-2 transition-colors ${
+          className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-bold border-b-2 transition-colors shrink-0 whitespace-nowrap ${
             activeSubTab === 'activation'
               ? 'border-blue-700 text-blue-700'
               : 'border-transparent text-slate-500 hover:text-slate-900 hover:border-slate-300'
           }`}
         >
-          <Key className="w-4 h-4" />
-          <span>Aktivasi Akun Pengguna</span>
+          <Key className="w-4 h-4 shrink-0" />
+          <span>Aktivasi Akun</span>
           {users.filter((u) => u.status === 'Nonaktif').length > 0 && (
-            <span className="px-2 py-0.5 text-[11px] rounded-full bg-amber-100 text-amber-800 font-bold">
-              {users.filter((u) => u.status === 'Nonaktif').length} Tertunda
+            <span className="px-1.5 py-0.5 text-[11px] rounded-full bg-amber-100 text-amber-800 font-bold">
+              {users.filter((u) => u.status === 'Nonaktif').length}
             </span>
           )}
         </button>
@@ -713,53 +729,53 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
       {activeSubTab === 'directory' && (
         <div className="space-y-4">
           {/* Search & Filters */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs">
-            <div className="relative flex-1">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3 bg-white p-2.5 sm:p-3 rounded-2xl border border-slate-200 shadow-2xs">
+            <div className="relative flex-1 min-w-0">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Cari nama, email, perangkat, atau alamat IP..."
-                className="w-full pl-9 pr-4 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-900 placeholder:text-slate-400"
+                placeholder="Cari nama, email, perangkat, atau IP..."
+                className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-900 placeholder:text-slate-400"
               />
             </div>
 
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 text-xs">
-                <Filter className="w-3.5 h-3.5 text-slate-500" />
-                <span className="font-semibold text-slate-600">Peran:</span>
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar w-full sm:w-auto pb-0.5 sm:pb-0 shrink-0">
+              <div className="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200 text-xs shrink-0">
+                <Filter className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                <span className="font-semibold text-slate-500 text-[11px]">Peran:</span>
                 <select
                   value={roleFilter}
                   onChange={(e) => setRoleFilter(e.target.value as any)}
-                  className="bg-transparent font-bold text-slate-900 focus:outline-none cursor-pointer"
+                  className="bg-transparent font-bold text-slate-900 focus:outline-none cursor-pointer text-xs"
                 >
-                  <option value="all">Semua Peran</option>
+                  <option value="all">Semua</option>
                   <option value="admin">Administrator</option>
-                  <option value="guru">Dewan Guru</option>
-                  <option value="siswa">Santri / Siswa</option>
+                  <option value="guru">Guru</option>
+                  <option value="siswa">Siswa</option>
                 </select>
               </div>
 
-              <div className="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 text-xs">
-                <span className="font-semibold text-slate-600">Status:</span>
+              <div className="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200 text-xs shrink-0">
+                <span className="font-semibold text-slate-500 text-[11px]">Status:</span>
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value as any)}
-                  className="bg-transparent font-bold text-slate-900 focus:outline-none cursor-pointer"
+                  className="bg-transparent font-bold text-slate-900 focus:outline-none cursor-pointer text-xs"
                 >
-                  <option value="all">Semua Akun</option>
+                  <option value="all">Semua</option>
                   <option value="Aktif">Aktif</option>
                   <option value="Nonaktif">Nonaktif</option>
                 </select>
               </div>
 
-              <div className="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 text-xs">
-                <span className="font-semibold text-slate-600">Koneksi:</span>
+              <div className="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200 text-xs shrink-0">
+                <span className="font-semibold text-slate-500 text-[11px]">Koneksi:</span>
                 <select
                   value={onlineFilter}
                   onChange={(e) => setOnlineFilter(e.target.value as any)}
-                  className="bg-transparent font-bold text-slate-900 focus:outline-none cursor-pointer"
+                  className="bg-transparent font-bold text-slate-900 focus:outline-none cursor-pointer text-xs"
                 >
                   <option value="all">Semua ({users.length})</option>
                   <option value="online">Online ({activeUsersCount})</option>
@@ -1001,11 +1017,12 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                 </div>
               ) : (
                 filteredUsers.map((user) => (
-                  <div key={user.id} className="p-4 space-y-3 hover:bg-slate-50/80 transition-colors">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-center gap-2.5 min-w-0">
+                  <div key={user.id} className="p-3.5 space-y-3 hover:bg-slate-50/80 transition-colors">
+                    {/* Top Row: Avatar + Name/Email (flex-1 min-w-0) + Role Badge */}
+                    <div className="flex items-start justify-between gap-2.5">
+                      <div className="flex items-center gap-2.5 min-w-0 flex-1">
                         <div className="relative shrink-0">
-                          <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-900 font-bold flex items-center justify-center border border-blue-200 text-sm">
+                          <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-900 font-bold flex items-center justify-center border border-blue-200 text-sm shadow-2xs">
                             {user.name.charAt(0).toUpperCase()}
                           </div>
                           <span
@@ -1014,11 +1031,9 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                             }`}
                           />
                         </div>
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-1.5">
-                            <h4 className="font-bold text-slate-900 text-sm truncate">{user.name}</h4>
-                          </div>
-                          <p className="text-xs font-mono text-slate-500 truncate">{user.email}</p>
+                        <div className="min-w-0 flex-1">
+                          <h4 className="font-bold text-slate-900 text-sm truncate">{user.name}</h4>
+                          <p className="text-xs font-mono text-slate-500 truncate mt-0.5">{user.email}</p>
                         </div>
                       </div>
 
@@ -1027,50 +1042,53 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                       </div>
                     </div>
 
-                    <div className="flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-xs">
+                    {/* Middle Row: Password Box + Status Toggle */}
+                    <div className="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-xs">
                       {/* Password Quick Pill */}
-                      <div className="flex items-center gap-1.5 font-mono text-[11px]">
-                        <span className="text-slate-400 font-sans">Sandi:</span>
-                        <span className="font-bold text-slate-800">
+                      <div className="flex items-center gap-1.5 font-mono text-[11px] min-w-0 flex-1">
+                        <span className="text-slate-400 font-sans shrink-0">Sandi:</span>
+                        <span className="font-bold text-slate-800 truncate">
                           {visiblePasswords[user.id]
                             ? user.password && !user.password.startsWith('h256:')
                               ? user.password
-                              : '•••••••• (Terenkripsi)'
+                              : '••••••••'
                             : '••••••••'}
                         </span>
-                        <button
-                          type="button"
-                          onClick={() => togglePasswordVisibility(user.id)}
-                          className="text-slate-400 hover:text-blue-700 p-0.5"
-                          title="Tampilkan / Sembunyikan"
-                        >
-                          {visiblePasswords[user.id] ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setEditingUser({ ...user, password: '' });
-                            setShowEditPassword(true);
-                          }}
-                          className="text-blue-700 hover:text-blue-900 p-0.5 font-sans font-bold text-[10.5px] underline ml-1"
-                        >
-                          Ganti
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => copyCredentials(user)}
-                          className="text-slate-400 hover:text-blue-700 p-0.5 ml-0.5"
-                          title="Salin Kredensial"
-                        >
-                          <Copy className="w-3 h-3" />
-                        </button>
+                        <div className="flex items-center shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => togglePasswordVisibility(user.id)}
+                            className="text-slate-400 hover:text-blue-700 p-1 rounded hover:bg-slate-200/60 transition-colors"
+                            title="Tampilkan / Sembunyikan"
+                          >
+                            {visiblePasswords[user.id] ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditingUser({ ...user, password: '' });
+                              setShowEditPassword(true);
+                            }}
+                            className="text-blue-700 hover:text-blue-900 px-1 py-0.5 font-sans font-bold text-[10.5px] underline"
+                          >
+                            Ganti
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => copyCredentials(user)}
+                            className="text-slate-400 hover:text-blue-700 p-1 rounded hover:bg-slate-200/60 transition-colors"
+                            title="Salin Kredensial"
+                          >
+                            <Copy className="w-3 h-3" />
+                          </button>
+                        </div>
                       </div>
 
                       {/* Status Toggle */}
                       <button
                         type="button"
                         onClick={() => handleToggleUserStatus(user)}
-                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold cursor-pointer transition-colors ${
+                        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold cursor-pointer transition-colors shrink-0 ${
                           user.status === 'Aktif'
                             ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                             : 'bg-rose-50 text-rose-700 border border-rose-200'
@@ -1085,12 +1103,13 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                       </button>
                     </div>
 
+                    {/* Bottom Row: Permissions & Actions */}
                     <div className="flex items-center justify-between pt-1 border-t border-slate-100">
-                      <span className="text-[11px] text-slate-400">
-                        {user.permissions.length} Modul Diizinkan
+                      <span className="text-[11px] text-slate-500 font-medium truncate">
+                        {user.permissions.length} Modul Akses
                       </span>
 
-                      <div className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-1.5 shrink-0">
                         <button
                           type="button"
                           onClick={() => {
@@ -1098,7 +1117,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                             setEditingUser({ ...user, password: isHashed ? '' : (user.password || '') });
                             setShowEditPassword(true);
                           }}
-                          className="px-2.5 py-1.5 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-xs transition-colors border border-blue-200 flex items-center gap-1"
+                          className="px-2.5 py-1.5 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-xs transition-colors border border-blue-200 flex items-center gap-1 active:scale-[0.98]"
                         >
                           <Sliders className="w-3 h-3" />
                           <span>Atur Akses</span>
@@ -1108,7 +1127,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                           <button
                             type="button"
                             onClick={() => handleDeleteUser(user)}
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors border border-slate-200 active:scale-[0.98]"
                             title="Hapus Akun Pengguna"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -1251,7 +1270,8 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
           </div>
 
           <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
-            <div className="overflow-x-auto">
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead className="bg-[#1e3a8a] text-white uppercase text-[11px] tracking-wider font-bold">
                   <tr>
@@ -1354,6 +1374,73 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                 </tbody>
               </table>
             </div>
+
+            {/* Mobile View: Touch-Friendly Responsive Session Cards */}
+            <div className="md:hidden divide-y divide-slate-100">
+              {sessions.length === 0 ? (
+                <div className="py-10 text-center text-slate-400 text-xs">
+                  Belum ada riwayat sesi login yang tercatat.
+                </div>
+              ) : (
+                sessions.map((sess) => {
+                  const isActive = sess.status === 'active';
+                  return (
+                    <div key={sess.id} className="p-3.5 space-y-2.5 hover:bg-slate-50/80 transition-colors">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="font-bold text-slate-900 text-sm truncate">{sess.user_name}</span>
+                            {getRoleBadge(sess.role)}
+                          </div>
+                          <span className="text-xs font-mono text-slate-500 truncate block mt-0.5">{sess.email}</span>
+                        </div>
+                        <div className="shrink-0">
+                          {isActive ? (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                              Aktif
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10.5px] font-semibold bg-slate-100 text-slate-500 border border-slate-200">
+                              Selesai
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between text-[11px] text-slate-600 bg-slate-50 p-2 rounded-xl border border-slate-100">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          {getDeviceIcon(sess.device_type)}
+                          <span className="font-semibold text-slate-800 truncate">{sess.os} • {sess.browser}</span>
+                        </div>
+                        <span className="font-mono text-slate-500 shrink-0 ml-2">{sess.ip_address}</span>
+                      </div>
+
+                      <div className="flex items-center justify-between text-[11px] pt-0.5">
+                        <span className="text-slate-400 font-mono">
+                          {new Date(sess.login_time).toLocaleString('id-ID', {
+                            day: 'numeric',
+                            month: 'short',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </span>
+                        {isActive && (
+                          <button
+                            type="button"
+                            onClick={() => handleRevokeSession(sess.id, sess.user_name)}
+                            className="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-xs flex items-center gap-1 active:scale-95"
+                          >
+                            <LogOut className="w-3 h-3 text-rose-600" />
+                            <span>Putuskan</span>
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -1379,7 +1466,8 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
               </div>
             </div>
 
-            <div className="overflow-x-auto">
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead className="bg-[#1e3a8a] text-white uppercase text-[11px] tracking-wider font-bold">
                   <tr>
@@ -1411,7 +1499,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                               <span className="text-slate-500 text-xs font-mono">{user.email}</span>
                               {user.nip_nisn && user.nip_nisn !== '-' && (
                                 <span className="text-[11px] text-slate-600 mt-0.5">
-                                  ID: <span className="font-mono font-medium">{user.nip_nisn}</span>
+                                   ID: <span className="font-mono font-medium">{user.nip_nisn}</span>
                                   {user.note && user.note !== '-' ? ` • ${user.note}` : ''}
                                 </span>
                               )}
@@ -1513,6 +1601,110 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                   )}
                 </tbody>
               </table>
+            </div>
+
+            {/* Mobile View: Touch-Friendly Responsive Activation Cards */}
+            <div className="md:hidden divide-y divide-slate-100">
+              {users.filter((u) => u.status === 'Nonaktif').length === 0 ? (
+                <div className="py-10 text-center text-slate-400 p-4">
+                  <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto mb-2 opacity-80" />
+                  <span className="font-semibold block text-slate-700 text-sm">Semua Akun Sudah Aktif</span>
+                  <span className="text-xs text-slate-400">Tidak ada akun yang sedang menunggu aktivasi saat ini.</span>
+                </div>
+              ) : (
+                users
+                  .filter((u) => u.status === 'Nonaktif')
+                  .map((user) => (
+                    <div key={user.id} className="p-3.5 space-y-3 hover:bg-slate-50/80 transition-colors">
+                      <div className="flex items-start justify-between gap-2.5">
+                        <div className="min-w-0 flex-1">
+                          <h4 className="font-bold text-slate-900 text-sm truncate">{user.name}</h4>
+                          <p className="text-xs font-mono text-slate-500 truncate mt-0.5">{user.email}</p>
+                          {user.nip_nisn && user.nip_nisn !== '-' && (
+                            <span className="text-[11px] text-slate-600 block mt-0.5">
+                              ID: <span className="font-mono font-medium">{user.nip_nisn}</span>
+                            </span>
+                          )}
+                        </div>
+                        <div className="shrink-0">
+                          {getRoleBadge(user.role)}
+                        </div>
+                      </div>
+
+                      {/* Password Info Box */}
+                      <div className="flex items-center justify-between gap-2 p-2 rounded-xl bg-slate-50 border border-slate-100 text-xs font-mono">
+                        <div className="flex items-center gap-1.5 min-w-0 flex-1">
+                          <span className="text-slate-400 font-sans text-[11px] shrink-0">Sandi:</span>
+                          <span className="font-bold text-slate-800 text-[11px] truncate">
+                            {visiblePasswords[user.id]
+                              ? user.password ||
+                                (user.role === 'admin' ? 'admin123' : user.role === 'siswa' ? 'siswa2026' : 'guru2026')
+                              : '••••••••'}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1 shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => togglePasswordVisibility(user.id)}
+                            className="p-1 rounded text-slate-400 hover:text-blue-700"
+                            title="Tampilkan / Sembunyikan Sandi"
+                          >
+                            {visiblePasswords[user.id] ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => copyCredentials(user)}
+                            className="p-1 rounded text-slate-400 hover:text-blue-700"
+                            title="Salin Kredensial"
+                          >
+                            <Copy className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Action Row */}
+                      <div className="flex items-center justify-between pt-1 border-t border-slate-100 gap-2">
+                        <span className="text-[10.5px] font-mono text-slate-400">
+                          {user.created_at
+                            ? new Date(user.created_at).toLocaleDateString('id-ID', {
+                                day: 'numeric',
+                                month: 'short',
+                              })
+                            : '-'}
+                        </span>
+
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => handleToggleUserStatus(user)}
+                            className="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1 active:scale-[0.98]"
+                          >
+                            <UserCheck className="w-3 h-3" />
+                            <span>Aktifkan</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const isHashed = user.password?.startsWith('h256:');
+                              setEditingUser({ ...user, password: isHashed ? '' : (user.password || '') });
+                              setShowEditPassword(true);
+                            }}
+                            className="px-2 py-1.5 rounded-lg bg-blue-50 text-blue-700 font-bold text-xs border border-blue-200 active:scale-[0.98]"
+                          >
+                            <Sliders className="w-3 h-3" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteUser(user)}
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 border border-slate-200 active:scale-[0.98]"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+              )}
             </div>
           </div>
         </div>

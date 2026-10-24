@@ -69,3 +69,12 @@
     overflow-x: auto;
   }
 }
+
+/* Touch-friendly horizontal scroll with hidden scrollbars */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

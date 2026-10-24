@@ -199,14 +199,14 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
   const activeFormJenjang = formData.jenjang || detectJenjang(formData.class_level, formData.code);
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200">
+    <div className="space-y-4 sm:space-y-6 w-full max-w-full min-w-0 overflow-hidden animate-in fade-in duration-200">
       {/* Top Header Card */}
-      <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
           <h3 className="font-serif text-[18px] font-bold text-slate-900">
             {mode === 'website-teachers' ? 'Dewan Guru & Pendidik' : 'Guru Mata Pelajaran'}
           </h3>
-          <p className="text-[13px] text-slate-500">
+          <p className="text-[12.5px] sm:text-[13px] text-slate-500">
             {mode === 'website-teachers'
               ? `Profil tenaga pendidik yang ditampilkan pada direktori website publik (${teachers.length} guru aktif)`
               : `Kelola daftar pendidik resmi, penugasan mata pelajaran, dan beban jam mengajar jenjang SD, SMP, & SMA (${teachers.length} guru terdaftar)`}
@@ -216,15 +216,15 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
         <button
           type="button"
           onClick={handleOpenAdd}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-sans text-[13px] font-bold transition-all shadow-xs active:scale-95"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-sans text-xs sm:text-[13px] font-bold transition-all shadow-xs active:scale-95 shrink-0 self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
-          <span>{mode === 'website-teachers' ? 'Tambah Pendidik Baru' : 'Tambah Guru Mata Pelajaran'}</span>
+          <span>{mode === 'website-teachers' ? 'Tambah Pendidik' : 'Tambah Guru'}</span>
         </button>
       </div>
 
-      {/* Jenjang Filter Navbar ("Navbar Kepinggir SD, SMP, SMA") */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+      {/* Jenjang Filter Navbar */}
+      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 -mx-1 px-1 sm:mx-0 sm:px-0">
         <button
           type="button"
           onClick={() => setSelectedJenjang('all')}

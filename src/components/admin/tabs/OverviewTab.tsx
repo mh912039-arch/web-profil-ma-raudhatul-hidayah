@@ -155,15 +155,15 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
   ];
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-200">
+    <div className="space-y-6 sm:space-y-8 w-full max-w-full min-w-0 overflow-hidden animate-in fade-in duration-200">
       {/* Grid KPI Metrics Cards */}
       <div>
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-3 sm:mb-4">
           <h3 className="font-serif text-[18px] font-bold text-slate-900 tracking-tight">
             Metrik &amp; Indikator Utama
           </h3>
-          <span className="text-[12px] text-slate-500 font-medium">
-            Terhubung ke proyek: <strong className="font-mono text-slate-700">zzgobrlhnnqvspuwugkz</strong>
+          <span className="text-[11px] sm:text-[12px] text-slate-500 font-medium truncate">
+            Proyek Database: <strong className="font-mono text-slate-700">zzgobrlhnnqvspuwugkz</strong>
           </span>
         </div>
 

@@ -114,45 +114,45 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
   const current = tabTitles[activeTab] || tabTitles.overview;
 
   return (
-    <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-6 lg:px-8 py-3.5 transition-all">
-      <div className="flex items-center justify-between gap-4">
+    <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3.5 transition-all">
+      <div className="flex items-center justify-between gap-2.5 sm:gap-4">
         {/* Left: Mobile Toggle & Breadcrumb Title */}
-        <div className="flex items-center gap-3.5 min-w-0">
+        <div className="flex items-center gap-2 sm:gap-3.5 min-w-0">
           <button
             type="button"
             onClick={() => setIsOpenMobile(true)}
-            className="p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 lg:hidden transition-colors"
+            className="p-1.5 sm:p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 lg:hidden transition-colors"
             aria-label="Buka Menu Sidebar"
           >
             <Menu className="w-5 h-5" />
           </button>
 
           <div className="flex flex-col min-w-0">
-            <div className="flex items-center gap-2 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+            <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-[11px] font-semibold text-slate-400 uppercase tracking-wider truncate">
               <span>
                 {userRole === 'siswa'
-                  ? 'Portal Santri'
+                  ? 'Santri'
                   : userRole === 'guru'
-                  ? 'Portal Dewan Guru'
-                  : 'Portal Akademik Resmi'}
+                  ? 'Dewan Guru'
+                  : 'Portal Admin'}
               </span>
               <span>/</span>
-              <span className="text-blue-700 font-bold">{current.title}</span>
+              <span className="text-blue-700 font-bold truncate">{current.title}</span>
             </div>
-            <h1 className="font-serif text-[18px] sm:text-[22px] font-bold text-slate-900 tracking-tight leading-snug truncate">
+            <h1 className="font-serif text-[16px] sm:text-[22px] font-bold text-slate-900 tracking-tight leading-snug truncate">
               {current.title}
             </h1>
           </div>
         </div>
 
         {/* Right: Actions & Status */}
-        <div className="flex items-center gap-2.5 shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
           {/* Refresh Action */}
           <button
             type="button"
             onClick={onRefresh}
             disabled={isRefreshing}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-2xs transition-all active:scale-[0.98] disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-2xs transition-all active:scale-[0.98] disabled:opacity-50"
             title="Muat ulang sinkronisasi data"
           >
             <RefreshCw
@@ -166,9 +166,11 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
             href="/"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-semibold shadow-xs transition-all active:scale-[0.98]"
+            className="inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-semibold shadow-xs transition-all active:scale-[0.98]"
+            title="Buka Website Publik"
           >
-            <span>Buka Website</span>
+            <span className="hidden sm:inline">Buka Website</span>
+            <span className="sm:hidden text-[11px] font-bold">Web</span>
             <ExternalLink className="w-3.5 h-3.5 text-amber-300" />
           </Link>
 
