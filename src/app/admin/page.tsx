@@ -528,7 +528,11 @@ export default function AdminDashboardPage() {
       if (res.ok && resJson.success) {
         const savedPhoto = resJson.data || photo;
         setChampionshipPhotos((prev) => {
-          const idx = prev.findIndex((p) => p.id && String(p.id) === String(savedPhoto.id));
+          const idx = prev.findIndex(
+            (p) =>
+              (p.id && String(p.id) === String(savedPhoto.id)) ||
+              (photo.id && String(p.id) === String(photo.id))
+          );
           if (idx >= 0) {
             const updated = [...prev];
             updated[idx] = savedPhoto;
@@ -550,10 +554,13 @@ export default function AdminDashboardPage() {
   // Handler: Delete Championship Photo
   const handleDeletePhoto = async (id: string | number) => {
     try {
-      const res = await fetch(`/api/championships?id=${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/championships?id=${encodeURIComponent(String(id))}`, { method: 'DELETE' });
       if (res.ok) {
         setChampionshipPhotos((prev) => prev.filter((p) => String(p.id) !== String(id)));
         showToast('success', 'Foto juara berhasil dihapus.');
+      } else {
+        const errJson = await res.json().catch(() => null);
+        showToast('error', errJson?.message || 'Gagal menghapus foto.');
       }
     } catch (err) {
       showToast('error', 'Gagal menghapus foto.');
@@ -633,7 +640,40 @@ export default function AdminDashboardPage() {
     }
   };
 
-  // Handler: Save PPDB Applicant
+  // Handler: Save / Create Contact Message (Manual Entry)
+  const handleSaveMessage = async (msg: Partial<ContactMessage>) => {
+    setIsSaving(true);
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(msg),
+      });
+      const resJson = await res.json();
+      if (res.ok && resJson.success) {
+        const saved: ContactMessage = resJson.data || {
+          id: `msg-${Date.now()}`,
+          name: msg.name || 'Tamu Madrasah',
+          email: msg.email,
+          phone: msg.phone,
+          subject: msg.subject || 'Aspirasi / Kunjungan Manual',
+          message: msg.message || '',
+          status: 'read',
+          created_at: new Date().toISOString(),
+        };
+        setMessages((prev) => [saved, ...prev]);
+        showToast('success', `Pesan/aspirasi dari "${saved.name}" berhasil dicatat.`);
+      } else {
+        showToast('error', resJson.message || 'Gagal mencatat pesan.');
+      }
+    } catch (err) {
+      showToast('error', 'Gagal mencatat pesan.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Handler: Save PPDB Applicant (Create)
   const handleSaveApplicant = async (app: PpdbApplicant) => {
     setIsSaving(true);
     try {
@@ -654,6 +694,52 @@ export default function AdminDashboardPage() {
       showToast('error', 'Gagal menyimpan data pendaftar.');
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  // Handler: Update PPDB Applicant Details (Edit)
+  const handleUpdateApplicant = async (app: PpdbApplicant) => {
+    setIsSaving(true);
+    try {
+      const res = await fetch('/api/registrations', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(app),
+      });
+      const resJson = await res.json();
+      if (res.ok && resJson.success) {
+        const updated = resJson.applicant || app;
+        setApplicants((prev) =>
+          prev.map((a) =>
+            (a.id && a.id === updated.id) || a.registration_number === updated.registration_number
+              ? { ...a, ...updated }
+              : a
+          )
+        );
+        showToast('success', `Data calon santri "${app.full_name}" berhasil diperbarui.`);
+      } else {
+        showToast('error', resJson.message || 'Gagal memperbarui data pendaftar.');
+      }
+    } catch (err) {
+      showToast('error', 'Gagal memperbarui data pendaftar.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Handler: Delete PPDB Applicant (Delete)
+  const handleDeleteApplicant = async (id: string) => {
+    try {
+      const res = await fetch(`/api/registrations?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+      const resJson = await res.json().catch(() => null);
+      if (res.ok && (resJson?.success ?? true)) {
+        setApplicants((prev) => prev.filter((a) => a.id !== id && a.registration_number !== id));
+        showToast('success', 'Data pendaftar berhasil dihapus dari sistem.');
+      } else {
+        showToast('error', resJson?.message || 'Gagal menghapus data pendaftar.');
+      }
+    } catch (err) {
+      showToast('error', 'Gagal menghapus data pendaftar.');
     }
   };
 
@@ -867,7 +953,9 @@ export default function AdminDashboardPage() {
             <RegistrationsTab
               applicants={applicants}
               onSaveApplicant={handleSaveApplicant}
+              onUpdateApplicant={handleUpdateApplicant}
               onUpdateStatus={handleUpdateApplicantStatus}
+              onDeleteApplicant={handleDeleteApplicant}
               isSaving={isSaving}
             />
           )}
@@ -919,6 +1007,7 @@ export default function AdminDashboardPage() {
               messages={messages}
               onMarkRead={handleMarkMessageRead}
               onDeleteMessage={handleDeleteMessage}
+              onSaveMessage={handleSaveMessage}
               isSaving={isSaving}
             />
           )}

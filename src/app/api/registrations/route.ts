@@ -226,7 +226,7 @@ export async function POST(request: Request) {
 }
 
 export async function PATCH(request: Request) {
-  // Hanya Administrator yang dapat memverifikasi status pendaftaran
+  // Hanya Administrator yang dapat memverifikasi status atau mengubah data pendaftaran
   const auth = await requireAuth(['admin']);
   if (!auth.authorized) {
     return auth.response!;
@@ -234,50 +234,87 @@ export async function PATCH(request: Request) {
 
   try {
     const body = await request.json();
-    const { id, status, registration_path, documents, admin_notes } = body;
+    const {
+      id,
+      registration_number,
+      full_name,
+      nisn,
+      gender,
+      birth_place,
+      birth_date,
+      previous_school,
+      parent_name,
+      parent_whatsapp,
+      home_address,
+      status,
+      registration_path,
+      documents,
+      admin_notes,
+    } = body;
 
-    if (!id) {
-      return NextResponse.json({ success: false, message: 'ID diperlukan' }, { status: 400 });
+    const targetId = id || registration_number;
+    if (!targetId) {
+      return NextResponse.json({ success: false, message: 'ID atau nomor registrasi diperlukan' }, { status: 400 });
     }
+
+    let updatedItem: PpdbApplicantItem | null = null;
 
     // 1. Update in local file
     try {
       const fileContent = await fs.readFile(dataFilePath, 'utf-8');
       const list: PpdbApplicantItem[] = JSON.parse(fileContent);
-      const idx = list.findIndex((a) => String(a.id) === String(id) || a.registration_number === id);
+      const idx = list.findIndex((a) => String(a.id) === String(targetId) || a.registration_number === targetId);
       if (idx >= 0) {
-        if (status) list[idx].status = status;
-        if (registration_path) list[idx].registration_path = registration_path;
-        if (documents) list[idx].documents = { ...list[idx].documents, ...documents };
+        if (full_name !== undefined) list[idx].full_name = full_name;
+        if (nisn !== undefined) list[idx].nisn = nisn;
+        if (gender !== undefined) list[idx].gender = gender;
+        if (birth_place !== undefined) list[idx].birth_place = birth_place;
+        if (birth_date !== undefined) list[idx].birth_date = birth_date;
+        if (previous_school !== undefined) list[idx].previous_school = previous_school;
+        if (parent_name !== undefined) list[idx].parent_name = parent_name;
+        if (parent_whatsapp !== undefined) list[idx].parent_whatsapp = parent_whatsapp;
+        if (home_address !== undefined) list[idx].home_address = home_address;
+        if (status !== undefined) list[idx].status = status;
+        if (registration_path !== undefined) list[idx].registration_path = registration_path;
+        if (documents !== undefined) list[idx].documents = { ...list[idx].documents, ...documents };
         if (admin_notes !== undefined) list[idx].admin_notes = admin_notes;
+        updatedItem = list[idx];
         await fs.writeFile(dataFilePath, JSON.stringify(list, null, 2), 'utf-8');
       }
     } catch (err) {}
 
     // 2. Update in Supabase safely
     try {
-      const updatePayload = {
-        ...(status ? { status } : {}),
-        ...(registration_path ? { registration_path } : {}),
-        ...(documents ? { documents } : {}),
-        ...(admin_notes !== undefined ? { admin_notes } : {}),
-      };
+      const updatePayload: Record<string, any> = {};
+      if (full_name !== undefined) updatePayload.full_name = full_name;
+      if (nisn !== undefined) updatePayload.nisn = nisn;
+      if (gender !== undefined) updatePayload.gender = gender;
+      if (birth_place !== undefined) updatePayload.birth_place = birth_place;
+      if (birth_date !== undefined) updatePayload.birth_date = birth_date;
+      if (previous_school !== undefined) updatePayload.previous_school = previous_school;
+      if (parent_name !== undefined) updatePayload.parent_name = parent_name;
+      if (parent_whatsapp !== undefined) updatePayload.parent_whatsapp = parent_whatsapp;
+      if (home_address !== undefined) updatePayload.home_address = home_address;
+      if (status !== undefined) updatePayload.status = status;
+      if (registration_path !== undefined) updatePayload.registration_path = registration_path;
+      if (documents !== undefined) updatePayload.documents = documents;
+      if (admin_notes !== undefined) updatePayload.admin_notes = admin_notes;
 
-      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(id));
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(targetId));
       if (isUuid) {
         await supabase
           .from('ppdb_registrations')
           .update(updatePayload)
-          .eq('id', id);
+          .eq('id', targetId);
       } else {
         await supabase
           .from('ppdb_registrations')
           .update(updatePayload)
-          .eq('registration_number', id);
+          .eq('registration_number', targetId);
       }
     } catch (err) {}
 
-    return NextResponse.json({ success: true, message: 'Status berhasil diperbarui.' });
+    return NextResponse.json({ success: true, message: 'Data pendaftar berhasil diperbarui.', applicant: updatedItem });
   } catch (error: any) {
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }

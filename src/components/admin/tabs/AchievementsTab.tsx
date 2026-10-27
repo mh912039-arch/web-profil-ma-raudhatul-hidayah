@@ -85,11 +85,17 @@ export const AchievementsTab: React.FC<AchievementsTabProps> = ({
     setEditingPhoto(p);
     setUploadMessage(null);
     setFormData({
-      ...p,
+      id: p.id,
+      title: p.title || '',
+      event_name: p.event_name || '',
       sub: p.sub || '',
-      badge: p.badge || 'Piala Juara',
+      badge: p.badge || p.category || 'Piala Juara',
+      date_label: p.date_label || '14 April 2026',
+      category: p.category || 'Pramuka Penegak',
+      image_url: p.image_url || '/foto-juara.jpeg',
       slug: p.slug || '',
       caption: p.caption || '',
+      order_index: p.order_index !== undefined ? p.order_index : 1,
     });
     setIsModalOpen(true);
   };
@@ -136,7 +142,7 @@ export const AchievementsTab: React.FC<AchievementsTabProps> = ({
         <button
           type="button"
           onClick={handleOpenAdd}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-sans text-[13px] font-bold transition-all shadow-xs active:scale-95"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#1e3a8a] hover:bg-[#172554] text-white font-sans text-[13px] font-bold transition-all shadow-xs active:scale-95 cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>Tambah Foto Juara Baru</span>
@@ -194,7 +200,7 @@ export const AchievementsTab: React.FC<AchievementsTabProps> = ({
                 <button
                   type="button"
                   onClick={() => handleOpenEdit(photo)}
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors cursor-pointer"
                   title="Sunting foto juara"
                 >
                   <Edit2 className="w-4 h-4" />
@@ -206,7 +212,7 @@ export const AchievementsTab: React.FC<AchievementsTabProps> = ({
                       onDeletePhoto(photo.id || idx);
                     }
                   }}
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
                   title="Hapus foto"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -395,7 +401,7 @@ export const AchievementsTab: React.FC<AchievementsTabProps> = ({
                 <button
                   type="submit"
                   disabled={isSaving || isUploading}
-                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-[13px] disabled:opacity-50"
+                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#1e3a8a] hover:bg-[#172554] text-white font-bold text-[13px] disabled:opacity-50 cursor-pointer shadow-xs active:scale-95"
                 >
                   <Save className="w-4 h-4" />
                   <span>{isSaving ? 'Menyimpan...' : 'Simpan Foto Juara'}</span>

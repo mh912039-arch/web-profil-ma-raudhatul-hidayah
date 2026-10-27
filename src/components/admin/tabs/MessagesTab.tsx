@@ -28,6 +28,7 @@ interface MessagesTabProps {
   messages: ContactMessage[];
   onMarkRead: (id: string) => Promise<void>;
   onDeleteMessage: (id: string) => Promise<void>;
+  onSaveMessage?: (msg: Partial<ContactMessage>) => Promise<void>;
   isSaving: boolean;
 }
 
@@ -35,6 +36,7 @@ export const MessagesTab: React.FC<MessagesTabProps> = ({
   messages,
   onMarkRead,
   onDeleteMessage,
+  onSaveMessage,
   isSaving,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');

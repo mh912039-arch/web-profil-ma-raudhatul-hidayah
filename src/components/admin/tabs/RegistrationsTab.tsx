@@ -25,6 +25,8 @@ import {
   ShieldCheck,
   Eye,
   FileCheck,
+  Edit2,
+  Trash2,
 } from 'lucide-react';
 
 export interface PpdbApplicant {
@@ -55,7 +57,9 @@ export interface PpdbApplicant {
 interface RegistrationsTabProps {
   applicants: PpdbApplicant[];
   onSaveApplicant: (applicant: PpdbApplicant) => Promise<void>;
+  onUpdateApplicant?: (applicant: PpdbApplicant) => Promise<void>;
   onUpdateStatus: (id: string, newStatus: PpdbApplicant['status']) => Promise<void>;
+  onDeleteApplicant?: (id: string) => Promise<void>;
   isSaving: boolean;
 }
 
@@ -174,13 +178,16 @@ Assalamu'alaikum Wr. Wb. Yth. Bapak/Ibu *${parentName}*, formulir pendaftaran an
 export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
   applicants,
   onSaveApplicant,
+  onUpdateApplicant,
   onUpdateStatus,
+  onDeleteApplicant,
   isSaving,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('Semua');
   const [pathFilter, setPathFilter] = useState('Semua');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState<'add' | 'edit'>('add');
   const [detailApplicant, setDetailApplicant] = useState<PpdbApplicant | null>(null);
 
   // WhatsApp Notification Dialog State
@@ -198,7 +205,7 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
     copied: false,
   });
 
-  // Form for manual registration
+  // Form for manual registration or edit
   const [formData, setFormData] = useState<PpdbApplicant>({
     registration_number: `RH-${new Date().getFullYear()}-${String(applicants.length + 1).padStart(3, '0')}`,
     full_name: '',
@@ -219,7 +226,59 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
       afirmasi_url: '',
       prestasi_url: '',
     },
+    admin_notes: '',
   });
+
+  const handleOpenAdd = () => {
+    setModalMode('add');
+    setFormData({
+      registration_number: `RH-${new Date().getFullYear()}-${String(applicants.length + 1).padStart(3, '0')}`,
+      full_name: '',
+      nisn: '',
+      gender: 'L',
+      birth_place: 'Tangerang',
+      birth_date: '2011-05-10',
+      previous_school: '',
+      parent_name: '',
+      parent_whatsapp: '628',
+      home_address: '',
+      status: 'submitted',
+      registration_path: 'domisili',
+      documents: {
+        kk_url: '',
+        akta_url: '',
+        ijazah_url: '',
+        afirmasi_url: '',
+        prestasi_url: '',
+      },
+      admin_notes: '',
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleOpenEdit = (app: PpdbApplicant) => {
+    setModalMode('edit');
+    setFormData({
+      ...app,
+      documents: app.documents || {},
+      admin_notes: app.admin_notes || '',
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = async (app: PpdbApplicant) => {
+    if (!onDeleteApplicant) return;
+    const confirmDelete = window.confirm(
+      `Apakah Anda yakin ingin menghapus data calon santri "${app.full_name}" (No: ${app.registration_number})? Tindakan ini tidak dapat dibatalkan.`
+    );
+    if (!confirmDelete) return;
+
+    const targetId = app.id || app.registration_number;
+    await onDeleteApplicant(targetId);
+    if (detailApplicant && (detailApplicant.id === targetId || detailApplicant.registration_number === targetId)) {
+      setDetailApplicant(null);
+    }
+  };
 
   const filteredApplicants = applicants.filter((a) => {
     const matchesSearch =
@@ -234,7 +293,11 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onSaveApplicant(formData);
+    if (modalMode === 'edit' && onUpdateApplicant) {
+      await onUpdateApplicant(formData);
+    } else {
+      await onSaveApplicant(formData);
+    }
     setIsModalOpen(false);
   };
 
@@ -349,30 +412,7 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
 
         <button
           type="button"
-          onClick={() => {
-            setFormData({
-              registration_number: `RH-${new Date().getFullYear()}-${String(applicants.length + 1).padStart(3, '0')}`,
-              full_name: '',
-              nisn: '',
-              gender: 'L',
-              birth_place: 'Tangerang',
-              birth_date: '2011-05-10',
-              previous_school: '',
-              parent_name: '',
-              parent_whatsapp: '628',
-              home_address: '',
-              status: 'submitted',
-              registration_path: 'domisili',
-              documents: {
-                kk_url: '',
-                akta_url: '',
-                ijazah_url: '',
-                afirmasi_url: '',
-                prestasi_url: '',
-              },
-            });
-            setIsModalOpen(true);
-          }}
+          onClick={handleOpenAdd}
           className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-sans text-xs sm:text-[13px] font-bold transition-all shadow-xs active:scale-95 shrink-0 self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
@@ -545,6 +585,28 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
                             <MessageSquare className="w-3.5 h-3.5 text-emerald-600 group-hover:scale-110 transition-transform" />
                             <span>Kirim WA</span>
                           </button>
+
+                          {/* Edit Applicant Button */}
+                          <button
+                            type="button"
+                            onClick={() => handleOpenEdit(app)}
+                            className="p-1.5 rounded-lg text-slate-500 hover:text-blue-700 hover:bg-blue-50 transition-colors"
+                            title="Edit Lengkap Data Calon Santri"
+                          >
+                            <Edit2 className="w-3.5 h-3.5" />
+                          </button>
+
+                          {/* Delete Applicant Button */}
+                          {onDeleteApplicant && (
+                            <button
+                              type="button"
+                              onClick={() => handleDelete(app)}
+                              className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                              title="Hapus Data Calon Santri"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -644,6 +706,26 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
                         <MessageSquare className="w-3.5 h-3.5 text-emerald-600" />
                         <span>WA</span>
                       </button>
+
+                      <button
+                        type="button"
+                        onClick={() => handleOpenEdit(app)}
+                        className="p-1.5 rounded-lg text-slate-500 hover:text-blue-700 hover:bg-blue-50 transition-colors"
+                        title="Edit Data Santri"
+                      >
+                        <Edit2 className="w-3.5 h-3.5" />
+                      </button>
+
+                      {onDeleteApplicant && (
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(app)}
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                          title="Hapus Data Santri"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -671,13 +753,39 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
                 </h4>
               </div>
 
-              <button
-                type="button"
-                onClick={() => setDetailApplicant(null)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const target = detailApplicant;
+                    setDetailApplicant(null);
+                    handleOpenEdit(target);
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold hover:bg-blue-100 transition-colors"
+                >
+                  <Edit2 className="w-3.5 h-3.5" />
+                  <span>Edit Data</span>
+                </button>
+
+                {onDeleteApplicant && (
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(detailApplicant)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 text-xs font-bold hover:bg-rose-100 transition-colors"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Hapus</span>
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => setDetailApplicant(null)}
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
             </div>
 
             <div className="overflow-y-auto space-y-4 pr-1">
