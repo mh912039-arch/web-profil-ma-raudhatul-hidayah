@@ -242,12 +242,11 @@ export function StitchNavbar() {
       </div>
 
       <div
-        className={`w-full transition-all duration-300 border-b-[3px] border-amber-500 ${
+        className={`w-full transition-all duration-300 border-b-[3px] border-[#facc15] bg-[#1e4ed8]/95 backdrop-blur-md ${
           scrolled
-            ? 'shadow-[0_4px_20px_rgba(0,0,0,0.06)] py-2.5'
-            : 'shadow-[0_2px_12px_rgba(0,0,0,0.04)] py-3.5'
+            ? 'shadow-[0_8px_30px_rgba(15,23,42,0.35)] py-2.5'
+            : 'shadow-[0_4px_20px_rgba(15,23,42,0.25)] py-3.5'
         }`}
-        style={{ backgroundColor: '#fbfbfa' }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
           {/* Logo & Emblem Brand Identity */}
@@ -255,27 +254,26 @@ export function StitchNavbar() {
             href="/"
             className="flex items-center gap-3.5 group shrink-0 transition-transform duration-200 active:scale-[0.98]"
           >
-            <div className="relative w-10 h-10 shrink-0 flex items-center justify-center transition-transform duration-200 group-hover:scale-105">
+            <div className="relative w-10 h-10 shrink-0 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 p-1 flex items-center justify-center transition-transform duration-200 group-hover:scale-105 shadow-sm">
               <Image
                 src="/school-logo.png"
                 alt="Emblem MAS Raudhatul Hidayah"
-                width={40}
-                height={40}
-                className="object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
+                width={36}
+                height={36}
+                className="object-contain drop-shadow-sm"
                 priority
               />
             </div>
             <div className="flex flex-col">
-              <span className="font-serif text-[17px] sm:text-[19px] font-bold text-slate-900 tracking-wide leading-tight group-hover:text-blue-700 transition-colors">
+              <span className="font-serif text-[17px] sm:text-[19px] font-bold text-white tracking-wide leading-tight group-hover:text-[#facc15] transition-colors">
                 MAS Raudhatul Hidayah
               </span>
             </div>
           </Link>
 
-          {/* Desktop Nav Links (Clean Light Glassmorphism with Xaverius Amber Accents) */}
+          {/* Desktop Nav Links (Royal Blue & Amber Gold theme with Frosted Glassmorphism) */}
           <nav
-            className="hidden lg:flex items-center gap-1 px-3 py-1.5 rounded-full border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
-            style={{ backgroundColor: '#ffffff' }}
+            className="hidden lg:flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-md"
           >
             {navLinks.map((link) => {
               if (link.label === 'Profil') {
@@ -291,10 +289,10 @@ export function StitchNavbar() {
                     <button
                       type="button"
                       onClick={() => setIsProfilOpen((prev) => !prev)}
-                      className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full font-sans text-[13px] font-medium whitespace-nowrap transition-all duration-200 ${
+                      className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full font-sans text-[13px] whitespace-nowrap transition-all duration-200 ${
                         active || isProfilOpen
-                          ? 'bg-blue-600 text-white shadow-xs font-semibold ring-2 ring-amber-400/50'
-                          : 'text-slate-600 hover:text-slate-950 hover:bg-amber-50/60'
+                          ? 'bg-[#facc15] text-slate-950 font-bold shadow-xs ring-2 ring-[#facc15]/50'
+                          : 'text-white/85 hover:text-white hover:bg-white/15 font-medium'
                       }`}
                       aria-expanded={isProfilOpen}
                       aria-haspopup="true"
@@ -307,22 +305,21 @@ export function StitchNavbar() {
                       />
                     </button>
 
-                    {/* Dropdown Menu Container without Transparency */}
+                    {/* Dropdown Menu Container */}
                     {isProfilOpen && (
                       <div className="absolute top-full left-0 pt-2 z-50 min-w-[250px] animate-in fade-in zoom-in-95 duration-150 origin-top-left">
                         <div
-                          className="rounded-2xl border-2 border-amber-400/80 shadow-[0_16px_48px_rgba(15,23,42,0.18)] p-2 flex flex-col gap-1 ring-1 ring-amber-400/30"
-                          style={{ backgroundColor: '#ffffff' }}
+                          className="rounded-2xl border-2 border-[#facc15]/80 shadow-[0_16px_48px_rgba(15,23,42,0.45)] p-2 flex flex-col gap-1 ring-1 ring-[#facc15]/30 bg-[#1e3a8a]"
                         >
                           {profilSublinks.map((sub) => (
                             <Link
                               key={sub.label}
                               href={sub.href}
                               onClick={() => handleNavClick(sub.href)}
-                              className="px-3.5 py-2 rounded-xl text-[13.5px] font-semibold text-slate-800 hover:text-blue-900 hover:bg-amber-50/90 active:bg-amber-100 transition-all duration-150 flex items-center justify-between group/link"
+                              className="px-3.5 py-2 rounded-xl text-[13.5px] font-semibold text-white/90 hover:text-[#facc15] hover:bg-white/10 active:bg-white/15 transition-all duration-150 flex items-center justify-between group/link"
                             >
                               <span className="leading-snug">{sub.label}</span>
-                              <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover/link:text-amber-600 transition-colors" />
+                              <ChevronRight className="w-3.5 h-3.5 text-white/40 group-hover/link:text-[#facc15] transition-colors" />
                             </Link>
                           ))}
                         </div>
@@ -345,10 +342,10 @@ export function StitchNavbar() {
                     <button
                       type="button"
                       onClick={() => setIsAkademikOpen((prev) => !prev)}
-                      className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full font-sans text-[13px] font-medium whitespace-nowrap transition-all duration-200 ${
+                      className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full font-sans text-[13px] whitespace-nowrap transition-all duration-200 ${
                         active || isAkademikOpen
-                          ? 'bg-blue-600 text-white shadow-xs font-semibold ring-2 ring-amber-400/50'
-                          : 'text-slate-600 hover:text-slate-950 hover:bg-amber-50/60'
+                          ? 'bg-[#facc15] text-slate-950 font-bold shadow-xs ring-2 ring-[#facc15]/50'
+                          : 'text-white/85 hover:text-white hover:bg-white/15 font-medium'
                       }`}
                       aria-expanded={isAkademikOpen}
                       aria-haspopup="true"
@@ -361,22 +358,21 @@ export function StitchNavbar() {
                       />
                     </button>
 
-                    {/* Dropdown Menu Container without Transparency */}
+                    {/* Dropdown Menu Container */}
                     {isAkademikOpen && (
                       <div className="absolute top-full left-0 pt-2 z-50 min-w-[250px] animate-in fade-in zoom-in-95 duration-150 origin-top-left">
                         <div
-                          className="rounded-2xl border-2 border-amber-400/80 shadow-[0_16px_48px_rgba(15,23,42,0.18)] p-2 flex flex-col gap-1 ring-1 ring-amber-400/30"
-                          style={{ backgroundColor: '#ffffff' }}
+                          className="rounded-2xl border-2 border-[#facc15]/80 shadow-[0_16px_48px_rgba(15,23,42,0.45)] p-2 flex flex-col gap-1 ring-1 ring-[#facc15]/30 bg-[#1e3a8a]"
                         >
                           {akademikSublinks.map((sub) => (
                             <Link
                               key={sub.label}
                               href={sub.href}
                               onClick={() => handleNavClick(sub.href)}
-                              className="px-3 py-2 rounded-xl text-[13.5px] font-semibold text-slate-800 hover:text-blue-900 hover:bg-amber-50/90 active:bg-amber-100 transition-all duration-150 flex items-center justify-between group/link"
+                              className="px-3 py-2 rounded-xl text-[13.5px] font-semibold text-white/90 hover:text-[#facc15] hover:bg-white/10 active:bg-white/15 transition-all duration-150 flex items-center justify-between group/link"
                             >
                               <span className="leading-snug">{sub.label}</span>
-                              <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover/link:text-amber-600 transition-colors" />
+                              <ChevronRight className="w-3.5 h-3.5 text-white/40 group-hover/link:text-[#facc15] transition-colors" />
                             </Link>
                           ))}
                         </div>
@@ -391,10 +387,10 @@ export function StitchNavbar() {
                 <Link
                   key={link.label}
                   href={link.href}
-                  className={`px-3.5 py-1.5 rounded-full font-sans text-[13px] font-medium whitespace-nowrap transition-all duration-200 ${
+                  className={`px-3.5 py-1.5 rounded-full font-sans text-[13px] whitespace-nowrap transition-all duration-200 ${
                     active
-                      ? 'bg-blue-600 text-white shadow-xs font-semibold ring-2 ring-amber-400/50'
-                      : 'text-slate-600 hover:text-slate-950 hover:bg-amber-50/60'
+                      ? 'bg-[#facc15] text-slate-950 font-bold shadow-xs ring-2 ring-[#facc15]/50'
+                      : 'text-white/85 hover:text-white hover:bg-white/15 font-medium'
                   }`}
                 >
                   {link.label}
@@ -408,7 +404,7 @@ export function StitchNavbar() {
             {/* Mobile Hamburger Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-xl bg-white text-slate-800 hover:bg-slate-100 active:scale-[0.95] transition-all border border-slate-200 shadow-xs"
+              className="lg:hidden p-2 rounded-xl bg-white/10 text-white hover:bg-white/20 active:scale-[0.95] transition-all border border-white/20 shadow-xs"
               aria-label="Buka Menu Navigasi"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -419,8 +415,7 @@ export function StitchNavbar() {
         {/* Mobile Animated Dropdown */}
         {mobileMenuOpen && (
           <div
-            className="lg:hidden border-t border-slate-200 mt-2.5 px-4 py-5 shadow-2xl flex flex-col gap-1.5 animate-in fade-in slide-in-from-top-3 duration-200 max-h-[calc(100vh-80px)] overflow-y-auto"
-            style={{ backgroundColor: '#fbfbfa' }}
+            className="lg:hidden border-t border-white/15 mt-2.5 px-4 py-5 shadow-2xl flex flex-col gap-1.5 animate-in fade-in slide-in-from-top-3 duration-200 max-h-[calc(100vh-80px)] overflow-y-auto bg-[#1e3a8a] text-white"
           >
             {navLinks.map((link) => {
               if (link.label === 'Profil') {
@@ -432,8 +427,8 @@ export function StitchNavbar() {
                       onClick={() => setMobileProfilOpen((prev) => !prev)}
                       className={`flex items-center justify-between px-4 py-3 rounded-xl text-[14px] font-medium transition-colors ${
                         active
-                          ? 'bg-blue-600 text-white font-semibold border-l-4 border-amber-400'
-                          : 'text-slate-700 hover:bg-white hover:text-slate-950'
+                          ? 'bg-[#facc15] text-slate-950 font-bold border-l-4 border-amber-300'
+                          : 'text-white/90 hover:bg-white/10 hover:text-white'
                       }`}
                     >
                       <span>{link.label}</span>
@@ -444,13 +439,13 @@ export function StitchNavbar() {
                       />
                     </button>
                     {mobileProfilOpen && (
-                      <div className="pl-3 pr-2 py-2 flex flex-col gap-1 bg-slate-100/70 rounded-xl mt-1.5 border border-slate-200/60 animate-in fade-in duration-150">
+                      <div className="pl-3 pr-2 py-2 flex flex-col gap-1 bg-white/5 rounded-xl mt-1.5 border border-white/10 animate-in fade-in duration-150">
                         {profilSublinks.map((sub) => (
                           <Link
                             key={sub.label}
                             href={sub.href}
                             onClick={() => handleNavClick(sub.href)}
-                            className="px-3.5 py-2.5 rounded-lg text-[13.5px] font-medium text-slate-700 hover:text-amber-700 hover:bg-white transition-colors"
+                            className="px-3.5 py-2.5 rounded-lg text-[13.5px] font-medium text-white/80 hover:text-[#facc15] hover:bg-white/10 transition-colors"
                           >
                             <span>{sub.label}</span>
                           </Link>
@@ -470,8 +465,8 @@ export function StitchNavbar() {
                       onClick={() => setMobileAkademikOpen((prev) => !prev)}
                       className={`flex items-center justify-between px-4 py-3 rounded-xl text-[14px] font-medium transition-colors ${
                         active
-                          ? 'bg-blue-600 text-white font-semibold border-l-4 border-amber-400'
-                          : 'text-slate-700 hover:bg-white hover:text-slate-950'
+                          ? 'bg-[#facc15] text-slate-950 font-bold border-l-4 border-amber-300'
+                          : 'text-white/90 hover:bg-white/10 hover:text-white'
                       }`}
                     >
                       <span>{link.label}</span>
@@ -482,13 +477,13 @@ export function StitchNavbar() {
                       />
                     </button>
                     {mobileAkademikOpen && (
-                      <div className="pl-3 pr-2 py-2 flex flex-col gap-1 bg-slate-100/70 rounded-xl mt-1.5 border border-slate-200/60 animate-in fade-in duration-150">
+                      <div className="pl-3 pr-2 py-2 flex flex-col gap-1 bg-white/5 rounded-xl mt-1.5 border border-white/10 animate-in fade-in duration-150">
                         {akademikSublinks.map((sub) => (
                           <Link
                             key={sub.label}
                             href={sub.href}
                             onClick={() => handleNavClick(sub.href)}
-                            className="px-3.5 py-2.5 rounded-lg text-[13.5px] font-medium text-slate-700 hover:text-amber-700 hover:bg-white transition-colors"
+                            className="px-3.5 py-2.5 rounded-lg text-[13.5px] font-medium text-white/80 hover:text-[#facc15] hover:bg-white/10 transition-colors"
                           >
                             <span>{sub.label}</span>
                           </Link>
@@ -507,23 +502,23 @@ export function StitchNavbar() {
                   onClick={() => setMobileMenuOpen(false)}
                   className={`flex items-center justify-between px-4 py-3 rounded-xl text-[14px] font-medium transition-colors ${
                     active
-                      ? 'bg-blue-600 text-white font-semibold border-l-4 border-amber-400'
-                      : 'text-slate-700 hover:bg-white hover:text-slate-950'
+                      ? 'bg-[#facc15] text-slate-950 font-bold border-l-4 border-amber-300'
+                      : 'text-white/90 hover:bg-white/10 hover:text-white'
                   }`}
                 >
                   <span>{link.label}</span>
                   <ChevronRight
                     className={`w-4 h-4 ${
-                      active ? 'text-white' : 'text-slate-400'
+                      active ? 'text-slate-950' : 'text-white/50'
                     }`}
                   />
                 </Link>
               );
             })}
 
-            <div className="pt-3 mt-2 border-t border-slate-200 flex flex-col gap-2.5">
-              <div className="flex items-center justify-between px-3 py-2 bg-slate-100 rounded-xl">
-                <span className="text-[12px] font-semibold text-slate-600">Media Sosial Sekolah:</span>
+            <div className="pt-3 mt-2 border-t border-white/15 flex flex-col gap-2.5">
+              <div className="flex items-center justify-between px-3 py-2 bg-white/5 rounded-xl border border-white/10">
+                <span className="text-[12px] font-semibold text-white/80">Media Sosial Sekolah:</span>
                 <div className="flex items-center gap-2">
                   <a
                     href="https://instagram.com/maraudhatulhidayah"
@@ -531,7 +526,7 @@ export function StitchNavbar() {
                     rel="noopener noreferrer"
                     title="Instagram Resmi"
                     aria-label="Instagram"
-                    className="p-1.5 rounded-lg bg-white text-slate-700 hover:text-pink-600 shadow-2xs transition-colors flex items-center justify-center"
+                    className="p-1.5 rounded-lg bg-white/10 text-white hover:text-pink-300 hover:bg-white/20 border border-white/15 shadow-2xs transition-colors flex items-center justify-center"
                   >
                     <Instagram className="w-4 h-4" />
                   </a>
@@ -541,7 +536,7 @@ export function StitchNavbar() {
                     rel="noopener noreferrer"
                     title="TikTok Resmi"
                     aria-label="TikTok"
-                    className="p-1.5 rounded-lg bg-white text-slate-700 hover:text-slate-950 shadow-2xs transition-colors flex items-center justify-center"
+                    className="p-1.5 rounded-lg bg-white/10 text-white hover:text-cyan-300 hover:bg-white/20 border border-white/15 shadow-2xs transition-colors flex items-center justify-center"
                   >
                     <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
                       <path d="M19.589 6.686a4.793 4.793 0 0 1-3.77-4.245V2h-3.445v13.672a2.896 2.896 0 0 1-5.201 1.743l-.068-.1a2.89 2.89 0 0 1 2.373-4.537c.314 0 .618.05.903.144V9.414a6.334 6.334 0 0 0-.903-.065A6.334 6.334 0 0 0 3.144 15.68a6.334 6.334 0 0 0 6.334 6.334 6.334 6.334 0 0 0 6.334-6.334V8.583a8.17 8.17 0 0 0 4.777 1.549V6.686h-1Z" />
@@ -553,7 +548,7 @@ export function StitchNavbar() {
                     rel="noopener noreferrer"
                     title="WhatsApp Resmi"
                     aria-label="WhatsApp"
-                    className="p-1.5 rounded-lg bg-white text-slate-700 hover:text-emerald-600 shadow-2xs transition-colors flex items-center justify-center"
+                    className="p-1.5 rounded-lg bg-white/10 text-white hover:text-emerald-300 hover:bg-white/20 border border-white/15 shadow-2xs transition-colors flex items-center justify-center"
                   >
                     <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
                       <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.969.54 1.777.784 2.791.784 3.181 0 5.767-2.587 5.768-5.766.001-3.181-2.585-5.77-5.768-5.77zm3.377 8.215c-.145.408-.838.777-1.157.828-.319.052-.734.075-2.383-.605-1.986-.818-3.256-2.839-3.355-2.971-.099-.133-.805-1.072-.805-2.046 0-.974.509-1.453.69-1.649.182-.196.398-.245.53-.245s.266.005.383.011c.124.006.29-.047.453.346.166.399.566 1.383.616 1.483.05.1.083.217.017.35-.067.133-.1.217-.199.333-.1.117-.209.261-.299.35-.1.1-.205.209-.089.408.117.2 0.518.855 1.11 1.382.763.679 1.405.889 1.605.989.2.1.317.083.433-.05.117-.133.5-.583.633-.783.133-.2.267-.167.45-.1.183.067 1.166.55 1.366.65.2.1.333.15.383.233.05.083.05.483-.095.891z"/>
@@ -568,7 +563,7 @@ export function StitchNavbar() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-900 text-white font-semibold text-[13.5px] active:scale-[0.98] transition-transform shadow-xs"
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-900 text-white font-semibold text-[13.5px] border border-white/10 active:scale-[0.98] transition-transform shadow-xs"
               >
                 <LogIn className="w-4 h-4 text-amber-300" />
                 <span>Portal Masuk (Admin, Guru, Siswa)</span>
@@ -577,7 +572,7 @@ export function StitchNavbar() {
               <Link
                 href="/kontak"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-blue-600 text-white font-semibold text-[13.5px] border-b-2 border-amber-400 active:scale-[0.98] transition-transform shadow-sm"
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#facc15] hover:bg-[#eab308] text-slate-950 font-bold text-[13.5px] border-b-2 border-amber-600 active:scale-[0.98] transition-transform shadow-sm"
               >
                 <span>Hubungi Sekretariat Sekolah</span>
               </Link>

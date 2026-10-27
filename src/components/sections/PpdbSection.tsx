@@ -6,6 +6,9 @@ import {
   CheckCircle2,
   ArrowRight,
   PhoneCall,
+  ZoomIn,
+  X,
+  Download,
 } from 'lucide-react';
 
 export interface PpdbData {
@@ -19,6 +22,7 @@ export interface PpdbData {
   contactPhone: string;
   registrationLink: string;
   brochureLink?: string;
+  posterUrl?: string;
   isRegistrationOpen: boolean;
 }
 
@@ -42,6 +46,7 @@ const defaultPpdbData: PpdbData = {
   registrationLink:
     'https://wa.me/628176614723?text=Halo%20Panitia%20PPDB%20MA%20Raudhatul%20Hidayah,%20saya%20ingin%20mendaftar%20dan%20konsultasi%20PPDB%202027/2028',
   brochureLink: '/kontak',
+  posterUrl: '/poster-ppdb.png',
   isRegistrationOpen: true,
 };
 
@@ -52,6 +57,7 @@ interface PpdbSectionProps {
 export function PpdbSection({ onOpenRegister }: PpdbSectionProps) {
   const [data, setData] = useState<PpdbData>(defaultPpdbData);
   const [isLoading, setIsLoading] = useState(true);
+  const [isPosterModalOpen, setIsPosterModalOpen] = useState(false);
 
   useEffect(() => {
     async function fetchPpdbData() {
@@ -89,18 +95,30 @@ export function PpdbSection({ onOpenRegister }: PpdbSectionProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           {/* =========================================================
-              LEFT COLUMN: Visual Poster Flyer (Inspired by Reference)
+              LEFT COLUMN: Visual Poster Flyer (Dynamic from Admin)
           ========================================================= */}
           <div className="lg:col-span-5 flex justify-center">
-            <div className="relative w-full max-w-md sm:max-w-lg aspect-[765/1024] rounded-3xl overflow-hidden shadow-[0_25px_60px_rgba(15,23,42,0.18)] border-2 border-amber-500/80 group bg-slate-50">
+            <div
+              onClick={() => setIsPosterModalOpen(true)}
+              className="relative w-full max-w-md sm:max-w-lg aspect-[765/1024] rounded-3xl overflow-hidden shadow-[0_25px_60px_rgba(15,23,42,0.18)] border-2 border-amber-500/80 group bg-slate-50 cursor-pointer"
+              title="Klik untuk melihat poster ukuran penuh"
+            >
               {/* Background Official SPMB Poster */}
               <Image
-                src="/poster-ppdb.jpeg"
+                src={data.posterUrl || '/poster-ppdb.png'}
                 alt="Brosur Poster Resmi SPMB MAS Raudhatul Hidayah"
                 fill
                 className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
                 priority
               />
+
+              {/* Hover Overlay Hint */}
+              <div className="absolute inset-0 bg-slate-950/30 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center p-4">
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/95 text-slate-900 text-xs font-bold shadow-lg backdrop-blur-xs transform translate-y-2 group-hover:translate-y-0 transition-transform duration-200">
+                  <ZoomIn className="w-4 h-4 text-blue-700" />
+                  <span>Lihat Poster Ukuran Penuh</span>
+                </span>
+              </div>
             </div>
           </div>
 
@@ -171,6 +189,62 @@ export function PpdbSection({ onOpenRegister }: PpdbSectionProps) {
           </div>
         </div>
       </div>
+
+      {/* =========================================================
+          FULL POSTER LIGHTBOX MODAL
+      ========================================================= */}
+      {isPosterModalOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200"
+          onClick={() => setIsPosterModalOpen(false)}
+        >
+          <div
+            className="relative max-w-2xl w-full max-h-[92vh] flex flex-col items-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Top Toolbar */}
+            <div className="w-full flex items-center justify-between pb-3 text-white">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                Poster Resmi SPMB / PPDB
+              </span>
+              <div className="flex items-center gap-2">
+                <a
+                  href={data.posterUrl || '/poster-ppdb.png'}
+                  download="Poster-PPDB-MA-Raudhatul-Hidayah.png"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white text-xs font-medium transition-colors cursor-pointer"
+                  title="Unduh Poster"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Unduh</span>
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setIsPosterModalOpen(false)}
+                  className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white transition-colors cursor-pointer"
+                  title="Tutup Pratinjau"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Poster Image Container */}
+            <div className="relative w-full aspect-[765/1024] max-h-[82vh] rounded-2xl overflow-hidden border-2 border-amber-400/80 shadow-2xl bg-slate-900">
+              <Image
+                src={data.posterUrl || '/poster-ppdb.png'}
+                alt="Brosur Poster Resmi SPMB MAS Raudhatul Hidayah"
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

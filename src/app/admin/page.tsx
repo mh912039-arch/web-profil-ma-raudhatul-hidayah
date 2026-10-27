@@ -141,6 +141,7 @@ export default function AdminDashboardPage() {
     contactPhone: '0817-6614-723',
     registrationLink: 'https://wa.me/628176614723?text=Halo%20Panitia%20PPDB%20MA%20Raudhatul%20Hidayah,%20saya%20ingin%20mendaftar%20dan%20konsultasi%20PPDB%202027/2028',
     brochureLink: '/kontak',
+    posterUrl: '/poster-ppdb.png',
     isRegistrationOpen: true,
   });
 
