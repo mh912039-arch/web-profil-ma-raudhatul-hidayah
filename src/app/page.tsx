@@ -8,8 +8,6 @@ import {
   Clock,
   CheckCircle2,
   ArrowRight,
-  Sparkle,
-  Sparkles,
   Compass,
   GraduationCap,
   Users,
@@ -140,11 +138,10 @@ export default function HomePage() {
                     <Megaphone className="w-4 h-4 text-red-600 fill-red-600 shrink-0 animate-bounce" />
                     <span>{home.marqueeText1}</span>
                     <GraduationCap className="w-4 h-4 text-blue-950 shrink-0" />
-                    <Sparkles className="w-4 h-4 text-amber-200 shrink-0" />
                     <button
                       type="button"
                       onClick={() => setIsRegModalOpen(true)}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-0.5 rounded-full bg-blue-700 text-white text-[12px] font-extrabold uppercase tracking-wider hover:bg-blue-800 transition-colors shadow-xs ml-1 cursor-pointer active:scale-95"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-0.5 rounded-full bg-[#1e3a8a] text-white text-[12px] font-extrabold uppercase tracking-wider hover:bg-[#172554] transition-colors shadow-xs ml-1 cursor-pointer active:scale-95"
                     >
                       <span>{home.marqueeCta1 || 'DAFTAR SEKARANG!'}</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -159,7 +156,7 @@ export default function HomePage() {
                       href={home.marqueeLink2 || 'https://wa.me/628176614723'}
                       target={home.marqueeLink2?.startsWith('http') ? '_blank' : undefined}
                       rel={home.marqueeLink2?.startsWith('http') ? 'noopener noreferrer' : undefined}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-0.5 rounded-full bg-blue-700 text-white text-[12px] font-extrabold uppercase tracking-wider hover:bg-blue-800 transition-colors shadow-xs ml-1"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-0.5 rounded-full bg-[#1e3a8a] text-white text-[12px] font-extrabold uppercase tracking-wider hover:bg-[#172554] transition-colors shadow-xs ml-1"
                     >
                       <span>{home.marqueeCta2 || 'KONSULTASI WA'}</span>
                       <ArrowRight className="w-3.5 h-3.5" />
