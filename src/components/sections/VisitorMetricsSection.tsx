@@ -46,7 +46,7 @@ export function VisitorMetricsSection() {
   const scaleNumbers = [0, step, step * 2, step * 3, step * 4, step * 5];
 
   return (
-    <section className="w-full bg-[#1e4ed8] text-white py-12 sm:py-16">
+    <section className="w-full bg-[#1e3a8a] text-white py-12 sm:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           

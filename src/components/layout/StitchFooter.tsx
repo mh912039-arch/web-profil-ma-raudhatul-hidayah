@@ -70,10 +70,10 @@ export function StitchFooter() {
   }, []);
 
   return (
-    <footer className="w-full bg-[#1e4ed8] text-white border-t-[4px] border-[#facc15] relative overflow-hidden">
+    <footer className="w-full bg-[#1e3a8a] text-white border-t-[4px] border-[#facc15] relative overflow-hidden">
       {/* Decorative ambient glow for spatial depth */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-white/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-amber-400/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-12 pb-14 border-b border-white/15">

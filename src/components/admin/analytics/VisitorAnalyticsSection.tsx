@@ -183,8 +183,8 @@ export const VisitorAnalyticsSection: React.FC = () => {
         </div>
       )}
 
-      {/* Royal Blue Container matching original requested design */}
-      <div className="rounded-3xl bg-gradient-to-br from-[#1e4ed8] via-[#1d4ed8] to-[#1e3a8a] text-white p-5 sm:p-7 shadow-lg border border-blue-700/60">
+      {/* Deep Navy Container */}
+      <div className="rounded-3xl bg-gradient-to-br from-[#1e3a8a] via-[#1e3a8a] to-[#172554] text-white p-5 sm:p-7 shadow-lg border border-blue-900/60">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           
           {/* =========================================================
