@@ -242,7 +242,7 @@ export function StitchNavbar() {
       </div>
 
       <div
-        className={`w-full transition-all duration-300 border-b-[3px] border-[#facc15] bg-[#1e4ed8]/95 backdrop-blur-md ${
+        className={`w-full transition-all duration-300 border-b-[3px] border-[#facc15] bg-[#1e3a8a] ${
           scrolled
             ? 'shadow-[0_8px_30px_rgba(15,23,42,0.35)] py-2.5'
             : 'shadow-[0_4px_20px_rgba(15,23,42,0.25)] py-3.5'
@@ -271,7 +271,7 @@ export function StitchNavbar() {
             </div>
           </Link>
 
-          {/* Desktop Nav Links (Royal Blue & Amber Gold theme with Frosted Glassmorphism) */}
+          {/* Desktop Nav Links (Deep Navy & Amber Gold theme with Frosted Glassmorphism) */}
           <nav
             className="hidden lg:flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-md"
           >
