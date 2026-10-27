@@ -141,7 +141,7 @@ export default function AdminDashboardPage() {
     contactPhone: '0817-6614-723',
     registrationLink: 'https://wa.me/628176614723?text=Halo%20Panitia%20PPDB%20MA%20Raudhatul%20Hidayah,%20saya%20ingin%20mendaftar%20dan%20konsultasi%20PPDB%202027/2028',
     brochureLink: '/kontak',
-    posterUrl: '/poster-ppdb.png',
+    posterUrl: 'https://zzgobrlhnnqvspuwugkz.supabase.co/storage/v1/object/public/articles/img-1793069689752-1bguos.jpeg',
     isRegistrationOpen: true,
   });
 
@@ -338,6 +338,9 @@ export default function AdminDashboardPage() {
       if (res.ok) {
         showToast('success', 'Pengaturan PPDB 2027/2028 berhasil disimpan & disinkronkan ke Supabase!');
         localStorage.setItem('ppdb_updated', Date.now().toString());
+        try {
+          localStorage.setItem('cached_ppdb_data', JSON.stringify(ppdbData));
+        } catch (_) {}
       } else {
         showToast('error', 'Gagal menyimpan pembaruan PPDB.');
       }

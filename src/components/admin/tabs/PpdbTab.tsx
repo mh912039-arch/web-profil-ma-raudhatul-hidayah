@@ -80,13 +80,35 @@ export const PpdbTab: React.FC<PpdbTabProps> = ({
 
       const json = await res.json();
       if (res.ok && json.success && json.url) {
-        setFormData((prev) => ({
-          ...prev,
-          posterUrl: json.url,
-        }));
+        const newPosterUrl = json.url;
+        setFormData((prev) => {
+          const updated = {
+            ...prev,
+            posterUrl: newPosterUrl,
+          };
+
+          // Auto-save immediately to Supabase database so the new poster is locked in without delay
+          fetch('/api/ppdb', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updated),
+          })
+            .then((saveRes) => {
+              if (saveRes.ok) {
+                try {
+                  localStorage.setItem('cached_ppdb_data', JSON.stringify(updated));
+                  localStorage.setItem('ppdb_updated', Date.now().toString());
+                } catch (_) {}
+              }
+            })
+            .catch((err) => console.warn('Auto-save PPDB poster failed:', err));
+
+          return updated;
+        });
+
         setPosterUploadStatus({
           type: 'success',
-          message: `Poster berhasil diunggah (${json.sizeKb ? `${json.sizeKb} KB` : 'Tersimpan'}). Klik tombol "Simpan Pembaruan PPDB" untuk mengaktifkannya di web.`,
+          message: `Poster terbaru berhasil diunggah dan otomatis tersimpan ke sistem (${json.sizeKb ? `${json.sizeKb} KB` : 'Tersimpan'}).`,
         });
       } else {
         setPosterUploadStatus({
@@ -108,13 +130,14 @@ export const PpdbTab: React.FC<PpdbTabProps> = ({
   };
 
   const handleResetDefaultPoster = () => {
+    const defaultUrl = 'https://zzgobrlhnnqvspuwugkz.supabase.co/storage/v1/object/public/articles/img-1793069689752-1bguos.jpeg';
     setFormData((prev) => ({
       ...prev,
-      posterUrl: '/poster-ppdb.png',
+      posterUrl: defaultUrl,
     }));
     setPosterUploadStatus({
       type: 'success',
-      message: 'Poster dikembalikan ke poster resmi bawaan (/poster-ppdb.png). Klik "Simpan Pembaruan PPDB" untuk menyimpan.',
+      message: 'Poster dikembalikan ke poster resmi. Klik "Simpan Pembaruan PPDB" untuk menyimpan.',
     });
   };
 

@@ -46,7 +46,7 @@ const defaultPpdbData: PpdbData = {
   registrationLink:
     'https://wa.me/628176614723?text=Halo%20Panitia%20PPDB%20MA%20Raudhatul%20Hidayah,%20saya%20ingin%20mendaftar%20dan%20konsultasi%20PPDB%202027/2028',
   brochureLink: '/kontak',
-  posterUrl: '/poster-ppdb.png',
+  posterUrl: 'https://zzgobrlhnnqvspuwugkz.supabase.co/storage/v1/object/public/articles/img-1793069689752-1bguos.jpeg',
   isRegistrationOpen: true,
 };
 
@@ -60,12 +60,27 @@ export function PpdbSection({ onOpenRegister }: PpdbSectionProps) {
   const [isPosterModalOpen, setIsPosterModalOpen] = useState(false);
 
   useEffect(() => {
+    // 1. Immediately read cached data from localStorage if available to avoid any flicker/jump
+    try {
+      const cached = localStorage.getItem('cached_ppdb_data');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed?.posterUrl) {
+          setData(parsed);
+          setIsLoading(false);
+        }
+      }
+    } catch (_) {}
+
     async function fetchPpdbData() {
       try {
         const res = await fetch('/api/ppdb', { cache: 'no-store' });
         if (res.ok) {
           const json = await res.json();
           setData(json);
+          try {
+            localStorage.setItem('cached_ppdb_data', JSON.stringify(json));
+          } catch (_) {}
         }
       } catch (err) {
         console.error('Failed to load PPDB data:', err);
