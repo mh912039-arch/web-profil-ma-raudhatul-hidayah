@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
-import { supabase } from '@/lib/supabaseClient';
+import { supabaseServer } from '@/lib/supabaseServer';
 import { requireAuth } from '@/lib/auth';
 import { deleteStorageFile } from '@/lib/storageHelper';
 
@@ -52,9 +52,9 @@ export async function GET() {
     console.warn('Could not read articlesData.json:', err);
   }
 
-  // 2. Try fetching from Supabase
+  // 2. Try fetching from Supabase (primary persistent store)
   try {
-    const { data: supaArticles, error: supaErr } = await supabase
+    const { data: supaArticles, error: supaErr } = await supabaseServer
       .from('articles')
       .select('*')
       .order('published_at', { ascending: false });
@@ -80,55 +80,18 @@ export async function GET() {
         created_at: row.created_at || new Date().toISOString(),
       }));
 
-      // If local articles is empty, seed from Supabase
-      if (localArticles.length === 0) {
-        await fs.writeFile(dataFilePath, JSON.stringify(supaMapped, null, 2), 'utf-8').catch(() => {});
-        return NextResponse.json(supaMapped);
-      }
+      // Synchronize local JSON file in background (safe on Vercel)
+      try {
+        await fs.writeFile(dataFilePath, JSON.stringify(supaMapped, null, 2), 'utf-8');
+      } catch (_) {}
 
-      // Supabase records are the primary cloud store (contain latest live admin edits)
-      const supaSlugMap = new Map<string, UnifiedArticle>();
-      supaMapped.forEach((sa) => {
-        if (sa.slug) supaSlugMap.set(sa.slug, sa);
-        if (sa.id) supaSlugMap.set(String(sa.id), sa);
-      });
-
-      // Start with all Supabase articles
-      const merged: UnifiedArticle[] = [...supaMapped];
-
-      // Append any fallback local articles that do not exist yet in Supabase
-      localArticles.forEach((la) => {
-        if (la.slug && !supaSlugMap.has(la.slug) && (!la.id || !supaSlugMap.has(String(la.id)))) {
-          merged.push(la);
-        }
-      });
-
-      const normalized = merged.map((art: any) => ({
-        ...art,
-        id: art.id || art.slug,
-        slug: art.slug,
-        title: art.title || 'Warta Madrasah',
-        category: art.category || 'Prestasi',
-        date: art.date || 'Terbaru',
-        author: art.author || 'Humas MAS Raudhatul Hidayah',
-        excerpt: art.excerpt || art.summary || (art.content ? art.content.slice(0, 160) : art.title),
-        summary: art.summary || art.excerpt || (art.content ? art.content.slice(0, 160) : art.title),
-        content: art.content || (Array.isArray(art.paragraphs) ? art.paragraphs.join('\n\n') : (art.summary || art.title || '')),
-        imageUrl: art.imageUrl || art.cover_image || '/foto-juara.jpeg',
-        cover_image: art.cover_image || art.imageUrl || '/foto-juara.jpeg',
-        is_featured: Boolean(art.is_featured),
-        is_published: Boolean(art.is_published ?? true),
-        views_count: art.views_count || 0,
-        created_at: art.created_at || new Date().toISOString(),
-      }));
-
-      return NextResponse.json(normalized, { headers: noCacheHeaders });
+      return NextResponse.json(supaMapped, { headers: noCacheHeaders });
     }
   } catch (supaErr) {
     console.warn('Supabase fetch failed for articles:', supaErr);
   }
 
-  // 3. Fallback to local articles normalized
+  // 3. Fallback to local articles normalized if Supabase is offline or empty
   const fallbackNormalized = localArticles.map((art: any) => ({
     ...art,
     id: art.id || art.slug,
@@ -210,26 +173,78 @@ export async function POST(request: Request) {
     }
 
     // 2. Sync to Supabase first (primary persistent store)
+    let savedArticleId = body.id;
     try {
-      await supabase.from('articles').upsert({
-        title,
-        slug,
-        excerpt: summary,
-        content,
-        category,
-        author,
-        cover_image: imageUrl,
-        is_featured: isFeatured,
-        is_published: isPublished,
-        published_at: now.toISOString(),
-      }, { onConflict: 'slug' });
+      if (body.id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(body.id))) {
+        // Try updating existing article by ID
+        const { data: updatedRows, error: upErr } = await supabaseServer
+          .from('articles')
+          .update({
+            title,
+            slug,
+            excerpt: summary,
+            content,
+            category,
+            author,
+            cover_image: imageUrl,
+            is_featured: isFeatured,
+            is_published: isPublished,
+            published_at: now.toISOString(),
+          })
+          .eq('id', body.id)
+          .select('id');
+
+        if (!upErr && updatedRows && updatedRows.length > 0) {
+          savedArticleId = updatedRows[0].id;
+        } else {
+          // If update didn't match, upsert
+          const { data: insRows } = await supabaseServer
+            .from('articles')
+            .upsert({
+              id: body.id,
+              title,
+              slug,
+              excerpt: summary,
+              content,
+              category,
+              author,
+              cover_image: imageUrl,
+              is_featured: isFeatured,
+              is_published: isPublished,
+              published_at: now.toISOString(),
+            }, { onConflict: 'slug' })
+            .select('id');
+          if (insRows && insRows[0]) savedArticleId = insRows[0].id;
+        }
+      } else {
+        const { data: insRows } = await supabaseServer
+          .from('articles')
+          .upsert({
+            title,
+            slug,
+            excerpt: summary,
+            content,
+            category,
+            author,
+            cover_image: imageUrl,
+            is_featured: isFeatured,
+            is_published: isPublished,
+            published_at: now.toISOString(),
+          }, { onConflict: 'slug' })
+          .select('id');
+        if (insRows && insRows[0]) savedArticleId = insRows[0].id;
+      }
     } catch (supaErr) {
       console.warn('Supabase articles upsert error:', supaErr);
     }
 
+    if (savedArticleId) {
+      newArticle.id = savedArticleId;
+    }
+
     // 3. Best-effort local write (safe on Vercel read-only filesystem)
     try {
-      const existingIndex = articles.findIndex((a) => a.slug === slug || (body.id && a.id === body.id));
+      const existingIndex = articles.findIndex((a) => a.slug === slug || (newArticle.id && a.id === newArticle.id));
       if (existingIndex >= 0) {
         articles[existingIndex] = { ...articles[existingIndex], ...newArticle };
       } else {
@@ -267,10 +282,11 @@ export async function DELETE(request: Request) {
     try {
       let targetArticle: any = null;
       if (slug) {
-        const { data } = await supabase.from('articles').select('cover_image, image_url').eq('slug', slug).maybeSingle();
+        const { data } = await supabaseServer.from('articles').select('cover_image, image_url').eq('slug', slug).maybeSingle();
         targetArticle = data;
-      } else if (id) {
-        const { data } = await supabase.from('articles').select('cover_image, image_url').eq('id', id).maybeSingle();
+      }
+      if (!targetArticle && id) {
+        const { data } = await supabaseServer.from('articles').select('cover_image, image_url').eq('id', id).maybeSingle();
         targetArticle = data;
       }
       const imageToClean = targetArticle?.cover_image || targetArticle?.image_url;
@@ -281,29 +297,33 @@ export async function DELETE(request: Request) {
       console.warn('Notice: Article image cleanup skipped:', cleanupErr);
     }
 
-    // 2. Delete from local JSON
-    let articles: UnifiedArticle[] = [];
+    // 2. Delete from Supabase safely
     try {
-      const fileContent = await fs.readFile(dataFilePath, 'utf-8');
-      articles = JSON.parse(fileContent);
-      articles = articles.filter((a) => (id ? a.id !== id : true) && (slug ? a.slug !== slug : true));
-      await fs.writeFile(dataFilePath, JSON.stringify(articles, null, 2), 'utf-8');
-    } catch (err) {
-      console.warn('Error reading articles for deletion:', err);
-    }
-
-    // 3. Delete from Supabase safely
-    try {
+      if (id) {
+        await supabaseServer.from('articles').delete().eq('id', id);
+      }
       if (slug) {
-        await supabase.from('articles').delete().eq('slug', slug);
-      } else if (id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(id))) {
-        await supabase.from('articles').delete().eq('id', id);
+        await supabaseServer.from('articles').delete().eq('slug', slug);
       }
     } catch (supaErr) {
       console.warn('Supabase delete error:', supaErr);
     }
 
-    return NextResponse.json({ success: true }, { headers: noCacheHeaders });
+    // 3. Delete from local JSON (in sync)
+    try {
+      const fileContent = await fs.readFile(dataFilePath, 'utf-8');
+      let articles: UnifiedArticle[] = JSON.parse(fileContent);
+      articles = articles.filter((a) => {
+        if (id && (a.id === id || a.slug === id)) return false;
+        if (slug && (a.slug === slug || a.id === slug)) return false;
+        return true;
+      });
+      await fs.writeFile(dataFilePath, JSON.stringify(articles, null, 2), 'utf-8');
+    } catch (err) {
+      console.warn('Error updating articlesData.json after deletion:', err);
+    }
+
+    return NextResponse.json({ success: true, id, slug }, { headers: noCacheHeaders });
   } catch (error) {
     console.error('Error deleting article:', error);
     return NextResponse.json({ success: false, message: 'Gagal menghapus artikel' }, { status: 500, headers: noCacheHeaders });

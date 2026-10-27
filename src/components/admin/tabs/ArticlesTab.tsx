@@ -120,7 +120,7 @@ export interface ArticleRecord {
 interface ArticlesTabProps {
   articles: ArticleRecord[];
   onSaveArticle: (article: ArticleRecord) => Promise<void>;
-  onDeleteArticle: (id: string | number) => Promise<void>;
+  onDeleteArticle: (id: string | number, slug?: string) => Promise<void>;
   isSaving: boolean;
 }
 
@@ -273,7 +273,7 @@ export const ArticlesTab: React.FC<ArticlesTabProps> = ({
         <button
           type="button"
           onClick={handleOpenAdd}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-sans text-[13px] font-bold transition-all shadow-xs active:scale-95"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#1e3a8a] hover:bg-[#172554] text-white font-sans text-[13px] font-bold transition-all shadow-xs active:scale-95 cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>Tulis Berita / Agenda Baru</span>
@@ -343,7 +343,7 @@ export const ArticlesTab: React.FC<ArticlesTabProps> = ({
                 <button
                   type="button"
                   onClick={() => handleOpenEdit(art)}
-                  className="p-1.5 rounded-lg text-slate-500 hover:text-blue-700 hover:bg-white transition-colors"
+                  className="p-1.5 rounded-lg text-slate-500 hover:text-blue-700 hover:bg-white transition-colors cursor-pointer"
                   title="Sunting artikel"
                 >
                   <Edit2 className="w-4 h-4" />
@@ -352,10 +352,10 @@ export const ArticlesTab: React.FC<ArticlesTabProps> = ({
                   type="button"
                   onClick={() => {
                     if (confirm(`Hapus artikel "${art.title}"?`)) {
-                      onDeleteArticle(art.id || art.slug);
+                      onDeleteArticle(art.id || '', art.slug || '');
                     }
                   }}
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
                   title="Hapus artikel"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -558,7 +558,7 @@ export const ArticlesTab: React.FC<ArticlesTabProps> = ({
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-[13px] transition-all disabled:opacity-50"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#1e3a8a] hover:bg-[#172554] text-white font-bold text-[13px] transition-all disabled:opacity-50 cursor-pointer shadow-xs active:scale-95"
                 >
                   <Save className="w-4 h-4" />
                   <span>{isSaving ? 'Menyimpan...' : 'Simpan Berita'}</span>

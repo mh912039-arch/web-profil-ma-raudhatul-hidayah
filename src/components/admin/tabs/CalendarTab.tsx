@@ -119,7 +119,7 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
       const res = await fetch('/api/calendar', { cache: 'no-store' });
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
+        if (Array.isArray(data)) {
           setEvents(data);
         }
       }
@@ -164,13 +164,16 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
     if (!confirmDelete) return;
 
     try {
-      const res = await fetch(`/api/calendar?id=${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/calendar?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
       if (res.ok) {
         setEvents((prev) => prev.filter((e) => e.id !== id));
-        fetchEvents();
+      } else {
+        const errJson = await res.json().catch(() => null);
+        alert(errJson?.error || 'Gagal menghapus agenda.');
       }
     } catch (err) {
       console.error('Failed to delete event:', err);
+      alert('Terjadi kesalahan jaringan.');
     }
   };
 
@@ -196,7 +199,9 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
           const result = await res.json();
           setEvents((prev) => prev.map((e) => (e.id === editingEvent.id ? result.item : e)));
           setIsModalOpen(false);
-          fetchEvents();
+        } else {
+          const errJson = await res.json().catch(() => null);
+          alert(errJson?.error || 'Gagal memperbarui agenda.');
         }
       } else {
         // Create new
@@ -209,11 +214,14 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
           const result = await res.json();
           setEvents((prev) => [result.item, ...prev]);
           setIsModalOpen(false);
-          fetchEvents();
+        } else {
+          const errJson = await res.json().catch(() => null);
+          alert(errJson?.error || 'Gagal menambahkan agenda baru.');
         }
       }
     } catch (err) {
       console.error('Failed to save calendar event:', err);
+      alert('Terjadi kesalahan jaringan saat menyimpan agenda.');
     } finally {
       setIsSubmitting(false);
     }
@@ -240,7 +248,7 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
             <button
               type="button"
               onClick={handleOpenAdd}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-all active:scale-[0.98]"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#1e3a8a] hover:bg-[#172554] text-white text-xs font-semibold shadow-xs transition-all active:scale-[0.98] cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               <span>Tambah Agenda Baru</span>
@@ -267,9 +275,9 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
               key={cat.id}
               type="button"
               onClick={() => setFilter(cat.id)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                 filter === cat.id
-                  ? 'bg-blue-600 text-white shadow-xs'
+                  ? 'bg-[#1e3a8a] text-white shadow-xs'
                   : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
               }`}
             >
@@ -294,7 +302,7 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
               <button
                 type="button"
                 onClick={handleOpenAdd}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-600 text-white text-xs font-semibold shadow-xs hover:bg-blue-700 transition-colors"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#1e3a8a] text-white text-xs font-semibold shadow-xs hover:bg-[#172554] transition-colors cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Tambah Agenda Pertama</span>
@@ -350,7 +358,7 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
                       <button
                         type="button"
                         onClick={() => handleOpenEdit(event)}
-                        className="p-2 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                        className="p-2 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors cursor-pointer"
                         title="Sunting Agenda"
                       >
                         <Edit2 className="w-4 h-4" />
@@ -358,7 +366,7 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
                       <button
                         type="button"
                         onClick={() => handleDelete(event.id)}
-                        className="p-2 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                        className="p-2 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
                         title="Hapus Agenda"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -489,7 +497,7 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-xs transition-all active:scale-[0.98] disabled:opacity-50"
+                  className="px-5 py-2.5 rounded-xl bg-[#1e3a8a] hover:bg-[#172554] text-white font-semibold shadow-xs transition-all active:scale-[0.98] disabled:opacity-50 cursor-pointer"
                 >
                   {isSubmitting ? 'Menyimpan...' : editingEvent ? 'Simpan Perubahan' : 'Tambahkan Agenda'}
                 </button>

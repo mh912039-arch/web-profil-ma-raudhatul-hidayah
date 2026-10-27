@@ -468,9 +468,9 @@ export default function AdminDashboardPage() {
       });
       const resJson = await res.json();
       if (res.ok && resJson.success) {
-        const savedArt = resJson.article;
+        const savedArt = resJson.article || article;
         setArticles((prev) => {
-          const idx = prev.findIndex((a) => a.slug === savedArt.slug || (a.id && a.id === savedArt.id));
+          const idx = prev.findIndex((a) => (savedArt.id && a.id === savedArt.id) || a.slug === savedArt.slug);
           if (idx >= 0) {
             const updated = [...prev];
             updated[idx] = savedArt;
@@ -490,12 +490,25 @@ export default function AdminDashboardPage() {
   };
 
   // Handler: Delete Article
-  const handleDeleteArticle = async (id: string | number) => {
+  const handleDeleteArticle = async (id: string | number, slug?: string) => {
     try {
-      const res = await fetch(`/api/articles?slug=${id}&id=${id}`, { method: 'DELETE' });
+      const url = new URL('/api/articles', window.location.origin);
+      if (id) url.searchParams.set('id', String(id));
+      if (slug) url.searchParams.set('slug', slug);
+
+      const res = await fetch(url.toString(), { method: 'DELETE' });
       if (res.ok) {
-        setArticles((prev) => prev.filter((a) => a.id !== id && a.slug !== id));
+        setArticles((prev) =>
+          prev.filter(
+            (a) =>
+              (id ? a.id !== id && a.slug !== id : true) &&
+              (slug ? a.slug !== slug && a.id !== slug : true)
+          )
+        );
         showToast('success', 'Artikel berhasil dihapus.');
+      } else {
+        const errJson = await res.json().catch(() => null);
+        showToast('error', errJson?.message || 'Gagal menghapus artikel.');
       }
     } catch (err) {
       showToast('error', 'Gagal menghapus artikel.');

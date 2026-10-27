@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 import { requireAuth } from '@/lib/auth';
-import { supabase } from '@/lib/supabaseClient';
+import { supabaseServer } from '@/lib/supabaseServer';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -27,53 +27,64 @@ export interface AcademicEvent {
 async function getEvents(): Promise<AcademicEvent[]> {
   // 1. Cek penyimpanan persisten di Supabase (SYS_CAL)
   try {
-    const { data: supaData } = await supabase
+    const { data: supaData } = await supabaseServer
       .from('teachers_staff')
       .select('education')
       .eq('code', 'SYS_CAL')
       .maybeSingle();
 
-    if (supaData?.education) {
-      const parsed = JSON.parse(supaData.education);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed;
-      }
+    if (supaData && typeof supaData.education === 'string') {
+      try {
+        const parsed = JSON.parse(supaData.education);
+        if (Array.isArray(parsed)) {
+          return parsed;
+        }
+      } catch (jsonErr) {}
     }
   } catch (err) {
     console.warn('Supabase SYS_CAL read error:', err);
   }
 
-  // 2. Fallback ke file JSON lokal
+  // 2. Fallback ke file JSON lokal jika Supabase belum terisi
   try {
     if (fs.existsSync(calendarFilePath)) {
       const data = fs.readFileSync(calendarFilePath, 'utf8');
       return JSON.parse(data);
     }
   } catch (error) {
-    console.error('Error reading calendar:', error);
+    console.error('Error reading calendarData.json:', error);
   }
   return [];
 }
 
 async function saveEvents(events: AcademicEvent[]): Promise<void> {
-  // 1. Simpan ke Supabase agar persisten di Vercel serverless
-  try {
-    const { data: updated, error } = await supabase
-      .from('teachers_staff')
-      .update({ education: JSON.stringify(events) })
-      .eq('code', 'SYS_CAL')
-      .select('id');
+  const jsonStr = JSON.stringify(events);
 
-    if (error || !updated || updated.length === 0) {
-      await supabase.from('teachers_staff').insert({
-        name: 'System Calendar Store',
-        code: 'SYS_CAL',
-        category_label: 'Sistem',
-        subject_name: 'Calendar',
-        education: JSON.stringify(events),
-        order_no: 9995,
-        role: 'system',
-      });
+  // 1. Simpan ke Supabase (SYS_CAL) menggunakan service role
+  try {
+    const { data: existing } = await supabaseServer
+      .from('teachers_staff')
+      .select('id')
+      .eq('code', 'SYS_CAL')
+      .maybeSingle();
+
+    if (existing) {
+      await supabaseServer
+        .from('teachers_staff')
+        .update({ education: jsonStr })
+        .eq('id', existing.id);
+    } else {
+      await supabaseServer
+        .from('teachers_staff')
+        .insert({
+          name: 'System Calendar Store',
+          code: 'SYS_CAL',
+          category_label: 'Sistem',
+          subject_name: 'Calendar',
+          education: jsonStr,
+          order_no: 9995,
+          role: 'system',
+        });
     }
   } catch (err) {
     console.warn('Failed to sync calendar to Supabase:', err);
@@ -109,11 +120,11 @@ export async function POST(req: Request) {
 
     const newEvent: AcademicEvent = {
       id: body.id || `ev-${Date.now()}`,
-      title: body.title || 'Agenda Baru',
-      date_range: body.date_range || 'Waktu Belum Ditentukan',
+      title: body.title?.trim() || 'Agenda Baru',
+      date_range: body.date_range?.trim() || 'Waktu Belum Ditentukan',
       semester: body.semester || 'Semester Ganjil',
       category: body.category || 'kegiatan',
-      description: body.description || '',
+      description: body.description?.trim() || '',
     };
 
     events.unshift(newEvent);
@@ -134,8 +145,11 @@ export async function PUT(req: Request) {
 
   try {
     const body = await req.json();
-    const events = await getEvents();
+    if (!body.id) {
+      return NextResponse.json({ error: 'Event ID required' }, { status: 400, headers: noCacheHeaders });
+    }
 
+    const events = await getEvents();
     const index = events.findIndex((e) => e.id === body.id);
     if (index === -1) {
       return NextResponse.json({ error: 'Event not found' }, { status: 404, headers: noCacheHeaders });
@@ -143,11 +157,11 @@ export async function PUT(req: Request) {
 
     events[index] = {
       ...events[index],
-      title: body.title !== undefined ? body.title : events[index].title,
-      date_range: body.date_range !== undefined ? body.date_range : events[index].date_range,
+      title: body.title !== undefined ? body.title.trim() : events[index].title,
+      date_range: body.date_range !== undefined ? body.date_range.trim() : events[index].date_range,
       semester: body.semester !== undefined ? body.semester : events[index].semester,
       category: body.category !== undefined ? body.category : events[index].category,
-      description: body.description !== undefined ? body.description : events[index].description,
+      description: body.description !== undefined ? body.description.trim() : events[index].description,
     };
 
     await saveEvents(events);
@@ -174,10 +188,11 @@ export async function DELETE(req: Request) {
     }
 
     let events = await getEvents();
+    const initialLen = events.length;
     events = events.filter((e) => e.id !== id);
     await saveEvents(events);
 
-    return NextResponse.json({ success: true, id }, { headers: noCacheHeaders });
+    return NextResponse.json({ success: true, id, removedCount: initialLen - events.length }, { headers: noCacheHeaders });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Unknown error';
     return NextResponse.json({ error: 'Failed to delete event: ' + message }, { status: 500, headers: noCacheHeaders });
