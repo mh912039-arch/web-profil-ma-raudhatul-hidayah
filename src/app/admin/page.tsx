@@ -156,6 +156,11 @@ export default function AdminDashboardPage() {
     heroTagline: 'Membentuk Generasi Berkarakter, Beradab, dan Unggul Bernalar',
     heroBadge: 'Portal Resmi MAS Raudhatul Hidayah',
     heroBackground: '/foto-semua.jpeg',
+    heroBackgrounds: [
+      '/foto-semua.jpeg',
+      '/halaman-sekolah.jpeg',
+      '/paskibra.jpeg',
+    ],
     schoolLogo: '/school-logo.png',
     marqueeText1: 'PPDB (Penerimaan Peserta Didik Baru) MAS Raudhatul Hidayah Tahun Ajaran 2027/2028 Telah Dibuka!',
     marqueeCta1: 'DAFTAR SEKARANG!',

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -27,6 +27,11 @@ const defaultHomeConfig = {
   heroTagline: 'Membentuk Generasi Berkarakter, Beradab, dan Unggul Bernalar',
   heroBadge: 'Portal Resmi MAS Raudhatul Hidayah',
   heroBackground: '/foto-semua.jpeg',
+  heroBackgrounds: [
+    '/foto-semua.jpeg',
+    '/halaman-sekolah.jpeg',
+    '/paskibra.jpeg',
+  ],
   schoolLogo: '/school-logo.png',
   marqueeText1: 'PPDB (Penerimaan Peserta Didik Baru) MAS Raudhatul Hidayah Tahun Ajaran 2027/2028 Telah Dibuka!',
   marqueeCta1: 'DAFTAR SEKARANG!',
@@ -55,6 +60,25 @@ const defaultHomeConfig = {
 export default function HomePage() {
   const [home, setHome] = useState(defaultHomeConfig);
   const [isRegModalOpen, setIsRegModalOpen] = useState(false);
+  const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
+
+  const heroImages = useMemo(() => {
+    if (Array.isArray(home.heroBackgrounds) && home.heroBackgrounds.length > 0) {
+      const valid = home.heroBackgrounds.filter(
+        (src) => typeof src === 'string' && src.trim().length > 0
+      );
+      if (valid.length > 0) return valid.slice(0, 3);
+    }
+    return [home.heroBackground || '/foto-semua.jpeg'];
+  }, [home.heroBackgrounds, home.heroBackground]);
+
+  useEffect(() => {
+    if (heroImages.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentHeroIndex((prev) => (prev + 1) % heroImages.length);
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [heroImages.length]);
 
   useEffect(() => {
     fetch('/api/profile', { cache: 'no-store' })
@@ -89,18 +113,27 @@ export default function HomePage() {
             1. HERO SECTION (Translucent Campus Backdrop with Rich Contrast)
         ========================================================= */}
         <section className="relative min-h-[92dvh] lg:min-h-[100dvh] flex flex-col justify-between pt-28 sm:pt-32 pb-0 overflow-hidden border-b border-slate-800/30">
-          {/* Real Campus Photo with Translucent Cinematic Overlay */}
-          <div className="absolute inset-0 z-0">
-            <Image
-              src={home.heroBackground || '/foto-semua.jpeg'}
-              alt={home.heroTitle}
-              fill
-              className="object-cover object-center"
-              priority
-            />
+          {/* Real Campus Photo Background Slideshow with Translucent Cinematic Overlay */}
+          <div className="absolute inset-0 z-0 overflow-hidden">
+            {heroImages.map((imgSrc, index) => (
+              <div
+                key={`${imgSrc}-${index}`}
+                className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                  index === currentHeroIndex ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
+                }`}
+              >
+                <Image
+                  src={imgSrc}
+                  alt={`${home.heroTitle} Latar ${index + 1}`}
+                  fill
+                  className="object-cover object-center scale-105 transition-transform duration-[12000ms] ease-out"
+                  priority={index === 0}
+                />
+              </div>
+            ))}
             {/* Translucent Dark Blue / Slate Overlay */}
-            <div className="absolute inset-0 bg-slate-950/60" />
-            <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-900/50 to-slate-950/85" />
+            <div className="absolute inset-0 bg-slate-950/60 z-20 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-900/50 to-slate-950/85 z-20 pointer-events-none" />
           </div>
 
           {/* Center Emblem Crest & Grand Serif Title Branding */}
@@ -127,6 +160,25 @@ export default function HomePage() {
             <p className="font-sans text-[13px] sm:text-[15.5px] font-medium tracking-[0.16em] text-slate-100 uppercase mt-2.5 max-w-2xl drop-shadow-md">
               {home.heroTagline}
             </p>
+
+            {/* Slide Indicator Dots if multiple photos exist */}
+            {heroImages.length > 1 && (
+              <div className="flex items-center gap-2 mt-6">
+                {heroImages.map((_, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setCurrentHeroIndex(idx)}
+                    aria-label={`Pindah ke Slide Latar ${idx + 1}`}
+                    className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                      idx === currentHeroIndex
+                        ? 'w-7 bg-[#facc15]'
+                        : 'w-2 bg-white/40 hover:bg-white/70'
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Running Ticker / Marquee PPDB Banner (Full Width beneath cards) */}

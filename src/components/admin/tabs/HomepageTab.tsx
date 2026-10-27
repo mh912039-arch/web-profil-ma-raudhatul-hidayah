@@ -14,6 +14,8 @@ import {
   Layers,
   ArrowRight,
   AlertCircle,
+  Trash2,
+  Plus,
 } from 'lucide-react';
 import { uploadImageWithAutoCompression } from '@/lib/imageCompression';
 
@@ -22,6 +24,7 @@ export interface HomepageConfig {
   heroTagline: string;
   heroBadge?: string;
   heroBackground: string;
+  heroBackgrounds?: string[];
   schoolLogo: string;
   marqueeText1: string;
   marqueeCta1: string;
@@ -58,7 +61,17 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
   onSaveHomepage,
   isSaving,
 }) => {
-  const [formData, setFormData] = useState<HomepageConfig>({ ...homepage });
+  const [formData, setFormData] = useState<HomepageConfig>(() => {
+    const bgs = Array.isArray(homepage?.heroBackgrounds) && homepage.heroBackgrounds.length > 0
+      ? homepage.heroBackgrounds
+      : (homepage?.heroBackground ? [homepage.heroBackground] : ['/foto-semua.jpeg', '/halaman-sekolah.jpeg', '/paskibra.jpeg']);
+    return {
+      ...homepage,
+      heroBackgrounds: bgs,
+      heroBackground: bgs[0] || homepage?.heroBackground || '/foto-semua.jpeg',
+    };
+  });
+
   const [uploadStatus, setUploadStatus] = useState<{ field: string; status: 'idle' | 'uploading' | 'success' | 'error'; message?: string }>({
     field: '',
     status: 'idle',
@@ -67,13 +80,24 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
   // Keep form data synchronized when homepage loads from API
   useEffect(() => {
     if (homepage) {
-      setFormData({ ...homepage });
+      const bgs = Array.isArray(homepage.heroBackgrounds) && homepage.heroBackgrounds.length > 0
+        ? homepage.heroBackgrounds
+        : (homepage.heroBackground ? [homepage.heroBackground] : ['/foto-semua.jpeg', '/halaman-sekolah.jpeg', '/paskibra.jpeg']);
+      setFormData({
+        ...homepage,
+        heroBackgrounds: bgs,
+        heroBackground: bgs[0] || homepage.heroBackground || '/foto-semua.jpeg',
+      });
     }
   }, [homepage]);
 
-  const heroBgInputRef = useRef<HTMLInputElement>(null);
+  const heroBgInputRef0 = useRef<HTMLInputElement>(null);
+  const heroBgInputRef1 = useRef<HTMLInputElement>(null);
+  const heroBgInputRef2 = useRef<HTMLInputElement>(null);
   const logoInputRef = useRef<HTMLInputElement>(null);
   const headmasterPhotoInputRef = useRef<HTMLInputElement>(null);
+
+  const heroInputRefs = [heroBgInputRef0, heroBgInputRef1, heroBgInputRef2];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -81,6 +105,85 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleHeroBgUpload = async (e: React.ChangeEvent<HTMLInputElement>, slotIndex: number) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const fieldKey = `heroBackground_${slotIndex}`;
+    setUploadStatus({ field: fieldKey, status: 'uploading' });
+
+    try {
+      const result = await uploadImageWithAutoCompression(file);
+      setFormData((prev) => {
+        const currentList = Array.isArray(prev.heroBackgrounds) ? [...prev.heroBackgrounds] : [prev.heroBackground || '/foto-semua.jpeg'];
+        currentList[slotIndex] = result.url;
+        const trimmed = currentList.slice(0, 3);
+        return {
+          ...prev,
+          heroBackgrounds: trimmed,
+          heroBackground: trimmed[0] || result.url,
+        };
+      });
+      setUploadStatus({
+        field: fieldKey,
+        status: 'success',
+        message: `Slide ${slotIndex + 1} berhasil diunggah (${result.sizeKb} KB)`,
+      });
+      setTimeout(() => {
+        setUploadStatus({ field: '', status: 'idle' });
+      }, 4000);
+    } catch (err: any) {
+      setUploadStatus({
+        field: fieldKey,
+        status: 'error',
+        message: err.message || `Gagal mengunggah slide ${slotIndex + 1}`,
+      });
+    } finally {
+      e.target.value = '';
+    }
+  };
+
+  const handleHeroBgUrlChange = (url: string, slotIndex: number) => {
+    setFormData((prev) => {
+      const currentList = Array.isArray(prev.heroBackgrounds) ? [...prev.heroBackgrounds] : [prev.heroBackground || '/foto-semua.jpeg'];
+      currentList[slotIndex] = url;
+      const trimmed = currentList.slice(0, 3);
+      return {
+        ...prev,
+        heroBackgrounds: trimmed,
+        heroBackground: trimmed[0] || url,
+      };
+    });
+  };
+
+  const handleRemoveHeroBg = (slotIndex: number) => {
+    setFormData((prev) => {
+      const currentList = Array.isArray(prev.heroBackgrounds) ? [...prev.heroBackgrounds] : [prev.heroBackground || '/foto-semua.jpeg'];
+      const updated = currentList.filter((_, idx) => idx !== slotIndex);
+      const finalList = updated.length > 0 ? updated : ['/foto-semua.jpeg'];
+      return {
+        ...prev,
+        heroBackgrounds: finalList,
+        heroBackground: finalList[0],
+      };
+    });
+  };
+
+  const handleAddHeroBgSlot = () => {
+    setFormData((prev) => {
+      const currentList = Array.isArray(prev.heroBackgrounds) ? [...prev.heroBackgrounds] : [prev.heroBackground || '/foto-semua.jpeg'];
+      if (currentList.length >= 3) return prev;
+      const fallbackOptions = ['/foto-semua.jpeg', '/halaman-sekolah.jpeg', '/paskibra.jpeg'];
+      const nextBg = fallbackOptions[currentList.length] || '/foto-semua.jpeg';
+      const updated = [...currentList, nextBg];
+      return {
+        ...prev,
+        heroBackgrounds: updated,
+        heroBackground: updated[0],
+      };
+    });
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, fieldName: keyof HomepageConfig) => {
@@ -109,12 +212,24 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
         status: 'error',
         message: err.message || 'Gagal mengunggah foto',
       });
+    } finally {
+      e.target.value = '';
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onSaveHomepage(formData);
+    const cleanBackgrounds = (formData.heroBackgrounds || [])
+      .filter((s) => typeof s === 'string' && s.trim().length > 0)
+      .slice(0, 3);
+    const finalBackgrounds = cleanBackgrounds.length > 0 ? cleanBackgrounds : [formData.heroBackground || '/foto-semua.jpeg'];
+
+    const payload: HomepageConfig = {
+      ...formData,
+      heroBackgrounds: finalBackgrounds,
+      heroBackground: finalBackgrounds[0] || '/foto-semua.jpeg',
+    };
+    await onSaveHomepage(payload);
   };
 
   return (
@@ -133,7 +248,7 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
         <button
           type="submit"
           disabled={isSaving}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-sans text-[13px] font-bold transition-all shadow-xs active:scale-95 disabled:opacity-50"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#1e3a8a] hover:bg-[#172554] text-white font-sans text-[13px] font-bold transition-all shadow-xs active:scale-95 disabled:opacity-50 cursor-pointer"
         >
           <Save className="w-4 h-4" />
           <span>{isSaving ? 'Menyimpan...' : 'Simpan Pengaturan Hero'}</span>
@@ -205,79 +320,184 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
           </div>
         </div>
 
-        {/* Hero Background & Logo Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-          {/* Hero Background Image */}
-          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-3">
-            <label className="text-[12.5px] font-bold text-slate-800 flex items-center justify-between">
-              <span>Foto Latar Belakang Hero</span>
-              <span className="text-[11px] text-slate-500 font-normal">Format: JPG/PNG/WebP</span>
-            </label>
-
-            <div className="relative w-full h-32 rounded-lg overflow-hidden bg-slate-900 border border-slate-300">
-              <Image
-                src={formData.heroBackground || '/foto-semua.jpeg'}
-                alt="Preview Hero Background"
-                fill
-                className="object-cover"
-              />
-              <div className="absolute inset-0 bg-slate-950/40 flex items-center justify-center">
-                <span className="text-[11px] text-white/90 bg-slate-900/80 px-2.5 py-1 rounded-md font-semibold">
-                  Tinjauan Gambar Latar
+        {/* Hero Backgrounds Slideshow (Max 3 Photos) */}
+        <div className="p-5 rounded-2xl bg-slate-50/80 border border-slate-200 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200/80 pb-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-[13.5px] font-bold text-slate-800">
+                  Slider Foto Latar Hero (Maksimal 3 Foto)
+                </span>
+                <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-100 text-[#1e3a8a]">
+                  {(formData.heroBackgrounds || []).length} / 3 Foto Aktif
                 </span>
               </div>
+              <p className="text-[12px] text-slate-500 mt-0.5">
+                Latar belakang layar depan akan berganti secara otomatis (crossfade halus setiap 6 detik). Foto pertama menjadi tampilan awal saat pertama kali dibuka.
+              </p>
             </div>
 
-            <div className="flex items-center gap-2">
-              <input
-                ref={heroBgInputRef}
-                type="file"
-                accept="image/*"
-                onChange={(e) => handleFileUpload(e, 'heroBackground')}
-                className="hidden"
-              />
+            {(formData.heroBackgrounds || []).length < 3 && (
               <button
                 type="button"
-                onClick={() => heroBgInputRef.current?.click()}
-                disabled={uploadStatus.field === 'heroBackground' && uploadStatus.status === 'uploading'}
-                className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[12px] font-semibold transition-all active:scale-95 disabled:opacity-50"
+                onClick={handleAddHeroBgSlot}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 border border-slate-300 text-[12px] font-bold text-slate-700 transition-all active:scale-95 shadow-2xs self-start sm:self-auto cursor-pointer"
               >
-                <Upload className="w-3.5 h-3.5" />
-                <span>
-                  {uploadStatus.field === 'heroBackground' && uploadStatus.status === 'uploading'
-                    ? 'Mengompres & Mengunggah...'
-                    : 'Unggah Foto Baru (< 100 KB)'}
-                </span>
+                <Plus className="w-3.5 h-3.5 text-[#1e3a8a]" />
+                <span>Tambah Slot Foto</span>
               </button>
-            </div>
-
-            {uploadStatus.field === 'heroBackground' && uploadStatus.status === 'success' && (
-              <p className="text-[11.5px] text-emerald-600 font-medium flex items-center gap-1">
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                <span>{uploadStatus.message}</span>
-              </p>
             )}
-
-            <div className="flex flex-col gap-1">
-              <span className="text-[11px] text-slate-500">Atau masukkan URL / path lokal:</span>
-              <input
-                type="text"
-                name="heroBackground"
-                value={formData.heroBackground}
-                onChange={handleChange}
-                className="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-[12px] font-mono"
-              />
-            </div>
           </div>
 
-          {/* School Logo */}
-          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-3">
-            <label className="text-[12.5px] font-bold text-slate-800 flex items-center justify-between">
-              <span>Logo / Emblem Madrasah</span>
-              <span className="text-[11px] text-slate-500 font-normal">Format: PNG transparan</span>
-            </label>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[0, 1, 2].map((slotIndex) => {
+              const bgList = formData.heroBackgrounds || [];
+              const photoUrl = bgList[slotIndex];
+              const isOccupied = typeof photoUrl === 'string' && photoUrl.trim().length > 0;
+              const inputRef = heroInputRefs[slotIndex];
+              const uploadKey = `heroBackground_${slotIndex}`;
+              const isUploadingThis = uploadStatus.field === uploadKey && uploadStatus.status === 'uploading';
+              const isSuccessThis = uploadStatus.field === uploadKey && uploadStatus.status === 'success';
+              const isErrorThis = uploadStatus.field === uploadKey && uploadStatus.status === 'error';
 
-            <div className="relative w-full h-32 rounded-lg overflow-hidden bg-slate-900/90 border border-slate-300 flex items-center justify-center p-3">
+              if (!isOccupied && slotIndex >= bgList.length) {
+                return (
+                  <div
+                    key={slotIndex}
+                    className="p-4 rounded-xl border-2 border-dashed border-slate-300/80 bg-white/60 flex flex-col items-center justify-center text-center gap-2 min-h-[220px] transition-all hover:border-blue-400 hover:bg-blue-50/20"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+                      <ImageIcon className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-[12.5px] font-bold text-slate-700">
+                        Slide {slotIndex + 1} (Kosong)
+                      </p>
+                      <p className="text-[11px] text-slate-400">
+                        Slot opsional untuk menambah variasi foto berganti otomatis
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleAddHeroBgSlot}
+                      className="mt-1 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-[11.5px] font-bold text-slate-700 transition-all active:scale-95 cursor-pointer"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Aktifkan Slide {slotIndex + 1}</span>
+                    </button>
+                  </div>
+                );
+              }
+
+              return (
+                <div
+                  key={slotIndex}
+                  className="p-3.5 rounded-xl bg-white border border-slate-200/90 shadow-2xs space-y-3 flex flex-col justify-between"
+                >
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-800">
+                          Slide {slotIndex + 1}
+                        </span>
+                        {slotIndex === 0 && (
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-900 border border-amber-200">
+                            Utama
+                          </span>
+                        )}
+                      </div>
+                      {bgList.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveHeroBg(slotIndex)}
+                          title={`Hapus Slide ${slotIndex + 1}`}
+                          className="p-1 rounded-md text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Thumbnail Preview */}
+                    <div className="relative w-full h-32 rounded-lg overflow-hidden bg-slate-950 border border-slate-200">
+                      <Image
+                        src={photoUrl || '/foto-semua.jpeg'}
+                        alt={`Slide ${slotIndex + 1}`}
+                        fill
+                        className="object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent flex items-end p-2">
+                        <span className="text-[10.5px] text-white/90 font-medium truncate max-w-full font-mono">
+                          {photoUrl.startsWith('http')
+                            ? photoUrl.split('/').pop()?.split('?')[0] || 'Foto Cloud'
+                            : photoUrl}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Upload button and hidden file input */}
+                    <input
+                      ref={inputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleHeroBgUpload(e, slotIndex)}
+                      className="hidden"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => inputRef.current?.click()}
+                      disabled={isUploadingThis}
+                      className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-[#1e3a8a] hover:bg-[#172554] text-white text-[11.5px] font-bold transition-all active:scale-95 disabled:opacity-50 cursor-pointer shadow-2xs"
+                    >
+                      <Upload className="w-3.5 h-3.5" />
+                      <span>
+                        {isUploadingThis
+                          ? 'Mengompres & Mengunggah...'
+                          : `Unggah Foto Slide ${slotIndex + 1}`}
+                      </span>
+                    </button>
+
+                    {/* Status feedback */}
+                    {isSuccessThis && (
+                      <p className="text-[11px] text-emerald-600 font-medium flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3 shrink-0" />
+                        <span>{uploadStatus.message}</span>
+                      </p>
+                    )}
+                    {isErrorThis && (
+                      <p className="text-[11px] text-red-600 font-medium flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3 shrink-0" />
+                        <span>{uploadStatus.message}</span>
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Direct URL / Path field */}
+                  <div className="flex flex-col gap-1 pt-1 border-t border-slate-100">
+                    <span className="text-[10.5px] text-slate-500 font-medium">URL / Path Foto:</span>
+                    <input
+                      type="text"
+                      value={photoUrl || ''}
+                      onChange={(e) => handleHeroBgUrlChange(e.target.value, slotIndex)}
+                      placeholder="/halaman-sekolah.jpeg atau https://..."
+                      className="w-full px-2.5 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-[11px] font-mono text-slate-800 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500/40"
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* School Logo */}
+        <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-3">
+          <label className="text-[12.5px] font-bold text-slate-800 flex items-center justify-between">
+            <span>Logo / Emblem Madrasah</span>
+            <span className="text-[11px] text-slate-500 font-normal">Format: PNG transparan</span>
+          </label>
+
+          <div className="flex flex-col sm:flex-row items-center gap-5">
+            <div className="relative w-28 h-28 rounded-lg overflow-hidden bg-slate-900/90 border border-slate-300 flex items-center justify-center p-3 shrink-0">
               <div className="relative w-20 h-20">
                 <Image
                   src={formData.schoolLogo || '/school-logo.png'}
@@ -288,45 +508,47 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
-              <input
-                ref={logoInputRef}
-                type="file"
-                accept="image/*"
-                onChange={(e) => handleFileUpload(e, 'schoolLogo')}
-                className="hidden"
-              />
-              <button
-                type="button"
-                onClick={() => logoInputRef.current?.click()}
-                disabled={uploadStatus.field === 'schoolLogo' && uploadStatus.status === 'uploading'}
-                className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[12px] font-semibold transition-all active:scale-95 disabled:opacity-50"
-              >
-                <Upload className="w-3.5 h-3.5" />
-                <span>
-                  {uploadStatus.field === 'schoolLogo' && uploadStatus.status === 'uploading'
-                    ? 'Mengunggah...'
-                    : 'Unggah Logo Baru'}
-                </span>
-              </button>
-            </div>
+            <div className="flex-1 w-full space-y-3">
+              <div className="flex items-center gap-2">
+                <input
+                  ref={logoInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleFileUpload(e, 'schoolLogo')}
+                  className="hidden"
+                />
+                <button
+                  type="button"
+                  onClick={() => logoInputRef.current?.click()}
+                  disabled={uploadStatus.field === 'schoolLogo' && uploadStatus.status === 'uploading'}
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-[#1e3a8a] hover:bg-[#172554] text-white text-[12px] font-semibold transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
+                >
+                  <Upload className="w-3.5 h-3.5" />
+                  <span>
+                    {uploadStatus.field === 'schoolLogo' && uploadStatus.status === 'uploading'
+                      ? 'Mengunggah...'
+                      : 'Unggah Logo Baru'}
+                  </span>
+                </button>
+              </div>
 
-            {uploadStatus.field === 'schoolLogo' && uploadStatus.status === 'success' && (
-              <p className="text-[11.5px] text-emerald-600 font-medium flex items-center gap-1">
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                <span>{uploadStatus.message}</span>
-              </p>
-            )}
+              {uploadStatus.field === 'schoolLogo' && uploadStatus.status === 'success' && (
+                <p className="text-[11.5px] text-emerald-600 font-medium flex items-center gap-1">
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  <span>{uploadStatus.message}</span>
+                </p>
+              )}
 
-            <div className="flex flex-col gap-1">
-              <span className="text-[11px] text-slate-500">Atau masukkan URL / path file logo:</span>
-              <input
-                type="text"
-                name="schoolLogo"
-                value={formData.schoolLogo}
-                onChange={handleChange}
-                className="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-[12px] font-mono"
-              />
+              <div className="flex flex-col gap-1">
+                <span className="text-[11px] text-slate-500">Atau masukkan URL / path file logo:</span>
+                <input
+                  type="text"
+                  name="schoolLogo"
+                  value={formData.schoolLogo}
+                  onChange={handleChange}
+                  className="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-[12px] font-mono"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -604,7 +826,7 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
           <button
             type="submit"
             disabled={isSaving}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-[12.5px] font-bold transition-all shadow-xs active:scale-95 disabled:opacity-50 shrink-0 self-start sm:self-center"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1e3a8a] hover:bg-[#172554] text-white text-[12.5px] font-bold transition-all shadow-xs active:scale-95 disabled:opacity-50 shrink-0 self-start sm:self-center cursor-pointer"
           >
             <Save className="w-3.5 h-3.5" />
             <span>{isSaving ? 'Menyimpan...' : 'Simpan Statistik'}</span>
@@ -768,7 +990,7 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
           <button
             type="submit"
             disabled={isSaving}
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-sans text-xs sm:text-[13px] font-bold shadow-sm transition-all active:scale-95 disabled:opacity-50 w-full sm:w-auto"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#1e3a8a] hover:bg-[#172554] text-white font-sans text-xs sm:text-[13px] font-bold shadow-sm transition-all active:scale-95 disabled:opacity-50 w-full sm:w-auto cursor-pointer"
           >
             <Save className={`w-4 h-4 ${isSaving ? 'animate-spin' : ''}`} />
             <span>{isSaving ? 'Menyimpan...' : 'Simpan Tampilan Depan'}</span>
