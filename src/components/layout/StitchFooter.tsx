@@ -71,6 +71,22 @@ export function StitchFooter() {
 
   return (
     <footer className="w-full bg-[#1e3a8a] text-white border-t-[4px] border-[#facc15] relative overflow-hidden">
+      {/* Traditional Brocade Pattern Texture Background */}
+      <div
+        className="absolute inset-0 bg-repeat bg-center opacity-25 pointer-events-none"
+        style={{
+          backgroundImage: "url('/footer-pattern.jpg')",
+          backgroundSize: '540px auto',
+        }}
+        aria-hidden="true"
+      />
+
+      {/* Deep Navy Tint & Vignette Gradient Overlay */}
+      <div
+        className="absolute inset-0 bg-gradient-to-b from-[#1e3a8a]/80 via-[#1e3a8a]/60 to-[#1e3a8a]/90 pointer-events-none"
+        aria-hidden="true"
+      />
+
       {/* Decorative ambient glow for spatial depth */}
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-white/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-amber-400/5 rounded-full blur-3xl pointer-events-none" />
