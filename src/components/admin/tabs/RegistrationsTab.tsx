@@ -1138,7 +1138,9 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4 animate-in zoom-in-95 duration-150 my-auto max-h-[92vh] flex flex-col">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3 shrink-0">
               <h4 className="font-serif text-[18px] font-bold text-slate-900">
-                Pendaftaran Calon Santri Baru (Manual)
+                {modalMode === 'edit'
+                  ? `Edit Data Calon Santri: ${formData.full_name || formData.registration_number}`
+                  : 'Pendaftaran Calon Santri Baru (Manual)'}
               </h4>
               <button
                 type="button"
@@ -1260,6 +1262,32 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
                 />
               </div>
 
+              <div className="grid grid-cols-2 gap-3">
+                <div className="flex flex-col gap-1">
+                  <label className="text-[12px] font-bold text-slate-700">Status Seleksi</label>
+                  <select
+                    value={formData.status}
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+                    className="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[12.5px] font-semibold"
+                  >
+                    <option value="submitted">Menunggu</option>
+                    <option value="verified">Verifikasi</option>
+                    <option value="accepted">Diterima</option>
+                    <option value="rejected">Tolak</option>
+                  </select>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-[12px] font-bold text-slate-700">Catatan Panitia</label>
+                  <input
+                    type="text"
+                    value={formData.admin_notes || ''}
+                    onChange={(e) => setFormData({ ...formData, admin_notes: e.target.value })}
+                    placeholder="Catatan verifikasi..."
+                    className="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[12.5px]"
+                  />
+                </div>
+              </div>
+
               <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-slate-100 shrink-0">
                 <button
                   type="button"
@@ -1274,7 +1302,7 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
                   className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-[13px] disabled:opacity-50"
                 >
                   <Save className="w-4 h-4" />
-                  <span>{isSaving ? 'Menyimpan...' : 'Simpan Pendaftar'}</span>
+                  <span>{isSaving ? 'Menyimpan...' : modalMode === 'edit' ? 'Simpan Perubahan' : 'Simpan Pendaftar'}</span>
                 </button>
               </div>
             </form>
