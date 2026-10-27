@@ -90,7 +90,7 @@ export function PpdbSection({ onOpenRegister }: PpdbSectionProps) {
     <section className="py-20 sm:py-28 bg-white relative border-b border-slate-200/80 overflow-hidden" id="ppdb">
       {/* Decorative Warm Backlights */}
       <div className="absolute -left-32 top-1/4 w-96 h-96 rounded-full bg-amber-400/10 blur-3xl pointer-events-none" />
-      <div className="absolute -right-32 bottom-1/4 w-96 h-96 rounded-full bg-blue-600/10 blur-3xl pointer-events-none" />
+      <div className="absolute -right-32 bottom-1/4 w-96 h-96 rounded-full bg-[#1e3a8a]/10 blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
@@ -170,7 +170,7 @@ export function PpdbSection({ onOpenRegister }: PpdbSectionProps) {
                     window.dispatchEvent(new CustomEvent('open-ppdb-registration'));
                   }
                 }}
-                className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-sans text-[13.5px] font-bold uppercase tracking-wider transition-all duration-200 shadow-md hover:shadow-lg active:scale-[0.98] border-b-2 border-amber-400"
+                className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-[#1e3a8a] hover:bg-[#172554] text-white font-sans text-[13.5px] font-bold uppercase tracking-wider transition-all duration-200 shadow-md hover:shadow-lg active:scale-[0.98] border-b-2 border-amber-400"
               >
                 <span>Daftar PPDB Online Sekarang</span>
                 <ArrowRight className="w-4 h-4 text-amber-300" />

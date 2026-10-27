@@ -26,7 +26,7 @@ export function ProfilNavTabs() {
                 href={tab.href}
                 className={`px-4 py-2 rounded-xl text-[13px] font-medium whitespace-nowrap transition-all duration-150 ${
                   isActive
-                    ? 'bg-blue-600 text-white font-semibold shadow-xs border-b-2 border-amber-400'
+                    ? 'bg-[#1e3a8a] text-white font-semibold shadow-xs border-b-2 border-amber-400'
                     : 'bg-white/80 text-slate-600 hover:text-amber-700 hover:bg-amber-50/50 border border-slate-200/60'
                 }`}
               >

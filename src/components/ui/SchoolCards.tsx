@@ -174,7 +174,7 @@ export function AcademicAnnouncementCard({
   ctaText = 'LIHAT JADWAL EVALUASI',
 }: AcademicAnnouncementCardProps) {
   return (
-    <div className="bg-gradient-to-br from-blue-600 via-blue-600 to-blue-700 text-white rounded-2xl p-6 sm:p-7 shadow-[0_12px_32px_rgba(37,99,235,0.22)] hover:shadow-[0_18px_40px_rgba(37,99,235,0.3)] transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between min-h-[260px] border border-blue-400/30">
+    <div className="bg-gradient-to-br from-[#1e3a8a] via-[#1e3a8a] to-[#172554] text-white rounded-2xl p-6 sm:p-7 shadow-[0_12px_32px_rgba(30,58,138,0.25)] hover:shadow-[0_18px_40px_rgba(30,58,138,0.35)] transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between min-h-[260px] border border-white/20">
       <div>
         <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-[10.5px] font-bold uppercase tracking-wider inline-block mb-3 border border-white/20">
           {badge}
@@ -190,7 +190,7 @@ export function AcademicAnnouncementCard({
       <div className="pt-5 mt-4 border-t border-white/20">
         <Link
           href={href}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-blue-700 font-sans text-[12px] font-bold uppercase tracking-wider shadow-md hover:bg-blue-50 transition-all duration-200 active:scale-[0.98]"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-[#1e3a8a] font-sans text-[12px] font-bold uppercase tracking-wider shadow-md hover:bg-amber-50 transition-all duration-200 active:scale-[0.98]"
         >
           <span>{ctaText}</span>
           <ChevronRight className="w-4 h-4" />
