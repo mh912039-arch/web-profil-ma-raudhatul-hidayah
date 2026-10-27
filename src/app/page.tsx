@@ -160,25 +160,6 @@ export default function HomePage() {
             <p className="font-sans text-[13px] sm:text-[15.5px] font-medium tracking-[0.16em] text-slate-100 uppercase mt-2.5 max-w-2xl drop-shadow-md">
               {home.heroTagline}
             </p>
-
-            {/* Slide Indicator Dots if multiple photos exist */}
-            {heroImages.length > 1 && (
-              <div className="flex items-center gap-2 mt-6">
-                {heroImages.map((_, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => setCurrentHeroIndex(idx)}
-                    aria-label={`Pindah ke Slide Latar ${idx + 1}`}
-                    className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
-                      idx === currentHeroIndex
-                        ? 'w-7 bg-[#facc15]'
-                        : 'w-2 bg-white/40 hover:bg-white/70'
-                    }`}
-                  />
-                ))}
-              </div>
-            )}
           </div>
 
           {/* Running Ticker / Marquee PPDB Banner (Full Width beneath cards) */}
