@@ -132,10 +132,11 @@ export default function EkstrakurikulerPage() {
                 >
                   <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-100">
                     <Image
-                      src={ekskul.image}
+                      src={ekskul.image || '/hero/slide-1.jpg'}
                       alt={ekskul.name}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      unoptimized={Boolean(ekskul.image && (ekskul.image.startsWith('data:') || ekskul.image.startsWith('/uploads')))}
                     />
                     <div className="absolute top-3 left-3 bg-blue-900/85 backdrop-blur-xs text-white px-3 py-1 rounded-full text-[11px] font-semibold border border-white/20">
                       {ekskul.badge}

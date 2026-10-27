@@ -990,7 +990,7 @@ export default function AdminDashboardPage() {
             )}
 
           {(userRole === 'admin' || userRole === 'guru') && effectiveActiveTab === 'extracurricular' && (
-            <ExtracurricularTab teachers={teachers} readOnly={userRole !== 'admin'} />
+            <ExtracurricularTab teachers={teachers} readOnly={userRole !== 'admin'} showToast={showToast} />
           )}
 
           {userRole === 'admin' && (effectiveActiveTab === 'profile' || effectiveActiveTab === 'facilities') && (

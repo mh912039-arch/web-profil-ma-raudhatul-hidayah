@@ -1,7 +1,7 @@
 [
   {
-    "id": 1,
-    "name": "Pramuka Pramudi Pramuka Tara Mandi",
+    "id": "e015ba24-b4ad-48f2-987b-d4c6f9341358",
+    "name": "Pramuka Penegak Gugus Depan",
     "category": "belanegara",
     "badge": "Gugus Depan MA",
     "level": "Tingkat MA",
@@ -12,8 +12,8 @@
     "desc": "Pengembangan kemandirian, kepemimpinan sangga, teknik tali-temali (pioneering), morse, sandi, serta penjelajahan alam terbuka yang disiplin."
   },
   {
-    "id": 2,
-    "name": "PMR Wira",
+    "id": "82c7e2c4-afd4-4c38-a3ac-94b760ec35c0",
+    "name": "PMR Wira (Palang Merah Remaja)",
     "category": "belanegara",
     "badge": "Kemanusiaan & UKS",
     "level": "Tingkat MA",
@@ -24,8 +24,8 @@
     "desc": "Edukasi pertolongan pertama (PP), kesiapsiagaan darurat bencana, pola hidup bersih dan sehat (PHBS), serta pembinaan kepedulian sosial."
   },
   {
-    "id": 3,
-    "name": "Paskibra Madrasah",
+    "id": "98003c35-5133-4e4d-99b0-433143f7cb48",
+    "name": "Paskibra Madrasah Aliyah",
     "category": "belanegara",
     "badge": "Kedisiplinan & Bela Negara",
     "level": "Tingkat MA",
@@ -36,8 +36,8 @@
     "desc": "Latihan peraturan baris-berbaris (PBB) presisi dan variasi formasi, pembiasaan sikap tegap disiplin, serta persiapan petugas upacara resmi."
   },
   {
-    "id": 4,
-    "name": "Futsal & Olahraga",
+    "id": "0a14acd8-c380-4add-a9ec-b1ebb5469c29",
+    "name": "Futsal & Olahraga Prestasi",
     "category": "olahraga",
     "badge": "Olahraga Prestasi",
     "level": "Tingkat MA",
@@ -48,7 +48,7 @@
     "desc": "Pembinaan kebugaran jasmani, teknik olah bola, strategi bertanding sportif, dan kekompakan tim turnamen antarmadrasah."
   },
   {
-    "id": 5,
+    "id": "7a76448d-04c9-4f6c-840c-ab9fd08f9d2f",
     "name": "Bola Voli & Bulu Tangkis",
     "category": "olahraga",
     "badge": "Kebugaran Fisik",
@@ -60,8 +60,8 @@
     "desc": "Latihan servis, smash, passing, koordinasi reflek motorik, serta pembentukan mental sportivitas tangguh di lapangan olahraga."
   },
   {
-    "id": 6,
-    "name": "Seni Hadroh & Marawis",
+    "id": "fcc7d10d-af93-4851-8efd-1384e45e80bf",
+    "name": "Seni Hadroh & Marawis El-Hidayah",
     "category": "seni",
     "badge": "Seni Islami Tradisional",
     "level": "Tingkat MA",
@@ -72,7 +72,7 @@
     "desc": "Pelatihan ritme pukulan rebana hadroh, olah vokal qasidah shalawat merdu, dan apresiasi kesenian tradisi Islam nusantara."
   },
   {
-    "id": 7,
+    "id": "05073611-6148-478c-be82-e3d161fe745e",
     "name": "Seni Kaligrafi & BTQ",
     "category": "seni",
     "badge": "Estetika Mushaf & Seni",
@@ -84,7 +84,7 @@
     "desc": "Bimbingan teknik menulis kaidah khat naskhi, tsuluts, riq’ah, serta eksplorasi karya lukis kaligrafi hiasan mushaf Al-Qur’an."
   },
   {
-    "id": 8,
+    "id": "60fddef9-a44f-4058-bd88-ce473dce0871",
     "name": "English & Arabic Club",
     "category": "literasi",
     "badge": "Bahasa Asing",
@@ -96,8 +96,8 @@
     "desc": "Mengasah keberanian berbicara bahasa Arab dan Inggris aktif, storytelling, pidato dua bahasa, dan pembekalan komunikasi internasional."
   },
   {
-    "id": 9,
-    "name": "Jurnalistik & Literasi",
+    "id": "d0e0cb72-0a95-4a49-8377-e2c70c67b30b",
+    "name": "Jurnalistik & Literasi Kreatif",
     "category": "literasi",
     "badge": "Literasi Kreatif",
     "level": "Tingkat MA",

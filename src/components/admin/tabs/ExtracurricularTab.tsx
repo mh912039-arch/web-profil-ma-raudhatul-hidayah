@@ -12,9 +12,9 @@ import {
   X,
   UploadCloud,
   CheckCircle2,
+  AlertCircle,
   Loader2,
   ImageIcon,
-  Sparkles,
 } from 'lucide-react';
 import { TeacherRecord } from './TeachersTab';
 import { ExtracurricularItem } from '@/app/api/extracurriculars/route';
@@ -22,11 +22,13 @@ import { ExtracurricularItem } from '@/app/api/extracurriculars/route';
 interface ExtracurricularTabProps {
   teachers?: TeacherRecord[];
   readOnly?: boolean;
+  showToast?: (type: 'success' | 'error', message: string) => void;
 }
 
 export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
   teachers = [],
   readOnly = false,
+  showToast: parentShowToast,
 }) => {
   const [items, setItems] = useState<ExtracurricularItem[]>([]);
   const [activeFilter, setActiveFilter] = useState('all');
@@ -36,6 +38,17 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCompressing, setIsCompressing] = useState(false);
   const [compressionStatus, setCompressionStatus] = useState<string | null>(null);
+
+  // Local Toast Notification
+  const [toastMessage, setToastMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  const triggerToast = (type: 'success' | 'error', text: string) => {
+    if (parentShowToast) {
+      parentShowToast(type, text);
+    }
+    setToastMessage({ type, text });
+    setTimeout(() => setToastMessage(null), 3500);
+  };
 
   const [formData, setFormData] = useState<Partial<ExtracurricularItem>>({
     name: '',
@@ -52,10 +65,12 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
   const fetchItems = async () => {
     try {
       setIsLoading(true);
-      const res = await fetch('/api/extracurriculars');
+      const res = await fetch('/api/extracurriculars', { cache: 'no-store' });
       if (res.ok) {
         const data = await res.json();
-        setItems(data);
+        if (Array.isArray(data)) {
+          setItems(data);
+        }
       }
     } catch (err) {
       console.error('Failed to load extracurriculars:', err);
@@ -74,11 +89,11 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
     setFormData({
       name: '',
       category: 'belanegara',
-      badge: 'Ekstrakurikuler Pilihan',
+      badge: 'Bela Negara & Kedisiplinan',
       level: 'Tingkat MA',
       schedule: 'Jumat 14.00 WIB',
       coach: teachers[0]?.name || 'Pembina Madrasah',
-      role: 'Pembina & Pelatih',
+      role: 'Pembina Resmi',
       image: '/hero/slide-1.jpg',
       desc: '',
     });
@@ -88,19 +103,42 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
   const handleOpenEdit = (item: ExtracurricularItem) => {
     setEditingItem(item);
     setCompressionStatus(null);
-    setFormData({ ...item });
+    setFormData({
+      id: item.id,
+      name: item.name,
+      category: item.category,
+      badge: item.badge,
+      level: item.level,
+      schedule: item.schedule,
+      coach: item.coach,
+      role: item.role,
+      image: item.image,
+      desc: item.desc,
+    });
     setIsModalOpen(true);
   };
 
   const handleDelete = async (id: number | string, name: string) => {
-    if (!confirm(`Apakah Anda yakin ingin menghapus ekstrakurikuler "${name}"?`)) return;
+    const isConfirmed = window.confirm(
+      `Apakah Anda yakin ingin menghapus ekstrakurikuler "${name}"? Tindakan ini akan menghapus data secara permanen dari database.`
+    );
+    if (!isConfirmed) return;
+
     try {
-      const res = await fetch(`/api/extracurriculars?id=${id}`, { method: 'DELETE' });
-      if (res.ok) {
+      const res = await fetch(`/api/extracurriculars?id=${encodeURIComponent(String(id))}`, {
+        method: 'DELETE',
+      });
+      const resJson = await res.json().catch(() => null);
+
+      if (res.ok && (resJson?.success ?? true)) {
         setItems((prev) => prev.filter((i) => String(i.id) !== String(id)));
+        triggerToast('success', `Ekstrakurikuler "${name}" berhasil dihapus.`);
+      } else {
+        triggerToast('error', resJson?.message || 'Gagal menghapus ekstrakurikuler.');
       }
     } catch (err) {
       console.error('Failed to delete extracurricular:', err);
+      triggerToast('error', 'Gagal menghubungi server untuk menghapus.');
     }
   };
 
@@ -110,9 +148,9 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
 
     try {
       setIsCompressing(true);
-      setCompressionStatus('Mengompres gambar agar < 100 KB...');
+      setCompressionStatus('Mengompres gambar agar efisien (< 100 KB)...');
 
-      // Compress client-side
+      // Client-side canvas compression
       const img = document.createElement('img');
       const reader = new FileReader();
 
@@ -157,15 +195,14 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
                 if (res.ok) {
                   const json = await res.json();
                   setFormData((prev) => ({ ...prev, image: json.url }));
-                  setCompressionStatus(`Kompresi sukses: ${sizeKb} KB (< 100 KB)`);
+                  setCompressionStatus(`Kompresi sukses: ${sizeKb} KB`);
                 } else {
-                  // Fallback to data URL
-                  const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                  const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
                   setFormData((prev) => ({ ...prev, image: dataUrl }));
                   setCompressionStatus(`Tersimpan lokal: ${sizeKb} KB`);
                 }
               } catch {
-                const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
                 setFormData((prev) => ({ ...prev, image: dataUrl }));
                 setCompressionStatus(`Tersimpan lokal: ${sizeKb} KB`);
               } finally {
@@ -186,6 +223,16 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!formData.name?.trim()) {
+      triggerToast('error', 'Nama ekstrakurikuler wajib diisi.');
+      return;
+    }
+    if (!formData.coach?.trim()) {
+      triggerToast('error', 'Nama pembina / pelatih wajib diisi.');
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const res = await fetch('/api/extracurriculars', {
@@ -194,19 +241,30 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
         body: JSON.stringify(formData),
       });
 
-      if (res.ok) {
-        const result = await res.json();
+      const resJson = await res.json().catch(() => null);
+
+      if (res.ok && resJson?.success && resJson?.item) {
+        const savedItem: ExtracurricularItem = resJson.item;
         if (editingItem) {
           setItems((prev) =>
-            prev.map((i) => (String(i.id) === String(editingItem.id) ? result.item : i))
+            prev.map((i) =>
+              String(i.id) === String(editingItem.id) || String(i.id) === String(savedItem.id)
+                ? savedItem
+                : i
+            )
           );
+          triggerToast('success', `Ekstrakurikuler "${savedItem.name}" berhasil diperbarui.`);
         } else {
-          setItems((prev) => [...prev, result.item]);
+          setItems((prev) => [...prev, savedItem]);
+          triggerToast('success', `Ekstrakurikuler "${savedItem.name}" berhasil ditambahkan.`);
         }
         setIsModalOpen(false);
+      } else {
+        triggerToast('error', resJson?.message || 'Gagal menyimpan ekstrakurikuler.');
       }
     } catch (err) {
       console.error('Failed to save extracurricular:', err);
+      triggerToast('error', 'Terjadi kesalahan saat menyimpan ekstrakurikuler.');
     } finally {
       setIsSubmitting(false);
     }
@@ -219,11 +277,38 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
 
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
+      {/* Toast Feedback */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 animate-in slide-in-from-bottom-4 duration-200">
+          <div
+            className={`flex items-center gap-2.5 px-4 py-3 rounded-2xl shadow-xl text-[13px] font-semibold border ${
+              toastMessage.type === 'success'
+                ? 'bg-slate-900 text-white border-slate-800'
+                : 'bg-rose-900 text-white border-rose-800'
+            }`}
+          >
+            {toastMessage.type === 'success' ? (
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            ) : (
+              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+            )}
+            <span>{toastMessage.text}</span>
+            <button
+              type="button"
+              onClick={() => setToastMessage(null)}
+              className="text-slate-400 hover:text-white ml-2"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Header Bar */}
       <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-blue-600 animate-pulse" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#1e3a8a] animate-pulse" />
             <h3 className="font-serif text-[18px] sm:text-[20px] font-bold text-slate-900 tracking-tight">
               Ekstrakurikuler
             </h3>
@@ -238,10 +323,10 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
             <button
               type="button"
               onClick={handleOpenAdd}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-sans text-[13px] font-bold transition-all shadow-xs active:scale-95"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#1e3a8a] hover:bg-[#172554] text-white font-sans text-[13px] font-bold transition-all shadow-xs active:scale-95 cursor-pointer"
             >
               <Plus className="w-4 h-4" />
-              <span>+ Tambah Ekstrakurikuler Baru</span>
+              <span>Tambah Ekstrakurikuler Baru</span>
             </button>
           )}
         </div>
@@ -260,9 +345,9 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
             key={f.id}
             type="button"
             onClick={() => setActiveFilter(f.id)}
-            className={`px-4 py-2 rounded-xl text-[12.5px] font-semibold transition-all ${
+            className={`px-4 py-2 rounded-xl text-[12.5px] font-semibold transition-all cursor-pointer ${
               activeFilter === f.id
-                ? 'bg-blue-900 text-white shadow-xs'
+                ? 'bg-[#1e3a8a] text-white shadow-xs'
                 : 'bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-50 border border-slate-200'
             }`}
           >
@@ -271,10 +356,10 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
         ))}
       </div>
 
-      {/* Extracurricular Cards Grid (Exact matching Screenshot 2) */}
+      {/* Extracurricular Cards Grid */}
       {isLoading ? (
         <div className="py-16 text-center text-slate-400">
-          <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-blue-600" />
+          <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-[#1e3a8a]" />
           <p className="text-xs">Memuat data ekstrakurikuler...</p>
         </div>
       ) : filteredItems.length === 0 ? (
@@ -299,7 +384,10 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
                   alt={ekskul.name}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  unoptimized={Boolean(ekskul.image && (ekskul.image.startsWith('data:') || ekskul.image.startsWith('/uploads')))}
+                  unoptimized={Boolean(
+                    ekskul.image &&
+                      (ekskul.image.startsWith('data:') || ekskul.image.startsWith('/uploads'))
+                  )}
                 />
                 <div className="absolute top-3 left-3 bg-[#1e3a8a]/90 backdrop-blur-xs text-white px-3 py-1 rounded-full text-[11px] font-semibold border border-white/20 shadow-xs">
                   {ekskul.badge}
@@ -314,12 +402,12 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
                       {ekskul.level || 'Tingkat MA'}
                     </span>
                     <span className="flex items-center text-slate-500 text-[12px] gap-1.5 font-sans">
-                      <Calendar className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                      <Calendar className="w-3.5 h-3.5 text-[#1e3a8a] shrink-0" />
                       <span>{ekskul.schedule}</span>
                     </span>
                   </div>
 
-                  <h3 className="font-serif text-[18px] sm:text-[19px] font-bold text-slate-900 mb-2 group-hover:text-blue-700 transition-colors">
+                  <h3 className="font-serif text-[18px] sm:text-[19px] font-bold text-slate-900 mb-2 group-hover:text-blue-800 transition-colors">
                     {ekskul.name}
                   </h3>
 
@@ -331,7 +419,7 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
                 {/* Pembina Info Bar */}
                 <div className="bg-slate-50 rounded-xl p-3 flex items-center justify-between border border-slate-200/70">
                   <div className="flex items-center gap-2 min-w-0">
-                    <User className="w-4 h-4 text-blue-600 shrink-0" />
+                    <User className="w-4 h-4 text-[#1e3a8a] shrink-0" />
                     <span className="font-sans text-[12.5px] font-semibold text-slate-800 truncate">
                       {ekskul.coach}
                     </span>
@@ -347,7 +435,7 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
                     <button
                       type="button"
                       onClick={() => handleOpenEdit(ekskul)}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 text-xs font-semibold transition-colors"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-800 hover:bg-blue-100 text-xs font-semibold transition-colors cursor-pointer"
                     >
                       <Edit2 className="w-3.5 h-3.5" />
                       <span>Sunting</span>
@@ -356,7 +444,7 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
                     <button
                       type="button"
                       onClick={() => handleDelete(ekskul.id, ekskul.name)}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 text-xs font-semibold transition-colors"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 text-xs font-semibold transition-colors cursor-pointer"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                       <span>Hapus</span>
@@ -380,13 +468,13 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
                   {editingItem ? 'Sunting Ekstrakurikuler' : 'Tambah Ekstrakurikuler Baru'}
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">
-                  Lengkapi data cabang, pembina, jadwal, dan dokumentasi visual.
+                  Lengkapi data cabang, pembina, jadwal, dan dokumentasi visual kegiatan.
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -400,10 +488,10 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
                 </label>
                 <input
                   type="text"
-                  value={formData.name}
+                  value={formData.name || ''}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="Contoh: Pramuka Penegak, PMR Wira, Paskibra..."
-                  className="px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold"
+                  className="px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#1e3a8a] font-semibold"
                   required
                 />
               </div>
@@ -412,15 +500,14 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
                 <div className="flex flex-col gap-1">
                   <label className="text-xs font-semibold text-slate-700">Kategori</label>
                   <select
-                    value={formData.category}
+                    value={formData.category || 'belanegara'}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    className="px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#1e3a8a]"
                   >
                     <option value="belanegara">Wajib & Bela Negara</option>
                     <option value="olahraga">Olahraga & Kebugaran</option>
                     <option value="seni">Kesenian & Budaya</option>
                     <option value="literasi">Literasi & Bahasa</option>
-                    <option value="keagamaan">Keagamaan & Rohis</option>
                   </select>
                 </div>
 
@@ -428,10 +515,10 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
                   <label className="text-xs font-semibold text-slate-700">Badge Label</label>
                   <input
                     type="text"
-                    value={formData.badge}
+                    value={formData.badge || ''}
                     onChange={(e) => setFormData({ ...formData, badge: e.target.value })}
                     placeholder="Gugus Depan MA, Kemanusiaan..."
-                    className="px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#1e3a8a]"
                     required
                   />
                 </div>
@@ -442,10 +529,10 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
                   <label className="text-xs font-semibold text-slate-700">Tingkat Jenjang</label>
                   <input
                     type="text"
-                    value={formData.level}
+                    value={formData.level || ''}
                     onChange={(e) => setFormData({ ...formData, level: e.target.value })}
-                    placeholder="Tingkat MA, Tingkat SMP, Semua Tingkat..."
-                    className="px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Tingkat MA, Semua Tingkat..."
+                    className="px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#1e3a8a]"
                   />
                 </div>
 
@@ -453,10 +540,10 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
                   <label className="text-xs font-semibold text-slate-700">Jadwal Latihan</label>
                   <input
                     type="text"
-                    value={formData.schedule}
+                    value={formData.schedule || ''}
                     onChange={(e) => setFormData({ ...formData, schedule: e.target.value })}
                     placeholder="Contoh: Jumat 14.00 WIB"
-                    className="px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#1e3a8a]"
                     required
                   />
                 </div>
@@ -470,10 +557,10 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
                   <input
                     type="text"
                     list="teachers-datalist"
-                    value={formData.coach}
+                    value={formData.coach || ''}
                     onChange={(e) => setFormData({ ...formData, coach: e.target.value })}
                     placeholder="Pilih atau ketik nama pembina..."
-                    className="px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#1e3a8a]"
                     required
                   />
                   <datalist id="teachers-datalist">
@@ -489,10 +576,10 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
                   </label>
                   <input
                     type="text"
-                    value={formData.role}
+                    value={formData.role || ''}
                     onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                     placeholder="Kamabigus & Pembina, Instruktur..."
-                    className="px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#1e3a8a]"
                     required
                   />
                 </div>
@@ -502,10 +589,10 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
                 <label className="text-xs font-semibold text-slate-700">Deskripsi Kegiatan</label>
                 <textarea
                   rows={3}
-                  value={formData.desc}
+                  value={formData.desc || ''}
                   onChange={(e) => setFormData({ ...formData, desc: e.target.value })}
                   placeholder="Jelaskan fokus pembinaan, materi kegiatan, dan manfaat bagi santri..."
-                  className="px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 leading-relaxed"
+                  className="px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#1e3a8a] leading-relaxed"
                   required
                 />
               </div>
@@ -514,10 +601,10 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
               <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
                 <div className="flex items-center justify-between">
                   <label className="text-xs font-semibold text-slate-800 flex items-center gap-1.5">
-                    <ImageIcon className="w-3.5 h-3.5 text-blue-600" />
+                    <ImageIcon className="w-3.5 h-3.5 text-[#1e3a8a]" />
                     <span>Foto Kegiatan Ekstrakurikuler</span>
                   </label>
-                  <span className="text-[10px] font-semibold text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-md">
+                  <span className="text-[10px] font-semibold text-blue-800 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-md">
                     Otomatis Kompres &lt; 100 KB
                   </span>
                 </div>
@@ -528,17 +615,17 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
                     className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-dashed text-xs font-bold transition-all cursor-pointer ${
                       isCompressing
                         ? 'bg-slate-100 border-slate-300 text-slate-400 cursor-not-allowed'
-                        : 'bg-white hover:bg-blue-50/50 border-blue-300 text-blue-700 hover:border-blue-500'
+                        : 'bg-white hover:bg-blue-50/50 border-blue-300 text-[#1e3a8a] hover:border-blue-500'
                     }`}
                   >
                     {isCompressing ? (
                       <>
-                        <Loader2 className="w-3.5 h-3.5 animate-spin text-blue-600" />
+                        <Loader2 className="w-3.5 h-3.5 animate-spin text-[#1e3a8a]" />
                         <span>Mengompres Foto...</span>
                       </>
                     ) : (
                       <>
-                        <UploadCloud className="w-3.5 h-3.5 text-blue-600" />
+                        <UploadCloud className="w-3.5 h-3.5 text-[#1e3a8a]" />
                         <span>Pilih Foto dari Komputer</span>
                       </>
                     )}
@@ -567,13 +654,16 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
                         alt="Preview Foto"
                         fill
                         className="object-cover"
-                        unoptimized={Boolean(formData.image && (formData.image.startsWith('data:') || formData.image.startsWith('/uploads')))}
+                        unoptimized={Boolean(
+                          formData.image &&
+                            (formData.image.startsWith('data:') || formData.image.startsWith('/uploads'))
+                        )}
                       />
                     </div>
                   )}
                   <input
                     type="text"
-                    value={formData.image}
+                    value={formData.image || ''}
                     onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                     placeholder="/foto-juara-pramuka.jpeg atau /uploads/..."
                     className="flex-1 px-3 py-1.5 text-[11px] font-mono rounded-lg border border-slate-300"
@@ -586,16 +676,20 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-colors"
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting || isCompressing}
-                  className="px-5 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors shadow-xs disabled:opacity-50"
+                  className="px-5 py-2 rounded-xl text-xs font-bold bg-[#1e3a8a] text-white hover:bg-[#172554] transition-all shadow-xs disabled:opacity-50 active:scale-95 cursor-pointer"
                 >
-                  {isSubmitting ? 'Menyimpan...' : editingItem ? 'Perbarui Ekstrakurikuler' : 'Simpan Ekstrakurikuler'}
+                  {isSubmitting
+                    ? 'Menyimpan...'
+                    : editingItem
+                    ? 'Simpan Perubahan'
+                    : 'Simpan Ekstrakurikuler'}
                 </button>
               </div>
             </form>
