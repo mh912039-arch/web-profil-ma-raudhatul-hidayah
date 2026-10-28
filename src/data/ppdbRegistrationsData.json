@@ -1,6 +1,6 @@
 [
   {
-    "id": "app-1792502907101",
+    "id": "197d0617-6c08-4212-9c04-31092dae4a13",
     "registration_number": "RH-2027-006",
     "full_name": "aD",
     "nisn": "322222223",
@@ -18,13 +18,14 @@
       "akta_url": "",
       "ijazah_url": "",
       "afirmasi_url": "",
-      "prestasi_url": ""
+      "prestasi_url": "",
+      "registration_path": "prestasi"
     },
     "admin_notes": "",
     "created_at": "2026-10-20T13:28:27.101Z"
   },
   {
-    "id": "app-1792419452930",
+    "id": "4f020a55-567d-4a8c-8226-4097467693b7",
     "registration_number": "RH-2027-005",
     "full_name": "ari",
     "nisn": "64646",
@@ -37,12 +38,14 @@
     "home_address": "fdafa",
     "status": "rejected",
     "registration_path": "domisili",
-    "documents": {},
+    "documents": {
+      "registration_path": "domisili"
+    },
     "admin_notes": "",
     "created_at": "2026-10-19T14:17:32.930Z"
   },
   {
-    "id": "app-1792419009445",
+    "id": "2146bdc6-3db3-4482-ba9d-4394d864fb70",
     "registration_number": "RH-2027-004",
     "full_name": "babab",
     "nisn": "64646",
@@ -55,10 +58,14 @@
     "home_address": "fdafa",
     "status": "accepted",
     "admin_notes": "",
-    "created_at": "2026-10-19T14:10:09.445Z"
+    "created_at": "2026-10-19T14:10:09.445Z",
+    "documents": {
+      "registration_path": "domisili"
+    },
+    "registration_path": "domisili"
   },
   {
-    "id": "app-1792418529170",
+    "id": "3bbbdef4-6e11-478f-9c42-a3167ef0c530",
     "registration_number": "RH-2027-003",
     "full_name": "agus",
     "nisn": "1414242",
@@ -71,10 +78,14 @@
     "home_address": "gatau dimana tinggalnya",
     "status": "rejected",
     "admin_notes": "",
-    "created_at": "2026-10-19T14:02:09.170Z"
+    "created_at": "2026-10-19T14:02:09.170Z",
+    "documents": {
+      "registration_path": "domisili"
+    },
+    "registration_path": "domisili"
   },
   {
-    "id": "app-1792416488879",
+    "id": "103d6bfb-e39a-43fb-9dae-046ae1504171",
     "registration_number": "RH-2027-002",
     "full_name": "Budi Santoso",
     "nisn": "0081234567",
@@ -87,10 +98,14 @@
     "home_address": "Desa Ketapang, Mauk",
     "status": "verified",
     "admin_notes": "Berkas dan fotokopi ijazah terverifikasi.",
-    "created_at": "2026-10-19T13:28:08.879Z"
+    "created_at": "2026-10-19T13:28:08.879Z",
+    "documents": {
+      "registration_path": "domisili"
+    },
+    "registration_path": "domisili"
   },
   {
-    "id": "app-1",
+    "id": "4c3322da-d341-45cf-896c-2bb120d48575",
     "registration_number": "RH-2027-001",
     "full_name": "Ahmad Fauzi Ridwan",
     "nisn": "0098765432",
@@ -103,6 +118,10 @@
     "home_address": "Kp. Mauk Timur RT 03/02, Kec. Mauk",
     "status": "verified",
     "admin_notes": "Berkas rapor dan KK lengkap.",
-    "created_at": "2026-10-18T10:30:00.000Z"
+    "created_at": "2026-10-18T10:30:00.000Z",
+    "documents": {
+      "registration_path": "domisili"
+    },
+    "registration_path": "domisili"
   }
 ]

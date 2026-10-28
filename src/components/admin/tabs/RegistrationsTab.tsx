@@ -49,6 +49,7 @@ export interface PpdbApplicant {
     ijazah_url?: string;
     afirmasi_url?: string;
     prestasi_url?: string;
+    registration_path?: string;
   };
   admin_notes?: string;
   created_at?: string;
@@ -286,8 +287,9 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
       (a.nisn && a.nisn.includes(searchQuery)) ||
       a.parent_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       a.registration_number.toLowerCase().includes(searchQuery.toLowerCase());
+    const applicantPath = a.registration_path || a.documents?.registration_path || 'domisili';
     const matchesStatus = statusFilter === 'Semua' || a.status === statusFilter;
-    const matchesPath = pathFilter === 'Semua' || (a.registration_path || 'domisili') === pathFilter;
+    const matchesPath = pathFilter === 'Semua' || applicantPath === pathFilter;
     return matchesSearch && matchesStatus && matchesPath;
   });
 
