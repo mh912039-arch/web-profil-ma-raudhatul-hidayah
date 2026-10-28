@@ -13,6 +13,44 @@ const noCacheHeaders = {
   Expires: '0',
 };
 
+/**
+ * Validasi URL gambar untuk mencegah Server-Side Request Forgery (SSRF)
+ */
+function isSafeImageUrl(urlStr: string): boolean {
+  if (typeof urlStr !== 'string') return false;
+  const trimmed = urlStr.trim();
+  if (trimmed.startsWith('/uploads/') || trimmed.startsWith('/')) {
+    return !trimmed.includes('..');
+  }
+
+  try {
+    const parsed = new URL(trimmed);
+    if (parsed.protocol !== 'https:') return false;
+
+    const hostname = parsed.hostname.toLowerCase();
+    // Blokir alamat internal, private IP, subnet lokal, dan link-local cloud metadata
+    if (
+      hostname === 'localhost' ||
+      hostname.endsWith('.localhost') ||
+      hostname.endsWith('.local') ||
+      hostname.endsWith('.internal') ||
+      hostname === '169.254.169.254' ||
+      hostname.startsWith('127.') ||
+      hostname.startsWith('10.') ||
+      hostname.startsWith('192.168.') ||
+      /^172\.(1[6-9]|2\d|3[01])\./.test(hostname) ||
+      hostname === '0.0.0.0' ||
+      hostname === '[::1]'
+    ) {
+      return false;
+    }
+
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export async function POST(req: Request) {
   const auth = await requireAuth(['admin', 'guru']);
   if (!auth.authorized) {
@@ -25,8 +63,15 @@ export async function POST(req: Request) {
 
     let extractedText = text || '';
 
-    // Jika imageUrl diberikan dan text belum ada, coba OCR di server
+    // Jika imageUrl diberikan dan text belum ada, validasi SSRF lalu coba OCR di server
     if (!extractedText && imageUrl) {
+      if (!isSafeImageUrl(imageUrl)) {
+        return NextResponse.json(
+          { success: false, message: 'URL gambar tidak valid atau mengarah ke alamat internal yang dilarang.' },
+          { status: 400, headers: noCacheHeaders }
+        );
+      }
+
       try {
         const { createWorker } = await import('tesseract.js');
         const worker = await createWorker(['ind', 'eng']);

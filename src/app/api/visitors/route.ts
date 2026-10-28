@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 import { supabase } from '@/lib/supabaseClient';
+import { checkEndpointRateLimit } from '@/lib/rateLimiter';
 
 const METRICS_FILE = path.join(process.cwd(), 'src', 'data', 'visitorMetrics.json');
 
@@ -252,6 +253,14 @@ export async function POST(req: NextRequest) {
     const realIp = req.headers.get('x-real-ip');
     const clientIp = cfIp || forwarded?.split(',')[0].trim() || realIp || '127.0.0.1';
     const userAgent = req.headers.get('user-agent') || 'Browser';
+
+    // Anti-Metric Flooding: batasi maksimal 20 pageviews per 60 detik per IP
+    if (!isSimulation) {
+      const rateCheck = checkEndpointRateLimit(clientIp, 'visitor_pv', 20, 60);
+      if (!rateCheck.allowed) {
+        return NextResponse.json({ skipped: true, rate_limited: true });
+      }
+    }
 
     // Create privacy hash
     let hash = 0;

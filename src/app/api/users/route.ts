@@ -15,6 +15,14 @@ export type { UserAccountItem, UserSessionItem };
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
+/**
+ * Sanitasi data akun pengguna: jangan pernah kembalikan kolom hash/teks password ke antarmuka klien
+ */
+function sanitizeUser(u: UserAccountItem) {
+  const { password: _pwd, ...sanitized } = u;
+  return sanitized;
+}
+
 export async function GET() {
   // Hanya Administrator yang berhak mengelola direktori pengguna dan melihat sesi login
   const auth = await requireAuth(['admin']);
@@ -45,7 +53,7 @@ export async function GET() {
 
   return NextResponse.json({
     success: true,
-    users,
+    users: users.map(sanitizeUser),
     sessions,
     stats: {
       totalUsers,
@@ -116,7 +124,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       message: `Akun "${newUser.name}" berhasil ditambahkan dengan peran ${newUser.role.toUpperCase()}.`,
-      user: newUser,
+      user: sanitizeUser(newUser),
     });
   } catch (err: any) {
     return NextResponse.json(
@@ -186,7 +194,7 @@ export async function PATCH(request: Request) {
     return NextResponse.json({
       success: true,
       message: `Hak akses untuk "${updatedUser.name}" berhasil diperbarui.`,
-      user: updatedUser,
+      user: sanitizeUser(updatedUser),
     });
   } catch (err: any) {
     return NextResponse.json(

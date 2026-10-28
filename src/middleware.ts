@@ -4,8 +4,8 @@ import type { NextRequest } from 'next/server';
 const COOKIE_NAME = 'mrh_session';
 const SECRET_KEY =
   process.env.AUTH_SECRET ||
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-  'mrh-secret-key-2026-salt';
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  'mrh-auth-server-secret-salt-2026-secure-key';
 
 /**
  * Verifikasi Cryptographic HMAC-SHA256 Token di Edge Runtime

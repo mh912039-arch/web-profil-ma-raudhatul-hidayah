@@ -4,6 +4,7 @@ import path from 'path';
 import { supabaseServer } from '@/lib/supabaseServer';
 import { requireAuth } from '@/lib/auth';
 import { deleteStorageFile } from '@/lib/storageHelper';
+import { checkEndpointRateLimit } from '@/lib/rateLimiter';
 
 const dataFilePath = path.join(process.cwd(), 'src', 'data', 'ppdbRegistrationsData.json');
 
@@ -116,6 +117,26 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    // 0. Proteksi Batas Frekuensi Pendaftaran PPDB (Anti Spam Flooding)
+    const cfIp = request.headers.get('cf-connecting-ip');
+    const forwarded = request.headers.get('x-forwarded-for');
+    const realIp = request.headers.get('x-real-ip');
+    const clientIp = cfIp || forwarded?.split(',')[0].trim() || realIp || '127.0.0.1';
+
+    const rateCheck = checkEndpointRateLimit(clientIp, 'ppdb_reg', 10, 30 * 60);
+    if (!rateCheck.allowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: `Terlalu banyak formulir pendaftaran yang dikirim dari jaringan ini. Silakan coba kembali dalam ${Math.ceil(rateCheck.retryAfterSeconds / 60)} menit.`,
+        },
+        {
+          status: 429,
+          headers: { ...noCacheHeaders, 'Retry-After': String(rateCheck.retryAfterSeconds) },
+        }
+      );
+    }
+
     const body = await request.json();
 
     // Anti-Bot Honeypot Protection

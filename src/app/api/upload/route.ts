@@ -4,12 +4,32 @@ import path from 'path';
 import { supabase } from '@/lib/supabaseClient';
 import { deleteStorageFile } from '@/lib/storageHelper';
 import { requireAuth } from '@/lib/auth';
+import { checkEndpointRateLimit } from '@/lib/rateLimiter';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export async function POST(request: Request) {
   try {
+    // 0. Proteksi Batas Frekuensi Unggah Berkas (Anti Storage Flood / DoS)
+    const cfIp = request.headers.get('cf-connecting-ip');
+    const forwarded = request.headers.get('x-forwarded-for');
+    const realIp = request.headers.get('x-real-ip');
+    const clientIp = cfIp || forwarded?.split(',')[0].trim() || realIp || '127.0.0.1';
+
+    const rateCheck = checkEndpointRateLimit(clientIp, 'upload', 20, 10 * 60);
+    if (!rateCheck.allowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: `Batas frekuensi unggah berkas tercapai. Demi stabilitas kuota server madrasah, silakan tunggu ${Math.ceil(rateCheck.retryAfterSeconds / 60)} menit sebelum mengunggah kembali.`,
+        },
+        {
+          status: 429,
+          headers: { 'Retry-After': String(rateCheck.retryAfterSeconds) },
+        }
+      );
+    }
     const uploadDir = path.join(process.cwd(), 'public', 'uploads');
     try {
       await fs.mkdir(uploadDir, { recursive: true });

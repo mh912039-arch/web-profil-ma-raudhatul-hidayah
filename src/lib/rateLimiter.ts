@@ -355,3 +355,49 @@ export async function clearAllRateLimits(): Promise<void> {
   memoryCache.clear();
   await syncToStorage();
 }
+
+interface EndpointHitRecord {
+  count: number;
+  resetAt: number;
+}
+const endpointHits = new Map<string, EndpointHitRecord>();
+
+/**
+ * Pembatas laju request generik untuk endpoint publik (Upload, Kontak, Registrasi, PPDB)
+ */
+export function checkEndpointRateLimit(
+  rawIp: string,
+  endpointName: string,
+  maxRequests: number,
+  windowSeconds: number
+): { allowed: boolean; remaining: number; retryAfterSeconds: number } {
+  const ip = cleanIp(rawIp);
+  const key = `${endpointName}:${ip}`;
+  const now = Date.now();
+  const windowMs = windowSeconds * 1000;
+
+  // Pembersihan berkala jika cache membengkak
+  if (endpointHits.size > 2000) {
+    for (const [k, v] of endpointHits.entries()) {
+      if (now > v.resetAt) endpointHits.delete(k);
+    }
+  }
+
+  const record = endpointHits.get(key);
+  if (!record || now > record.resetAt) {
+    endpointHits.set(key, { count: 1, resetAt: now + windowMs });
+    return { allowed: true, remaining: maxRequests - 1, retryAfterSeconds: 0 };
+  }
+
+  if (record.count >= maxRequests) {
+    const retryAfterSeconds = Math.max(1, Math.ceil((record.resetAt - now) / 1000));
+    return { allowed: false, remaining: 0, retryAfterSeconds };
+  }
+
+  record.count += 1;
+  return {
+    allowed: true,
+    remaining: Math.max(0, maxRequests - record.count),
+    retryAfterSeconds: 0,
+  };
+}

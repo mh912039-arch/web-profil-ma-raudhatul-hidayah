@@ -4,7 +4,7 @@
     "name": "Administrator Madrasah (TU)",
     "email": "admin@raudhatulhidayah.sch.id",
     "username": "admin",
-    "password": "admin123",
+    "password": "h256:43825049789a21471c1e47948ddc6472da5cb174554c5b8b3cd1fedb444f913e",
     "role": "admin",
     "status": "Aktif",
     "permissions": [
@@ -35,7 +35,7 @@
     "name": "A. Khutbi. AR, S.Pd (Kepala Madrasah)",
     "email": "kepala@raudhatulhidayah.sch.id",
     "username": "kepala",
-    "password": "admin123",
+    "password": "h256:43825049789a21471c1e47948ddc6472da5cb174554c5b8b3cd1fedb444f913e",
     "role": "admin",
     "status": "Aktif",
     "permissions": [
@@ -64,7 +64,7 @@
     "name": "Dewan Guru MAS Raudhatul Hidayah",
     "email": "guru@raudhatulhidayah.sch.id",
     "username": "guru",
-    "password": "guru2026",
+    "password": "h256:54a09c0719aaf5ee88b9ebb4deb693518c72ea48712a75343c57ac1d22ab293e",
     "role": "guru",
     "status": "Aktif",
     "permissions": [
@@ -87,7 +87,7 @@
     "name": "TAJUDIN, S.Pd.I",
     "email": "tajudin@raudhatulhidayah.sch.id",
     "username": "tajudin",
-    "password": "guru2026",
+    "password": "h256:54a09c0719aaf5ee88b9ebb4deb693518c72ea48712a75343c57ac1d22ab293e",
     "role": "guru",
     "status": "Aktif",
     "permissions": [
@@ -110,7 +110,7 @@
     "name": "MADROSYID, S.Pd (Kurikulum & TIK)",
     "email": "madrosyid@raudhatulhidayah.sch.id",
     "username": "madrosyid",
-    "password": "guru2026",
+    "password": "h256:54a09c0719aaf5ee88b9ebb4deb693518c72ea48712a75343c57ac1d22ab293e",
     "role": "guru",
     "status": "Aktif",
     "permissions": [
@@ -132,7 +132,7 @@
     "name": "SITI KHAERUNNISA, S.Pd.I",
     "email": "siti.k@raudhatulhidayah.sch.id",
     "username": "sitikhaerunnisa",
-    "password": "guru2026",
+    "password": "h256:54a09c0719aaf5ee88b9ebb4deb693518c72ea48712a75343c57ac1d22ab293e",
     "role": "guru",
     "status": "Aktif",
     "permissions": [
@@ -153,7 +153,7 @@
     "name": "AHMAD NURUL KAHFI, SE",
     "email": "ahmad.kahfi@raudhatulhidayah.sch.id",
     "username": "ahmadkahfi",
-    "password": "guru2026",
+    "password": "h256:54a09c0719aaf5ee88b9ebb4deb693518c72ea48712a75343c57ac1d22ab293e",
     "role": "guru",
     "status": "Aktif",
     "permissions": [
@@ -175,7 +175,7 @@
     "name": "Santri & OSIS MAS Raudhatul Hidayah",
     "email": "siswa@raudhatulhidayah.sch.id",
     "username": "siswa",
-    "password": "siswa2026",
+    "password": "h256:71bff7f53c0eb2542b036efedf48edef7766d24fa14bcc78d4b09e4cbf96c130",
     "role": "siswa",
     "status": "Aktif",
     "permissions": [
@@ -195,7 +195,7 @@
     "name": "H. MUKHLIS, S.Pd (Guru Baru)",
     "email": "mukhlis@raudhatulhidayah.sch.id",
     "username": "mukhlis",
-    "password": "guru#88k1",
+    "password": "h256:79aada7ed47e1dec69e482eef452b24ef3627b849f91e42e3ff5213c7efb243f",
     "role": "guru",
     "status": "Nonaktif",
     "permissions": [

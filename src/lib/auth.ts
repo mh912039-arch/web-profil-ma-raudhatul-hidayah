@@ -13,7 +13,10 @@ export interface SessionData {
 }
 
 const COOKIE_NAME = 'mrh_session';
-const SECRET_KEY = process.env.AUTH_SECRET || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'mrh-secret-key-2026-salt';
+const SECRET_KEY =
+  process.env.AUTH_SECRET ||
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  'mrh-auth-server-secret-salt-2026-secure-key';
 
 /**
  * Buat signed token aman berbasis HMAC-SHA256
@@ -133,17 +136,40 @@ export function hashPassword(plainText: string): string {
 }
 
 /**
- * Verifikasi kata sandi dengan proteksi timing attack
+ * Verifikasi kata sandi dengan proteksi timing attack dan migrasi zero-downtime
  */
 export function verifyPassword(plainText: string, storedPassword?: string): boolean {
   if (!storedPassword) return false;
+
   if (storedPassword.startsWith('h256:')) {
-    const hash = hashPassword(plainText);
-    const providedBuf = Buffer.from(hash);
-    const expectedBuf = Buffer.from(storedPassword);
-    if (providedBuf.length !== expectedBuf.length) return false;
-    return crypto.timingSafeEqual(providedBuf, expectedBuf);
+    // 1. Verifikasi dengan kunci rahasia utama saat ini (AUTH_SECRET)
+    const currentHash = hashPassword(plainText);
+    const currentBuf = Buffer.from(currentHash);
+    const storedBuf = Buffer.from(storedPassword);
+    if (currentBuf.length === storedBuf.length && crypto.timingSafeEqual(currentBuf, storedBuf)) {
+      return true;
+    }
+
+    // 2. Dukungan migrasi hash warisan (legacy anon key fallback)
+    const legacyKeys = [
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      'mrh-secret-key-2026-salt',
+    ].filter(Boolean) as string[];
+
+    for (const legacyKey of legacyKeys) {
+      const legHash = `h256:${crypto.createHmac('sha256', legacyKey).update(plainText).digest('hex')}`;
+      const legBuf = Buffer.from(legHash);
+      if (legBuf.length === storedBuf.length && crypto.timingSafeEqual(legBuf, storedBuf)) {
+        return true;
+      }
+    }
+
+    return false;
   }
-  // Backward compatible untuk password teks biasa
-  return plainText === storedPassword;
+
+  // Backward compatible untuk password teks biasa (dilindungi timingSafeEqual)
+  const plainBuf = Buffer.from(plainText);
+  const storedPlainBuf = Buffer.from(storedPassword);
+  if (plainBuf.length !== storedPlainBuf.length) return false;
+  return crypto.timingSafeEqual(plainBuf, storedPlainBuf);
 }

@@ -1,8 +1,31 @@
 import { NextResponse } from 'next/server';
 import { readUsers, writeUsers, UserAccountItem } from '@/lib/userStore';
+import { hashPassword } from '@/lib/auth';
+import { checkEndpointRateLimit } from '@/lib/rateLimiter';
 
 export async function POST(request: Request) {
   try {
+    // 1. Ambil client IP untuk proteksi laju request (Rate Limiting)
+    const cfIp = request.headers.get('cf-connecting-ip');
+    const forwarded = request.headers.get('x-forwarded-for');
+    const realIp = request.headers.get('x-real-ip');
+    const clientIp = cfIp || forwarded?.split(',')[0].trim() || realIp || '127.0.0.1';
+
+    // Batasan aman: maksimal 5 kali pendaftaran akun per 15 menit per IP
+    const rateCheck = checkEndpointRateLimit(clientIp, 'register', 5, 15 * 60);
+    if (!rateCheck.allowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: `Terlalu banyak permintaan pendaftaran dari jaringan Anda. Demi keamanan, silakan coba lagi dalam ${Math.ceil(rateCheck.retryAfterSeconds / 60)} menit.`,
+        },
+        {
+          status: 429,
+          headers: { 'Retry-After': String(rateCheck.retryAfterSeconds) },
+        }
+      );
+    }
+
     const body = await request.json();
     const { name, email, password, role, nip_nisn, note } = body;
 
@@ -40,26 +63,17 @@ export async function POST(request: Request) {
     const cleanEmail = email.trim().toLowerCase();
     const users = await readUsers();
 
-    // Periksa apakah email atau username sudah terdaftar
+    // Periksa apakah email atau username sudah terdaftar (Pesan dinetralisasi demi mencegah User Enumeration)
     const existing = users.find(
       (u) => (u.email && u.email.toLowerCase() === cleanEmail) ||
              (u.username && u.username.toLowerCase() === cleanEmail)
     );
 
     if (existing) {
-      if (existing.status === 'Nonaktif') {
-        return NextResponse.json(
-          {
-            success: false,
-            message: 'Email ini sudah terdaftar dan saat ini sedang dalam antrean verifikasi Administrator.',
-          },
-          { status: 409 }
-        );
-      }
       return NextResponse.json(
         {
           success: false,
-          message: 'Email ini sudah terdaftar sebagai akun aktif. Silakan langsung masuk di halaman login.',
+          message: 'Alamat email atau username ini telah terdaftar di sistem. Jika Anda belum dapat masuk, silakan hubungi Administrator sekolah.',
         },
         { status: 409 }
       );
@@ -71,18 +85,12 @@ export async function POST(request: Request) {
         ? ['schedules', 'classes', 'calendar', 'articles', 'achievements', 'extracurricular']
         : ['schedules', 'classes', 'calendar'];
 
-    // Ambil client IP
-    const cfIp = request.headers.get('cf-connecting-ip');
-    const forwarded = request.headers.get('x-forwarded-for');
-    const realIp = request.headers.get('x-real-ip');
-    const clientIp = cfIp || forwarded?.split(',')[0].trim() || realIp || '127.0.0.1';
-
     const newUser: UserAccountItem = {
       id: `usr-${Date.now()}`,
       name: name.trim(),
       email: cleanEmail,
       username: cleanEmail.split('@')[0],
-      password: password.trim(),
+      password: hashPassword(password.trim()), // Sandi selalu di-hash kriptografis dengan AUTH_SECRET
       role,
       status: 'Nonaktif', // Selalu Nonaktif agar dikonfirmasi oleh Admin terlebih dahulu
       permissions,

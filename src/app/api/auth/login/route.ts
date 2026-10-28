@@ -146,9 +146,10 @@ export async function POST(request: Request) {
         );
       }
 
-      // Auto-upgrade sandi plaintext menjadi hash kriptografis jika belum terenkripsi
-      if (matchedUser.password && !matchedUser.password.startsWith('h256:')) {
-        matchedUser.password = hashPassword(pass);
+      // Auto-upgrade sandi plaintext atau kunci legacy menjadi hash kriptografis dengan AUTH_SECRET terbaru
+      const currentExpectedHash = hashPassword(pass);
+      if (matchedUser.password !== currentExpectedHash) {
+        matchedUser.password = currentExpectedHash;
         writeUsers(users).catch((err) => console.warn('Could not auto-hash password:', err));
       }
 
