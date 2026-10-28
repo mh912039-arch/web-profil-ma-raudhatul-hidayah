@@ -337,30 +337,30 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
     switch (st) {
       case 'accepted':
         return (
-          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 shrink-0">
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            Diterima
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-emerald-800 bg-emerald-50/90 px-2.5 py-1 rounded-full border border-emerald-200 whitespace-nowrap shrink-0">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Diterima</span>
           </span>
         );
       case 'verified':
         return (
-          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-200 shrink-0">
-            <UserCheck className="w-3.5 h-3.5" />
-            Terverifikasi
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-blue-800 bg-blue-50/90 px-2.5 py-1 rounded-full border border-blue-200 whitespace-nowrap shrink-0">
+            <UserCheck className="w-3.5 h-3.5 text-blue-600" />
+            <span>Terverifikasi</span>
           </span>
         );
       case 'rejected':
         return (
-          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200 shrink-0">
-            <XCircle className="w-3.5 h-3.5" />
-            Ditolak
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-rose-800 bg-rose-50/90 px-2.5 py-1 rounded-full border border-rose-200 whitespace-nowrap shrink-0">
+            <XCircle className="w-3.5 h-3.5 text-rose-600" />
+            <span>Ditolak</span>
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200 shrink-0">
-            <Clock className="w-3.5 h-3.5" />
-            Menunggu
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-amber-800 bg-amber-50/90 px-2.5 py-1 rounded-full border border-amber-300 whitespace-nowrap shrink-0">
+            <Clock className="w-3.5 h-3.5 text-amber-600" />
+            <span>Menunggu</span>
           </span>
         );
     }
@@ -370,30 +370,30 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
     switch (path) {
       case 'afirmasi':
         return (
-          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-purple-800 bg-purple-50 px-2 py-0.5 rounded-md border border-purple-200 shrink-0">
+          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-purple-800 bg-purple-50 px-2.5 py-1 rounded-full border border-purple-200 whitespace-nowrap shrink-0">
             <Users className="w-3 h-3 text-purple-600" />
-            Afirmasi
+            <span>Afirmasi</span>
           </span>
         );
       case 'prestasi':
         return (
-          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-300 shrink-0">
+          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-800 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-300 whitespace-nowrap shrink-0">
             <Award className="w-3 h-3 text-amber-600" />
-            Prestasi
+            <span>Prestasi</span>
           </span>
         );
       case 'mutasi':
         return (
-          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded-md border border-teal-200 shrink-0">
+          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-teal-800 bg-teal-50 px-2.5 py-1 rounded-full border border-teal-200 whitespace-nowrap shrink-0">
             <ShieldCheck className="w-3 h-3 text-teal-600" />
-            Mutasi
+            <span>Mutasi</span>
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-blue-800 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-200 shrink-0">
+          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-blue-800 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-200 whitespace-nowrap shrink-0">
             <MapPin className="w-3 h-3 text-blue-600" />
-            Domisili
+            <span>Domisili</span>
           </span>
         );
     }
@@ -487,68 +487,103 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
         ) : (
           <>
             {/* Desktop View Table */}
-            <div className="hidden md:block overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+            <div className="hidden md:block overflow-x-auto border-t border-slate-100">
+            <table className="w-full text-left border-collapse min-w-[1100px]">
               <thead>
-                <tr className="bg-slate-50/80 border-b border-slate-200 text-[11.5px] font-bold uppercase tracking-wider text-slate-500">
-                  <th className="py-3.5 px-4">No. Registrasi</th>
-                  <th className="py-3.5 px-4">Nama Calon Santri</th>
-                  <th className="py-3.5 px-4">Jalur Pendaftaran</th>
-                  <th className="py-3.5 px-4">Asal Sekolah</th>
-                  <th className="py-3.5 px-4">Orang Tua &amp; Kontak</th>
-                  <th className="py-3.5 px-4">Status Seleksi</th>
-                  <th className="py-3.5 px-4 text-right">Berkas &amp; Aksi</th>
+                <tr className="bg-slate-50/90 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500 select-none">
+                  <th className="py-3.5 px-4 whitespace-nowrap w-[140px]">No. Registrasi</th>
+                  <th className="py-3.5 px-4 whitespace-nowrap min-w-[220px]">Nama Calon Santri</th>
+                  <th className="py-3.5 px-4 whitespace-nowrap w-[130px]">Jalur</th>
+                  <th className="py-3.5 px-4 whitespace-nowrap min-w-[160px]">Asal Sekolah</th>
+                  <th className="py-3.5 px-4 whitespace-nowrap min-w-[180px]">Orang Tua &amp; Kontak</th>
+                  <th className="py-3.5 px-4 whitespace-nowrap w-[140px]">Status Seleksi</th>
+                  <th className="py-3.5 px-4 whitespace-nowrap text-right min-w-[290px]">Berkas &amp; Aksi</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-[13px]">
                 {filteredApplicants.map((app) => {
                   const cleanPhone = sanitizeWhatsAppPhone(app.parent_whatsapp);
                   const docCount = Object.values(app.documents || {}).filter(Boolean).length;
+                  const applicantPath = app.registration_path || app.documents?.registration_path || 'domisili';
 
                   return (
-                    <tr key={app.id || app.registration_number} className="hover:bg-slate-50/80 transition-colors">
-                      <td className="py-3.5 px-4 font-mono font-bold text-blue-700">
-                        {app.registration_number}
+                    <tr key={app.id || app.registration_number} className="hover:bg-blue-50/30 transition-colors">
+                      {/* No. Registrasi: Crisp Single-Line Badge */}
+                      <td className="py-3.5 px-4 whitespace-nowrap">
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-blue-50/90 text-[#1e3a8a] border border-blue-200/80 font-mono text-[12px] font-bold tracking-tight whitespace-nowrap shadow-2xs">
+                          {app.registration_number}
+                        </span>
                       </td>
-                      <td className="py-3.5 px-4 font-bold text-slate-900">
-                        <div>
-                          <span>{app.full_name}</span>
-                          <span className="block text-[11px] font-mono text-slate-500 font-normal">
-                            NISN: {app.nisn || '-'} ({app.gender === 'P' ? 'Putri' : 'Putra'})
+
+                      {/* Nama Calon Santri: Single-Line Title with Clean Subtext */}
+                      <td className="py-3.5 px-4 whitespace-nowrap">
+                        <div className="flex flex-col gap-0.5 whitespace-nowrap">
+                          <span className="font-bold text-slate-900 text-[13.5px] leading-snug whitespace-nowrap">
+                            {app.full_name}
                           </span>
+                          <div className="flex items-center gap-1.5 text-[11px] text-slate-500 font-mono whitespace-nowrap">
+                            <span>NISN: {app.nisn || '-'}</span>
+                            <span className="text-slate-300">·</span>
+                            <span
+                              className={`font-sans font-semibold text-[10px] px-1.5 py-0.5 rounded ${
+                                app.gender === 'P'
+                                  ? 'text-pink-700 bg-pink-50 border border-pink-100'
+                                  : 'text-blue-700 bg-blue-50 border border-blue-100'
+                              }`}
+                            >
+                              {app.gender === 'P' ? 'Putri' : 'Putra'}
+                            </span>
+                          </div>
                         </div>
                       </td>
-                      <td className="py-3.5 px-4">
-                        {jalurBadge(app.registration_path)}
+
+                      {/* Jalur Pendaftaran */}
+                      <td className="py-3.5 px-4 whitespace-nowrap">
+                        {jalurBadge(applicantPath)}
                       </td>
-                      <td className="py-3.5 px-4 text-slate-700">
-                        {app.previous_school || '-'}
+
+                      {/* Asal Sekolah */}
+                      <td className="py-3.5 px-4 whitespace-nowrap">
+                        <span
+                          className="text-slate-700 font-medium text-[12.5px] whitespace-nowrap block max-w-[200px] truncate"
+                          title={app.previous_school || '-'}
+                        >
+                          {app.previous_school || '-'}
+                        </span>
                       </td>
-                      <td className="py-3.5 px-4">
-                        <div className="flex flex-col">
-                          <span className="font-medium text-slate-800">{app.parent_name}</span>
+
+                      {/* Orang Tua & Kontak */}
+                      <td className="py-3.5 px-4 whitespace-nowrap">
+                        <div className="flex flex-col gap-0.5 whitespace-nowrap">
+                          <span className="font-semibold text-slate-900 text-[12.5px] whitespace-nowrap">
+                            {app.parent_name}
+                          </span>
                           <a
                             href={`https://wa.me/${cleanPhone}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-[12px] text-emerald-700 hover:underline inline-flex items-center gap-1 font-mono"
+                            className="text-[11.5px] text-emerald-700 hover:text-emerald-800 hover:underline inline-flex items-center gap-1 font-mono font-medium whitespace-nowrap"
                             title="Buka Chat WhatsApp"
                           >
-                            <Phone className="w-3 h-3" />
-                            {app.parent_whatsapp}
+                            <Phone className="w-3 h-3 text-emerald-600 shrink-0" />
+                            <span>{app.parent_whatsapp}</span>
                           </a>
                         </div>
                       </td>
-                      <td className="py-3.5 px-4">
+
+                      {/* Status Seleksi */}
+                      <td className="py-3.5 px-4 whitespace-nowrap">
                         {statusBadge(app.status)}
                       </td>
-                      <td className="py-3.5 px-4 text-right">
-                        <div className="flex items-center justify-end gap-2">
+
+                      {/* Berkas & Aksi */}
+                      <td className="py-3.5 px-4 whitespace-nowrap text-right">
+                        <div className="flex items-center justify-end gap-2 whitespace-nowrap">
                           {/* Button to view all 4 sections & documents */}
                           <button
                             type="button"
                             onClick={() => setDetailApplicant(app)}
-                            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-[11.5px] font-bold transition-all active:scale-95 shadow-2xs"
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-[#1e3a8a] border border-blue-200 text-[11.5px] font-bold transition-all active:scale-95 shadow-2xs cursor-pointer whitespace-nowrap"
                             title="Lihat Rincian Formulir & Dokumen Persyaratan"
                           >
                             <FileText className="w-3.5 h-3.5 text-blue-600" />
@@ -569,7 +604,7 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
                                 }
                               }
                             }}
-                            className="px-2 py-1.5 rounded-lg bg-slate-50 border border-slate-300 text-[12px] font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                            className="px-2 py-1.5 rounded-lg bg-slate-50 border border-slate-300 text-[12px] font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#1e3a8a]/30 cursor-pointer whitespace-nowrap"
                           >
                             <option value="submitted">Menunggu</option>
                             <option value="verified">Verifikasi</option>
@@ -581,7 +616,7 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
                           <button
                             type="button"
                             onClick={() => openWhatsAppNotice(app, app.status)}
-                            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300/80 text-[11.5px] font-bold transition-all active:scale-95 shadow-2xs group"
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300/80 text-[11.5px] font-bold transition-all active:scale-95 shadow-2xs group cursor-pointer whitespace-nowrap"
                             title="Kirim Pemberitahuan WhatsApp ke Nomor Orang Tua"
                           >
                             <MessageSquare className="w-3.5 h-3.5 text-emerald-600 group-hover:scale-110 transition-transform" />
@@ -592,7 +627,7 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
                           <button
                             type="button"
                             onClick={() => handleOpenEdit(app)}
-                            className="p-1.5 rounded-lg text-slate-500 hover:text-blue-700 hover:bg-blue-50 transition-colors"
+                            className="p-1.5 rounded-lg text-slate-500 hover:text-[#1e3a8a] hover:bg-blue-50 transition-colors cursor-pointer"
                             title="Edit Lengkap Data Calon Santri"
                           >
                             <Edit2 className="w-3.5 h-3.5" />
@@ -603,7 +638,7 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
                             <button
                               type="button"
                               onClick={() => handleDelete(app)}
-                              className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                              className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
                               title="Hapus Data Calon Santri"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
