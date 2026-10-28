@@ -496,14 +496,14 @@ export default function WartaPage() {
                   </div>
 
                   <span className="font-sans text-[15px] font-bold text-slate-900">
-                    @maraudhatulhidayah
+                    @ma_raudlatulhidayah
                   </span>
                   <p className="font-sans text-[12px] text-slate-500 mt-1 mb-4 leading-relaxed max-w-xs">
                     Ikuti galeri aktivitas instan kami di Instagram
                   </p>
 
                   <a
-                    href="https://instagram.com/maraudhatulhidayah"
+                    href="https://www.instagram.com/ma_raudlatulhidayah/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center bg-[#e1306c] hover:bg-[#c13584] text-white font-bold text-[13px] px-7 py-2 rounded-full transition-all duration-200 shadow-sm active:scale-95"

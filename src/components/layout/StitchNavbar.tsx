@@ -181,7 +181,7 @@ export function StitchNavbar() {
             <div className="flex items-center gap-1 sm:gap-1.5">
               {/* Instagram */}
               <a
-                href="https://instagram.com/maraudhatulhidayah"
+                href="https://www.instagram.com/ma_raudlatulhidayah/"
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Instagram Resmi"
@@ -193,7 +193,7 @@ export function StitchNavbar() {
 
               {/* TikTok */}
               <a
-                href="https://tiktok.com/@maraudhatulhidayah"
+                href="https://www.tiktok.com/@ma_raudlatulhidayah"
                 target="_blank"
                 rel="noopener noreferrer"
                 title="TikTok Resmi"
@@ -521,7 +521,7 @@ export function StitchNavbar() {
                 <span className="text-[12px] font-semibold text-white/80">Media Sosial Sekolah:</span>
                 <div className="flex items-center gap-2">
                   <a
-                    href="https://instagram.com/maraudhatulhidayah"
+                    href="https://www.instagram.com/ma_raudlatulhidayah/"
                     target="_blank"
                     rel="noopener noreferrer"
                     title="Instagram Resmi"
@@ -531,7 +531,7 @@ export function StitchNavbar() {
                     <Instagram className="w-4 h-4" />
                   </a>
                   <a
-                    href="https://tiktok.com/@maraudhatulhidayah"
+                    href="https://www.tiktok.com/@ma_raudlatulhidayah"
                     target="_blank"
                     rel="noopener noreferrer"
                     title="TikTok Resmi"

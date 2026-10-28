@@ -276,12 +276,12 @@ export function StitchFooter() {
                   <Instagram className="w-3.5 h-3.5 text-pink-300" />
                 </div>
                 <a
-                  href="https://instagram.com/maraudhatulhidayah"
+                  href="https://www.instagram.com/ma_raudlatulhidayah/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-[#facc15] transition-colors text-white/80"
                 >
-                  maraudhatulhidayah
+                  @ma_raudlatulhidayah
                 </a>
               </div>
 
@@ -293,12 +293,12 @@ export function StitchFooter() {
                   </svg>
                 </div>
                 <a
-                  href="https://tiktok.com/@maraudhatulhidayah"
+                  href="https://www.tiktok.com/@ma_raudlatulhidayah"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-[#facc15] transition-colors text-white/80"
                 >
-                  MAS Raudhatul Hidayah
+                  @ma_raudlatulhidayah
                 </a>
               </div>
             </div>

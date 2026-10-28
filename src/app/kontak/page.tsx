@@ -202,7 +202,7 @@ export default function KontakPage() {
                 <div className="space-y-2.5 font-sans text-[13px]">
                   {/* Instagram */}
                   <a
-                    href="https://instagram.com/maraudhatulhidayah"
+                    href="https://www.instagram.com/ma_raudlatulhidayah/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 p-2 rounded-lg hover:bg-surface-container transition-colors group"
@@ -216,7 +216,7 @@ export default function KontakPage() {
                     </div>
                     <div className="flex flex-col">
                       <span className="font-bold text-primary group-hover:text-secondary transition-colors">
-                        maraudhatulhidayah
+                        @ma_raudlatulhidayah
                       </span>
                       <span className="text-[11px] text-on-surface-variant">Instagram Resmi</span>
                     </div>
@@ -224,7 +224,7 @@ export default function KontakPage() {
 
                   {/* TikTok */}
                   <a
-                    href="https://tiktok.com/@maraudhatulhidayah"
+                    href="https://www.tiktok.com/@ma_raudlatulhidayah"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 p-2 rounded-lg hover:bg-surface-container transition-colors group"
@@ -236,7 +236,7 @@ export default function KontakPage() {
                     </div>
                     <div className="flex flex-col">
                       <span className="font-bold text-primary group-hover:text-secondary transition-colors">
-                        MAS Raudhatul Hidayah
+                        @ma_raudlatulhidayah
                       </span>
                       <span className="text-[11px] text-on-surface-variant">TikTok Kreatif Santri</span>
                     </div>
