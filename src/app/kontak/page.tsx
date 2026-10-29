@@ -173,27 +173,6 @@ export default function KontakPage() {
                     <span>Sabtu: <strong className="text-slate-900">{profileInfo.hoursSaturday}</strong></span>
                   </div>
                 </div>
-
-                <div className="flex items-center gap-3 text-[13px]">
-                  <span className="text-slate-400 font-medium text-[12px]">Media Sosial:</span>
-                  <a
-                    href="https://www.instagram.com/ma_raudlatulhidayah/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-semibold text-slate-700 hover:text-pink-600 transition-colors"
-                  >
-                    Instagram
-                  </a>
-                  <span className="text-slate-300">•</span>
-                  <a
-                    href="https://www.tiktok.com/@ma_raudlatulhidayah"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-semibold text-slate-700 hover:text-slate-950 transition-colors"
-                  >
-                    TikTok
-                  </a>
-                </div>
               </div>
             </div>
 
