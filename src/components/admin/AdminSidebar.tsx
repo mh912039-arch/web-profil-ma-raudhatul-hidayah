@@ -164,7 +164,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                   ? 'Portal Santri / Siswa'
                   : userRole === 'guru'
                   ? 'Portal Dewan Guru'
-                  : 'Portal Akademik Resmi'}
+                  : 'PORTAL ADMIN AKADEMIK'}
               </span>
             </div>
           </Link>
