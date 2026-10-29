@@ -116,7 +116,7 @@ export function PpdbSection({ onOpenRegister }: PpdbSectionProps) {
           <div className="lg:col-span-5 flex justify-center">
             <div
               onClick={() => setIsPosterModalOpen(true)}
-              className="relative w-full max-w-md sm:max-w-lg aspect-[765/1024] rounded-3xl overflow-hidden shadow-[0_25px_60px_rgba(15,23,42,0.18)] border-2 border-amber-500/80 group bg-slate-50 cursor-pointer"
+              className="relative w-full max-w-md sm:max-w-lg aspect-[765/1024] rounded-3xl overflow-hidden shadow-[0_25px_60px_rgba(15,23,42,0.18)] border border-slate-200/90 group bg-slate-50 cursor-pointer"
               title="Klik untuk melihat poster ukuran penuh"
             >
               {/* Background Official SPMB Poster */}
@@ -187,7 +187,7 @@ export function PpdbSection({ onOpenRegister }: PpdbSectionProps) {
                     window.dispatchEvent(new CustomEvent('open-ppdb-registration'));
                   }
                 }}
-                className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-[#1e3a8a] hover:bg-[#172554] text-white font-sans text-[13.5px] font-bold uppercase tracking-wider transition-all duration-200 shadow-md hover:shadow-lg active:scale-[0.98] border-b-2 border-amber-400"
+                className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-[#1e3a8a] hover:bg-[#172554] text-white font-sans text-[13.5px] font-bold uppercase tracking-wider transition-all duration-200 shadow-md hover:shadow-lg active:scale-[0.98]"
               >
                 <span>Daftar PPDB Online Sekarang</span>
                 <ArrowRight className="w-4 h-4 text-amber-300" />

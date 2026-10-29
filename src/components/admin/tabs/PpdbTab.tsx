@@ -602,7 +602,7 @@ export const PpdbTab: React.FC<PpdbTabProps> = ({
             <div className="lg:col-span-5 flex justify-center">
               <div
                 onClick={() => setShowPosterZoom(true)}
-                className="relative w-full max-w-sm aspect-[765/1024] rounded-3xl overflow-hidden shadow-xl border-2 border-amber-500/80 bg-slate-50 cursor-pointer group"
+                className="relative w-full max-w-sm aspect-[765/1024] rounded-3xl overflow-hidden shadow-xl border border-slate-200/90 bg-slate-50 cursor-pointer group"
                 title="Klik untuk melihat poster penuh"
               >
                 <Image
