@@ -1,6 +1,69 @@
 [
   {
     "order_no": 1,
+    "code": "4",
+    "name": "ANI SUHARTINI, S.Pd.",
+    "nip": "19800422 200604 2 011",
+    "certification_year": "2016",
+    "status": "Guru",
+    "education": "S1",
+    "subject_name": "Matematika",
+    "class_level": "Peminatan MIPA",
+    "gender": "P",
+    "religion": "Islam",
+    "rank_group": "Penata Tk. I - III/d",
+    "birth_date": "1980-04-22",
+    "position": "Guru Mata Pelajaran",
+    "jenjang": "sma",
+    "category_label": "MIPA",
+    "image_url": "/teachers/ani-suhartini.jpg",
+    "is_active": true,
+    "id": "teach-ani-4"
+  },
+  {
+    "order_no": 2,
+    "code": "5",
+    "name": "RINA KRISTIA AFRIAR, S.Pd.",
+    "nip": "19851103 201001 2 018",
+    "certification_year": "2019",
+    "status": "Guru",
+    "education": "S1",
+    "subject_name": "Fisika",
+    "class_level": "Peminatan MIPA",
+    "gender": "P",
+    "religion": "Islam",
+    "rank_group": "Penata Muda Tk. I - III/b",
+    "birth_date": "1985-11-03",
+    "position": "Guru Mata Pelajaran",
+    "jenjang": "sma",
+    "category_label": "MIPA",
+    "image_url": "/teachers/rina-kristia.jpg",
+    "is_active": true,
+    "id": "teach-rina-5"
+  },
+  {
+    "order_no": 3,
+    "code": "6",
+    "name": "RIAWATI, M.Pd.",
+    "nip": "19830914 200902 2 007",
+    "certification_year": "2017",
+    "status": "Guru",
+    "education": "S2",
+    "subject_name": "Biologi",
+    "class_level": "Peminatan MIPA",
+    "gender": "P",
+    "religion": "Islam",
+    "rank_group": "Penata Tk. I - III/d",
+    "birth_date": "1983-09-14",
+    "position": "Guru Mata Pelajaran",
+    "jenjang": "sma",
+    "category_label": "MIPA",
+    "image_url": "/teachers/riawati.jpg",
+    "is_active": true,
+    "id": "teach-riawati-6"
+  },
+  {
+    "order_no": 4,
     "code": "1",
     "name": "H. WAWAN HERMAWAN, S.Pd., M.Pd.",
     "nip": "19700331 200501 1 00",
@@ -21,7 +84,7 @@
     "id": "teach-wawan-1"
   },
   {
-    "order_no": 2,
+    "order_no": 5,
     "code": "2",
     "name": "YAYA SUNARYA, S.S., M.Si.",
     "nip": "19680512 199403 1 002",
@@ -42,7 +105,7 @@
     "id": "teach-yaya-2"
   },
   {
-    "order_no": 3,
+    "order_no": 6,
     "code": "3",
     "name": "KIKI CAHYATI, S.Pd.",
     "nip": "19820718 200801 2 005",
@@ -63,49 +126,7 @@
     "id": "teach-kiki-3"
   },
   {
-    "order_no": 4,
-    "code": "4",
-    "name": "ANI SUHARTINI, S.Pd.",
-    "nip": "19800422 200604 2 011",
-    "certification_year": "2016",
-    "status": "Guru",
-    "education": "S1",
-    "subject_name": "Biologi",
-    "class_level": "Peminatan MIPA",
-    "gender": "P",
-    "religion": "Islam",
-    "rank_group": "Penata Tk. I - III/d",
-    "birth_date": "1980-04-22",
-    "position": "Guru Mata Pelajaran",
-    "jenjang": "sma",
-    "category_label": "MIPA",
-    "image_url": "/teachers/ani-suhartini.jpg",
-    "is_active": true,
-    "id": "teach-ani-4"
-  },
-  {
-    "order_no": 5,
-    "code": "5",
-    "name": "RINA KRISTIA AFRIANI, S.Pd.",
-    "nip": "19851103 201001 2 018",
-    "certification_year": "2019",
-    "status": "Guru",
-    "education": "S1",
-    "subject_name": "Fisika",
-    "class_level": "Peminatan MIPA",
-    "gender": "P",
-    "religion": "Islam",
-    "rank_group": "Penata Muda Tk. I - III/b",
-    "birth_date": "1985-11-03",
-    "position": "Guru Mata Pelajaran",
-    "jenjang": "sma",
-    "category_label": "MIPA",
-    "image_url": "/teachers/rina-kristia.jpg",
-    "is_active": true,
-    "id": "teach-rina-5"
-  },
-  {
-    "order_no": 6,
+    "order_no": 7,
     "code": "1",
     "name": "TAJUDIN, S.Pd.I",
     "subject_name": "Pendidikan Agama Islam & Budi Pekerti",
@@ -126,7 +147,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 7,
+    "order_no": 8,
     "code": "2",
     "name": "KUSTYANINGSIH, S.Pd",
     "subject_name": "Bahasa Indonesia",
@@ -147,7 +168,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 8,
+    "order_no": 9,
     "code": "3",
     "name": "MADROSYID, S.Pd",
     "subject_name": "Matematika Berhitung Ceria",
@@ -168,7 +189,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 9,
+    "order_no": 10,
     "code": "4",
     "name": "Drs. MULYADI",
     "subject_name": "Pendidikan Pancasila (PPKn SD)",
@@ -189,7 +210,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 10,
+    "order_no": 11,
     "code": "5",
     "name": "SARNAH, S.Pd.I",
     "subject_name": "Ilmu Pengetahuan Alam & Sosial (IPAS)",
@@ -210,7 +231,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 11,
+    "order_no": 12,
     "code": "6",
     "name": "SITI KHAERUNNISA, S.Pd.I",
     "subject_name": "Bahasa Inggris Dasar (Fun English)",
@@ -231,7 +252,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 12,
+    "order_no": 13,
     "code": "7",
     "name": "TISKA PUSPITA DEWI, S.Pd.I",
     "subject_name": "Seni Rupa & Keterampilan Prakarya",
@@ -252,7 +273,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 13,
+    "order_no": 14,
     "code": "8",
     "name": "AHMAD NURUL KAHFI, SE",
     "subject_name": "PJOK (Pendidikan Jasmani & Olahraga)",
@@ -273,7 +294,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 14,
+    "order_no": 15,
     "code": "9",
     "name": "JAKARIA, S.Pd.I",
     "subject_name": "Mulok (BTQ & Hafalan Juz 30)",
@@ -294,7 +315,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 15,
+    "order_no": 16,
     "code": "10",
     "name": "TAJUDIN, S.Pd.I",
     "subject_name": "Al-Qur'an Hadits",
@@ -315,7 +336,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 16,
+    "order_no": 17,
     "code": "11",
     "name": "JAKARIA, S.Pd.I",
     "subject_name": "Aqidah Akhlak",
@@ -336,7 +357,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 17,
+    "order_no": 18,
     "code": "12",
     "name": "TAJUDIN, S.Pd.I",
     "subject_name": "Fiqih Ibadah & Muamalah",
@@ -357,7 +378,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 18,
+    "order_no": 19,
     "code": "13",
     "name": "YAHYA HIDAYATULLOH, S.Pd.I",
     "subject_name": "Sejarah Kebudayaan Islam (SKI)",
@@ -378,7 +399,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 19,
+    "order_no": 20,
     "code": "14",
     "name": "SARNAH, S.Pd.I",
     "subject_name": "SEJARAH",
@@ -401,7 +422,7 @@
     "position": "Dewan Guru"
   },
   {
-    "order_no": 20,
+    "order_no": 21,
     "code": "15",
     "name": "Drs. MULYADI",
     "subject_name": "Pendidikan Pancasila (PPKn SMP)",
@@ -422,7 +443,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 21,
+    "order_no": 22,
     "code": "16",
     "name": "KUSTYANINGSIH, S.Pd",
     "subject_name": "Bahasa Indonesia",
@@ -443,7 +464,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 22,
+    "order_no": 23,
     "code": "17",
     "name": "MADROSYID, S.Pd",
     "subject_name": "Matematika",
@@ -464,7 +485,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 23,
+    "order_no": 24,
     "code": "18",
     "name": "SARNAH, S.Pd.I",
     "subject_name": "Ilmu Pengetahuan Alam (IPA Terpadu)",
@@ -485,7 +506,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 24,
+    "order_no": 25,
     "code": "19",
     "name": "AHMAD NURUL KAHFI, SE",
     "subject_name": "Ilmu Pengetahuan Sosial (IPS Terpadu)",
@@ -506,7 +527,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 25,
+    "order_no": 26,
     "code": "20",
     "name": "SITI KHAERUNNISA, S.Pd.I",
     "subject_name": "Bahasa Inggris",
@@ -527,7 +548,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 26,
+    "order_no": 27,
     "code": "21",
     "name": "MADROSYID, S.Pd",
     "subject_name": "Informatika & TIK",
@@ -548,7 +569,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 27,
+    "order_no": 28,
     "code": "22",
     "name": "AHMAD NURUL KAHFI, SE",
     "subject_name": "Penjasorkes (PJOK)",
@@ -569,7 +590,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 28,
+    "order_no": 29,
     "code": "23",
     "name": "TISKA PUSPITA DEWI, S.Pd.I",
     "subject_name": "Seni Budaya & Prakarya",
@@ -590,7 +611,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 29,
+    "order_no": 30,
     "code": "24",
     "name": "TISKA PUSPITA DEWI, S.Pd.I",
     "subject_name": "Mulok (BTQ & Tahfidz Al-Qur'an)",
@@ -611,7 +632,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 30,
+    "order_no": 31,
     "code": "25",
     "name": "TAJUDIN, S.Pd.I",
     "subject_name": "QUR'AN-HADITS",
@@ -632,7 +653,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 31,
+    "order_no": 32,
     "code": "26",
     "name": "JAKARIA, S.Pd.I",
     "subject_name": "AQIDAH-AKHLAK",
@@ -653,7 +674,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 32,
+    "order_no": 33,
     "code": "27",
     "name": "TAJUDIN, S.Pd.I",
     "subject_name": "FIQIH KLS 11",
@@ -674,7 +695,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 33,
+    "order_no": 34,
     "code": "28",
     "name": "JAKARIA, S.Pd.I",
     "subject_name": "FIQIH KLS 10 & 12",
@@ -695,7 +716,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 34,
+    "order_no": 35,
     "code": "29",
     "name": "YAHYA HIDAYATULLOH, S.Pd.I",
     "subject_name": "SKI",
@@ -716,7 +737,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 35,
+    "order_no": 36,
     "code": "30",
     "name": "SITI KHAERUNNISA, S.Pd.I",
     "subject_name": "BHS. ARAB",
@@ -737,7 +758,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 36,
+    "order_no": 37,
     "code": "31",
     "name": "Drs. MULYADI",
     "subject_name": "PEND. PANCASILA",
@@ -758,7 +779,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 37,
+    "order_no": 38,
     "code": "32",
     "name": "KUSTYANINGSIH, S.Pd",
     "subject_name": "B. INDONESIA",
@@ -779,7 +800,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 38,
+    "order_no": 39,
     "code": "33",
     "name": "MADROSYID, S.Pd",
     "subject_name": "MATEMATIKA",
@@ -800,7 +821,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 39,
+    "order_no": 40,
     "code": "34",
     "name": "SARNAH, S.Pd.I",
     "subject_name": "FISIKA",
@@ -821,7 +842,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 40,
+    "order_no": 41,
     "code": "35",
     "name": "SARNAH, S.Pd.I",
     "subject_name": "BIOLOGI",
@@ -842,7 +863,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 41,
+    "order_no": 42,
     "code": "36",
     "name": "AHMAD NURUL KAHFI, SE",
     "subject_name": "SEJARAH KLS 10&11",
@@ -863,7 +884,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 42,
+    "order_no": 43,
     "code": "37",
     "name": "AHMAD NURUL KAHFI, SE",
     "subject_name": "EKONOMI",
@@ -884,7 +905,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 43,
+    "order_no": 44,
     "code": "38",
     "name": "SARNAH, S.Pd.I",
     "subject_name": "SEJARAH KLS 12",
@@ -905,7 +926,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 44,
+    "order_no": 45,
     "code": "39",
     "name": "YAHYA HIDAYATULLOH, S.Pd.I",
     "subject_name": "GEOGRAFI",
@@ -926,7 +947,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 45,
+    "order_no": 46,
     "code": "40",
     "name": "SITI KHAERUNNISA, S.Pd.I",
     "subject_name": "BHS. INGGRIS",
@@ -947,7 +968,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 46,
+    "order_no": 47,
     "code": "41",
     "name": "AHMAD NURUL KAHFI, SE",
     "subject_name": "PENJASKES",
@@ -968,7 +989,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 47,
+    "order_no": 48,
     "code": "42",
     "name": "LILIS KASTIRI, S.Pd.I",
     "subject_name": "SENI-BUDAYA 11 & 12",
@@ -989,7 +1010,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 48,
+    "order_no": 49,
     "code": "43",
     "name": "TISKA PUSPITA DEWI, S.Pd.I",
     "subject_name": "MULOK (BTQ)",
@@ -1010,7 +1031,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 49,
+    "order_no": 50,
     "code": "44",
     "name": "TISKA PUSPITA DEWI, S.Pd.I",
     "subject_name": "PRAKARYA & WIRAUSAHA",
@@ -1031,7 +1052,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 50,
+    "order_no": 51,
     "code": "45",
     "name": "TISKA PUSPITA DEWI, S.Pd.I",
     "subject_name": "SENI BUDAYA 10",
@@ -1052,7 +1073,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 51,
+    "order_no": 52,
     "code": "46",
     "name": "MADROSYID, S.Pd",
     "subject_name": "TIKOM",
@@ -1073,7 +1094,7 @@
     "position": "Guru Mata Pelajaran"
   },
   {
-    "order_no": 52,
+    "order_no": 53,
     "code": "47",
     "name": "ujang.s.pd",
     "subject_name": "matematika terapan",

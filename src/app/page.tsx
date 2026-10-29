@@ -19,6 +19,7 @@ import { StitchNavbar } from '@/components/layout/StitchNavbar';
 import { StitchFooter } from '@/components/layout/StitchFooter';
 import { PpdbSection } from '@/components/sections/PpdbSection';
 import { NewsCarouselSection } from '@/components/sections/NewsCarouselSection';
+import { TeachersCarouselSection } from '@/components/sections/TeachersCarouselSection';
 import { VisitorMetricsSection } from '@/components/sections/VisitorMetricsSection';
 import { PpdbRegistrationModal } from '@/components/modals/PpdbRegistrationModal';
 
@@ -297,6 +298,11 @@ export default function HomePage() {
             3. SLIDABLE NEWS CAROUSEL SECTION (Articles from API)
         ========================================================= */}
         <NewsCarouselSection />
+
+        {/* =========================================================
+            3.5 TEACHERS CAROUSEL SECTION (Dewan Guru Beranda - Auto Slide 4 Detik)
+        ========================================================= */}
+        <TeachersCarouselSection />
 
         {/* =========================================================
             4. VISITOR METRICS & DISTRIBUTION GRAPH (Live Data Showcase)
