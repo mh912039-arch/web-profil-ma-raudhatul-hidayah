@@ -632,14 +632,16 @@ export const PpdbTab: React.FC<PpdbTabProps> = ({
                 {formData.description}
               </p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 pt-2">
                 {formData.features.map((feature, idx) => (
                   <div
                     key={idx}
-                    className="flex items-start gap-2.5 bg-slate-50 p-2.5 rounded-xl border border-slate-200"
+                    className="flex items-start gap-2.5 py-0.5"
                   >
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span className="text-[13px] font-semibold text-slate-800">
+                    <div className="w-4.5 h-4.5 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0 mt-0.5">
+                      <Check className="w-3 h-3 stroke-[2.8]" />
+                    </div>
+                    <span className="text-[13.5px] font-semibold text-slate-800 leading-snug">
                       {feature}
                     </span>
                   </div>

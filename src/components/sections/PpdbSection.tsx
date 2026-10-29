@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import {
+  Check,
   CheckCircle2,
   ArrowRight,
   PhoneCall,
@@ -156,16 +157,18 @@ export function PpdbSection({ onOpenRegister }: PpdbSectionProps) {
               {data.description}
             </p>
 
-            {/* Bullet Highlights Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2">
+            {/* Bullet Highlights Grid - Transparent Clean List */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 sm:gap-x-8 gap-y-3.5 pt-2">
               {data.features && data.features.length > 0
                 ? data.features.map((feature, idx) => (
                     <div
                       key={idx}
-                      className="flex items-start gap-3 bg-[#f8fafc] p-3 rounded-xl border border-slate-200/80 hover:border-amber-400/60 transition-colors"
+                      className="flex items-start gap-3 py-0.5"
                     >
-                      <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
-                      <span className="font-sans text-[13.5px] font-semibold text-slate-800 leading-snug">
+                      <div className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                        <Check className="w-3.5 h-3.5 stroke-[2.8]" />
+                      </div>
+                      <span className="font-sans text-[14.5px] sm:text-[15px] font-semibold text-slate-800 leading-snug">
                         {feature}
                       </span>
                     </div>
