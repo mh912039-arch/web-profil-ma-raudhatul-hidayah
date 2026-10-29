@@ -17,13 +17,13 @@ export const Footer: React.FC = () => {
               <div className="w-11 h-11 rounded-xl bg-white/10 p-2 border border-white/15 flex items-center justify-center flex-shrink-0">
                 <img
                   src="/school-logo.png"
-                  alt="Logo MAS Raudhatul Hidayah"
+                  alt="Logo MA Raudlatul Hidayah"
                   className="w-full h-full object-contain"
                 />
               </div>
               <div className="flex flex-col">
                 <span className="font-display font-black text-lg text-white tracking-wide">
-                  MAS RAUDHATUL HIDAYAH
+                  MA RAUDLATUL HIDAYAH
                 </span>
                 <span className="text-[11px] text-stone-400 font-medium">
                   Kecamatan Mauk, Kabupaten Tangerang
@@ -170,7 +170,7 @@ export const Footer: React.FC = () => {
         {/* Bottom Bar matching Figma */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-400">
           <p>
-            © {new Date().getFullYear()} MAS Raudhatul Hidayah. Seluruh hak cipta dilindungi undang-undang.
+            © {new Date().getFullYear()} MA Raudlatul Hidayah. Seluruh hak cipta dilindungi undang-undang.
           </p>
           <div className="flex items-center gap-6 text-stone-400">
             <span>Kementerian Agama RI</span>

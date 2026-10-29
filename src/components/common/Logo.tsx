@@ -31,7 +31,7 @@ export const Logo: React.FC<LogoProps> = ({
       >
         <img
           src="/school-logo.png"
-          alt="Logo Resmi MAS Raudhatul Hidayah"
+          alt="Logo Resmi MA Raudlatul Hidayah"
           width={iconPixelSizes[size]}
           height={iconPixelSizes[size]}
           className="object-contain filter drop-shadow-sm hover:scale-105 transition-transform duration-300"
@@ -52,7 +52,7 @@ export const Logo: React.FC<LogoProps> = ({
                 : 'text-lg'
             } ${isLight ? 'text-white' : 'text-madrasah-950'}`}
           >
-            MAS Raudhatul Hidayah
+            MA Raudlatul Hidayah
           </span>
           <span
             className={`text-xs tracking-wider uppercase font-medium mt-1 ${

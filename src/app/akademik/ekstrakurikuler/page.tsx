@@ -53,7 +53,7 @@ export default function EkstrakurikulerPage() {
                   Ekstrakurikuler
                 </h1>
                 <p className="font-sans text-[14.5px] sm:text-[15.5px] text-slate-600 max-w-xl leading-relaxed">
-                  Wadah pembinaan karakter, kepemimpinan regu, kebugaran jasmani, kedisiplinan bela negara, dan kreativitas seni bagi seluruh santri MAS Raudhatul Hidayah.
+                  Wadah pembinaan karakter, kepemimpinan regu, kebugaran jasmani, kedisiplinan bela negara, dan kreativitas seni bagi seluruh santri MA Raudlatul Hidayah.
                 </p>
                 <div className="mt-4">
                   <Link

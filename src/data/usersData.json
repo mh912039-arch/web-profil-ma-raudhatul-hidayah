@@ -2,7 +2,7 @@
   {
     "id": "usr-1",
     "name": "Administrator Madrasah (TU)",
-    "email": "admin@raudhatulhidayah.sch.id",
+    "email": "admin@raudlatulhidayah.sch.id",
     "username": "admin",
     "password": "h256:43825049789a21471c1e47948ddc6472da5cb174554c5b8b3cd1fedb444f913e",
     "role": "admin",
@@ -33,7 +33,7 @@
   {
     "id": "usr-2",
     "name": "A. Khutbi. AR, S.Pd (Kepala Madrasah)",
-    "email": "kepala@raudhatulhidayah.sch.id",
+    "email": "kepala@raudlatulhidayah.sch.id",
     "username": "kepala",
     "password": "h256:43825049789a21471c1e47948ddc6472da5cb174554c5b8b3cd1fedb444f913e",
     "role": "admin",
@@ -61,8 +61,8 @@
   },
   {
     "id": "usr-guru",
-    "name": "Dewan Guru MAS Raudhatul Hidayah",
-    "email": "guru@raudhatulhidayah.sch.id",
+    "name": "Dewan Guru MA Raudlatul Hidayah",
+    "email": "guru@raudlatulhidayah.sch.id",
     "username": "guru",
     "password": "h256:54a09c0719aaf5ee88b9ebb4deb693518c72ea48712a75343c57ac1d22ab293e",
     "role": "guru",
@@ -85,7 +85,7 @@
   {
     "id": "usr-3",
     "name": "TAJUDIN, S.Pd.I",
-    "email": "tajudin@raudhatulhidayah.sch.id",
+    "email": "tajudin@raudlatulhidayah.sch.id",
     "username": "tajudin",
     "password": "h256:54a09c0719aaf5ee88b9ebb4deb693518c72ea48712a75343c57ac1d22ab293e",
     "role": "guru",
@@ -108,7 +108,7 @@
   {
     "id": "usr-4",
     "name": "MADROSYID, S.Pd (Kurikulum & TIK)",
-    "email": "madrosyid@raudhatulhidayah.sch.id",
+    "email": "madrosyid@raudlatulhidayah.sch.id",
     "username": "madrosyid",
     "password": "h256:54a09c0719aaf5ee88b9ebb4deb693518c72ea48712a75343c57ac1d22ab293e",
     "role": "guru",
@@ -130,7 +130,7 @@
   {
     "id": "usr-5",
     "name": "SITI KHAERUNNISA, S.Pd.I",
-    "email": "siti.k@raudhatulhidayah.sch.id",
+    "email": "siti.k@raudlatulhidayah.sch.id",
     "username": "sitikhaerunnisa",
     "password": "h256:54a09c0719aaf5ee88b9ebb4deb693518c72ea48712a75343c57ac1d22ab293e",
     "role": "guru",
@@ -151,7 +151,7 @@
   {
     "id": "usr-6",
     "name": "AHMAD NURUL KAHFI, SE",
-    "email": "ahmad.kahfi@raudhatulhidayah.sch.id",
+    "email": "ahmad.kahfi@raudlatulhidayah.sch.id",
     "username": "ahmadkahfi",
     "password": "h256:54a09c0719aaf5ee88b9ebb4deb693518c72ea48712a75343c57ac1d22ab293e",
     "role": "guru",
@@ -172,8 +172,8 @@
   },
   {
     "id": "usr-7",
-    "name": "Santri & OSIS MAS Raudhatul Hidayah",
-    "email": "siswa@raudhatulhidayah.sch.id",
+    "name": "Santri & OSIS MA Raudlatul Hidayah",
+    "email": "siswa@raudlatulhidayah.sch.id",
     "username": "siswa",
     "password": "h256:71bff7f53c0eb2542b036efedf48edef7766d24fa14bcc78d4b09e4cbf96c130",
     "role": "siswa",
@@ -193,7 +193,7 @@
   {
     "id": "usr-8",
     "name": "H. MUKHLIS, S.Pd (Guru Baru)",
-    "email": "mukhlis@raudhatulhidayah.sch.id",
+    "email": "mukhlis@raudlatulhidayah.sch.id",
     "username": "mukhlis",
     "password": "h256:79aada7ed47e1dec69e482eef452b24ef3627b849f91e42e3ff5213c7efb243f",
     "role": "guru",

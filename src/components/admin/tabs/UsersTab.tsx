@@ -144,7 +144,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
   const copyCredentials = (user: { name?: string; email: string; password?: string; role?: string }) => {
     const isHashed = user.password?.startsWith('h256:');
     const pass = isHashed ? '(Tersimpan aman terenkripsi - atur sandi baru di tombol Atur Sandi jika lupa)' : (user.password || '-');
-    const text = `Kredensial Login Portal MAS Raudhatul Hidayah:\nNama: ${user.name || '-'}\nEmail/ID: ${user.email}\nKata Sandi: ${pass}\nAlamat Portal: https://web-profil-ma-raudhatul-hidayah.vercel.app/masuk`;
+    const text = `Kredensial Login Portal MA Raudlatul Hidayah:\nNama: ${user.name || '-'}\nEmail/ID: ${user.email}\nKata Sandi: ${pass}\nAlamat Portal: https://web-profil-ma-raudlatul-hidayah.vercel.app/masuk`;
     navigator.clipboard.writeText(text);
     showNotification('success', `Kredensial untuk "${user.email}" berhasil disalin.`);
   };
@@ -2025,7 +2025,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                   required
                   value={newUserForm.email}
                   onChange={(e) => setNewUserForm({ ...newUserForm, email: e.target.value })}
-                  placeholder="Contoh: guru@raudhatulhidayah.sch.id"
+                  placeholder="Contoh: guru@raudlatulhidayah.sch.id"
                   className="px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-900 font-mono"
                 />
               </div>

@@ -28,12 +28,12 @@ export interface PpdbData {
 }
 
 const defaultPpdbData: PpdbData = {
-  category: 'MAS RAUDLATUL HIDAYAH',
+  category: 'MA RAUDLATUL HIDAYAH',
   title: 'Membentuk Generasi Berkarakter, Cerdas & Berakhlak Mulia',
   academicYear: '2027/2028',
   badgeText: 'TELAH DIBUKA!',
   description:
-    'MAS Raudhatul Hidayah hadir sebagai kawah candradimuka yang mendampingi setiap murid untuk bertumbuh menjadi generasi yang tangguh, unggul, dan berkarakter islami. Melalui pembelajaran kontekstual berbasis Kurikulum Merdeka yang bermakna serta pembiasaan adab luhur kepesantrenan, santri didorong untuk menemukan potensi, mengembangkan bakat, dan meraih prestasi terbaiknya.',
+    'MA Raudlatul Hidayah hadir sebagai kawah candradimuka yang mendampingi setiap murid untuk bertumbuh menjadi generasi yang tangguh, unggul, dan berkarakter islami. Melalui pembelajaran kontekstual berbasis Kurikulum Merdeka yang bermakna serta pembiasaan adab luhur kepesantrenan, santri didorong untuk menemukan potensi, mengembangkan bakat, dan meraih prestasi terbaiknya.',
   features: [
     'Kurikulum Merdeka Terpadu (Fase E & F)',
     'Pembentukan Karakter & Adab Islami',
@@ -45,7 +45,7 @@ const defaultPpdbData: PpdbData = {
   contactWa: '628176614723',
   contactPhone: '0817-6614-723',
   registrationLink:
-    'https://wa.me/628176614723?text=Halo%20Panitia%20PPDB%20MA%20Raudhatul%20Hidayah,%20saya%20ingin%20mendaftar%20dan%20konsultasi%20PPDB%202027/2028',
+    'https://wa.me/628176614723?text=Halo%20Panitia%20PPDB%20MA%20Raudlatul%20Hidayah,%20saya%20ingin%20mendaftar%20dan%20konsultasi%20PPDB%202027/2028',
   brochureLink: '/kontak',
   posterUrl: 'https://zzgobrlhnnqvspuwugkz.supabase.co/storage/v1/object/public/articles/img-1793069689752-1bguos.jpeg',
   isRegistrationOpen: true,
@@ -122,7 +122,7 @@ export function PpdbSection({ onOpenRegister }: PpdbSectionProps) {
               {/* Background Official SPMB Poster */}
               <Image
                 src={data.posterUrl || '/poster-ppdb.png'}
-                alt="Brosur Poster Resmi SPMB MAS Raudhatul Hidayah"
+                alt="Brosur Poster Resmi SPMB MA Raudlatul Hidayah"
                 fill
                 className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
                 priority
@@ -194,7 +194,7 @@ export function PpdbSection({ onOpenRegister }: PpdbSectionProps) {
               </button>
 
               <a
-                href={`https://wa.me/${data.contactWa}?text=Halo%20Panitia%20PPDB%20MA%20Raudhatul%20Hidayah,%20mohon%20informasi%20syarat%20dan%20alur%20pendaftaran.`}
+                href={`https://wa.me/${data.contactWa}?text=Halo%20Panitia%20PPDB%20MA%20Raudlatul%20Hidayah,%20mohon%20informasi%20syarat%20dan%20alur%20pendaftaran.`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-5 py-3.5 rounded-full bg-white hover:bg-slate-50 text-slate-800 font-sans text-[13.5px] font-semibold border border-slate-300 transition-colors active:scale-[0.98] shadow-2xs"
@@ -229,7 +229,7 @@ export function PpdbSection({ onOpenRegister }: PpdbSectionProps) {
               <div className="flex items-center gap-2">
                 <a
                   href={data.posterUrl || '/poster-ppdb.png'}
-                  download="Poster-PPDB-MA-Raudhatul-Hidayah.png"
+                  download="Poster-PPDB-MA-Raudlatul-Hidayah.png"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white text-xs font-medium transition-colors cursor-pointer"
@@ -253,7 +253,7 @@ export function PpdbSection({ onOpenRegister }: PpdbSectionProps) {
             <div className="relative w-full aspect-[765/1024] max-h-[82vh] rounded-2xl overflow-hidden border-2 border-amber-400/80 shadow-2xl bg-slate-900">
               <Image
                 src={data.posterUrl || '/poster-ppdb.png'}
-                alt="Brosur Poster Resmi SPMB MAS Raudhatul Hidayah"
+                alt="Brosur Poster Resmi SPMB MA Raudlatul Hidayah"
                 fill
                 className="object-contain"
                 priority

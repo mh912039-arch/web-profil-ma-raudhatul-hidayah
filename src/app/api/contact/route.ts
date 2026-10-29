@@ -45,7 +45,7 @@ export async function GET() {
       .select('*')
       .order('created_at', { ascending: false });
 
-    if (!supaErr && supaMessages && supaMessages.length > 0) {
+    if (!supaErr && supaMessages) {
       const supaMapped: ContactMessage[] = supaMessages.map((row: any) => ({
         id: String(row.id),
         name: row.name,
@@ -57,15 +57,19 @@ export async function GET() {
         created_at: row.created_at || new Date().toISOString(),
       }));
 
-      // Local messages take precedence for status updates (e.g. read/replied)
-      const localMap = new Map(localMessages.map((m) => [m.id, m]));
-      const merged: ContactMessage[] = [...localMessages];
-      supaMapped.forEach((sm) => {
-        if (!localMap.has(sm.id)) {
-          merged.push(sm);
-        }
-      });
+      // Index Supabase messages by ID and signature (name + message snippet) to prevent duplicate rows
+      const existingIds = new Set(supaMapped.map((m) => m.id));
+      const existingSigs = new Set(supaMapped.map((m) => `${m.name}|${(m.message || '').slice(0, 50)}`));
 
+      const merged: ContactMessage[] = [...supaMapped];
+      for (const lm of localMessages) {
+        const sig = `${lm.name}|${(lm.message || '').slice(0, 50)}`;
+        if (!existingIds.has(lm.id) && !existingSigs.has(sig)) {
+          merged.push(lm);
+        }
+      }
+
+      merged.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
       return NextResponse.json(merged);
     }
   } catch (supaErr) {
@@ -118,39 +122,50 @@ export async function POST(request: Request) {
     const email = body.email?.trim() || (contactStr.includes('@') ? contactStr : '');
     const phone = body.phone?.trim() || (!contactStr.includes('@') ? contactStr : '');
 
+    let assignedId = `msg-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+
+    // 1. Primary: Insert into Supabase contact_messages
+    try {
+      const { data: supaInserted, error: supaErr } = await supabase
+        .from('contact_messages')
+        .insert({
+          name: body.name.trim(),
+          email: email || null,
+          phone: phone || null,
+          subject: body.subject?.trim() || 'Pertanyaan Pengunjung',
+          message: body.message.trim(),
+          status: 'unread',
+        })
+        .select()
+        .maybeSingle();
+
+      if (supaErr) {
+        console.warn('Supabase contact_messages insert notice:', supaErr);
+      } else if (supaInserted?.id) {
+        assignedId = String(supaInserted.id);
+      }
+    } catch (supaErr) {
+      console.warn('Supabase contact_messages insert error:', supaErr);
+    }
+
     const newMessage: ContactMessage = {
-      id: `msg-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+      id: assignedId,
       name: body.name.trim(),
       email: email || undefined,
       phone: phone || undefined,
-      subject: body.subject?.trim() || 'Pertanyaan Umum Pengunjung',
+      subject: body.subject?.trim() || 'Pertanyaan Pengunjung',
       message: body.message.trim(),
       status: 'unread',
       created_at: new Date().toISOString(),
     };
 
-    // 1. Save persistently to local messagesData.json
+    // 2. Persistently update local messagesData.json as reliable backup
     let messages: ContactMessage[] = [];
     try {
       const fileContent = await fs.readFile(dataFilePath, 'utf-8');
       messages = JSON.parse(fileContent);
     } catch (err) {}
 
-    // 1. Primary: Insert into Supabase
-    try {
-      await supabase.from('contact_messages').insert({
-        name: newMessage.name,
-        email: newMessage.email || null,
-        phone: newMessage.phone || null,
-        subject: newMessage.subject,
-        message: newMessage.message,
-        status: 'unread',
-      });
-    } catch (supaErr) {
-      console.warn('Supabase contact_messages insert notice:', supaErr);
-    }
-
-    // 2. Best-effort local file write
     try {
       messages.unshift(newMessage);
       await fs.writeFile(dataFilePath, JSON.stringify(messages, null, 2), 'utf-8');
@@ -187,7 +202,12 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ success: false, message: 'ID diperlukan' }, { status: 400 });
     }
 
-    // 1. Update in local file
+    // 1. Update in Supabase
+    try {
+      await supabase.from('contact_messages').update({ status }).eq('id', id);
+    } catch (err) {}
+
+    // 2. Update in local file
     try {
       const fileContent = await fs.readFile(dataFilePath, 'utf-8');
       const messages: ContactMessage[] = JSON.parse(fileContent);
@@ -196,11 +216,6 @@ export async function PATCH(request: Request) {
         messages[idx].status = status || 'read';
         await fs.writeFile(dataFilePath, JSON.stringify(messages, null, 2), 'utf-8');
       }
-    } catch (err) {}
-
-    // 2. Update in Supabase
-    try {
-      await supabase.from('contact_messages').update({ status }).eq('id', id);
     } catch (err) {}
 
     return NextResponse.json({ success: true });
@@ -224,17 +239,17 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ success: false, message: 'ID diperlukan' }, { status: 400 });
     }
 
-    // 1. Delete in local file
+    // 1. Delete in Supabase
+    try {
+      await supabase.from('contact_messages').delete().eq('id', id);
+    } catch (err) {}
+
+    // 2. Delete in local file
     try {
       const fileContent = await fs.readFile(dataFilePath, 'utf-8');
       let messages: ContactMessage[] = JSON.parse(fileContent);
       messages = messages.filter((m) => m.id !== id);
       await fs.writeFile(dataFilePath, JSON.stringify(messages, null, 2), 'utf-8');
-    } catch (err) {}
-
-    // 2. Delete in Supabase
-    try {
-      await supabase.from('contact_messages').delete().eq('id', id);
     } catch (err) {}
 
     return NextResponse.json({ success: true });

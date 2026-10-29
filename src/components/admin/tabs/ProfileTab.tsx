@@ -18,6 +18,7 @@ import {
   Upload,
   Layers,
   Compass,
+  Navigation,
 } from 'lucide-react';
 import { uploadImageWithAutoCompression } from '@/lib/imageCompression';
 
@@ -56,6 +57,12 @@ export interface FullProfileData {
     hoursWeekdays: string;
     hoursSaturday: string;
     hoursSunday: string;
+    contactTitle?: string;
+    contactSubtitle?: string;
+    mapsEmbedUrl?: string;
+    navGuideAccess?: string;
+    navGuideBenchmark?: string;
+    navGuideParking?: string;
   };
   visionMission: {
     vision: string;
@@ -75,7 +82,7 @@ interface ProfileTabProps {
   data: FullProfileData;
   onSaveFullProfile: (data: FullProfileData) => Promise<void>;
   isSaving: boolean;
-  activeTab?: 'profile' | 'facilities';
+  activeTab?: 'profile' | 'facilities' | 'contact';
 }
 
 export const ProfileTab: React.FC<ProfileTabProps> = ({
@@ -86,8 +93,8 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
 }) => {
   const [formData, setFormData] = useState<FullProfileData>({
     profile: {
-      name: data.profile?.name || 'MAS Raudhatul Hidayah',
-      formalName: data.profile?.formalName || 'Madrasah Aliyah Swasta Raudhatul Hidayah',
+      name: data.profile?.name || 'MA Raudlatul Hidayah',
+      formalName: data.profile?.formalName || 'Madrasah Aliyah Raudlatul Hidayah',
       level: data.profile?.level || 'Madrasah Aliyah (MA)',
       npsn: data.profile?.npsn || '6994888',
       nsm: data.profile?.nsm || '131236030045',
@@ -100,10 +107,16 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
       postalCode: data.profile?.postalCode || '15330',
       phone: data.profile?.phone || '0817-6614-723',
       whatsapp: data.profile?.whatsapp || '628176614723',
-      email: data.profile?.email || 'info@maraudhatulhidayah.sch.id',
-      hoursWeekdays: data.profile?.hoursWeekdays || '07.00 – 15.30 WIB',
-      hoursSaturday: data.profile?.hoursSaturday || '07.00 – 12.30 WIB',
+      email: data.profile?.email || 'info@maraudlatulhidayah.sch.id',
+      hoursWeekdays: data.profile?.hoursWeekdays || '07.00 – 16.00 WIB',
+      hoursSaturday: data.profile?.hoursSaturday || '07.00 – 12.00 WIB',
       hoursSunday: data.profile?.hoursSunday || 'Tutup Layanan Fisik',
+      contactTitle: data.profile?.contactTitle || 'Hubungi Layanan Kami',
+      contactSubtitle: data.profile?.contactSubtitle || 'Mempunyai pertanyaan seputar administrasi, sistem PPDB, atau kemitraan akademik? Tinggalkan pesan Anda.',
+      mapsEmbedUrl: data.profile?.mapsEmbedUrl || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3967.6256247920387!2d106.53266297592476!3d-6.022493393963283!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6a077ff9292557%3A0xae9bc40d9fedd490!2sMA%20RAUDLATUL%20HIDAYAH!5e0!3m2!1sid!2sid!4v1728300000000!5m2!1sid!2sid',
+      navGuideAccess: data.profile?.navGuideAccess || 'Melalui Jl. Raya Tanjung Kait, Desa Tanjung Anom, Kec. Mauk.',
+      navGuideBenchmark: data.profile?.navGuideBenchmark || 'Berada di kawasan Tanjung Anom Mauk, dekat dengan fasilitas publik desa dan kantor pemerintahan.',
+      navGuideParking: data.profile?.navGuideParking || 'Halaman sekolah menyediakan area parkir yang tertib untuk motor maupun mobil wali murid.',
     },
     visionMission: {
       vision: data.visionMission?.vision || 'Terwujudnya Peserta Didik Madrasah yang Berakhlak Mulia, Berprestasi, Mandiri, dan Berwawasan Lingkungan',
@@ -135,10 +148,10 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
           name: data.profile.name || 'MAS Raudhatul Hidayah',
           formalName: data.profile.formalName || 'Madrasah Aliyah Swasta Raudhatul Hidayah',
           level: data.profile.level || 'Madrasah Aliyah (MA)',
-          npsn: data.profile.npsn || '6994888',
-          nsm: data.profile.nsm || '131236030045',
+          npsn: data.profile.npsn || '69941777',
+          nsm: data.profile.nsm || '131236030069',
           accreditation: data.profile.accreditation || 'C',
-          foundedYear: data.profile.foundedYear || '2012',
+          foundedYear: data.profile.foundedYear || '2015',
           address: data.profile.address || 'Jl. Raya Tanjung Kait No. 33, RT 02 / RW 01',
           district: data.profile.district || 'Mauk',
           regency: data.profile.regency || 'Kabupaten Tangerang',
@@ -147,9 +160,15 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
           phone: data.profile.phone || '0817-6614-723',
           whatsapp: data.profile.whatsapp || '628176614723',
           email: data.profile.email || 'info@maraudhatulhidayah.sch.id',
-          hoursWeekdays: data.profile.hoursWeekdays || '07.00 – 15.30 WIB',
-          hoursSaturday: data.profile.hoursSaturday || '07.00 – 12.30 WIB',
+          hoursWeekdays: data.profile.hoursWeekdays || '07.00 – 16.00 WIB',
+          hoursSaturday: data.profile.hoursSaturday || '07.00 – 12.00 WIB',
           hoursSunday: data.profile.hoursSunday || 'Tutup Layanan Fisik',
+          contactTitle: data.profile.contactTitle || 'Hubungi Layanan Kami',
+          contactSubtitle: data.profile.contactSubtitle || 'Mempunyai pertanyaan seputar administrasi, sistem PPDB, atau kemitraan akademik? Tinggalkan pesan Anda.',
+          mapsEmbedUrl: data.profile.mapsEmbedUrl || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3967.6256247920387!2d106.53266297592476!3d-6.022493393963283!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6a077ff9292557%3A0xae9bc40d9fedd490!2sMA%20RAUDLATUL%20HIDAYAH!5e0!3m2!1sid!2sid!4v1728300000000!5m2!1sid!2sid',
+          navGuideAccess: data.profile.navGuideAccess || 'Melalui Jl. Raya Tanjung Kait, Desa Tanjung Anom, Kec. Mauk.',
+          navGuideBenchmark: data.profile.navGuideBenchmark || 'Berada di kawasan Tanjung Anom Mauk, dekat dengan fasilitas publik desa dan kantor pemerintahan.',
+          navGuideParking: data.profile.navGuideParking || 'Halaman sekolah menyediakan area parkir yang tertib untuk motor maupun mobil wali murid.',
         },
         visionMission: {
           vision: data.visionMission?.vision || '',
@@ -167,14 +186,17 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
     }
   }, [data]);
 
-  const isFacilities = activeTab === 'facilities';
-  const [activeSubTab, setActiveSubTab] = useState<'legal' | 'visi' | 'sejarah' | 'fasilitas'>(
-    isFacilities ? 'fasilitas' : 'legal'
+  const [activeSubTab, setActiveSubTab] = useState<'kontak' | 'legal' | 'visi' | 'sejarah' | 'fasilitas'>(
+    activeTab === 'facilities' ? 'fasilitas' : activeTab === 'contact' ? 'kontak' : 'legal'
   );
 
   useEffect(() => {
     if (activeTab === 'facilities') {
       setActiveSubTab('fasilitas');
+    } else if (activeTab === 'contact') {
+      setActiveSubTab('kontak');
+    } else if (activeTab === 'profile') {
+      setActiveSubTab('legal');
     }
   }, [activeTab]);
   const [uploadingFacilityId, setUploadingFacilityId] = useState<string | null>(null);

@@ -231,7 +231,7 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
         <div className="w-20 h-20 bg-white p-2.5 rounded-2xl border border-slate-200/90 shadow-xs flex items-center justify-center mx-auto mb-3.5 transition-transform hover:scale-105 duration-200">
           <Image
             src="/school-logo.png"
-            alt="Logo MAS Raudhatul Hidayah"
+            alt="Logo MA Raudlatul Hidayah"
             width={64}
             height={64}
             className="w-auto h-auto max-h-16 object-contain"
@@ -240,7 +240,7 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
         </div>
 
         <h1 className="font-serif text-[22px] sm:text-[24px] font-bold text-slate-900 tracking-tight uppercase leading-snug">
-          MAS RAUDHATUL HIDAYAH
+          MA RAUDLATUL HIDAYAH
         </h1>
       </div>
 
@@ -581,7 +581,7 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
                     required
                     value={regEmail}
                     onChange={(e) => setRegEmail(e.target.value)}
-                    placeholder="nama@raudhatulhidayah.sch.id atau email aktif"
+                    placeholder="nama@raudlatulhidayah.sch.id atau email aktif"
                     className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white text-slate-900 text-xs placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-800/20 focus:border-blue-800 transition-all font-mono"
                   />
                 </div>

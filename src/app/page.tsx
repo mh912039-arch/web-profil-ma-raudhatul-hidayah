@@ -23,9 +23,9 @@ import { VisitorMetricsSection } from '@/components/sections/VisitorMetricsSecti
 import { PpdbRegistrationModal } from '@/components/modals/PpdbRegistrationModal';
 
 const defaultHomeConfig = {
-  heroTitle: 'MAS Raudhatul Hidayah',
+  heroTitle: 'MA Raudlatul Hidayah',
   heroTagline: 'Membentuk Generasi Berkarakter, Beradab, dan Unggul Bernalar',
-  heroBadge: 'Portal Resmi MAS Raudhatul Hidayah',
+  heroBadge: 'Portal Resmi MA Raudlatul Hidayah',
   heroBackground: '/foto-semua.jpeg',
   heroBackgrounds: [
     '/foto-semua.jpeg',
@@ -33,7 +33,7 @@ const defaultHomeConfig = {
     '/paskibra.jpeg',
   ],
   schoolLogo: '/school-logo.png',
-  marqueeText1: 'PPDB (Penerimaan Peserta Didik Baru) MAS Raudhatul Hidayah Tahun Ajaran 2027/2028 Telah Dibuka!',
+  marqueeText1: 'PPDB (Penerimaan Peserta Didik Baru) MA Raudlatul Hidayah Tahun Ajaran 2027/2028 Telah Dibuka!',
   marqueeCta1: 'DAFTAR SEKARANG!',
   marqueeLink1: '/kontak',
   marqueeText2: 'Kuota Pendaftaran Terbatas • Pembinaan Berbasis Karakter & Kurikulum Merdeka • Mauk Tangerang',
@@ -43,9 +43,9 @@ const defaultHomeConfig = {
   sambutanSubtitle: 'Membina Integritas & Mutu Akademik',
   sambutanBadge: 'Pimpinan Satuan Pendidikan',
   headmasterName: 'A. Khutbi. AR, S.Pd',
-  headmasterRole: 'Kepala Madrasah MAS Raudhatul Hidayah',
+  headmasterRole: 'Kepala Madrasah MA Raudlatul Hidayah',
   headmasterPhoto: '/kepala-madrasah.jpg',
-  sambutanText1: 'Bismillah walhamdulillah. Assalamu’alaikum Warahmatullahi Wabarakatuh. Selamat datang di portal resmi MAS Raudhatul Hidayah jenjang Madrasah Aliyah (MA). Kami meyakini bahwa pendidikan sejati tidak hanya mengasah kecerdasan kognitif, tetapi juga merawat adab, keteguhan akidah, serta budi pekerti luhur sejak usia transisi remaja.',
+  sambutanText1: 'Bismillah walhamdulillah. Assalamu’alaikum Warahmatullahi Wabarakatuh. Selamat datang di portal resmi MA Raudlatul Hidayah jenjang Madrasah Aliyah (MA). Kami meyakini bahwa pendidikan sejati tidak hanya mengasah kecerdasan kognitif, tetapi juga merawat adab, keteguhan akidah, serta budi pekerti luhur sejak usia transisi remaja.',
   sambutanText2: 'Melalui integrasi Kurikulum Merdeka yang kontekstual dan kultur pembiasaan Islami, kami berikhtiar membimbing seluruh santri agar aktif bernalar, mencintai ilmu pengetahuan, dan terlatih hidup berdisiplin dalam lingkungan yang aman, ramah anak, serta penuh kehangatan persaudaraan.',
   ctaText: 'Pelajari Profil & Budaya Sekolah',
   ctaLink: '/profil/visi-misi',

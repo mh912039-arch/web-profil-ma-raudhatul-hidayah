@@ -313,7 +313,7 @@ export const AchievementsTab: React.FC<AchievementsTabProps> = ({
                     type="text"
                     value={formData.sub}
                     onChange={(e) => setFormData({ ...formData, sub: e.target.value })}
-                    placeholder="Contoh: Santri Putra & Putri MAS Raudhatul Hidayah"
+                    placeholder="Contoh: Santri Putra & Putri MA Raudlatul Hidayah"
                     className="px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[13px]"
                   />
                 </div>
@@ -371,7 +371,7 @@ export const AchievementsTab: React.FC<AchievementsTabProps> = ({
                   type="text"
                   value={formData.slug}
                   onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                  placeholder="kontingen-pramuka-ma-raudhatul-hidayah-sapu-bersih-juara..."
+                  placeholder="kontingen-pramuka-ma-raudlatul-hidayah-sapu-bersih-juara..."
                   className="px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[12.5px] font-mono"
                 />
                 <span className="text-[11px] text-slate-500">

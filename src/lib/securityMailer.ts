@@ -43,7 +43,7 @@ function buildSecurityAlertHtml(
     <!-- Header -->
     <div style="background-color: #1e3a8a; padding: 28px 32px; border-bottom: 3px solid #172554;">
       <p style="margin: 0 0 6px 0; color: #93c5fd; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;">
-        Sistem Keamanan Portal &bull; MAS Raudhatul Hidayah
+        Sistem Keamanan Portal &bull; MA Raudlatul Hidayah
       </p>
       <h1 style="margin: 0; color: #ffffff; font-size: 20px; font-weight: 800; letter-spacing: -0.3px;">
         Peringatan Percobaan Masuk Tidak Sah
@@ -127,8 +127,8 @@ function buildSecurityAlertHtml(
 
       <!-- Admin Portal CTA Link -->
       <div style="text-align: center;">
-        <a href="https://web-profil-ma-raudhatul-hidayah.vercel.app/admin" style="font-size: 12px; color: #1e3a8a; text-decoration: underline; font-weight: 600;">
-          Kunjungi Panel Admin CMS MAS Raudhatul Hidayah
+        <a href="https://web-profil-ma-raudlatul-hidayah.vercel.app/admin" style="font-size: 12px; color: #1e3a8a; text-decoration: underline; font-weight: 600;">
+          Kunjungi Panel Admin CMS MA Raudlatul Hidayah
         </a>
       </div>
     </div>
@@ -136,7 +136,7 @@ function buildSecurityAlertHtml(
     <!-- Footer -->
     <div style="background-color: #f8fafc; padding: 20px 32px; border-top: 1px solid #e2e8f0; text-align: center; font-size: 11px; color: #64748b;">
       <p style="margin: 0 0 4px 0;">
-        Pemberitahuan Otomatis dari Security Daemon &bull; MAS Raudhatul Hidayah Mauk, Kab. Tangerang
+        Pemberitahuan Otomatis dari Security Daemon &bull; MA Raudlatul Hidayah Mauk, Kab. Tangerang
       </p>
       <p style="margin: 0;">
         Email ini dikirimkan ke alamat darurat terdaftar: <strong style="color: #334155;">pkm28979@gmail.com</strong>
@@ -257,13 +257,13 @@ export async function sendSecurityAlertEmail(
   try {
     const fromAddress =
       process.env.SMTP_FROM ||
-      `"Keamanan Portal MAS Raudhatul Hidayah" <${process.env.SMTP_USER || process.env.GMAIL_USER || 'no-reply@raudhatulhidayah.sch.id'}>`;
+      `"Keamanan Portal MA Raudlatul Hidayah" <${process.env.SMTP_USER || process.env.GMAIL_USER || 'no-reply@raudlatulhidayah.sch.id'}>`;
 
     const info = await transporter.sendMail({
       from: fromAddress,
       to: recipient,
       subject: `[PERINGATAN KEAMANAN] Percobaan Masuk Tidak Sah Terdeteksi (${geoInfo.city || 'Indonesia'})`,
-      text: `PERINGATAN KEAMANAN MAS RAUDHATUL HIDAYAH\n\nUpaya masuk tidak sah terdeteksi pada akun ${data.targetAccount}.\nAlamat IP: ${geoInfo.ip}\nLokasi: ${geoInfo.city}, ${geoInfo.region}, ${geoInfo.country}\nKoordinat: ${geoInfo.lat}, ${geoInfo.lon}\nPeta Google Maps: ${geoInfo.mapsUrl}\nPenyedia Jaringan: ${geoInfo.isp}\nWaktu: ${timeFormatted}\nStatus: Akses telah DIBLOKIR sementara selama 15 menit.`,
+      text: `PERINGATAN KEAMANAN MA RAUDLATUL HIDAYAH\n\nUpaya masuk tidak sah terdeteksi pada akun ${data.targetAccount}.\nAlamat IP: ${geoInfo.ip}\nLokasi: ${geoInfo.city}, ${geoInfo.region}, ${geoInfo.country}\nKoordinat: ${geoInfo.lat}, ${geoInfo.lon}\nPeta Google Maps: ${geoInfo.mapsUrl}\nPenyedia Jaringan: ${geoInfo.isp}\nWaktu: ${timeFormatted}\nStatus: Akses telah DIBLOKIR sementara selama 15 menit.`,
       html: htmlContent,
     });
 

@@ -20,7 +20,7 @@ export const NewsGrid: React.FC = () => {
               <span>Warta & Informasi</span>
             </div>
             <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-extrabold text-stone-900 tracking-tight leading-tight">
-              Kabar Terkini MAS Raudhatul Hidayah
+              Kabar Terkini MA Raudlatul Hidayah
             </h2>
             <p className="text-stone-600 text-sm sm:text-base mt-2">
               Informasi prestasi, kegiatan akademik, dan pengumuman resmi madrasah.

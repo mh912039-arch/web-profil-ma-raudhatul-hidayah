@@ -33,7 +33,7 @@ export function StitchNavbar() {
   const [navProfile, setNavProfile] = useState({
     phone: '0817-6614-723',
     whatsapp: '628176614723',
-    email: 'info@maraudhatulhidayah.sch.id',
+    email: 'info@maraudlatulhidayah.sch.id',
     hoursWeekdays: '07.00 - 15.30 WIB',
   });
 
@@ -45,7 +45,7 @@ export function StitchNavbar() {
           setNavProfile({
             phone: data.profile.phone || '0817-6614-723',
             whatsapp: data.profile.whatsapp || '628176614723',
-            email: data.profile.email || 'info@maraudhatulhidayah.sch.id',
+            email: data.profile.email || 'info@maraudlatulhidayah.sch.id',
             hoursWeekdays: data.profile.hoursWeekdays || '07.00 - 15.30 WIB',
           });
         }
@@ -257,7 +257,7 @@ export function StitchNavbar() {
             <div className="relative w-10 h-10 shrink-0 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 p-1 flex items-center justify-center transition-transform duration-200 group-hover:scale-105 shadow-sm">
               <Image
                 src="/school-logo.png"
-                alt="Emblem MAS Raudhatul Hidayah"
+                alt="Emblem MA Raudlatul Hidayah"
                 width={36}
                 height={36}
                 className="object-contain drop-shadow-sm"
@@ -266,7 +266,7 @@ export function StitchNavbar() {
             </div>
             <div className="flex flex-col">
               <span className="font-serif text-[17px] sm:text-[19px] font-bold text-white tracking-wide leading-tight group-hover:text-[#facc15] transition-colors">
-                MAS Raudhatul Hidayah
+                MA Raudlatul Hidayah
               </span>
             </div>
           </Link>

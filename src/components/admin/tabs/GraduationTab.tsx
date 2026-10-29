@@ -67,7 +67,7 @@ export const GraduationTab: React.FC = () => {
 
       {/* Criteria Box */}
       <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
-        <h3 className="font-bold text-slate-900 text-base">Syarat & Kriteria Kelulusan MAS Raudhatul Hidayah</h3>
+        <h3 className="font-bold text-slate-900 text-base">Syarat & Kriteria Kelulusan MA Raudlatul Hidayah</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-slate-700">
           <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70 space-y-1">
             <span className="font-bold text-slate-900">1. Ketuntasan Kurikulum</span>

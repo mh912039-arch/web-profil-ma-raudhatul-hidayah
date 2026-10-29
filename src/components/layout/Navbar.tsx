@@ -165,13 +165,13 @@ export const Navbar: React.FC = () => {
             <div className="w-10 h-10 rounded-xl bg-stone-100 p-1.5 border border-stone-200 flex items-center justify-center flex-shrink-0">
               <img
                 src="/school-logo.png"
-                alt="Logo MAS Raudhatul Hidayah"
+                alt="Logo MA Raudlatul Hidayah"
                 className="w-full h-full object-contain"
               />
             </div>
             <div className="flex flex-col">
               <span className="font-display font-bold text-base sm:text-lg text-stone-900 tracking-tight leading-tight group-hover:text-emerald-700 transition-colors">
-                MAS Raudhatul Hidayah
+                MA Raudlatul Hidayah
               </span>
               <span className="text-[11px] text-stone-500 font-medium">
                 Mauk, Tangerang

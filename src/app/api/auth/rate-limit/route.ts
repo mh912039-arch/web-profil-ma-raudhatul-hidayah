@@ -72,7 +72,7 @@ export async function POST(request: Request) {
       const clientIp = cfIp || forwarded?.split(',')[0].trim() || realIp || '180.252.164.21';
 
       const result = await sendSecurityAlertEmail({
-        targetAccount: auth.session?.email || 'admin@raudhatulhidayah.sch.id',
+        targetAccount: auth.session?.email || 'admin@raudlatulhidayah.sch.id',
         ipAddress: clientIp,
         userAgent: request.headers.get('user-agent') || '',
         deviceInfo: 'Pengujian Sistem Keamanan Mandiri (Admin CMS)',

@@ -22,7 +22,7 @@ import { PpdbData } from '@/components/sections/PpdbSection';
 import { supabase } from '@/lib/supabaseClient';
 import { CheckCircle2, AlertCircle, X } from 'lucide-react';
 
-// Default initial teachers (22 dewan guru resmi MAS Raudhatul Hidayah)
+// Default initial teachers (22 dewan guru resmi MA Raudlatul Hidayah)
 const initial22Teachers: TeacherRecord[] = [
   { order_no: 1, code: '1', name: 'TAJUDIN, S.Pd.I', subject_name: "QUR'AN-HADITS", class_level: 'Semua Kelas', category_label: 'Pendidikan Agama Islam', image_url: '/hero/slide-3.jpg', is_active: true },
   { order_no: 2, code: '2', name: 'JAKARIA, S.Pd.I', subject_name: 'AQIDAH-AKHLAK', class_level: 'Semua Kelas', category_label: 'Pendidikan Agama Islam', image_url: '/kelas.jpeg', is_active: true },
@@ -124,11 +124,11 @@ export default function AdminDashboardPage() {
 
   // Data states
   const [ppdbData, setPpdbData] = useState<PpdbData>({
-    category: 'PENERIMAAN PESERTA DIDIK BARU (PPDB) • MAS RAUDHATUL HIDAYAH',
+    category: 'PENERIMAAN PESERTA DIDIK BARU (PPDB) • MA RAUDLATUL HIDAYAH',
     title: 'Membentuk Generasi Berkarakter, Cerdas & Berakhlak Mulia',
     academicYear: '2027/2028',
     badgeText: 'TELAH DIBUKA!',
-    description: 'MAS Raudhatul Hidayah hadir sebagai kawah candradimuka yang mendampingi setiap murid untuk bertumbuh menjadi generasi yang tangguh, unggul, dan berkarakter islami.',
+    description: 'MA Raudlatul Hidayah hadir sebagai kawah candradimuka yang mendampingi setiap murid untuk bertumbuh menjadi generasi yang tangguh, unggul, dan berkarakter islami.',
     features: [
       'Kurikulum Merdeka Terpadu (Fase E & F)',
       'Pembentukan Karakter & Adab Islami',
@@ -139,7 +139,7 @@ export default function AdminDashboardPage() {
     ],
     contactWa: '628176614723',
     contactPhone: '0817-6614-723',
-    registrationLink: 'https://wa.me/628176614723?text=Halo%20Panitia%20PPDB%20MA%20Raudhatul%20Hidayah,%20saya%20ingin%20mendaftar%20dan%20konsultasi%20PPDB%202027/2028',
+    registrationLink: 'https://wa.me/628176614723?text=Halo%20Panitia%20PPDB%20MA%20Raudlatul%20Hidayah,%20saya%20ingin%20mendaftar%20dan%20konsultasi%20PPDB%202027/2028',
     brochureLink: '/kontak',
     posterUrl: 'https://zzgobrlhnnqvspuwugkz.supabase.co/storage/v1/object/public/articles/img-1793069689752-1bguos.jpeg',
     isRegistrationOpen: true,
@@ -152,9 +152,9 @@ export default function AdminDashboardPage() {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [usersCount, setUsersCount] = useState<number>(8);
   const [homepageData, setHomepageData] = useState<HomepageConfig>({
-    heroTitle: 'MAS Raudhatul Hidayah',
+    heroTitle: 'MA Raudlatul Hidayah',
     heroTagline: 'Membentuk Generasi Berkarakter, Beradab, dan Unggul Bernalar',
-    heroBadge: 'Portal Resmi MAS Raudhatul Hidayah',
+    heroBadge: 'Portal Resmi MA Raudlatul Hidayah',
     heroBackground: '/foto-semua.jpeg',
     heroBackgrounds: [
       '/foto-semua.jpeg',
@@ -162,7 +162,7 @@ export default function AdminDashboardPage() {
       '/paskibra.jpeg',
     ],
     schoolLogo: '/school-logo.png',
-    marqueeText1: 'PPDB (Penerimaan Peserta Didik Baru) MAS Raudhatul Hidayah Tahun Ajaran 2027/2028 Telah Dibuka!',
+    marqueeText1: 'PPDB (Penerimaan Peserta Didik Baru) MA Raudlatul Hidayah Tahun Ajaran 2027/2028 Telah Dibuka!',
     marqueeCta1: 'DAFTAR SEKARANG!',
     marqueeLink1: '/kontak',
     marqueeText2: 'Kuota Pendaftaran Terbatas • Pembinaan Berbasis Karakter & Kurikulum Merdeka • Mauk Tangerang',
@@ -172,9 +172,9 @@ export default function AdminDashboardPage() {
     sambutanSubtitle: 'Membina Integritas & Mutu Akademik',
     sambutanBadge: 'Pimpinan Satuan Pendidikan',
     headmasterName: 'A. Khutbi. AR, S.Pd',
-    headmasterRole: 'Kepala Madrasah MAS Raudhatul Hidayah',
+    headmasterRole: 'Kepala Madrasah MA Raudlatul Hidayah',
     headmasterPhoto: '/kepala-madrasah.jpg',
-    sambutanText1: 'Bismillah walhamdulillah. Assalamu’alaikum Warahmatullahi Wabarakatuh. Selamat datang di portal resmi MAS Raudhatul Hidayah jenjang Madrasah Aliyah (MA). Kami meyakini bahwa pendidikan sejati tidak hanya mengasah kecerdasan kognitif, tetapi juga merawat adab, keteguhan akidah, serta budi pekerti luhur sejak usia transisi remaja.',
+    sambutanText1: 'Bismillah walhamdulillah. Assalamu’alaikum Warahmatullahi Wabarakatuh. Selamat datang di portal resmi MA Raudlatul Hidayah jenjang Madrasah Aliyah (MA). Kami meyakini bahwa pendidikan sejati tidak hanya mengasah kecerdasan kognitif, tetapi juga merawat adab, keteguhan akidah, serta budi pekerti luhur sejak usia transisi remaja.',
     sambutanText2: 'Melalui integrasi Kurikulum Merdeka yang kontekstual dan kultur pembiasaan Islami, kami berikhtiar membimbing seluruh santri agar aktif bernalar, mencintai ilmu pengetahuan, dan terlatih hidup berdisiplin dalam lingkungan yang aman, ramah anak, serta penuh kehangatan persaudaraan.',
     ctaText: 'Pelajari Profil & Budaya Sekolah',
     ctaLink: '/profil/visi-misi',
@@ -188,8 +188,8 @@ export default function AdminDashboardPage() {
 
   const [fullProfileData, setFullProfileData] = useState<FullProfileData>({
     profile: {
-      name: 'MAS Raudhatul Hidayah',
-      formalName: 'Madrasah Aliyah Swasta Raudhatul Hidayah',
+      name: 'MA Raudlatul Hidayah',
+      formalName: 'Madrasah Aliyah Raudlatul Hidayah',
       level: 'Madrasah Aliyah (MA)',
       npsn: '6994888',
       nsm: '131236030045',
@@ -202,7 +202,7 @@ export default function AdminDashboardPage() {
       postalCode: '15330',
       phone: '0817-6614-723',
       whatsapp: '628176614723',
-      email: 'info@maraudhatulhidayah.sch.id',
+      email: 'info@maraudlatulhidayah.sch.id',
       hoursWeekdays: '07.00 – 15.30 WIB',
       hoursSaturday: '07.00 – 12.30 WIB',
       hoursSunday: 'Tutup Layanan Fisik',

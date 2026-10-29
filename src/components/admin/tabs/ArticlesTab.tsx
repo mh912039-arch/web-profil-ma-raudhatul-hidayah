@@ -141,7 +141,7 @@ export const ArticlesTab: React.FC<ArticlesTabProps> = ({
     excerpt: '',
     content: '',
     category: 'Prestasi',
-    author: 'Humas MAS Raudhatul Hidayah',
+    author: 'Humas MA Raudlatul Hidayah',
     cover_image: '/foto-juara.jpeg',
     is_featured: false,
     is_published: true,
@@ -156,7 +156,7 @@ export const ArticlesTab: React.FC<ArticlesTabProps> = ({
       excerpt: '',
       content: '',
       category: 'Prestasi',
-      author: 'Humas MAS Raudhatul Hidayah',
+      author: 'Humas MA Raudlatul Hidayah',
       cover_image: '/foto-juara.jpeg',
       is_featured: false,
       is_published: true,
@@ -179,7 +179,7 @@ export const ArticlesTab: React.FC<ArticlesTabProps> = ({
         (art as any).summary ||
         '',
       category: art.category || 'Prestasi',
-      author: art.author || 'Humas MAS Raudhatul Hidayah',
+      author: art.author || 'Humas MA Raudlatul Hidayah',
       cover_image: art.cover_image || (art as any).imageUrl || '/foto-juara.jpeg',
       is_featured: Boolean(art.is_featured),
       is_published: Boolean(art.is_published ?? true),
@@ -312,7 +312,7 @@ export const ArticlesTab: React.FC<ArticlesTabProps> = ({
               {/* Text Info */}
               <div className="p-4 sm:p-5 space-y-2">
                 <span className="text-[11.5px] font-medium text-slate-400">
-                  {art.author || 'Humas MAS Raudhatul Hidayah'}
+                  {art.author || 'Humas MA Raudlatul Hidayah'}
                 </span>
                 <h4 className="font-serif text-[16px] font-bold text-slate-900 leading-snug line-clamp-2 group-hover:text-blue-700 transition-colors">
                   {art.title || 'Tanpa Judul'}
@@ -390,7 +390,7 @@ export const ArticlesTab: React.FC<ArticlesTabProps> = ({
                   type="text"
                   value={formData.title}
                   onChange={(e) => handleTitleChange(e.target.value)}
-                  placeholder="Contoh: Santri MAS Raudhatul Hidayah Meraih Juara 1..."
+                  placeholder="Contoh: Santri MA Raudlatul Hidayah Meraih Juara 1..."
                   className="px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[13.5px] font-bold"
                   required
                 />

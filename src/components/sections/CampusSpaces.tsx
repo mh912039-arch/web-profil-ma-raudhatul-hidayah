@@ -42,7 +42,7 @@ export const CampusSpaces: React.FC = () => {
               Tempat Menjelajah, Tempat Tumbuh Bersama
             </h2>
             <p className="text-stone-600 text-sm sm:text-base mt-2">
-              Sarana representatif di lingkungan sekolah MAS Raudhatul Hidayah yang menunjang kenyamanan dan perkembangan siswa.
+              Sarana representatif di lingkungan sekolah MA Raudlatul Hidayah yang menunjang kenyamanan dan perkembangan siswa.
             </p>
           </div>
 

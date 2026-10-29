@@ -60,7 +60,7 @@ export default function FotoJuaraPage() {
                   Foto Juara Ekstrakurikuler
                 </h1>
                 <p className="font-sans text-[14.5px] sm:text-[15.5px] text-slate-600 max-w-xl leading-relaxed">
-                  Galeri apresiasi piala, medali, dan piagam kemenangan santri MAS Raudhatul Hidayah dalam berbagai ajang kejuaraan ekstrakurikuler.
+                  Galeri apresiasi piala, medali, dan piagam kemenangan santri MA Raudlatul Hidayah dalam berbagai ajang kejuaraan ekstrakurikuler.
                 </p>
               </div>
             </div>

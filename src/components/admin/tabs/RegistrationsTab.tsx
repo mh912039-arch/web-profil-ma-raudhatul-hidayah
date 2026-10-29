@@ -95,7 +95,7 @@ export function generatePpdbWhatsAppMessage(
 
   if (status === 'accepted') {
     return `*PEMBERITAHUAN HASIL SELEKSI PPDB ONLINE*
-*MAS RAUDHATUL HIDAYAH MAUK*
+*MA RAUDLATUL HIDAYAH MAUK*
 Tahun Ajaran 2027/2028
 
 Assalamu'alaikum Warahmatullahi Wabarakatuh.
@@ -108,15 +108,15 @@ Orang Tua / Wali dari ananda:
 • Jalur Pendaftaran: *${jalur}*
 • Asal Sekolah: ${schoolOrigin}
 
-Alhamdulillah, setelah melalui tahapan seleksi dan verifikasi berkas, panitia Penerimaan Peserta Didik Baru (PPDB) MAS Raudhatul Hidayah menyatakan bahwa ananda dinyatakan:
+Alhamdulillah, setelah melalui tahapan seleksi dan verifikasi berkas, panitia Penerimaan Peserta Didik Baru (PPDB) MA Raudlatul Hidayah menyatakan bahwa ananda dinyatakan:
 
 *DITERIMA (LULUS SELEKSI)*
-Sebagai Calon Santri Baru MAS Raudhatul Hidayah Tahun Ajaran 2027/2028.
+Sebagai Calon Santri Baru MA Raudlatul Hidayah Tahun Ajaran 2027/2028.
 
 *Tahapan Selanjutnya (Daftar Ulang):*
 1. Membawa bukti cetak formulir pendaftaran ini ke sekretariat madrasah.
 2. Melengkapi berkas fisik (Fotokopi KK, Akta Kelahiran, dan Ijazah/Surat Keterangan Lulus).
-3. Jadwal verifikasi berkas & daftar ulang: Setiap hari kerja (08.00 - 14.00 WIB) di Kantor Sekretariat MAS Raudhatul Hidayah Mauk.
+3. Jadwal verifikasi berkas & daftar ulang: Setiap hari kerja (08.00 - 14.00 WIB) di Kantor Sekretariat MA Raudlatul Hidayah Mauk.
 
 Untuk informasi dan pertanyaan lebih lanjut, Bapak/Ibu dapat membalas pesan ini atau menghubungi panitia PPDB.
 
@@ -124,12 +124,12 @@ Selamat kepada ananda, semoga kelak menjadi generasi yang sholeh, cerdas, dan be
 
 Wassalamu'alaikum Warahmatullahi Wabarakatuh.
 
-_Panitia SPMB PPDB MAS Raudhatul Hidayah Mauk, Kab. Tangerang_`;
+_Panitia SPMB PPDB MA Raudlatul Hidayah Mauk, Kab. Tangerang_`;
   }
 
   if (status === 'rejected') {
     return `*PEMBERITAHUAN HASIL SELEKSI PPDB ONLINE*
-*MAS RAUDHATUL HIDAYAH MAUK*
+*MA RAUDLATUL HIDAYAH MAUK*
 Tahun Ajaran 2027/2028
 
 Assalamu'alaikum Warahmatullahi Wabarakatuh.
@@ -142,12 +142,12 @@ Orang Tua / Wali dari ananda:
 • Jalur Pendaftaran: *${jalur}*
 • Asal Sekolah: ${schoolOrigin}
 
-Kami mengucapkan terima kasih yang sebesar-besarnya atas kepercayaan Bapak/Ibu yang telah mendaftarkan ananda pada PPDB MAS Raudhatul Hidayah.
+Kami mengucapkan terima kasih yang sebesar-besarnya atas kepercayaan Bapak/Ibu yang telah mendaftarkan ananda pada PPDB MA Raudlatul Hidayah.
 
 Berdasarkan hasil seleksi berkas dan mempertimbangkan keterbatasan kapasitas kuota rombongan belajar tahun ajaran ini, dengan berat hati kami menyampaikan bahwa ananda:
 
 *BELUM DAPAT DITERIMA*
-Pada penerimaan santri baru MAS Raudhatul Hidayah Tahun Ajaran 2027/2028.
+Pada penerimaan santri baru MA Raudlatul Hidayah Tahun Ajaran 2027/2028.
 
 Kami senantiasa mendoakan ananda agar selalu diberikan kelancaran, kemudahan, dan kesuksesan dalam melanjutkan pendidikan di madrasah/sekolah pilihan terbaik lainnya.
 
@@ -155,12 +155,12 @@ Terima kasih atas perhatian dan kerja sama Bapak/Ibu.
 
 Wassalamu'alaikum Warahmatullahi Wabarakatuh.
 
-_Panitia SPMB PPDB MAS Raudhatul Hidayah Mauk, Kab. Tangerang_`;
+_Panitia SPMB PPDB MA Raudlatul Hidayah Mauk, Kab. Tangerang_`;
   }
 
   if (status === 'verified') {
     return `*PEMBERITAHUAN VERIFIKASI BERKAS PPDB*
-*MAS RAUDHATUL HIDAYAH MAUK*
+*MA RAUDLATUL HIDAYAH MAUK*
 
 Assalamu'alaikum Warahmatullahi Wabarakatuh.
 Yth. Bapak/Ibu *${parentName}*, berkas formulir pendaftaran ananda *${candidateName}* (No. Registrasi: *${regNum}*, ${jalur}) saat ini telah *TERVERIFIKASI*. 
@@ -168,10 +168,10 @@ Yth. Bapak/Ibu *${parentName}*, berkas formulir pendaftaran ananda *${candidateN
 Mohon menunggu informasi pengumuman hasil seleksi akhir yang akan disampaikan panitia melalui nomor ini. Terima kasih.
 
 Wassalamu'alaikum Warahmatullahi Wabarakatuh.
-_Panitia PPDB MAS Raudhatul Hidayah_`;
+_Panitia PPDB MA Raudlatul Hidayah_`;
   }
 
-  return `*INFORMASI PPDB MAS RAUDHATUL HIDAYAH*
+  return `*INFORMASI PPDB MA RAUDLATUL HIDAYAH*
 
 Assalamu'alaikum Wr. Wb. Yth. Bapak/Ibu *${parentName}*, formulir pendaftaran ananda *${candidateName}* (No: *${regNum}*) telah tercatat dalam sistem kami dan sedang dalam antrean verifikasi panitia. Terima kasih.`;
 }
@@ -883,7 +883,7 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
                       {jalurLabelMap[detailApplicant.registration_path || 'domisili'] || 'Jalur Domisili'}
                     </span>
                     <span className="text-[12px] text-slate-500">
-                      Terdaftar melalui sistem PPDB Online MAS Raudhatul Hidayah
+                      Terdaftar melalui sistem PPDB Online MA Raudlatul Hidayah
                     </span>
                   </div>
                   <div>{jalurBadge(detailApplicant.registration_path)}</div>
@@ -1124,7 +1124,7 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
                 <label className="text-[12px] font-bold text-slate-700">
                   Isi Pesan Notifikasi (Dapat Diedit):
                 </label>
-                <span className="text-[11px] text-slate-400">Format Resmi MAS Raudhatul Hidayah</span>
+                <span className="text-[11px] text-slate-400">Format Resmi MA Raudlatul Hidayah</span>
               </div>
 
               <textarea

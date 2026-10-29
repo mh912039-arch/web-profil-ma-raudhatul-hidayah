@@ -47,7 +47,7 @@ export const CorePillars: React.FC = () => {
             Fondasi Kokoh, Membuka Peluang Masa Depan
           </h2>
           <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
-            Tiga pilar strategis yang membentuk keunggulan belajar, pembinaan akhlak, dan kesiapan siswa SMP MAS Raudhatul Hidayah.
+            Tiga pilar strategis yang membentuk keunggulan belajar, pembinaan akhlak, dan kesiapan siswa SMP MA Raudlatul Hidayah.
           </p>
         </div>
 

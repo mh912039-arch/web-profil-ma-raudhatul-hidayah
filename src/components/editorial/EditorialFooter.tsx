@@ -17,13 +17,13 @@ export const EditorialFooter: React.FC = () => {
               <div className="w-11 h-11 rounded-xl bg-white/10 p-2 border border-white/15 flex items-center justify-center flex-shrink-0">
                 <img
                   src="/school-logo.png"
-                  alt="Logo MAS Raudhatul Hidayah"
+                  alt="Logo MA Raudlatul Hidayah"
                   className="w-full h-full object-contain"
                 />
               </div>
               <div className="flex flex-col">
                 <span className="font-display font-black text-lg text-white tracking-wide group-hover:text-amber-400 transition-colors">
-                  MAS RAUDHATUL HIDAYAH
+                  MA RAUDLATUL HIDAYAH
                 </span>
                 <span className="text-[11px] text-slate-400 font-medium">
                   Kecamatan Mauk, Kabupaten Tangerang
@@ -160,7 +160,7 @@ export const EditorialFooter: React.FC = () => {
         {/* Bottom Institutional Copyright Bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 font-mono">
           <div>
-            &copy; {new Date().getFullYear()} MAS Raudhatul Hidayah. Seluruh hak cipta dilindungi.
+            &copy; {new Date().getFullYear()} MA Raudlatul Hidayah. Seluruh hak cipta dilindungi.
           </div>
           <div className="flex items-center gap-3 text-slate-400">
             <span>Kecamatan Mauk, Kabupaten Tangerang</span>

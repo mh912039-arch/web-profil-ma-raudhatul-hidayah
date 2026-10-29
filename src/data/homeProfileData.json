@@ -1,8 +1,8 @@
 {
   "homepage": {
-    "heroTitle": "MAS Raudhatul Hidayah",
+    "heroTitle": "MA Raudlatul Hidayah",
     "heroTagline": "Membentuk Generasi Berkarakter, Beradab, dan Unggul Bernalar",
-    "heroBadge": "Portal Resmi MAS Raudhatul Hidayah",
+    "heroBadge": "Portal Resmi MA Raudlatul Hidayah",
     "heroBackground": "/foto-semua.jpeg",
     "heroBackgrounds": [
       "/foto-semua.jpeg",
@@ -10,7 +10,7 @@
       "/paskibra.jpeg"
     ],
     "schoolLogo": "/school-logo.png",
-    "marqueeText1": "PPDB (Penerimaan Peserta Didik Baru) MAS Raudhatul Hidayah Tahun Ajaran 2027/2028 Telah Dibuka!",
+    "marqueeText1": "PPDB (Penerimaan Peserta Didik Baru) MA Raudlatul Hidayah Tahun Ajaran 2027/2028 Telah Dibuka!",
     "marqueeCta1": "DAFTAR SEKARANG!",
     "marqueeLink1": "/kontak",
     "marqueeText2": "Kuota Pendaftaran Terbatas • Pembinaan Berbasis Karakter & Kurikulum Merdeka • Mauk Tangerang",
@@ -20,9 +20,9 @@
     "sambutanSubtitle": "Membina Integritas & Mutu Akademik",
     "sambutanBadge": "Pimpinan Satuan Pendidikan",
     "headmasterName": "A. Khutbi. AR, S.Pd",
-    "headmasterRole": "Kepala Madrasah MAS Raudhatul Hidayah",
+    "headmasterRole": "Kepala Madrasah MA Raudlatul Hidayah",
     "headmasterPhoto": "/kepala-madrasah.jpg",
-    "sambutanText1": "Bismillah walhamdulillah. Assalamu’alaikum Warahmatullahi Wabarakatuh. Selamat datang di portal resmi MAS Raudhatul Hidayah jenjang Madrasah Aliyah (MA). Kami meyakini bahwa pendidikan sejati tidak hanya mengasah kecerdasan kognitif, tetapi juga merawat adab, keteguhan akidah, serta budi pekerti luhur sejak usia transisi remaja.",
+    "sambutanText1": "Bismillah walhamdulillah. Assalamu’alaikum Warahmatullahi Wabarakatuh. Selamat datang di portal resmi MA Raudlatul Hidayah jenjang Madrasah Aliyah (MA). Kami meyakini bahwa pendidikan sejati tidak hanya mengasah kecerdasan kognitif, tetapi juga merawat adab, keteguhan akidah, serta budi pekerti luhur sejak usia transisi remaja.",
     "sambutanText2": "Melalui integrasi Kurikulum Merdeka yang kontekstual dan kultur pembiasaan Islami, kami berikhtiar membimbing seluruh santri agar aktif bernalar, mencintai ilmu pengetahuan, dan terlatih hidup berdisiplin dalam lingkungan yang aman, ramah anak, serta penuh kehangatan persaudaraan.",
     "ctaText": "Pelajari Profil & Budaya Sekolah",
     "ctaLink": "/profil/visi-misi",
@@ -34,8 +34,8 @@
     "stat3Label": "Prestasi"
   },
   "profile": {
-    "name": "MAS Raudhatul Hidayah",
-    "formalName": "Madrasah Aliyah Swasta Raudhatul Hidayah",
+    "name": "MA Raudlatul Hidayah",
+    "formalName": "Madrasah Aliyah Raudlatul Hidayah",
     "level": "Madrasah Aliyah (MA)",
     "npsn": "69941777",
     "nsm": "131236030069",
@@ -48,10 +48,16 @@
     "postalCode": "15330",
     "phone": "0817-6614-723",
     "whatsapp": "628176614723",
-    "email": "info@maraudhatulhidayah.sch.id",
+    "email": "info@maraudlatulhidayah.sch.id",
     "hoursWeekdays": "07.00 – 16.00 WIB",
     "hoursSaturday": "07.00 – 12.00 WIB",
-    "hoursSunday": "Tutup Layanan Fisik"
+    "hoursSunday": "Tutup Layanan Fisik",
+    "contactTitle": "Hubungi Layanan Kami",
+    "contactSubtitle": "Mempunyai pertanyaan seputar administrasi, sistem PPDB, atau kemitraan akademik? Tinggalkan pesan Anda.",
+    "mapsEmbedUrl": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3967.6256247920387!2d106.53266297592476!3d-6.022493393963283!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6a077ff9292557%3A0xae9bc40d9fedd490!2sMA%20RAUDLATUL%20HIDAYAH!5e0!3m2!1sid!2sid!4v1728300000000!5m2!1sid!2sid",
+    "navGuideAccess": "Melalui Jl. Raya Tanjung Kait, Desa Tanjung Anom, Kec. Mauk.",
+    "navGuideBenchmark": "Berada di kawasan Tanjung Anom Mauk, dekat dengan fasilitas publik desa dan kantor pemerintahan.",
+    "navGuideParking": "Halaman sekolah menyediakan area parkir yang tertib untuk motor maupun mobil wali murid."
   },
   "visionMission": {
     "vision": "Terwujudnya generasi yang beriman dan bertakwa, berakhlak mulia, unggul dalam prestasi akademik dan non-akademik, serta berwawasan lingkungan dan keislaman yang moderat.",
@@ -96,9 +102,9 @@
         "desc": "Perjalanan dimulai dengan pendirian MIS Raudlatul Hidayah 01 di Kampung Tanjung Anom, Kecamatan Mauk, guna memberikan pondasi akhlak yang kokoh, adab pergaulan, serta kemampuan baca tulis Al-Qur'an bagi putra-putri daerah sekitar."
       },
       {
-        "title": "Pendirian Resmi MAS Raudhatul Hidayah",
+        "title": "Pendirian Resmi MA Raudlatul Hidayah",
         "badge": "17 September 2015",
-        "desc": "Guna menampung antusiasme para santri untuk melanjutkan pendidikan menengah yang kokoh dalam syariat dan adaptif dalam sains, MAS Raudlatul Hidayah resmi berdiri pada 17 September 2015 dengan izin operasional lengkap Kementerian Agama dan NPSN 69941777."
+        "desc": "Guna menampung antusiasme para santri untuk melanjutkan pendidikan menengah yang kokoh dalam syariat dan adaptif dalam sains, MA Raudlatul Hidayah resmi berdiri pada 17 September 2015 dengan izin operasional lengkap Kementerian Agama dan NPSN 69941777."
       }
     ]
   },

@@ -5,8 +5,8 @@ import { StitchFooter } from '@/components/layout/StitchFooter';
 import { GalleryMasonry } from '@/components/sections/GalleryMasonry';
 
 export const metadata: Metadata = {
-  title: 'Galeri Foto Kegiatan — MAS Raudhatul Hidayah',
-  description: 'Dokumentasi visual kegiatan belajar, perpustakaan, halaman sekolah, dan agenda siswa MAS Raudhatul Hidayah.',
+  title: 'Galeri Foto Kegiatan — MA Raudlatul Hidayah',
+  description: 'Dokumentasi visual kegiatan belajar, perpustakaan, halaman sekolah, dan agenda siswa MA Raudlatul Hidayah.',
 };
 
 export default function GaleriPage() {
@@ -26,7 +26,7 @@ export default function GaleriPage() {
                 Galeri Kegiatan &amp; Dinamika Santri
               </h1>
               <p className="font-sans text-[16px] text-on-surface-variant mt-2 leading-relaxed">
-                Merekam jejak khidmah, keceriaan santri, serta kekhidmatan majelis ilmu di lingkungan sekolah MAS Raudhatul Hidayah, Kecamatan Mauk, Kabupaten Tangerang.
+                Merekam jejak khidmah, keceriaan santri, serta kekhidmatan majelis ilmu di lingkungan sekolah MA Raudlatul Hidayah, Kecamatan Mauk, Kabupaten Tangerang.
               </p>
             </div>
           </div>

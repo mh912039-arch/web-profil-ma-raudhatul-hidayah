@@ -165,7 +165,7 @@ export function NewsCarouselSection() {
               </h2>
             </div>
             <p className="font-sans text-[13.5px] text-slate-500 tracking-wide font-medium mt-1">
-              Pusat informasi, warta prestasi, dan kabar kegiatan terbaru seputar MAS Raudhatul Hidayah
+              Pusat informasi, warta prestasi, dan kabar kegiatan terbaru seputar MA Raudlatul Hidayah
             </p>
           </div>
 

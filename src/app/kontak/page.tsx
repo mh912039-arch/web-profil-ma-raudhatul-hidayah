@@ -29,14 +29,20 @@ export default function KontakPage() {
   };
 
   const [profileInfo, setProfileInfo] = useState({
-    address: 'Jl. Raya Tanjung Kait No. 33, Tj. Anom, Kec. Mauk, Kabupaten Tangerang, Banten 15330',
+    contactTitle: 'Hubungi Layanan Kami',
+    contactSubtitle: 'Mempunyai pertanyaan seputar administrasi, sistem PPDB, atau kemitraan akademik? Tinggalkan pesan Anda.',
+    address: 'Jl. Raya Tanjung Kait No. 33, RT 02 / RW 01, Mauk, Kabupaten Tangerang, Banten 15330',
     phone: '0817-6614-723',
     whatsapp: '0817-6614-723',
     whatsappRaw: '628176614723',
-    email: 'info@maraudhathidayah.sch.id',
-    hoursWeekdays: '07.00 – 15.30 WIB',
-    hoursSaturday: '07.00 – 12.30 WIB',
+    email: 'info@maraudhatulhidayah.sch.id',
+    hoursWeekdays: '07.00 – 16.00 WIB',
+    hoursSaturday: '07.00 – 12.00 WIB',
     hoursSunday: 'Tutup Layanan Fisik',
+    mapsEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3967.6256247920387!2d106.53266297592476!3d-6.022493393963283!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6a077ff9292557%3A0xae9bc40d9fedd490!2sMA%20RAUDLATUL%20HIDAYAH!5e0!3m2!1sid!2sid!4v1728300000000!5m2!1sid!2sid',
+    navGuideAccess: 'Melalui Jl. Raya Tanjung Kait, Desa Tanjung Anom, Kec. Mauk.',
+    navGuideBenchmark: 'Berada di kawasan Tanjung Anom Mauk, dekat dengan fasilitas publik desa dan kantor pemerintahan.',
+    navGuideParking: 'Halaman sekolah menyediakan area parkir yang tertib untuk motor maupun mobil wali murid.',
   });
 
   useEffect(() => {
@@ -48,7 +54,9 @@ export default function KontakPage() {
           const fullAddr = [p.address, p.district, p.regency, p.province, p.postalCode].filter(Boolean).join(', ');
           setProfileInfo((prev) => ({
             ...prev,
-            address: fullAddr || prev.address,
+            contactTitle: p.contactTitle || prev.contactTitle,
+            contactSubtitle: p.contactSubtitle || prev.contactSubtitle,
+            address: fullAddr || p.address || prev.address,
             phone: p.phone || prev.phone,
             whatsapp: p.whatsapp || prev.whatsapp,
             whatsappRaw: (p.whatsapp || prev.whatsappRaw).replace(/\D/g, ''),
@@ -56,6 +64,10 @@ export default function KontakPage() {
             hoursWeekdays: p.hoursWeekdays || prev.hoursWeekdays,
             hoursSaturday: p.hoursSaturday || prev.hoursSaturday,
             hoursSunday: p.hoursSunday || prev.hoursSunday,
+            mapsEmbedUrl: p.mapsEmbedUrl || prev.mapsEmbedUrl,
+            navGuideAccess: p.navGuideAccess || prev.navGuideAccess,
+            navGuideBenchmark: p.navGuideBenchmark || prev.navGuideBenchmark,
+            navGuideParking: p.navGuideParking || prev.navGuideParking,
           }));
         }
       })
@@ -72,20 +84,23 @@ export default function KontakPage() {
     setIsSubmitting(true);
 
     try {
-      await fetch('/api/contact', {
+      const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-    } catch (err) {
-      console.warn('Error submitting contact message:', err);
-    } finally {
-      setIsSubmitting(false);
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || 'Gagal mengirim pesan');
+      }
       setFormSubmitted(true);
       setCaptchaState('idle');
-      setTimeout(() => {
-        setFormData({ name: '', contact: '', subject: '', message: '', hp_website: '' });
-      }, 500);
+      setFormData({ name: '', contact: '', subject: '', message: '', hp_website: '' });
+    } catch (err: any) {
+      console.warn('Error submitting contact message:', err);
+      alert(err.message || 'Terjadi kendala saat mengirimkan pesan. Silakan coba sesaat lagi.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -101,10 +116,10 @@ export default function KontakPage() {
             <div className="lg:col-span-5 flex flex-col gap-6">
               <div>
                 <h1 className="font-display text-[30px] sm:text-[38px] font-bold text-slate-900 tracking-tight leading-tight">
-                  Hubungi Layanan Kami
+                  {profileInfo.contactTitle}
                 </h1>
                 <p className="font-sans text-[14.5px] sm:text-[15.5px] text-slate-600 mt-2.5 leading-relaxed">
-                  Mempunyai pertanyaan seputar administrasi, sistem PPDB, atau kemitraan akademik? Tinggalkan pesan Anda.
+                  {profileInfo.contactSubtitle}
                 </p>
               </div>
 
@@ -350,7 +365,7 @@ export default function KontakPage() {
                       <div className="text-[13px]">
                         <p className="font-bold">Pesan Berhasil Terkirim!</p>
                         <p className="text-emerald-800 mt-0.5">
-                          Petugas Tata Usaha MAS Raudhatul Hidayah akan segera merespons pesan Anda melalui kontak yang Anda cantumkan.
+                          Petugas Tata Usaha MA Raudlatul Hidayah akan segera merespons pesan Anda melalui kontak yang Anda cantumkan.
                         </p>
                       </div>
                     </div>
@@ -375,7 +390,7 @@ export default function KontakPage() {
               <div className="lg:col-span-8 overflow-hidden rounded-xl shadow-sm bg-surface-container-highest border border-surface-container relative">
                 <iframe
                   title="Peta Lokasi MA Raudlatul Hidayah Tanjung Anom Mauk"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3967.6256247920387!2d106.53266297592476!3d-6.022493393963283!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6a077ff9292557%3A0xae9bc40d9fedd490!2sMA%20RAUDLATUL%20HIDAYAH!5e0!3m2!1sid!2sid!4v1728300000000!5m2!1sid!2sid"
+                  src={profileInfo.mapsEmbedUrl}
                   width="100%"
                   height="420"
                   style={{ border: 0 }}
@@ -401,7 +416,7 @@ export default function KontakPage() {
                         check_circle
                       </span>
                       <span>
-                        <strong>Akses Utama:</strong> Melalui Jl. Raya Tanjung Kait, Desa Tanjung Anom, Kec. Mauk.
+                        <strong>Akses Utama:</strong> {profileInfo.navGuideAccess}
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
@@ -409,7 +424,7 @@ export default function KontakPage() {
                         check_circle
                       </span>
                       <span>
-                        <strong>Patokan Lokasi:</strong> Berada di kawasan Tanjung Anom Mauk, dekat dengan fasilitas publik desa dan kantor pemerintahan.
+                        <strong>Patokan Lokasi:</strong> {profileInfo.navGuideBenchmark}
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
@@ -417,7 +432,7 @@ export default function KontakPage() {
                         check_circle
                       </span>
                       <span>
-                        <strong>Fasilitas Parkir:</strong> Halaman sekolah menyediakan area parkir yang tertib untuk motor maupun mobil wali murid.
+                        <strong>Fasilitas Parkir:</strong> {profileInfo.navGuideParking}
                       </span>
                     </li>
                   </ul>
@@ -429,10 +444,10 @@ export default function KontakPage() {
                     <span>Butuh Panduan Penjemputan?</span>
                   </div>
                   <p className="font-sans text-[13px] text-on-surface-variant">
-                    Hubungi narahubung kami di nomor <strong>0817-6614-723</strong> untuk konfirmasi rute dan panduan langsung.
+                    Hubungi narahubung kami di nomor <strong>{profileInfo.phone}</strong> untuk konfirmasi rute dan panduan langsung.
                   </p>
                   <a
-                    href="https://wa.me/628176614723"
+                    href={`https://wa.me/${profileInfo.whatsappRaw}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="mt-1 inline-flex items-center justify-center gap-2 py-2 rounded-lg bg-secondary text-on-secondary text-[13px] font-semibold hover:bg-primary transition-colors"

@@ -91,7 +91,7 @@ export const VisitorAnalyticsSection: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           path: randomPath,
-          referrer: 'https://google.com/search?q=ma+raudhatul+hidayah',
+          referrer: 'https://google.com/search?q=ma+raudlatul+hidayah',
           isSimulation: true,
         }),
       });
@@ -145,7 +145,7 @@ export const VisitorAnalyticsSection: React.FC = () => {
             </span>
           </div>
           <p className="text-[12.5px] text-slate-500 mt-0.5">
-            Data trafik riil pengunjung halaman profil publik MAS Raudhatul Hidayah saat diakses melalui domain resmi.
+            Data trafik riil pengunjung halaman profil publik MA Raudlatul Hidayah saat diakses melalui domain resmi.
           </p>
         </div>
 

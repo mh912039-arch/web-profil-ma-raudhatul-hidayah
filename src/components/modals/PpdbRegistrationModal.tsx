@@ -225,7 +225,7 @@ export const PpdbRegistrationModal: React.FC<PpdbRegistrationModalProps> = ({
 
   const waPanitiaUrl = registeredData
     ? `https://wa.me/628176614723?text=${encodeURIComponent(
-        `Assalamu'alaikum Panitia PPDB MAS Raudhatul Hidayah,\nSaya orang tua/wali dari santri *${registeredData.full_name}* ingin konfirmasi pendaftaran online.\nNo. Registrasi: *${registeredData.registration_number}* (${jalurNameMap[registeredData.registration_path] || 'PPDB Online'}).\nMohon informasi tahapan verifikasi berkas selanjutnya. Terima kasih.`
+        `Assalamu'alaikum Panitia PPDB MA Raudlatul Hidayah,\nSaya orang tua/wali dari santri *${registeredData.full_name}* ingin konfirmasi pendaftaran online.\nNo. Registrasi: *${registeredData.registration_number}* (${jalurNameMap[registeredData.registration_path] || 'PPDB Online'}).\nMohon informasi tahapan verifikasi berkas selanjutnya. Terima kasih.`
       )}`
     : 'https://wa.me/628176614723';
 
@@ -257,7 +257,7 @@ export const PpdbRegistrationModal: React.FC<PpdbRegistrationModalProps> = ({
             </div>
           </div>
           <p className="font-sans text-[12.5px] text-slate-300 max-w-2xl">
-            MAS Raudhatul Hidayah Mauk • Lengkapi identitas, pilih jalur seleksi, dan unggah berkas persyaratan calon santri.
+            MA Raudlatul Hidayah Mauk • Lengkapi identitas, pilih jalur seleksi, dan unggah berkas persyaratan calon santri.
           </p>
         </div>
 
@@ -1041,7 +1041,7 @@ export const PpdbRegistrationModal: React.FC<PpdbRegistrationModalProps> = ({
                     Pernyataan &amp; Persetujuan Orang Tua / Wali
                   </span>
                   <p className="text-[12px] text-slate-700 leading-relaxed">
-                    Dengan mengirimkan formulir ini, orang tua/wali murid memberikan persetujuan kepada panitia MAS Raudhatul Hidayah untuk memverifikasi data dan dokumen persyaratan khusus untuk keperluan seleksi PPDB.
+                    Dengan mengirimkan formulir ini, orang tua/wali murid memberikan persetujuan kepada panitia MA Raudlatul Hidayah untuk memverifikasi data dan dokumen persyaratan khusus untuk keperluan seleksi PPDB.
                   </p>
                 </div>
               </div>

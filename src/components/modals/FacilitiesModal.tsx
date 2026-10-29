@@ -190,7 +190,7 @@ export function FacilitiesModal({ isOpen, onClose }: FacilitiesModalProps) {
                 Fasilitas Belajar &amp; Sarana Sekolah
               </h2>
               <p className="font-sans text-[12.5px] sm:text-[13px] text-slate-500">
-                Sarana prasarana penunjang kegiatan belajar mengajar santri MAS Raudhatul Hidayah
+                Sarana prasarana penunjang kegiatan belajar mengajar santri MA Raudlatul Hidayah
               </p>
             </div>
           </div>

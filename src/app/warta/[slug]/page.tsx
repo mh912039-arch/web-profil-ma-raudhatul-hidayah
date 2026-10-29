@@ -59,7 +59,7 @@ async function getAllArticles(): Promise<ArticleItem[]> {
           ? new Date(row.published_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
           : 'Terbaru',
         time: 'WIB',
-        author: row.author || 'Humas MAS Raudhatul Hidayah',
+        author: row.author || 'Humas MA Raudlatul Hidayah',
         authorRole: 'Biro Publikasi & Informasi Madrasah',
         readTime: '3 Menit Baca',
         summary: row.excerpt || (row.content ? row.content.slice(0, 160) : row.title),
@@ -69,7 +69,7 @@ async function getAllArticles(): Promise<ArticleItem[]> {
           : [row.excerpt || row.title],
         imageUrl: row.cover_image || '/foto-juara.jpeg',
         imageCaption: row.image_caption || row.title,
-        tags: [row.category || 'Berita', 'Madrasah', 'MAS Raudhatul Hidayah'],
+        tags: [row.category || 'Berita', 'Madrasah', 'MA Raudlatul Hidayah'],
       }));
     }
   } catch (e) {
@@ -120,7 +120,7 @@ async function getArticleBySlug(slug: string): Promise<ArticleItem | null> {
             })
           : 'Terbaru',
         time: 'WIB',
-        author: data.author || 'Humas MAS Raudhatul Hidayah',
+        author: data.author || 'Humas MA Raudlatul Hidayah',
         authorRole: 'Biro Publikasi & Informasi Madrasah',
         readTime: '3 Menit Baca',
         summary: data.excerpt || (data.content ? data.content.slice(0, 160) : data.title),
@@ -130,7 +130,7 @@ async function getArticleBySlug(slug: string): Promise<ArticleItem | null> {
           : [data.excerpt || data.title],
         imageUrl: data.cover_image || '/foto-juara.jpeg',
         imageCaption: data.image_caption || data.title,
-        tags: [data.category || 'Berita', 'Madrasah', 'MAS Raudhatul Hidayah'],
+        tags: [data.category || 'Berita', 'Madrasah', 'MA Raudlatul Hidayah'],
       };
     }
   } catch (e) {
@@ -153,7 +153,7 @@ export async function generateMetadata({
   if (!article) return { title: 'Warta Tidak Ditemukan' };
 
   return {
-    title: `${article.title} — Warta MAS Raudhatul Hidayah`,
+    title: `${article.title} — Warta MA Raudlatul Hidayah`,
     description: article.summary,
     openGraph: {
       title: article.title,
@@ -175,7 +175,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
     id: rawArticle.id || rawArticle.slug,
     title: rawArticle.title,
     slug: rawArticle.slug,
-    author: rawArticle.author || 'Humas MAS Raudhatul Hidayah',
+    author: rawArticle.author || 'Humas MA Raudlatul Hidayah',
     authorRole: rawArticle.authorRole || 'Biro Publikasi & Informasi Madrasah',
     date: rawArticle.date || 'Terbaru',
     time: rawArticle.time || 'WIB',
@@ -286,7 +286,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
               <div className="mt-2 px-1 flex items-center justify-between text-[12px] text-on-surface-variant italic">
                 <span>{article.imageCaption}</span>
                 <span className="not-italic text-[11px] text-outline">
-                  Dokumentasi Humas MAS Raudhatul Hidayah
+                  Dokumentasi Humas MA Raudlatul Hidayah
                 </span>
               </div>
             </div>

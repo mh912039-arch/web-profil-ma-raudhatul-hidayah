@@ -34,8 +34,8 @@ interface FooterProfile {
 }
 
 const defaultProfile: FooterProfile = {
-  name: 'MAS Raudhatul Hidayah',
-  formalName: 'Madrasah Aliyah Swasta Raudhatul Hidayah',
+  name: 'MA Raudlatul Hidayah',
+  formalName: 'Madrasah Aliyah Raudlatul Hidayah',
   level: 'Madrasah Aliyah (MA)',
   npsn: '6994888',
   nsm: '131236030045',
@@ -47,7 +47,7 @@ const defaultProfile: FooterProfile = {
   province: 'Banten',
   phone: '0817-6614-723',
   whatsapp: '628176614723',
-  email: 'info@maraudhatulhidayah.sch.id',
+  email: 'info@maraudlatulhidayah.sch.id',
 };
 
 export function StitchFooter() {
@@ -99,7 +99,7 @@ export function StitchFooter() {
               <div className="relative w-12 h-12 shrink-0 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 p-1.5 flex items-center justify-center transition-transform duration-200 hover:scale-105 shadow-sm">
                 <Image
                   src="/school-logo.png"
-                  alt="Logo MAS Raudhatul Hidayah"
+                  alt="Logo MA Raudlatul Hidayah"
                   width={42}
                   height={42}
                   className="object-contain drop-shadow-sm"
@@ -110,7 +110,7 @@ export function StitchFooter() {
                   {profile.name}
                 </span>
                 <span className="text-[11px] text-[#facc15] uppercase tracking-widest font-bold">
-                  {profile.formalName || 'Madrasah Aliyah Swasta Raudhatul Hidayah'}
+                  {profile.formalName || 'Madrasah Aliyah Raudlatul Hidayah'}
                 </span>
               </div>
             </div>
@@ -307,7 +307,7 @@ export function StitchFooter() {
 
         {/* Bottom Bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 font-sans text-[12.5px] text-white/70">
-          <p>© 2026 MAS Raudhatul Hidayah. Seluruh Hak Cipta Dilindungi.</p>
+          <p>© 2026 MA Raudlatul Hidayah. Seluruh Hak Cipta Dilindungi.</p>
           <div className="flex flex-wrap items-center gap-4 sm:gap-6">
             <Link
               href="/admin"

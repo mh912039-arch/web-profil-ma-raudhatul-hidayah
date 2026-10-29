@@ -46,7 +46,7 @@ export async function getIpGeolocation(rawIp: string): Promise<GeoIpInfo> {
       countryCode: 'ID',
       isp: 'Localhost / Internal Network',
       org: 'Pengembangan Mandiri',
-      lat: -6.0489, // Koordinat perkiraan Mauk, Kab. Tangerang (MAS Raudhatul Hidayah)
+      lat: -6.0489, // Koordinat perkiraan Mauk, Kab. Tangerang (MA Raudlatul Hidayah)
       lon: 106.5292,
       mapsUrl: 'https://www.google.com/maps?q=-6.0489,106.5292',
       isLocal: true,

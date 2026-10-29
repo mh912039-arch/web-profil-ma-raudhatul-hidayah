@@ -26,7 +26,7 @@ export async function GET() {
   return NextResponse.json(
     {
       status: 'success',
-      message: 'MAS Raudhatul Hidayah Database Keep-Alive Active',
+      message: 'MA Raudlatul Hidayah Database Keep-Alive Active',
       database: dbStatus,
       duration: `${durationMs}ms`,
       timestamp: new Date().toISOString(),

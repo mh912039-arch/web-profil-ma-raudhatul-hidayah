@@ -343,7 +343,7 @@ export default function GuruTendikPage() {
                   Keterangan Kode Pendidik &amp; Mata Pelajaran
                 </h1>
                 <p className="font-sans text-[14.5px] sm:text-[15.5px] text-slate-600 max-w-xl leading-relaxed">
-                  Daftar mata pelajaran resmi beserta kode dan guru pengampu MAS Raudhatul Hidayah sesuai jadwal pembagian tugas mengajar.
+                  Daftar mata pelajaran resmi beserta kode dan guru pengampu MA Raudlatul Hidayah sesuai jadwal pembagian tugas mengajar.
                 </p>
               </div>
 
@@ -408,7 +408,7 @@ export default function GuruTendikPage() {
                   A. KHUTBI. AR, S.Pd
                 </h2>
                 <p className="font-sans text-[13px] text-slate-600 mt-0.5">
-                  Kepala Madrasah MAS Raudhatul Hidayah • Penanggung Jawab Distribusi Beban Mengajar Pendidik
+                  Kepala Madrasah MA Raudlatul Hidayah • Penanggung Jawab Distribusi Beban Mengajar Pendidik
                 </p>
               </div>
               <div className="text-center sm:text-right shrink-0 border-t sm:border-t-0 sm:border-l border-slate-200 pt-3 sm:pt-0 sm:pl-6 text-[12px] text-slate-500">
@@ -533,7 +533,7 @@ export default function GuruTendikPage() {
                       Keterangan Kode Pendidik dan Mata Pelajaran
                     </h2>
                     <p className="text-xs text-slate-300 mt-1">
-                      Daftar {entries.length} entri mata pelajaran dan guru pengampu resmi MAS Raudhatul Hidayah
+                      Daftar {entries.length} entri mata pelajaran dan guru pengampu resmi MA Raudlatul Hidayah
                     </p>
                   </div>
                   <div className="shrink-0 flex items-center gap-2 bg-slate-800/80 px-3.5 py-1.5 rounded-lg border border-slate-700 text-xs font-mono text-amber-300">
@@ -597,7 +597,7 @@ export default function GuruTendikPage() {
                   <div className="text-xs text-slate-500 max-w-md">
                     <p className="font-semibold text-slate-700">Pengesahan Jadwal &amp; Tugas Mengajar:</p>
                     <p className="mt-0.5">
-                      Distribusi beban mengajar pendidik MAS Raudhatul Hidayah mengacu pada kalender pendidikan dan ketentuan Kurikulum Merdeka Kementerian Agama Republik Indonesia.
+                      Distribusi beban mengajar pendidik MA Raudlatul Hidayah mengacu pada kalender pendidikan dan ketentuan Kurikulum Merdeka Kementerian Agama Republik Indonesia.
                     </p>
                   </div>
 
