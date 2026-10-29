@@ -27,7 +27,7 @@ export interface PpdbData {
 }
 
 const defaultPpdbData: PpdbData = {
-  category: 'PENERIMAAN PESERTA DIDIK BARU (PPDB) • MAS RAUDHATUL HIDAYAH',
+  category: 'MAS RAUDLATUL HIDAYAH',
   title: 'Membentuk Generasi Berkarakter, Cerdas & Berakhlak Mulia',
   academicYear: '2027/2028',
   badgeText: 'TELAH DIBUKA!',
@@ -143,10 +143,10 @@ export function PpdbSection({ onOpenRegister }: PpdbSectionProps) {
           <div className="lg:col-span-7 flex flex-col gap-6">
             {/* Category Subtitle */}
             <div>
-              <span className="font-sans text-[14px] sm:text-[15.5px] font-bold text-amber-600 uppercase tracking-wider block">
+              <span className="font-sans text-[18px] sm:text-[22px] lg:text-[24px] font-bold text-amber-500 uppercase tracking-wide block">
                 {data.category}
               </span>
-              <h2 className="font-serif text-[32px] sm:text-[44px] lg:text-[48px] font-bold text-slate-900 tracking-tight leading-[1.14] mt-1.5">
+              <h2 className="font-sans text-[32px] sm:text-[44px] lg:text-[50px] font-extrabold text-slate-900 tracking-tight leading-[1.14] mt-2">
                 {data.title}
               </h2>
             </div>
