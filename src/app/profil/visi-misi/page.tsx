@@ -46,7 +46,6 @@ export default function VisiMisiPage() {
                   <h1 className="font-serif text-[28px] sm:text-[38px] font-bold text-slate-900 tracking-tight leading-tight">
                     Visi &amp; Misi Madrasah
                   </h1>
-                  <div className="w-14 h-1 bg-amber-500 rounded-full mt-2 mb-3" />
                   <p className="font-sans text-[14.5px] sm:text-[15.5px] text-slate-600 max-w-2xl leading-relaxed">
                     Arah haluan nilai pendidikan, visi kelembagaan, misi pembelajaran kontekstual, dan pilar keunggulan santri MAS Raudhatul Hidayah.
                   </p>

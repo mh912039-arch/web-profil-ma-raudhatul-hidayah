@@ -348,10 +348,9 @@ export default function WartaPage() {
               
               {/* Widget 1: Pencarian Berita */}
               <div className="bg-white rounded-xl border border-slate-200/90 p-6 shadow-xs">
-                <h2 className="font-sans text-[18px] font-bold text-blue-600">
+                <h2 className="font-sans text-[18px] font-bold text-blue-600 mb-4">
                   Pencarian Berita
                 </h2>
-                <div className="w-12 h-0.5 bg-amber-400 mt-2 mb-5 rounded-full" />
                 
                 <form onSubmit={handleSearchSubmit} className="flex items-center">
                   <input
@@ -386,10 +385,9 @@ export default function WartaPage() {
 
               {/* Widget 2: Kategori */}
               <div className="bg-white rounded-xl border border-slate-200/90 p-6 shadow-xs">
-                <h2 className="font-sans text-[18px] font-bold text-blue-600">
+                <h2 className="font-sans text-[18px] font-bold text-blue-600 mb-4">
                   Kategori
                 </h2>
-                <div className="w-12 h-0.5 bg-amber-400 mt-2 mb-5 rounded-full" />
 
                 <div className="flex flex-col divide-y divide-slate-100">
                   {categoriesList.map((cat, idx) => {
@@ -425,10 +423,9 @@ export default function WartaPage() {
 
               {/* Widget 3: Tags Populer */}
               <div className="bg-white rounded-xl border border-slate-200/90 p-6 shadow-xs">
-                <h2 className="font-sans text-[18px] font-bold text-blue-600">
+                <h2 className="font-sans text-[18px] font-bold text-blue-600 mb-4">
                   Tags Populer
                 </h2>
-                <div className="w-12 h-0.5 bg-amber-400 mt-2 mb-5 rounded-full" />
 
                 <div className="flex flex-wrap gap-2">
                   {popularTags.map((tag, idx) => {
@@ -452,7 +449,7 @@ export default function WartaPage() {
 
               {/* Widget 4: Instagram Utama */}
               <div className="bg-white rounded-xl border border-slate-200/90 p-6 shadow-xs">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 mb-4">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="20"
@@ -473,7 +470,6 @@ export default function WartaPage() {
                     Instagram Utama
                   </h2>
                 </div>
-                <div className="w-12 h-0.5 bg-amber-400 mt-2 mb-5 rounded-full" />
 
                 <div className="border border-dashed border-slate-200 rounded-xl p-6 text-center bg-slate-50/50 flex flex-col items-center">
                   {/* Instagram Logo */}

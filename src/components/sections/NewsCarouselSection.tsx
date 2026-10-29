@@ -163,7 +163,6 @@ export function NewsCarouselSection() {
               <h2 className="font-serif text-[28px] sm:text-[38px] font-bold text-slate-900 tracking-tight leading-tight">
                 Berita &amp; Agenda
               </h2>
-              <div className="w-12 h-1 bg-amber-500 rounded-full mt-2" />
             </div>
             <p className="font-sans text-[13.5px] text-slate-500 tracking-wide font-medium mt-1">
               Pusat informasi, warta prestasi, dan kabar kegiatan terbaru seputar MAS Raudhatul Hidayah

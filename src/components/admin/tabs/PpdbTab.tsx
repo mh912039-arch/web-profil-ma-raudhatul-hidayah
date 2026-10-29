@@ -628,7 +628,6 @@ export const PpdbTab: React.FC<PpdbTabProps> = ({
               <h3 className="font-serif text-[28px] sm:text-[34px] font-bold text-slate-900 leading-tight">
                 {formData.title}
               </h3>
-              <div className="w-12 h-1 bg-amber-500 rounded-full" />
               <p className="text-[14.5px] text-slate-600 leading-relaxed">
                 {formData.description}
               </p>

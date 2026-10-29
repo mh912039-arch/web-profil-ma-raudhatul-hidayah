@@ -226,7 +226,7 @@ export default function KontakPage() {
                         placeholder="Nama Anda"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full px-3.5 py-2.5 bg-white rounded-lg font-sans text-[14px] text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 border border-slate-300 transition-all shadow-2xs"
+                        className="w-full px-3.5 py-2.5 bg-white rounded-lg font-sans text-[14px] text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/15 focus:border-slate-800 border border-slate-300 transition-all shadow-2xs"
                       />
                     </div>
 
@@ -241,7 +241,7 @@ export default function KontakPage() {
                         placeholder="johndoe@email.com"
                         value={formData.contact}
                         onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
-                        className="w-full px-3.5 py-2.5 bg-white rounded-lg font-sans text-[14px] text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 border border-slate-300 transition-all shadow-2xs"
+                        className="w-full px-3.5 py-2.5 bg-white rounded-lg font-sans text-[14px] text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/15 focus:border-slate-800 border border-slate-300 transition-all shadow-2xs"
                       />
                     </div>
                   </div>
@@ -258,7 +258,7 @@ export default function KontakPage() {
                       placeholder="Pertanyaan Anda..."
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      className="w-full p-3.5 bg-white rounded-lg font-sans text-[14px] text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 border border-slate-300 transition-all shadow-2xs resize-y"
+                      className="w-full p-3.5 bg-white rounded-lg font-sans text-[14px] text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/15 focus:border-slate-800 border border-slate-300 transition-all shadow-2xs resize-y"
                     />
                   </div>
 

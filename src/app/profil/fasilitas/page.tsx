@@ -66,7 +66,6 @@ export default function FasilitasPage() {
                 <h1 className="font-serif text-[28px] sm:text-[38px] font-bold text-slate-900 tracking-tight leading-tight">
                   Fasilitas Belajar Siswa
                 </h1>
-                <div className="w-12 h-1 bg-amber-500 rounded-full mt-2 mb-3" />
                 <p className="font-sans text-[14.5px] sm:text-[15.5px] text-slate-600 max-w-xl leading-relaxed">
                   Sarana dan prasarana representatif penunjang proses pembelajaran interaktif, penguatan literasi digital, pembiasaan ibadah harian, dan kebugaran santri.
                 </p>

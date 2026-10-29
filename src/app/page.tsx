@@ -213,7 +213,6 @@ export default function HomePage() {
                   <h2 className="font-serif text-[34px] sm:text-[46px] lg:text-[50px] font-bold text-slate-900 tracking-tight leading-[1.12]">
                     {home.sambutanHeading}
                   </h2>
-                  <div className="w-14 h-1 bg-amber-500 rounded-full mt-1 mb-2" />
                 </div>
 
                 <div className="font-sans text-[15px] sm:text-[16px] text-slate-600 flex flex-col gap-4 leading-relaxed max-w-xl">

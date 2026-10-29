@@ -149,7 +149,6 @@ export function PpdbSection({ onOpenRegister }: PpdbSectionProps) {
               <h2 className="font-serif text-[32px] sm:text-[44px] lg:text-[48px] font-bold text-slate-900 tracking-tight leading-[1.14] mt-1.5">
                 {data.title}
               </h2>
-              <div className="w-14 h-1 bg-amber-500 rounded-full mt-3" />
             </div>
 
             {/* Description Paragraph */}
