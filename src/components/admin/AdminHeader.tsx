@@ -96,6 +96,10 @@ const tabTitles: Record<AdminTab, { title: string; subtitle: string }> = {
     title: 'Identitas & Profil Web',
     subtitle: 'NPSN, NSM, visi misi kelembagaan, alamat resmi, dan profil madrasah',
   },
+  contact: {
+    title: 'Pengaturan Halaman Kontak',
+    subtitle: 'Kelola judul, alamat, telepon/WhatsApp resmi, jam operasional TU, dan peta lokasi Google Maps',
+  },
   messages: {
     title: 'Pesan Masuk (Buku Tamu)',
     subtitle: 'Daftar pertanyaan dan aspirasi publik dari formulir kontak website',

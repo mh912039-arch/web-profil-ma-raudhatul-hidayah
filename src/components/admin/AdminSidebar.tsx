@@ -22,6 +22,7 @@ import {
   FileText,
   UserCheck,
   Mail,
+  Phone,
   ChevronDown,
   ChevronUp,
   X,
@@ -48,6 +49,7 @@ export type AdminTab =
   | 'ppdb'
   | 'registrations'
   | 'profile'
+  | 'contact'
   | 'messages';
 
 interface AdminSidebarProps {
@@ -568,6 +570,34 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                   <div className="flex items-center gap-2.5 min-w-0">
                     <SlidersHorizontal className={`w-4 h-4 shrink-0 ${getIconClass('homepage')}`} />
                     <span className="truncate">Pengaturan & Slider Hero</span>
+                  </div>
+                </button>
+
+                {/* 2. Pengaturan Halaman Kontak */}
+                <button
+                  type="button"
+                  onClick={() => handleSelectTab('contact')}
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-[13px] transition-all ${getItemClass(
+                    'contact'
+                  )}`}
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <Phone className={`w-4 h-4 shrink-0 ${getIconClass('contact')}`} />
+                    <span className="truncate">Pengaturan Halaman Kontak</span>
+                  </div>
+                </button>
+
+                {/* 3. Profil & Legalitas Lembaga */}
+                <button
+                  type="button"
+                  onClick={() => handleSelectTab('profile')}
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-[13px] transition-all ${getItemClass(
+                    'profile'
+                  )}`}
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <Building2 className={`w-4 h-4 shrink-0 ${getIconClass('profile')}`} />
+                    <span className="truncate">Profil &amp; Legalitas Lembaga</span>
                   </div>
                 </button>
 

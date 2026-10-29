@@ -18,6 +18,7 @@ import {
   User,
   AlertCircle,
   Archive,
+  RefreshCw,
 } from 'lucide-react';
 
 export interface ContactMessage {
@@ -36,6 +37,7 @@ interface MessagesTabProps {
   onMarkRead: (id: string) => Promise<void>;
   onDeleteMessage: (id: string) => Promise<void>;
   onSaveMessage?: (msg: Partial<ContactMessage>) => Promise<void>;
+  onRefresh?: () => Promise<void>;
   isSaving: boolean;
 }
 
@@ -44,8 +46,10 @@ export const MessagesTab: React.FC<MessagesTabProps> = ({
   onMarkRead,
   onDeleteMessage,
   onSaveMessage,
+  onRefresh,
   isSaving,
 }) => {
+  const [isRefreshingLocal, setIsRefreshingLocal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'unread' | 'read' | 'replied'>('all');
   const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null);
@@ -179,6 +183,25 @@ export const MessagesTab: React.FC<MessagesTabProps> = ({
               Dibalas ({messages.filter((m) => m.status === 'replied').length})
             </button>
           </div>
+
+          {onRefresh && (
+            <button
+              type="button"
+              onClick={async () => {
+                setIsRefreshingLocal(true);
+                try {
+                  await onRefresh();
+                } finally {
+                  setIsRefreshingLocal(false);
+                }
+              }}
+              disabled={isRefreshingLocal}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold transition-all shadow-2xs active:scale-95 disabled:opacity-50"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 text-slate-500 ${isRefreshingLocal ? 'animate-spin' : ''}`} />
+              <span>{isRefreshingLocal ? 'Menyegarkan...' : 'Segarkan'}</span>
+            </button>
+          )}
 
           <button
             type="button"

@@ -372,10 +372,16 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
       <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h3 className="font-serif text-[18px] font-bold text-slate-900">
-            {isFacilities ? 'Fasilitas & Sarpras' : 'Identitas & Profil Web'}
+            {activeSubTab === 'kontak'
+              ? 'Pengaturan Halaman Kontak (/kontak)'
+              : activeSubTab === 'fasilitas'
+              ? 'Fasilitas & Sarpras'
+              : 'Identitas & Profil Web'}
           </h3>
           <p className="text-[13px] text-slate-500">
-            {isFacilities
+            {activeSubTab === 'kontak'
+              ? 'Sesuaikan judul, kontak telepon/WA/email resmi, jam kerja TU, dan peta lokasi Google Maps'
+              : activeSubTab === 'fasilitas'
               ? 'Sarana, prasarana gedung, laboratorium, dan fasilitas madrasah'
               : 'NPSN, NSM, visi misi kelembagaan, alamat resmi, dan profil madrasah'}
           </p>
@@ -387,12 +393,31 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-sans text-[13px] font-bold transition-all shadow-xs active:scale-95 disabled:opacity-50"
         >
           <Save className="w-4 h-4" />
-          <span>{isSaving ? 'Menyimpan...' : isFacilities ? 'Simpan Fasilitas & Sarpras' : 'Simpan Profil Web'}</span>
+          <span>
+            {isSaving
+              ? 'Menyimpan...'
+              : activeSubTab === 'kontak'
+              ? 'Simpan Halaman Kontak'
+              : activeSubTab === 'fasilitas'
+              ? 'Simpan Fasilitas & Sarpras'
+              : 'Simpan Profil Web'}
+          </span>
         </button>
       </div>
 
       {/* Sub-navigation Tabs */}
       <div className="flex flex-wrap gap-2 p-1.5 bg-slate-100 rounded-xl w-fit">
+        <button
+          type="button"
+          onClick={() => setActiveSubTab('kontak')}
+          className={`px-4 py-2 rounded-lg text-[13px] font-semibold transition-all ${
+            activeSubTab === 'kontak'
+              ? 'bg-white text-blue-700 shadow-xs'
+              : 'text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          Halaman Kontak
+        </button>
         <button
           type="button"
           onClick={() => setActiveSubTab('legal')}
@@ -402,7 +427,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
               : 'text-slate-600 hover:text-slate-900'
           }`}
         >
-          Identitas &amp; Kontak
+          Identitas Lembaga
         </button>
         <button
           type="button"
@@ -439,7 +464,239 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
         </button>
       </div>
 
-      {/* SUB-TAB 1: IDENTITAS & KONTAK */}
+      {/* SUB-TAB 0: HALAMAN KONTAK */}
+      {activeSubTab === 'kontak' && (
+        <div className="space-y-6">
+          {/* Card: Header Halaman Kontak */}
+          <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs space-y-5">
+            <h4 className="font-serif text-[16px] font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
+              <Phone className="w-5 h-5 text-blue-600" />
+              <span>Header &amp; Pengantar Halaman Kontak</span>
+            </h4>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="flex flex-col gap-1.5 md:col-span-2">
+                <label className="text-[12.5px] font-bold text-slate-700">Judul Utama Halaman Kontak</label>
+                <input
+                  type="text"
+                  name="contactTitle"
+                  value={formData.profile.contactTitle || ''}
+                  onChange={handleProfileChange}
+                  placeholder="Hubungi Layanan Kami"
+                  className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[14px] font-bold text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                  required
+                />
+              </div>
+
+              <div className="flex flex-col gap-1.5 md:col-span-2">
+                <label className="text-[12.5px] font-bold text-slate-700">Deskripsi / Subtitle Pengantar</label>
+                <textarea
+                  rows={2}
+                  name="contactSubtitle"
+                  value={formData.profile.contactSubtitle || ''}
+                  onChange={handleProfileChange}
+                  placeholder="Mempunyai pertanyaan seputar administrasi, sistem PPDB, atau kemitraan akademik? Tinggalkan pesan Anda."
+                  className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[13px] text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Card: 3 Kontak Utama (Alamat, Telepon, Email) */}
+          <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs space-y-5">
+            <h4 className="font-serif text-[16px] font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
+              <MapPin className="w-5 h-5 text-rose-600" />
+              <span>Direktori Kontak Resmi (Tampil pada 3 Kartu Kontak)</span>
+            </h4>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[12.5px] font-bold text-slate-700">Alamat Jalan (Lengkap)</label>
+                <input
+                  type="text"
+                  name="address"
+                  value={formData.profile.address}
+                  onChange={handleProfileChange}
+                  placeholder="Jl. Raya Tanjung Kait No. 33, RT 02 / RW 01"
+                  className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[13px] text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[12.5px] font-bold text-slate-700">Kecamatan</label>
+                  <input
+                    type="text"
+                    name="district"
+                    value={formData.profile.district}
+                    onChange={handleProfileChange}
+                    placeholder="Mauk"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[13px]"
+                    required
+                  />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[12.5px] font-bold text-slate-700">Kabupaten/Kota</label>
+                  <input
+                    type="text"
+                    name="regency"
+                    value={formData.profile.regency}
+                    onChange={handleProfileChange}
+                    placeholder="Kabupaten Tangerang"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[13px]"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[12.5px] font-bold text-slate-700">Telepon Resmi (Tata Usaha)</label>
+                <input
+                  type="text"
+                  name="phone"
+                  value={formData.profile.phone}
+                  onChange={handleProfileChange}
+                  placeholder="0817-6614-723"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[13px] font-mono text-slate-900"
+                  required
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[12.5px] font-bold text-slate-700">WhatsApp Resmi (dengan awalan 62)</label>
+                <input
+                  type="text"
+                  name="whatsapp"
+                  value={formData.profile.whatsapp}
+                  onChange={handleProfileChange}
+                  placeholder="628176614723"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[13px] font-mono text-slate-900"
+                  required
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[12.5px] font-bold text-slate-700">E-mail Resmi</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.profile.email}
+                  onChange={handleProfileChange}
+                  placeholder="info@maraudhatulhidayah.sch.id"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[13px] text-slate-900"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Jam Kerja TU */}
+            <div className="pt-3 border-t border-slate-100 space-y-3">
+              <span className="text-[12.5px] font-bold text-slate-800 flex items-center gap-1.5">
+                <Clock className="w-4 h-4 text-slate-500" />
+                <span>Jam Pelayanan Tata Usaha</span>
+              </span>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="flex flex-col gap-1">
+                  <label className="text-[12px] font-medium text-slate-600">Senin – Jumat</label>
+                  <input
+                    type="text"
+                    name="hoursWeekdays"
+                    value={formData.profile.hoursWeekdays}
+                    onChange={handleProfileChange}
+                    placeholder="07.00 – 16.00 WIB"
+                    className="w-full px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-[12.5px]"
+                  />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-[12px] font-medium text-slate-600">Sabtu</label>
+                  <input
+                    type="text"
+                    name="hoursSaturday"
+                    value={formData.profile.hoursSaturday}
+                    onChange={handleProfileChange}
+                    placeholder="07.00 – 12.00 WIB"
+                    className="w-full px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-[12.5px]"
+                  />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-[12px] font-medium text-slate-600">Ahad &amp; Libur</label>
+                  <input
+                    type="text"
+                    name="hoursSunday"
+                    value={formData.profile.hoursSunday}
+                    onChange={handleProfileChange}
+                    placeholder="Tutup Layanan Fisik"
+                    className="w-full px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-[12.5px]"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Card: Peta Google Maps & Panduan Rute */}
+          <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs space-y-5">
+            <h4 className="font-serif text-[16px] font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
+              <Navigation className="w-5 h-5 text-indigo-600" />
+              <span>Peta Lokasi Google Maps &amp; Panduan Navigasi</span>
+            </h4>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[12.5px] font-bold text-slate-700">URL Embed Google Maps (Iframe Src)</label>
+              <input
+                type="text"
+                name="mapsEmbedUrl"
+                value={formData.profile.mapsEmbedUrl || ''}
+                onChange={handleProfileChange}
+                placeholder="https://www.google.com/maps/embed?pb=..."
+                className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[12.5px] font-mono text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+              />
+              <span className="text-[11.5px] text-slate-500">
+                Dapatkan dari Google Maps: Bagikan &gt; Sematkan peta (Embed a map) &gt; Salin tautan src dari iframe.
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[12px] font-bold text-slate-700">Akses Utama</label>
+                <textarea
+                  rows={2}
+                  name="navGuideAccess"
+                  value={formData.profile.navGuideAccess || ''}
+                  onChange={handleProfileChange}
+                  placeholder="Melalui Jl. Raya Tanjung Kait, Desa Tanjung Anom, Kec. Mauk."
+                  className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[12.5px] text-slate-900 focus:bg-white"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[12px] font-bold text-slate-700">Patokan Lokasi</label>
+                <textarea
+                  rows={2}
+                  name="navGuideBenchmark"
+                  value={formData.profile.navGuideBenchmark || ''}
+                  onChange={handleProfileChange}
+                  placeholder="Berada di kawasan Tanjung Anom Mauk, dekat dengan fasilitas publik desa dan kantor pemerintahan."
+                  className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[12.5px] text-slate-900 focus:bg-white"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[12px] font-bold text-slate-700">Fasilitas Parkir</label>
+                <textarea
+                  rows={2}
+                  name="navGuideParking"
+                  value={formData.profile.navGuideParking || ''}
+                  onChange={handleProfileChange}
+                  placeholder="Halaman sekolah menyediakan area parkir yang tertib untuk motor maupun mobil wali murid."
+                  className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[12.5px] text-slate-900 focus:bg-white"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* SUB-TAB 1: IDENTITAS LEMBAGA */}
       {activeSubTab === 'legal' && (
         <div className="space-y-6">
           {/* Card: Legalitas Lembaga */}
@@ -943,7 +1200,15 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
           className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-sans text-xs sm:text-[13px] font-bold transition-all shadow-xs active:scale-95 disabled:opacity-50 w-full sm:w-auto"
         >
           <Save className={`w-4 h-4 ${isSaving ? 'animate-spin' : ''}`} />
-          <span>{isSaving ? 'Menyimpan...' : isFacilities ? 'Simpan Fasilitas & Sarpras' : 'Simpan Profil Web'}</span>
+          <span>
+            {isSaving
+              ? 'Menyimpan...'
+              : activeSubTab === 'fasilitas'
+              ? 'Simpan Fasilitas & Sarpras'
+              : activeSubTab === 'kontak'
+              ? 'Simpan Halaman Kontak'
+              : 'Simpan Profil Web'}
+          </span>
         </button>
       </div>
     </form>

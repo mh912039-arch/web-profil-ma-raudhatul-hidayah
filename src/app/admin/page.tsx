@@ -331,6 +331,20 @@ export default function AdminDashboardPage() {
     loadData();
   }, [loadData]);
 
+  // Segarkan pesan masuk seketika saat admin membuka tab messages
+  useEffect(() => {
+    if (activeTab === 'messages') {
+      fetch('/api/contact', { cache: 'no-store' })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (Array.isArray(data)) {
+            setMessages(data);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [activeTab]);
+
   // Handler: Save PPDB
   const handleSavePpdb = async () => {
     setIsSaving(true);
@@ -993,12 +1007,12 @@ export default function AdminDashboardPage() {
             <ExtracurricularTab teachers={teachers} readOnly={userRole !== 'admin'} showToast={showToast} />
           )}
 
-          {userRole === 'admin' && (effectiveActiveTab === 'profile' || effectiveActiveTab === 'facilities') && (
+          {userRole === 'admin' && (effectiveActiveTab === 'profile' || effectiveActiveTab === 'contact' || effectiveActiveTab === 'facilities') && (
             <ProfileTab
               data={fullProfileData}
               onSaveFullProfile={handleSaveFullProfile}
               isSaving={isSaving}
-              activeTab={effectiveActiveTab === 'facilities' ? 'facilities' : 'profile'}
+              activeTab={effectiveActiveTab === 'facilities' ? 'facilities' : effectiveActiveTab === 'contact' ? 'contact' : 'profile'}
             />
           )}
 
@@ -1008,6 +1022,7 @@ export default function AdminDashboardPage() {
               onMarkRead={handleMarkMessageRead}
               onDeleteMessage={handleDeleteMessage}
               onSaveMessage={handleSaveMessage}
+              onRefresh={loadData}
               isSaving={isSaving}
             />
           )}
