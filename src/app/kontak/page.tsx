@@ -8,6 +8,8 @@ import { supabase } from '@/lib/supabaseClient';
 export default function KontakPage() {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [captchaState, setCaptchaState] = useState<'idle' | 'verifying' | 'verified'>('idle');
+  const [captchaError, setCaptchaError] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     contact: '',
@@ -15,6 +17,15 @@ export default function KontakPage() {
     message: '',
     hp_website: '',
   });
+
+  const handleToggleCaptcha = () => {
+    if (captchaState === 'verified') return;
+    setCaptchaState('verifying');
+    setCaptchaError(false);
+    setTimeout(() => {
+      setCaptchaState('verified');
+    }, 450);
+  };
 
   const [profileInfo, setProfileInfo] = useState({
     address: 'Jl. Raya Tanjung Kait No. 33, Tj. Anom, Kec. Mauk, Kabupaten Tangerang, Banten 15330',
@@ -52,6 +63,10 @@ export default function KontakPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (captchaState !== 'verified') {
+      setCaptchaError(true);
+      return;
+    }
     if (!formData.name || !formData.message) return;
     setIsSubmitting(true);
 
@@ -66,6 +81,7 @@ export default function KontakPage() {
     } finally {
       setIsSubmitting(false);
       setFormSubmitted(true);
+      setCaptchaState('idle');
       setTimeout(() => {
         setFormData({ name: '', contact: '', subject: '', message: '', hp_website: '' });
       }, 500);
@@ -79,7 +95,7 @@ export default function KontakPage() {
       <main className="w-full pt-20 bg-background flex-grow">
         {/* Main Interaction Area: Asymmetric Layout (Contact Directory + Message Form) */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             {/* Left Column: Official Directory (5 Cols) */}
             <div className="lg:col-span-5 flex flex-col gap-5">
               {/* Physical Location Card */}
@@ -106,48 +122,41 @@ export default function KontakPage() {
                 </div>
               </div>
 
-              {/* Telephony & WhatsApp Direct */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="bg-surface-container-lowest p-5 rounded-xl shadow-sm flex flex-col justify-between border border-surface-container">
-                  <div>
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-2">
-                      <span className="material-symbols-outlined text-[22px]">deskphone</span>
-                    </div>
-                    <span className="font-sans text-[11px] text-on-surface-variant block font-medium">
-                      Kantor Tata Usaha
-                    </span>
-                    <a
-                      href={`tel:${profileInfo.phone.replace(/\D/g, '')}`}
-                      className="font-display text-[15px] font-bold text-primary hover:text-secondary transition-colors mt-0.5 block"
-                    >
-                      {profileInfo.phone}
-                    </a>
+              {/* Telepon Resmi */}
+              <div className="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-surface-container">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-secondary shrink-0">
+                    <span className="material-symbols-outlined text-[24px]">call</span>
                   </div>
-                  <span className="font-sans text-[11.5px] text-outline mt-2">
-                    Layanan suara jam dinas
-                  </span>
-                </div>
-
-                <div className="bg-surface-container-lowest p-5 rounded-xl shadow-sm flex flex-col justify-between border border-surface-container">
-                  <div>
-                    <div className="w-10 h-10 rounded-lg bg-secondary/10 text-secondary flex items-center justify-center mb-2">
-                      <span className="material-symbols-outlined text-[22px]">chat</span>
-                    </div>
-                    <span className="font-sans text-[11px] text-on-surface-variant block font-medium">
-                      Layanan WhatsApp
+                  <div className="flex flex-col flex-1 min-w-0">
+                    <span className="font-sans text-[11px] text-secondary uppercase tracking-wider font-bold">
+                      Kontak Langsung
                     </span>
-                    <a
-                      href={`https://wa.me/${profileInfo.whatsappRaw}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-display text-[15px] font-bold text-primary hover:text-secondary transition-colors mt-0.5 block"
-                    >
-                      {profileInfo.whatsapp}
-                    </a>
+                    <h4 className="font-display text-[16px] font-bold text-primary mt-0.5 mb-1">
+                      Telepon Resmi
+                    </h4>
+                    <div className="flex flex-wrap items-center gap-3 mt-0.5">
+                      <a
+                        href={`tel:${profileInfo.phone.replace(/\D/g, '')}`}
+                        className="text-primary hover:text-secondary font-bold transition-colors flex items-center gap-1.5 text-[15px]"
+                      >
+                        <span className="material-symbols-outlined text-[17px] text-secondary">phone_in_talk</span>
+                        <span>{profileInfo.phone}</span>
+                      </a>
+                      <span className="text-slate-300">•</span>
+                      <a
+                        href={`https://wa.me/${profileInfo.whatsappRaw}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-emerald-700 hover:text-emerald-800 font-medium transition-colors flex items-center gap-1 text-[13px]"
+                      >
+                        <span>WhatsApp</span>
+                      </a>
+                    </div>
+                    <span className="font-sans text-[11.5px] text-outline mt-2">
+                      Layanan suara &amp; chat resmi jam dinas
+                    </span>
                   </div>
-                  <span className="font-sans text-[11.5px] text-outline mt-2">
-                    Respon cepat chat resmi
-                  </span>
                 </div>
               </div>
 
