@@ -107,7 +107,7 @@ async function readTeachersUnified(): Promise<TeacherItem[]> {
         position: t.position || t.role || 'Guru Mata Pelajaran',
         jenjang: t.jenjang || detectJenjang(t.class_level, t.code),
         category_label: t.category_label || 'Pendidikan Agama Islam',
-        image_url: t.image_url || '/hero/slide-1.jpg',
+        image_url: t.image_url || '/halaman-sekolah.jpeg',
         is_active: t.is_active !== undefined ? t.is_active : true,
       }));
 
@@ -214,7 +214,7 @@ export async function POST(request: Request) {
       position: (body.position || body.role || 'Guru Mata Pelajaran').trim(),
       jenjang: targetJenjang,
       category_label: (body.category_label || 'Pendidikan Agama Islam').trim(),
-      image_url: (body.image_url || '/hero/slide-1.jpg').trim(),
+      image_url: (body.image_url || '/halaman-sekolah.jpeg').trim(),
       is_active: body.is_active !== undefined ? Boolean(body.is_active) : true,
       updated_at: new Date().toISOString(),
     };

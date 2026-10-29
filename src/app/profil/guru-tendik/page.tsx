@@ -59,7 +59,7 @@ const defaultScheduleEntries: TeacherEntry[] = Array.isArray(teachersJson) && te
       position: t.position || t.role || 'Guru Mata Pelajaran',
       jenjang: t.jenjang || 'sma',
       category_label: t.category_label || 'Pendidikan Agama Islam',
-      image: t.image_url || '/hero/slide-1.jpg',
+      image: t.image_url || '/halaman-sekolah.jpeg',
       is_active: t.is_active !== undefined ? Boolean(t.is_active) : true,
     }))
   : [];
@@ -127,7 +127,7 @@ export default function GuruTendikPage() {
             position: t.position || t.role || 'Guru Mata Pelajaran',
             jenjang: t.jenjang || 'sma',
             category_label: t.category_label || 'Pendidikan Agama Islam',
-            image: t.image_url || '/hero/slide-1.jpg',
+            image: t.image_url || '/halaman-sekolah.jpeg',
             is_active: t.is_active !== undefined ? Boolean(t.is_active) : true,
           }));
           setEntries(mapped);

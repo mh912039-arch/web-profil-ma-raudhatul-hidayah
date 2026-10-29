@@ -94,7 +94,7 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
     position: 'Guru Mata Pelajaran',
     jenjang: 'sma',
     category_label: 'Umum',
-    image_url: '/hero/slide-1.jpg',
+    image_url: '/halaman-sekolah.jpeg',
     is_active: true,
   });
 
@@ -145,7 +145,7 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
       position: 'Guru Mata Pelajaran',
       jenjang: targetJenjang,
       category_label: 'Pendidikan Agama Islam',
-      image_url: '/hero/slide-1.jpg',
+      image_url: '/halaman-sekolah.jpeg',
       is_active: true,
     });
     setIsModalOpen(true);
@@ -382,7 +382,7 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
                       <div className="flex items-center gap-3">
                         <div className="relative w-10 h-10 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0">
                           <Image
-                            src={t.image_url || '/hero/slide-1.jpg'}
+                            src={t.image_url || '/halaman-sekolah.jpeg'}
                             alt={t.name}
                             fill
                             className="object-cover object-top"
@@ -473,7 +473,7 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="relative w-11 h-11 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0">
                     <Image
-                      src={t.image_url || '/hero/slide-1.jpg'}
+                      src={t.image_url || '/halaman-sekolah.jpeg'}
                       alt={t.name}
                       fill
                       className="object-cover"
@@ -838,7 +838,7 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
                 <div className="flex items-center gap-3">
                   <div className="relative w-16 h-20 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0">
                     <Image
-                      src={formData.image_url || '/hero/slide-1.jpg'}
+                      src={formData.image_url || '/halaman-sekolah.jpeg'}
                       alt="Preview Foto"
                       fill
                       className="object-cover object-top"
@@ -872,7 +872,7 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
                       type="text"
                       value={formData.image_url}
                       onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                      placeholder="/hero/slide-1.jpg atau URL foto"
+                      placeholder="/halaman-sekolah.jpeg atau URL foto"
                       className="w-full px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-[11.5px] font-mono text-slate-600 focus:bg-white focus:outline-none"
                     />
                   </div>

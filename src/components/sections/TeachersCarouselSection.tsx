@@ -52,7 +52,7 @@ const initialTeachers: TeacherItem[] = Array.isArray(teachersJson) && teachersJs
         birth_date: t.birth_date || '0000-00-00',
         position: t.position || t.role || 'Guru Mata Pelajaran',
         category_label: t.category_label || 'Umum',
-        image_url: t.image_url || '/hero/slide-1.jpg',
+        image_url: t.image_url || '/halaman-sekolah.jpeg',
         is_active: true,
       }))
   : [];
@@ -206,7 +206,7 @@ export const TeachersCarouselSection: React.FC = () => {
                       {/* Circular Portrait Image (Sesuai Referensi Screenshot) */}
                       <div className="relative w-36 h-36 sm:w-44 sm:h-44 md:w-48 md:h-48 rounded-full overflow-hidden mx-auto border-4 border-white shadow-[0_4px_16px_rgba(0,0,0,0.08)] bg-slate-100 group-hover:shadow-[0_8px_24px_rgba(0,163,224,0.25)] transition-all duration-300 transform group-hover:scale-105">
                         <Image
-                          src={teacher.image_url || '/hero/slide-1.jpg'}
+                          src={teacher.image_url || '/halaman-sekolah.jpeg'}
                           alt={teacher.name}
                           fill
                           className="object-cover object-top"
@@ -281,7 +281,7 @@ export const TeachersCarouselSection: React.FC = () => {
               {/* Kolom Kiri: Foto Pendidik */}
               <div className="w-full md:w-5/12 aspect-[3/4] md:aspect-auto md:h-[460px] relative rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shadow-xs shrink-0">
                 <Image
-                  src={selectedTeacher.image_url || '/hero/slide-1.jpg'}
+                  src={selectedTeacher.image_url || '/halaman-sekolah.jpeg'}
                   alt={selectedTeacher.name}
                   fill
                   className="object-cover object-top"
