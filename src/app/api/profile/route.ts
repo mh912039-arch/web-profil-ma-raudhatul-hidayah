@@ -54,6 +54,10 @@ export async function GET() {
         if (!data.visionMission) data.visionMission = {};
         data.visionMission.vision = supaProfile.vision;
       }
+      if (supaProfile.missions && Array.isArray(supaProfile.missions) && supaProfile.missions.length > 0) {
+        if (!data.visionMission) data.visionMission = {};
+        data.visionMission.missions = supaProfile.missions;
+      }
     }
   } catch (err) {
     console.warn('Supabase school_profile read:', err);
@@ -179,6 +183,7 @@ export async function POST(request: Request) {
         whatsapp: prof.whatsapp,
         email: prof.email,
         vision: vis.vision,
+        missions: Array.isArray(vis.missions) ? vis.missions : undefined,
         logo_url: home.schoolLogo,
       });
 

@@ -67,6 +67,10 @@ export interface FullProfileData {
   visionMission: {
     vision: string;
     missions: string[];
+    missionTitle?: string;
+    missionSubtitle?: string;
+    pageTitle?: string;
+    pageSubtitle?: string;
     pillars?: { title: string; desc: string; icon: string }[];
   };
   history: {
@@ -119,11 +123,15 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
       navGuideParking: data.profile?.navGuideParking || 'Halaman sekolah menyediakan area parkir yang tertib untuk motor maupun mobil wali murid.',
     },
     visionMission: {
-      vision: data.visionMission?.vision || 'Terwujudnya Peserta Didik Madrasah yang Berakhlak Mulia, Berprestasi, Mandiri, dan Berwawasan Lingkungan',
+      vision: data.visionMission?.vision || 'Terwujudnya generasi santri yang beriman dan bertakwa, berakhlak mulia, unggul dalam prestasi akademik dan non-akademik, serta berwawasan lingkungan dan keislaman yang moderat.',
       missions: data.visionMission?.missions || [
         'Menyelenggarakan proses pembelajaran integratif antara Kurikulum Nasional dan kurikulum kepesantrenan.',
         'Mengembangkan budaya riset ilmiah, penalaran kritis, dan literasi digital yang berlandaskan etika Islam.',
       ],
+      missionTitle: data.visionMission?.missionTitle || 'Misi Pokok Penyelenggaraan Sekolah',
+      missionSubtitle: data.visionMission?.missionSubtitle || 'Langkah konkret institusi dalam mengejawantahkan visi luhur ke dalam iklim pembelajaran, kultur madrasah, dan interaksi sosial harian peserta didik.',
+      pageTitle: data.visionMission?.pageTitle || 'Visi & Misi Madrasah',
+      pageSubtitle: data.visionMission?.pageSubtitle || 'Arah haluan nilai pendidikan, visi kelembagaan, misi pembelajaran kontekstual, dan pilar keunggulan santri MA Raudlatul Hidayah.',
       pillars: data.visionMission?.pillars || [],
     },
     history: {
@@ -173,6 +181,10 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
         visionMission: {
           vision: data.visionMission?.vision || '',
           missions: data.visionMission?.missions || [],
+          missionTitle: data.visionMission?.missionTitle || 'Misi Pokok Penyelenggaraan Sekolah',
+          missionSubtitle: data.visionMission?.missionSubtitle || 'Langkah konkret institusi dalam mengejawantahkan visi luhur ke dalam iklim pembelajaran, kultur madrasah, dan interaksi sosial harian peserta didik.',
+          pageTitle: data.visionMission?.pageTitle || 'Visi & Misi Madrasah',
+          pageSubtitle: data.visionMission?.pageSubtitle || 'Arah haluan nilai pendidikan, visi kelembagaan, misi pembelajaran kontekstual, dan pilar keunggulan santri MA Raudlatul Hidayah.',
           pillars: data.visionMission?.pillars || [],
         },
         history: {
@@ -221,6 +233,19 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
       visionMission: {
         ...prev.visionMission,
         vision: val,
+      },
+    }));
+  };
+
+  const handleVisionMissionFieldChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      visionMission: {
+        ...prev.visionMission,
+        [name]: value,
       },
     }));
   };
@@ -374,6 +399,8 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
           <h3 className="font-serif text-[18px] font-bold text-slate-900">
             {activeSubTab === 'kontak'
               ? 'Pengaturan Halaman Kontak (/kontak)'
+              : activeSubTab === 'visi'
+              ? 'Visi & Misi Madrasah (/profil/visi-misi)'
               : activeSubTab === 'fasilitas'
               ? 'Fasilitas & Sarpras'
               : 'Identitas & Profil Web'}
@@ -381,6 +408,8 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
           <p className="text-[13px] text-slate-500">
             {activeSubTab === 'kontak'
               ? 'Sesuaikan judul, kontak telepon/WA/email resmi, jam kerja TU, dan peta lokasi Google Maps'
+              : activeSubTab === 'visi'
+              ? 'Sesuaikan teks visi utama, judul misi pokok, subtitle pengantar, dan butir misi madrasah'
               : activeSubTab === 'fasilitas'
               ? 'Sarana, prasarana gedung, laboratorium, dan fasilitas madrasah'
               : 'NPSN, NSM, visi misi kelembagaan, alamat resmi, dan profil madrasah'}
@@ -398,6 +427,8 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
               ? 'Menyimpan...'
               : activeSubTab === 'kontak'
               ? 'Simpan Halaman Kontak'
+              : activeSubTab === 'visi'
+              ? 'Simpan Visi & Misi'
               : activeSubTab === 'fasilitas'
               ? 'Simpan Fasilitas & Sarpras'
               : 'Simpan Profil Web'}
@@ -920,6 +951,44 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
             />
           </div>
 
+          {/* Pengaturan Judul & Deskripsi Pengantar Bagian Misi */}
+          <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200/90 space-y-4">
+            <h5 className="font-serif text-[15px] font-bold text-slate-900 border-b border-slate-200 pb-2.5 flex items-center gap-2">
+              <Compass className="w-4 h-4 text-blue-600" />
+              <span>Pengaturan Judul &amp; Subtitle Bagian Misi</span>
+            </h5>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[12.5px] font-bold text-slate-700">
+                Judul Bagian Misi
+              </label>
+              <input
+                type="text"
+                name="missionTitle"
+                value={formData.visionMission.missionTitle || ''}
+                onChange={handleVisionMissionFieldChange}
+                placeholder="Misi Pokok Penyelenggaraan Sekolah"
+                className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-[14px] font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                required
+              />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[12.5px] font-bold text-slate-700">
+                Deskripsi / Subtitle Pengantar Misi
+              </label>
+              <textarea
+                rows={2}
+                name="missionSubtitle"
+                value={formData.visionMission.missionSubtitle || ''}
+                onChange={handleVisionMissionFieldChange}
+                placeholder="Langkah konkret institusi dalam mengejawantahkan visi luhur ke dalam iklim pembelajaran, kultur madrasah, dan interaksi sosial harian peserta didik."
+                className="w-full p-3.5 rounded-xl bg-white border border-slate-200 text-[13.5px] text-slate-800 leading-relaxed focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                required
+              />
+            </div>
+          </div>
+
           {/* Misi */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
@@ -1207,6 +1276,8 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
               ? 'Simpan Fasilitas & Sarpras'
               : activeSubTab === 'kontak'
               ? 'Simpan Halaman Kontak'
+              : activeSubTab === 'visi'
+              ? 'Simpan Visi & Misi'
               : 'Simpan Profil Web'}
           </span>
         </button>

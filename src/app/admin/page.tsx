@@ -208,7 +208,14 @@ export default function AdminDashboardPage() {
       hoursSunday: 'Tutup Layanan Fisik',
     },
     visionMission: {
-      vision: 'Terwujudnya Peserta Didik SMP yang Berakhlak Mulia, Berprestasi, Mandiri, dan Berwawasan Lingkungan',
+      vision:
+        'Terwujudnya generasi santri yang beriman dan bertakwa, berakhlak mulia, unggul dalam prestasi akademik dan non-akademik, serta berwawasan lingkungan dan keislaman yang moderat.',
+      missionTitle: 'Misi Pokok Penyelenggaraan Sekolah',
+      missionSubtitle:
+        'Langkah konkret institusi dalam mengejawantahkan visi luhur ke dalam iklim pembelajaran, kultur madrasah, dan interaksi sosial harian peserta didik.',
+      pageTitle: 'Visi & Misi Madrasah',
+      pageSubtitle:
+        'Arah haluan nilai pendidikan, visi kelembagaan, misi pembelajaran kontekstual, dan pilar keunggulan santri MA Raudlatul Hidayah.',
       missions: [
         'Menyelenggarakan proses pembelajaran integratif antara Kurikulum Nasional dan kurikulum kepesantrenan berhaluan Ahlussunnah wal Jama’ah.',
         'Mengembangkan budaya riset ilmiah, penalaran kritis, dan literasi digital yang berlandaskan etika Islam.',
