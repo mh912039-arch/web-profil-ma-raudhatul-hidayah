@@ -472,27 +472,6 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
                     ))}
                   </div>
                 </div>
-
-                <div className="bg-primary text-on-primary rounded-xl p-5 border border-primary-container shadow-md">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-secondary-fixed block mb-1">
-                    Sekretariat Humas
-                  </span>
-                  <h4 className="font-display text-[15px] font-bold text-white mb-2">
-                    Layanan Informasi &amp; Media
-                  </h4>
-                  <p className="font-sans text-[12.5px] text-on-primary-container leading-relaxed mb-4">
-                    Untuk konfirmasi pengumuman, permohonan peliputan, atau koordinasi kemitraan sekolah.
-                  </p>
-                  <a
-                    href="https://wa.me/628176614723"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-secondary text-white font-semibold text-[12.5px] hover:bg-white hover:text-primary transition-colors"
-                  >
-                    <span className="material-symbols-outlined text-[16px]">chat</span>
-                    <span>WhatsApp 0817-6614-723</span>
-                  </a>
-                </div>
               </aside>
             </div>
           </div>
