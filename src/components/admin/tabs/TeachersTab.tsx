@@ -17,6 +17,8 @@ import {
   GraduationCap,
   Building2,
   BookOpen,
+  Facebook,
+  Instagram,
 } from 'lucide-react';
 import { uploadImageWithAutoCompression } from '@/lib/imageCompression';
 
@@ -41,6 +43,8 @@ export interface TeacherRecord {
   image_url: string;
   is_active: boolean;
   role?: string;
+  facebook_url?: string;
+  instagram_url?: string;
 }
 
 export type JenjangFilter = 'all' | 'sd' | 'smp' | 'sma';
@@ -96,6 +100,8 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
     category_label: 'Umum',
     image_url: '/halaman-sekolah.jpeg',
     is_active: true,
+    facebook_url: '',
+    instagram_url: '',
   });
 
   const counts = {
@@ -147,6 +153,8 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
       category_label: 'Pendidikan Agama Islam',
       image_url: '/halaman-sekolah.jpeg',
       is_active: true,
+      facebook_url: '',
+      instagram_url: '',
     });
     setIsModalOpen(true);
   };
@@ -166,6 +174,8 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
       birth_date: t.birth_date || '0000-00-00',
       position: t.position || t.role || 'Guru Mata Pelajaran',
       jenjang: t.jenjang || detectJenjang(t.class_level, t.code),
+      facebook_url: t.facebook_url || '',
+      instagram_url: t.instagram_url || '',
     });
     setIsModalOpen(true);
   };
@@ -490,6 +500,34 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
                     <p className="text-[11px] text-slate-500 truncate mt-0.5">
                       NIP: {t.nip || '-'} • {t.position || 'Guru'}
                     </p>
+                    {(t.facebook_url || t.instagram_url) && (
+                      <div className="flex items-center gap-1.5 mt-1 text-slate-400">
+                        {t.facebook_url && (
+                          <a
+                            href={t.facebook_url.startsWith('http') ? t.facebook_url : `https://${t.facebook_url}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-1 rounded bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
+                            title={`Facebook: ${t.facebook_url}`}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <Facebook className="w-3 h-3" />
+                          </a>
+                        )}
+                        {t.instagram_url && (
+                          <a
+                            href={t.instagram_url.startsWith('http') ? t.instagram_url : `https://${t.instagram_url}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-1 rounded bg-pink-50 text-pink-600 hover:bg-pink-100 transition-colors"
+                            title={`Instagram: ${t.instagram_url}`}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <Instagram className="w-3 h-3" />
+                          </a>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -874,6 +912,47 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
                       onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
                       placeholder="/halaman-sekolah.jpeg atau URL foto"
                       className="w-full px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-[11.5px] font-mono text-slate-600 focus:bg-white focus:outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Media Sosial Guru (Facebook & Instagram) */}
+              <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80 space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="text-[12px] font-bold text-slate-800 flex items-center gap-1.5">
+                    <Users className="w-3.5 h-3.5 text-blue-600" />
+                    <span>Media Sosial Pendidik (Tampil pada Kartu Beranda)</span>
+                  </label>
+                  <span className="text-[11px] text-slate-400">Opsional</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[11.5px] font-semibold text-slate-600 flex items-center gap-1.5">
+                      <Facebook className="w-3.5 h-3.5 text-blue-600" />
+                      <span>Link Profil Facebook</span>
+                    </label>
+                    <input
+                      type="url"
+                      value={formData.facebook_url || ''}
+                      onChange={(e) => setFormData({ ...formData, facebook_url: e.target.value })}
+                      placeholder="Contoh: https://facebook.com/nama.guru"
+                      className="px-3 py-2 rounded-xl bg-white border border-slate-200 text-[12.5px] font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[11.5px] font-semibold text-slate-600 flex items-center gap-1.5">
+                      <Instagram className="w-3.5 h-3.5 text-pink-600" />
+                      <span>Link Profil Instagram</span>
+                    </label>
+                    <input
+                      type="url"
+                      value={formData.instagram_url || ''}
+                      onChange={(e) => setFormData({ ...formData, instagram_url: e.target.value })}
+                      placeholder="Contoh: https://instagram.com/nama_guru"
+                      className="px-3 py-2 rounded-xl bg-white border border-slate-200 text-[12.5px] font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-pink-500/30"
                     />
                   </div>
                 </div>

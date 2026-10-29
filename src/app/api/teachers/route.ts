@@ -37,6 +37,8 @@ export interface TeacherItem {
   category_label: string;
   image_url: string;
   is_active: boolean;
+  facebook_url?: string;
+  instagram_url?: string;
   created_at?: string;
   updated_at?: string;
 }
@@ -109,6 +111,8 @@ async function readTeachersUnified(): Promise<TeacherItem[]> {
         category_label: t.category_label || 'Pendidikan Agama Islam',
         image_url: t.image_url || '/halaman-sekolah.jpeg',
         is_active: t.is_active !== undefined ? t.is_active : true,
+        facebook_url: t.facebook_url || '',
+        instagram_url: t.instagram_url || '',
       }));
 
       const supaCodesAndOrders = new Set(supaMapped.map((s) => `code-${s.code}-order-${s.order_no}`));
@@ -216,6 +220,8 @@ export async function POST(request: Request) {
       category_label: (body.category_label || 'Pendidikan Agama Islam').trim(),
       image_url: (body.image_url || '/halaman-sekolah.jpeg').trim(),
       is_active: body.is_active !== undefined ? Boolean(body.is_active) : true,
+      facebook_url: (body.facebook_url || '').trim(),
+      instagram_url: (body.instagram_url || '').trim(),
       updated_at: new Date().toISOString(),
     };
 

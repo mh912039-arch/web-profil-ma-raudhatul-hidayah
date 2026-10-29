@@ -29,6 +29,8 @@ export interface TeacherItem {
   category_label?: string;
   image_url: string;
   is_active: boolean;
+  facebook_url?: string;
+  instagram_url?: string;
 }
 
 // Inisialisasi awal langsung dari file JSON lokal
@@ -54,6 +56,8 @@ const initialTeachers: TeacherItem[] = Array.isArray(teachersJson) && teachersJs
         category_label: t.category_label || 'Umum',
         image_url: t.image_url || '/halaman-sekolah.jpeg',
         is_active: true,
+        facebook_url: t.facebook_url || '',
+        instagram_url: t.instagram_url || '',
       }))
   : [];
 
@@ -240,19 +244,55 @@ export const TeachersCarouselSection: React.FC<TeachersCarouselSectionProps> = (
                       </p>
 
                       {/* Social Media Icons (Facebook & Instagram Sesuai Screenshot) */}
-                      <div className="flex items-center justify-center gap-3 mt-2.5 text-slate-400">
-                        <span
-                          className="p-1 hover:text-blue-600 transition-colors"
-                          title="Facebook"
-                        >
-                          <Facebook className="w-3.5 h-3.5" />
-                        </span>
-                        <span
-                          className="p-1 hover:text-pink-600 transition-colors"
-                          title="Instagram"
-                        >
-                          <Instagram className="w-3.5 h-3.5" />
-                        </span>
+                      <div
+                        className="flex items-center justify-center gap-3 mt-2.5 text-slate-400"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {teacher.facebook_url ? (
+                          <a
+                            href={
+                              teacher.facebook_url.startsWith('http://') || teacher.facebook_url.startsWith('https://')
+                                ? teacher.facebook_url
+                                : `https://${teacher.facebook_url}`
+                            }
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-1 text-blue-600 hover:text-blue-800 hover:scale-110 transition-all cursor-pointer"
+                            title={`Facebook: ${teacher.name}`}
+                          >
+                            <Facebook className="w-3.5 h-3.5" />
+                          </a>
+                        ) : (
+                          <span
+                            className="p-1 text-slate-300 hover:text-slate-400 transition-colors cursor-default"
+                            title="Facebook belum ditambahkan"
+                          >
+                            <Facebook className="w-3.5 h-3.5" />
+                          </span>
+                        )}
+
+                        {teacher.instagram_url ? (
+                          <a
+                            href={
+                              teacher.instagram_url.startsWith('http://') || teacher.instagram_url.startsWith('https://')
+                                ? teacher.instagram_url
+                                : `https://${teacher.instagram_url}`
+                            }
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-1 text-pink-600 hover:text-pink-800 hover:scale-110 transition-all cursor-pointer"
+                            title={`Instagram: ${teacher.name}`}
+                          >
+                            <Instagram className="w-3.5 h-3.5" />
+                          </a>
+                        ) : (
+                          <span
+                            className="p-1 text-slate-300 hover:text-slate-400 transition-colors cursor-default"
+                            title="Instagram belum ditambahkan"
+                          >
+                            <Instagram className="w-3.5 h-3.5" />
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -398,6 +438,46 @@ export const TeachersCarouselSection: React.FC<TeachersCarouselSectionProps> = (
                     {selectedTeacher.position || 'Guru Mata Pelajaran'}
                   </span>
                 </div>
+
+                {/* Media Sosial (Jika Tersedia) */}
+                {(selectedTeacher.facebook_url || selectedTeacher.instagram_url) && (
+                  <div className="py-2.5 sm:py-3 flex items-start">
+                    <span className="w-36 sm:w-44 font-bold text-slate-900 shrink-0">Media Sosial</span>
+                    <span className="w-6 text-center text-slate-700 font-bold shrink-0">:</span>
+                    <div className="flex items-center gap-2 flex-1 flex-wrap">
+                      {selectedTeacher.facebook_url && (
+                        <a
+                          href={
+                            selectedTeacher.facebook_url.startsWith('http')
+                              ? selectedTeacher.facebook_url
+                              : `https://${selectedTeacher.facebook_url}`
+                          }
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 text-xs font-semibold transition-colors"
+                        >
+                          <Facebook className="w-3.5 h-3.5" />
+                          <span>Facebook</span>
+                        </a>
+                      )}
+                      {selectedTeacher.instagram_url && (
+                        <a
+                          href={
+                            selectedTeacher.instagram_url.startsWith('http')
+                              ? selectedTeacher.instagram_url
+                              : `https://${selectedTeacher.instagram_url}`
+                          }
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-pink-50 text-pink-700 hover:bg-pink-100 text-xs font-semibold transition-colors"
+                        >
+                          <Instagram className="w-3.5 h-3.5" />
+                          <span>Instagram</span>
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                )}
 
                 {/* Footer action */}
                 <div className="pt-4 flex items-center justify-end">
