@@ -237,6 +237,60 @@ const defaultScheduleEntries: ScheduleEntry[] = Array.isArray(teachersJson) && t
     },
   ];
 
+function getInitials(name: string): string {
+  if (!name) return 'GP';
+  const clean = name
+    .replace(/\b(drs|dra|ir|dr|kh|prof|h|hj|se|st|s\.pd|s\.kom|s\.pd\.i|m\.pd|m\.si|lc)\b\.?/gi, '')
+    .replace(/,\s*[a-z0-9\.\s]+$/i, '')
+    .trim();
+  const parts = clean.split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return 'GP';
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[1][0]).toUpperCase();
+}
+
+function isGenericPlaceholder(img?: string): boolean {
+  if (!img) return true;
+  return (
+    img.includes('/hero/') ||
+    img.includes('/kelas.') ||
+    img.includes('/perpus') ||
+    img.includes('placeholder')
+  );
+}
+
+function getCategoryBadgeStyle(category: string) {
+  const cat = (category || '').toLowerCase();
+  if (cat.includes('islam') || cat.includes('agama') || cat.includes('muatan') || cat.includes('btq') || cat.includes('sejarah kebudayaan')) {
+    return {
+      avatarBg: 'bg-emerald-50 text-emerald-800 border-emerald-200/90',
+      badgeBg: 'bg-emerald-50 text-emerald-700 border-emerald-200/70',
+    };
+  }
+  if (cat.includes('mipa') || cat.includes('teknologi') || cat.includes('komunikasi') || cat.includes('matematika')) {
+    return {
+      avatarBg: 'bg-blue-50 text-blue-800 border-blue-200/90',
+      badgeBg: 'bg-blue-50 text-blue-700 border-blue-200/70',
+    };
+  }
+  if (cat.includes('ips') || cat.includes('sosial') || cat.includes('kewarganegaraan')) {
+    return {
+      avatarBg: 'bg-amber-50 text-amber-800 border-amber-200/90',
+      badgeBg: 'bg-amber-50 text-amber-800 border-amber-200/70',
+    };
+  }
+  if (cat.includes('bahasa') || cat.includes('seni') || cat.includes('olahraga')) {
+    return {
+      avatarBg: 'bg-indigo-50 text-indigo-800 border-indigo-200/90',
+      badgeBg: 'bg-indigo-50 text-indigo-700 border-indigo-200/70',
+    };
+  }
+  return {
+    avatarBg: 'bg-slate-100 text-slate-800 border-slate-200',
+    badgeBg: 'bg-slate-100 text-slate-700 border-slate-200/70',
+  };
+}
+
 export default function GuruTendikPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
@@ -322,7 +376,7 @@ export default function GuruTendikPage() {
                     }`}
                   >
                     <LayoutGrid className="w-3.5 h-3.5 text-blue-600" />
-                    <span>Kartu ({entries.length} Mapel)</span>
+                    <span>Roster Direktori ({entries.length} Mapel)</span>
                   </button>
                   <button
                     type="button"
@@ -377,58 +431,83 @@ export default function GuruTendikPage() {
               </span>
             </div>
 
-            {/* View Mode 1: 22 Cards View */}
+            {/* View Mode 1: Roster Direktori Horizontal Kompak (Flat, Non-Clickable) */}
             {viewMode === 'cards' && (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {filteredEntries.map((item) => (
-                    <div
-                      key={item.no}
-                      className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col gap-3.5 border border-slate-200/90 group"
-                    >
-                      {/* Portrait Container - Clean, no floating badges */}
-                      <div className="relative w-full h-52 rounded-xl overflow-hidden bg-slate-100 border border-slate-100">
-                        <Image
-                          src={item.image}
-                          alt={item.teacherName}
-                          fill
-                          className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                        />
-                      </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4">
+                  {filteredEntries.map((item) => {
+                    const catStyle = getCategoryBadgeStyle(item.categoryLabel);
+                    const hasCustomPhoto = !isGenericPlaceholder(item.image);
 
-                      {/* Body Content */}
-                      <div className="flex flex-col gap-2 flex-1">
-                        {/* Subject Header */}
-                        <div>
-                          <h3 className="font-serif text-[18px] font-bold text-slate-900 leading-snug group-hover:text-blue-700 transition-colors">
-                            {item.subjectName}
-                          </h3>
+                    return (
+                      <div
+                        key={item.no}
+                        className="bg-white rounded-xl border border-slate-200/90 p-3.5 sm:p-4 flex items-center gap-3.5 select-text cursor-default shadow-[0_1px_2px_rgba(0,0,0,0.02)]"
+                      >
+                        {/* Avatar Profil / Monogram */}
+                        <div
+                          className={`relative w-13 h-13 sm:w-14 sm:h-14 rounded-full overflow-hidden shrink-0 flex items-center justify-center border ${
+                            hasCustomPhoto
+                              ? 'border-slate-200 bg-slate-100'
+                              : catStyle.avatarBg
+                          }`}
+                        >
+                          {hasCustomPhoto ? (
+                            <Image
+                              src={item.image}
+                              alt={item.teacherName}
+                              fill
+                              className="object-cover object-top"
+                              sizes="56px"
+                            />
+                          ) : (
+                            <span className="font-mono text-[13.5px] font-bold tracking-wider select-none">
+                              {getInitials(item.teacherName)}
+                            </span>
+                          )}
                         </div>
 
-                        {/* Teacher & Level Info */}
-                        <div className="pt-2 border-t border-slate-100 flex flex-col gap-1 text-[12.5px]">
-                          <div>
-                            <span className="text-[10.5px] uppercase tracking-wider text-slate-400 font-bold block">
-                              Guru Pengampu:
+                        {/* Content Column */}
+                        <div className="flex-1 min-w-0 flex flex-col justify-center gap-0.5">
+                          {/* Row 1: Code Badge & Subject Name */}
+                          <div className="flex items-center gap-1.5">
+                            <span className="font-mono text-[10.5px] font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200/80 shrink-0">
+                              Kode {item.code}
                             </span>
-                            <span className="font-bold text-slate-900 text-[13.5px]">
-                              {item.teacherName}
-                            </span>
+                            <h3
+                              className="font-sans text-[13.5px] sm:text-[14px] font-bold text-slate-900 truncate"
+                              title={item.subjectName}
+                            >
+                              {item.subjectName}
+                            </h3>
                           </div>
 
-                          <div className="flex items-center justify-between text-[11.5px] text-slate-500 mt-1">
-                            <span>Alokasi: <strong className="text-slate-700">{item.classLevel}</strong></span>
+                          {/* Row 2: Teacher Name */}
+                          <div
+                            className="text-[12.5px] sm:text-[13px] text-slate-800 font-semibold truncate flex items-center gap-1.5 pt-0.5"
+                            title={item.teacherName}
+                          >
+                            <span className="text-[10.5px] font-normal text-slate-400 uppercase tracking-wider shrink-0">
+                              Guru:
+                            </span>
+                            <span className="truncate">{item.teacherName}</span>
+                          </div>
+
+                          {/* Row 3: Class Allocation & Status */}
+                          <div className="flex items-center gap-2 pt-1 text-[11px] text-slate-500">
+                            <span className="inline-block px-1.5 py-0.5 rounded bg-slate-50 text-slate-600 font-medium border border-slate-200/60 truncate max-w-[130px]">
+                              {item.classLevel}
+                            </span>
+                            <span className="text-slate-300">•</span>
+                            <span className="inline-flex items-center gap-1 text-emerald-700 font-medium shrink-0">
+                              <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
+                              <span>Aktif</span>
+                            </span>
                           </div>
                         </div>
                       </div>
-
-                      {/* Footer */}
-                      <div className="mt-auto pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11.5px] text-slate-500 font-medium">
-                        <span className="text-slate-400">Jadwal Resmi</span>
-                        <span className="font-semibold text-slate-600">Tingkat MA</span>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 {/* Empty State */}
