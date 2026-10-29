@@ -285,9 +285,6 @@ export default function GuruTendikPage() {
                 <p className="font-sans text-[13px] text-slate-600 mt-0.5">
                   Kepala Satuan Pendidikan MA Raudlatul Hidayah • Penanggung Jawab Distribusi Tugas Pendidik &amp; Tenaga Kependidikan
                 </p>
-                <p className="text-[12px] text-slate-500 font-mono mt-1">
-                  NIP: - • Pendidikan: S1 • Status: Guru Tetap
-                </p>
               </div>
               <div className="text-center sm:text-right shrink-0 border-t sm:border-t-0 sm:border-l border-slate-200 pt-3 sm:pt-0 sm:pl-6 text-[12px] text-slate-500">
                 <span className="block font-semibold text-slate-800">Tangerang, 13 Juli 2026</span>
