@@ -339,9 +339,6 @@ export default function GuruTendikPage() {
             {/* Header section with Title and Search Input */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 pb-8 border-b border-slate-200/80">
               <div>
-                <span className="text-[12px] font-bold text-amber-700 uppercase tracking-widest block mb-2">
-                  Bagian II Dokumen Resmi Madrasah
-                </span>
                 <h1 className="font-serif text-[28px] sm:text-[38px] font-bold text-slate-900 tracking-tight leading-tight">
                   Keterangan Kode Pendidik &amp; Mata Pelajaran
                 </h1>
@@ -533,11 +530,8 @@ export default function GuruTendikPage() {
                 {/* Table Header Banner */}
                 <div className="bg-slate-900 text-white p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800">
                   <div>
-                    <span className="text-[11px] font-bold uppercase tracking-widest text-amber-400">
-                      Bagian II Dokumen Jadwal Madrasah
-                    </span>
-                    <h2 className="font-serif text-xl sm:text-2xl font-bold tracking-tight mt-0.5">
-                      II. Keterangan Kode Pendidik dan Mata Pelajaran
+                    <h2 className="font-serif text-xl sm:text-2xl font-bold tracking-tight">
+                      Keterangan Kode Pendidik dan Mata Pelajaran
                     </h2>
                     <p className="text-xs text-slate-300 mt-1">
                       Daftar {entries.length} entri mata pelajaran dan guru pengampu resmi MAS Raudhatul Hidayah
