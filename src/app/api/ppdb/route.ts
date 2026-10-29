@@ -16,7 +16,7 @@ const noCacheHeaders = {
 };
 
 const defaultData = {
-  category: "PENERIMAAN PESERTA DIDIK BARU (PPDB) • MAS RAUDHATUL HIDAYAH",
+  category: "MAS RAUDLATUL HIDAYAH",
   title: "Membentuk Generasi Berkarakter, Cerdas & Berakhlak Mulia",
   academicYear: "2027/2028",
   badgeText: "TELAH DIBUKA!",

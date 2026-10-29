@@ -622,7 +622,7 @@ export const PpdbTab: React.FC<PpdbTabProps> = ({
 
             {/* Text Preview */}
             <div className="lg:col-span-7 flex flex-col gap-4">
-              <span className="text-[12px] font-bold text-amber-600 uppercase tracking-widest">
+              <span className="text-[14px] sm:text-[15.5px] font-bold text-amber-600 uppercase tracking-wider">
                 {formData.category}
               </span>
               <h3 className="font-serif text-[28px] sm:text-[34px] font-bold text-slate-900 leading-tight">

@@ -178,7 +178,7 @@ export default function KontakPage() {
 
             {/* Right Column: Message Form (7 Cols) */}
             <div className="lg:col-span-7 flex flex-col">
-              <div className="bg-white p-6 sm:p-9 rounded-2xl shadow-sm border border-slate-200/90 flex flex-col">
+              <div className="flex flex-col">
                 <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                   {/* Anti-Bot Honeypot Protection */}
                   <div style={{ display: 'none', position: 'absolute', left: '-9999px', opacity: 0 }} aria-hidden="true">
