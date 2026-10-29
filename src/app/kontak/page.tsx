@@ -263,7 +263,7 @@ export default function KontakPage() {
 
             {/* Right Column: Message Form (7 Cols) */}
             <div className="lg:col-span-7 flex flex-col">
-              <div className="bg-surface-container-lowest p-6 sm:p-8 rounded-xl shadow-md h-full flex flex-col justify-between border border-surface-container">
+              <div className="bg-surface-container-lowest p-6 sm:p-8 rounded-xl shadow-md border border-surface-container flex flex-col">
                 <div>
                   <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
                     <div className="flex items-center gap-1.5 text-secondary">
@@ -374,6 +374,97 @@ export default function KontakPage() {
                       />
                     </div>
 
+                    {/* Google reCAPTCHA v2 Widget (SS ke-2) */}
+                    <div className="pt-1 pb-1">
+                      <div
+                        onClick={handleToggleCaptcha}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                          if (e.key === ' ' || e.key === 'Enter') {
+                            e.preventDefault();
+                            handleToggleCaptcha();
+                          }
+                        }}
+                        className={`w-full max-w-[302px] h-[76px] px-3.5 py-2.5 rounded-[3px] border transition-all cursor-pointer select-none flex items-center justify-between shadow-2xs ${
+                          captchaState === 'verified'
+                            ? 'bg-[#fcfdfc] border-emerald-300 ring-1 ring-emerald-400/20'
+                            : 'bg-[#fafafa] border-[#d3d3d3] hover:border-[#b5b5b5] hover:bg-[#f5f5f5]'
+                        }`}
+                      >
+                        {/* Checkbox & Text */}
+                        <div className="flex items-center gap-3">
+                          <div
+                            className={`w-[26px] h-[26px] rounded-[2px] flex items-center justify-center transition-all ${
+                              captchaState === 'verified'
+                                ? 'bg-transparent text-emerald-600'
+                                : captchaState === 'verifying'
+                                ? 'bg-white border-2 border-blue-500'
+                                : 'bg-white border-2 border-[#c1c1c1] hover:border-[#9e9e9e]'
+                            }`}
+                          >
+                            {captchaState === 'verifying' && (
+                              <div className="w-4 h-4 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
+                            )}
+                            {captchaState === 'verified' && (
+                              <svg className="w-6 h-6 text-emerald-600 animate-in zoom-in-75 duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="20 6 9 17 4 12" />
+                              </svg>
+                            )}
+                          </div>
+
+                          <span className="font-sans text-[13.5px] font-normal text-slate-800">
+                            I&apos;m not a robot
+                          </span>
+                        </div>
+
+                        {/* reCAPTCHA Official Branding */}
+                        <div className="flex flex-col items-center justify-center pl-2 shrink-0">
+                          <svg className="w-7 h-7" viewBox="0 0 64 64" fill="none">
+                            <path
+                              d="M32 6C17.64 6 6 17.64 6 32h6c0-11.05 8.95-20 20-20 6.13 0 11.64 2.76 15.34 7.12L39.88 27H58V8.88l-6.42 6.42C46.88 10.02 39.8 6 32 6z"
+                              fill="#4285F4"
+                            />
+                            <path
+                              d="M52 32c0 11.05-8.95 20-20 20-6.13 0-11.64-2.76-15.34-7.12L24.12 37H6v18.12l6.42-6.42C17.12 53.98 24.2 58 32 58c14.36 0 26-11.64 26-26h-6z"
+                              fill="#9AA0A6"
+                            />
+                          </svg>
+                          <span className="text-[9px] font-sans font-semibold text-slate-500 tracking-tight leading-tight mt-0.5">
+                            reCAPTCHA
+                          </span>
+                          <div className="flex items-center gap-1 text-[8px] text-slate-400 leading-none">
+                            <a
+                              href="https://www.google.com/intl/en/policies/privacy/"
+                              target="_blank"
+                              rel="noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className="hover:underline"
+                            >
+                              Privacy
+                            </a>
+                            <span>-</span>
+                            <a
+                              href="https://www.google.com/intl/en/policies/terms/"
+                              target="_blank"
+                              rel="noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className="hover:underline"
+                            >
+                              Terms
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+
+                      {captchaError && (
+                        <p className="text-[12px] text-rose-600 font-medium mt-1.5 flex items-center gap-1">
+                          <span className="material-symbols-outlined text-[15px]">error</span>
+                          <span>Harap centang verifikasi keamanan &quot;I&apos;m not a robot&quot;.</span>
+                        </p>
+                      )}
+                    </div>
+
                     <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3">
                       <div className="flex items-center gap-1.5 text-on-surface-variant text-[12px]">
                         <span className="material-symbols-outlined text-[16px] text-secondary">
@@ -419,24 +510,10 @@ export default function KontakPage() {
         {/* 4. Interactive Campus Location & Route Map Section */}
         <section className="w-full bg-surface-container-low py-12 sm:py-16 border-t border-surface-container">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
-              <div>
-                <span className="font-sans text-[12px] text-secondary uppercase tracking-wider font-bold block mb-1">
-                  Panduan Rute &amp; Aksesibilitas
-                </span>
-                <h2 className="font-display text-[26px] sm:text-[34px] font-bold text-primary tracking-tight">
-                  Peta Lokasi Sekolah
-                </h2>
-              </div>
-              <a
-                href="https://maps.app.goo.gl/4dKTkXuw5VBhmgACA"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-surface-container-lowest text-primary hover:bg-primary hover:text-on-primary font-sans text-[13.5px] font-semibold transition-all shadow-sm border border-surface-container"
-              >
-                <span>Buka di Google Maps Langsung</span>
-                <span className="material-symbols-outlined text-[17px]">open_in_new</span>
-              </a>
+            <div className="mb-8">
+              <h2 className="font-display text-[26px] sm:text-[34px] font-bold text-primary tracking-tight">
+                Peta Lokasi Sekolah
+              </h2>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
