@@ -469,13 +469,10 @@ export default function GuruTendikPage() {
 
                         {/* Content Column */}
                         <div className="flex-1 min-w-0 flex flex-col justify-center gap-0.5">
-                          {/* Row 1: Code Badge & Subject Name */}
-                          <div className="flex items-center gap-1.5">
-                            <span className="font-mono text-[10.5px] font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200/80 shrink-0">
-                              Kode {item.code}
-                            </span>
+                          {/* Row 1: Subject Name */}
+                          <div>
                             <h3
-                              className="font-sans text-[13.5px] sm:text-[14px] font-bold text-slate-900 truncate"
+                              className="font-sans text-[14px] sm:text-[14.5px] font-bold text-slate-900 truncate"
                               title={item.subjectName}
                             >
                               {item.subjectName}
