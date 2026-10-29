@@ -59,7 +59,7 @@ export async function GET() {
       .select('*')
       .order('published_at', { ascending: false });
 
-    if (!supaErr && supaArticles && supaArticles.length > 0) {
+    if (!supaErr && Array.isArray(supaArticles)) {
       // Map Supabase rows to unified format
       const supaMapped: UnifiedArticle[] = supaArticles.map((row: any) => ({
         id: row.id,

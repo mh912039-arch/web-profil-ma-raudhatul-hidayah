@@ -42,28 +42,15 @@ export interface ArticleItem {
 }
 
 async function getAllArticles(): Promise<ArticleItem[]> {
-  let list: ArticleItem[] = [];
-
-  // 1. Try local articlesData.json
+  // 1. Prioritaskan Supabase Cloud sebagai sumber data utama real-time
   try {
-    const filePath = path.join(process.cwd(), 'src', 'data', 'articlesData.json');
-    if (fs.existsSync(filePath)) {
-      const raw = fs.readFileSync(filePath, 'utf-8');
-      list = JSON.parse(raw);
-    }
-  } catch (e) {
-    console.warn('Error reading articlesData.json in detail page:', e);
-  }
-
-  // 2. Try Supabase
-  try {
-    const { data: supaArticles } = await supabase
+    const { data: supaArticles, error: supaErr } = await supabase
       .from('articles')
       .select('*')
       .order('published_at', { ascending: false });
 
-    if (supaArticles && supaArticles.length > 0) {
-      const supaMapped: ArticleItem[] = supaArticles.map((row: any) => ({
+    if (!supaErr && supaArticles && supaArticles.length > 0) {
+      return supaArticles.map((row: any) => ({
         id: row.id,
         slug: row.slug,
         title: row.title,
@@ -84,22 +71,30 @@ async function getAllArticles(): Promise<ArticleItem[]> {
         imageCaption: row.image_caption || row.title,
         tags: [row.category || 'Berita', 'Madrasah', 'MAS Raudhatul Hidayah'],
       }));
-
-      const localSlugs = new Set(list.map((l) => l.slug));
-      list = [...list, ...supaMapped.filter((s) => !localSlugs.has(s.slug))];
     }
   } catch (e) {
-    // fallback
+    console.warn('Error reading Supabase articles in detail page:', e);
   }
 
-  if (list.length === 0) {
-    list = schoolData.news.map((item) => ({
-      ...item,
-      paragraphs: item.paragraphs || [],
-      tags: item.tags || [],
-    }));
+  // 2. Hanya fallback ke articlesData.json jika koneksi Supabase gagal
+  try {
+    const filePath = path.join(process.cwd(), 'src', 'data', 'articlesData.json');
+    if (fs.existsSync(filePath)) {
+      const raw = fs.readFileSync(filePath, 'utf-8');
+      const list = JSON.parse(raw);
+      if (Array.isArray(list) && list.length > 0) {
+        return list;
+      }
+    }
+  } catch (e) {
+    console.warn('Error reading articlesData.json fallback in detail page:', e);
   }
-  return list;
+
+  return schoolData.news.map((item) => ({
+    ...item,
+    paragraphs: item.paragraphs || [],
+    tags: item.tags || [],
+  }));
 }
 
 async function getArticleBySlug(slug: string): Promise<ArticleItem | null> {
@@ -146,16 +141,6 @@ async function getArticleBySlug(slug: string): Promise<ArticleItem | null> {
   const all = await getAllArticles();
   const found = all.find((a) => a.slug === slug);
   if (found) return found;
-
-  // 3. Fallback to mockSchoolData
-  const mockFound = schoolData.news.find((n) => n.slug === slug);
-  if (mockFound) {
-    return {
-      ...mockFound,
-      paragraphs: mockFound.paragraphs || [],
-      tags: mockFound.tags || [],
-    };
-  }
 
   return null;
 }
