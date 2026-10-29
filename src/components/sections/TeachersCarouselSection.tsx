@@ -2,11 +2,9 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import {
   ChevronLeft,
   ChevronRight,
-  ArrowRight,
   X,
   Facebook,
   Instagram,
@@ -281,35 +279,6 @@ export const TeachersCarouselSection: React.FC = () => {
             </div>
           </div>
 
-          {/* Dots Indicator */}
-          {maxIndex > 0 && (
-            <div className="flex items-center justify-center gap-1.5 mt-8">
-              {Array.from({ length: maxIndex + 1 }).map((_, dotIdx) => (
-                <button
-                  key={dotIdx}
-                  type="button"
-                  onClick={() => setCurrentIndex(dotIdx)}
-                  aria-label={`Ke halaman pendidik ${dotIdx + 1}`}
-                  className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
-                    currentIndex === dotIdx
-                      ? 'w-6 bg-[#00a3e0]'
-                      : 'w-2 bg-slate-300 hover:bg-slate-400'
-                  }`}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Bottom CTA to Full Directory */}
-        <div className="flex justify-center mt-10">
-          <Link
-            href="/profil/guru-tendik"
-            className="inline-flex items-center gap-2.5 px-7 py-3 rounded-full border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white text-[13.5px] font-bold transition-all duration-200 shadow-2xs active:scale-[0.98] group"
-          >
-            <span>Lihat Semua Pendidik &amp; Tenaga Kependidikan</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
         </div>
       </div>
 
