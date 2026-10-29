@@ -261,9 +261,9 @@ export default function HomePage() {
 
               {/* Right Column: Headmaster Portrait & Name Plate Beneath Photo */}
               <div className="lg:col-span-5 flex flex-col items-center sm:items-start lg:items-center">
-                <div className="w-full max-w-md bg-white rounded-3xl p-3 sm:p-4 shadow-[0_20px_50px_rgba(245,158,11,0.08)] border-2 border-amber-500/80 transition-all duration-300 hover:shadow-[0_25px_60px_rgba(245,158,11,0.15)]">
-                  {/* Photo Frame with Gold Ring */}
-                  <div className="relative rounded-2xl overflow-hidden aspect-[3/4] bg-slate-100 border-2 border-amber-400/60 group">
+                <div className="w-full max-w-md bg-white rounded-3xl p-3 sm:p-4 shadow-xl border border-slate-200/90 transition-all duration-300 hover:shadow-2xl">
+                  {/* Photo Frame */}
+                  <div className="relative rounded-2xl overflow-hidden aspect-[3/4] bg-slate-100 group">
                     <Image
                       src={home.headmasterPhoto || '/kepala-madrasah.jpg'}
                       alt={`${home.headmasterName} - ${home.headmasterRole}`}
@@ -275,7 +275,7 @@ export default function HomePage() {
 
                   {/* Name & Title Directly Underneath Photo */}
                   <div className="pt-4 pb-2 px-2 text-center">
-                    <span className="inline-block px-3 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-300/80 text-[11px] font-bold uppercase tracking-wider mb-2">
+                    <span className="inline-block px-3 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 text-[11px] font-bold uppercase tracking-wider mb-2">
                       {home.sambutanBadge || 'Pimpinan Satuan Pendidikan'}
                     </span>
                     <h3 className="font-serif text-[19px] sm:text-[21px] font-bold text-slate-900 tracking-tight">
