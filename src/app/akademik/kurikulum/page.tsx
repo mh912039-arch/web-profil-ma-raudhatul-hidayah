@@ -560,22 +560,9 @@ export default function KurikulumPage() {
 
       <main className="w-full pt-28 pb-16 flex-grow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Breadcrumb Navigation */}
-          <div className="flex items-center gap-2 text-[12px] font-medium text-slate-500 mb-6">
-            <Link href="/" className="hover:text-blue-700 transition-colors">Beranda</Link>
-            <span>/</span>
-            <Link href="/akademik/ekstrakurikuler" className="hover:text-blue-700 transition-colors">Akademik</Link>
-            <span>/</span>
-            <span className="text-slate-800 font-bold">Kurikulum &amp; Mata Pelajaran</span>
-          </div>
-
           {/* Page Hero Header */}
           <div className="bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-10 shadow-sm mb-10 relative overflow-hidden">
             <div className="relative z-10 max-w-3xl">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-900 border border-blue-200 text-[11.5px] font-bold uppercase tracking-wider mb-4">
-                <GraduationCap className="w-3.5 h-3.5 text-blue-600" />
-                <span>Struktur Kurikulum Yayasan Raudhatul Hidayah</span>
-              </span>
               <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 tracking-tight leading-[1.15] mb-4">
                 Daftar Mata Pelajaran Resmi &amp; Guru Pengampu
               </h1>

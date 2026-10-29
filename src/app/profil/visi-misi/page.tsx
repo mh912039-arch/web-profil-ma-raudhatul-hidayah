@@ -43,9 +43,6 @@ export default function VisiMisiPage() {
               {/* 1. Header Toolbar */}
               <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-6 border-b border-slate-200/80">
                 <div>
-                  <span className="text-[12px] font-bold text-amber-700 uppercase tracking-widest block mb-1">
-                    Profil Lembaga Pendidikan
-                  </span>
                   <h1 className="font-serif text-[28px] sm:text-[38px] font-bold text-slate-900 tracking-tight leading-tight">
                     Visi &amp; Misi Madrasah
                   </h1>

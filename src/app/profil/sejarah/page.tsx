@@ -55,10 +55,7 @@ export default function SejarahPage() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
               <div className="lg:col-span-7 flex flex-col gap-5">
                 <div>
-                  <span className="font-sans text-[12px] font-bold text-secondary uppercase tracking-wider">
-                    {history.subtitle}
-                  </span>
-                  <h2 className="font-display text-[26px] sm:text-[34px] font-bold text-primary tracking-tight mt-1">
+                  <h2 className="font-display text-[26px] sm:text-[34px] font-bold text-primary tracking-tight">
                     {history.title}
                   </h2>
                 </div>

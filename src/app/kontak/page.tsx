@@ -77,27 +77,8 @@ export default function KontakPage() {
       <StitchNavbar />
 
       <main className="w-full pt-20 bg-background flex-grow">
-        {/* 1. Top Banner / Editorial Header */}
-        <section className="relative w-full bg-primary-container text-on-primary py-12 sm:py-16 overflow-hidden shadow-sm">
-          <div className="absolute -right-24 -top-24 w-96 h-96 rounded-full bg-secondary/20 blur-3xl pointer-events-none" />
-          <div className="absolute left-1/3 -bottom-20 w-80 h-80 rounded-full bg-secondary-container/10 blur-2xl pointer-events-none" />
-
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-              <div className="max-w-3xl">
-                <h1 className="font-display text-[32px] sm:text-[44px] font-extrabold tracking-tight text-on-primary mb-2 leading-tight">
-                  Layanan Informasi &amp; Kontak Resmi
-                </h1>
-                <p className="font-sans text-[15.5px] text-on-primary-container leading-relaxed">
-                  Pusat komunikasi terpadu MAS Raudhatul Hidayah. Kami siap melayani pertanyaan kelembagaan, permohonan administrasi akademik, serta konsultasi wali murid dengan santun dan solutif.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 2. Main Interaction Area: Asymmetric Layout (Contact Directory + Message Form) */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 w-full">
+        {/* Main Interaction Area: Asymmetric Layout (Contact Directory + Message Form) */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             {/* Left Column: Official Directory (5 Cols) */}
             <div className="lg:col-span-5 flex flex-col gap-5">
