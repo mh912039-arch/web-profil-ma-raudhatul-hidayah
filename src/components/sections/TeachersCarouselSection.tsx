@@ -3,8 +3,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import {
-  ChevronLeft,
-  ChevronRight,
   X,
   Facebook,
   Instagram,
@@ -182,30 +180,6 @@ export const TeachersCarouselSection: React.FC = () => {
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          {/* Navigation Arrow Left */}
-          {maxIndex > 0 && (
-            <button
-              type="button"
-              onClick={handlePrev}
-              aria-label="Geser ke Pendidik Sebelumnya"
-              className="absolute -left-3 sm:-left-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/95 hover:bg-white text-slate-700 hover:text-blue-600 shadow-md border border-slate-200/90 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
-            >
-              <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
-            </button>
-          )}
-
-          {/* Navigation Arrow Right */}
-          {maxIndex > 0 && (
-            <button
-              type="button"
-              onClick={handleNext}
-              aria-label="Geser ke Pendidik Selanjutnya"
-              className="absolute -right-3 sm:-right-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/95 hover:bg-white text-slate-700 hover:text-blue-600 shadow-md border border-slate-200/90 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
-            >
-              <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
-            </button>
-          )}
-
           {/* Carousel Track Wrapper */}
           <div className="overflow-hidden py-3">
             <div
