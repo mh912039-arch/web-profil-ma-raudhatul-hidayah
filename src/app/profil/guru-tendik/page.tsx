@@ -401,9 +401,6 @@ export default function GuruTendikPage() {
                 />
               </div>
               <div className="flex-1 text-center sm:text-left">
-                <span className="text-[11.5px] font-bold uppercase tracking-wider text-amber-700 block mb-0.5">
-                  Pimpinan Madrasah &amp; Pengesah Dokumen
-                </span>
                 <h2 className="font-serif text-[20px] sm:text-[22px] font-bold text-slate-900 leading-snug">
                   A. KHUTBI. AR, S.Pd
                 </h2>

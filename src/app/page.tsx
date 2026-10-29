@@ -275,20 +275,12 @@ export default function HomePage() {
 
                   {/* Name & Title Directly Underneath Photo */}
                   <div className="pt-4 pb-2 px-2 text-center">
-                    <span className="inline-block px-3 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 text-[11px] font-bold uppercase tracking-wider mb-2">
-                      {home.sambutanBadge || 'Pimpinan Satuan Pendidikan'}
-                    </span>
                     <h3 className="font-serif text-[19px] sm:text-[21px] font-bold text-slate-900 tracking-tight">
                       {home.headmasterName}
                     </h3>
                     <p className="font-sans text-[13px] font-semibold text-blue-700 tracking-wide mt-0.5">
                       {home.headmasterRole}
                     </p>
-                    {home.sambutanSubtitle && (
-                      <p className="font-sans text-[12px] text-slate-500 mt-1">
-                        {home.sambutanSubtitle}
-                      </p>
-                    )}
                   </div>
                 </div>
               </div>
