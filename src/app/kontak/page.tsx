@@ -112,7 +112,7 @@ export default function KontakPage() {
               <div className="flex flex-col gap-5 pt-1">
                 {/* 1. Alamat Sekolah */}
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-amber-500 text-slate-950 flex items-center justify-center shrink-0 shadow-xs">
+                  <div className="w-12 h-12 rounded-full bg-slate-900 text-white flex items-center justify-center shrink-0 shadow-sm">
                     <MapPin className="w-5 h-5 stroke-[2.2]" />
                   </div>
                   <div className="flex flex-col flex-1 min-w-0">
@@ -127,7 +127,7 @@ export default function KontakPage() {
 
                 {/* 2. Telepon Resmi */}
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-amber-500 text-slate-950 flex items-center justify-center shrink-0 shadow-xs">
+                  <div className="w-12 h-12 rounded-full bg-slate-900 text-white flex items-center justify-center shrink-0 shadow-sm">
                     <Phone className="w-5 h-5 stroke-[2.2]" />
                   </div>
                   <div className="flex flex-col flex-1 min-w-0">
@@ -136,7 +136,7 @@ export default function KontakPage() {
                     </span>
                     <a
                       href={`tel:${profileInfo.phone.replace(/\D/g, '')}`}
-                      className="font-sans text-[16px] font-bold text-slate-900 hover:text-amber-700 transition-colors mt-0.5 block"
+                      className="font-sans text-[16px] font-bold text-slate-900 hover:text-blue-900 transition-colors mt-0.5 block"
                     >
                       {profileInfo.phone}
                     </a>
@@ -145,7 +145,7 @@ export default function KontakPage() {
 
                 {/* 3. E-mail */}
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-amber-500 text-slate-950 flex items-center justify-center shrink-0 shadow-xs">
+                  <div className="w-12 h-12 rounded-full bg-slate-900 text-white flex items-center justify-center shrink-0 shadow-sm">
                     <Mail className="w-5 h-5 stroke-[2.2]" />
                   </div>
                   <div className="flex flex-col flex-1 min-w-0">
@@ -154,7 +154,7 @@ export default function KontakPage() {
                     </span>
                     <a
                       href={`mailto:${profileInfo.email}`}
-                      className="font-sans text-[15px] sm:text-[16px] font-bold text-slate-900 hover:text-amber-700 transition-colors mt-0.5 break-all block"
+                      className="font-sans text-[15px] sm:text-[16px] font-bold text-slate-900 hover:text-blue-900 transition-colors mt-0.5 break-all block"
                     >
                       {profileInfo.email}
                     </a>
@@ -358,7 +358,7 @@ export default function KontakPage() {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="px-8 py-3.5 rounded-full bg-amber-500 hover:bg-amber-600 active:scale-[0.98] text-white font-sans text-[13.5px] font-bold uppercase tracking-wider transition-all shadow-sm flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-60"
+                      className="px-8 py-3.5 rounded-full bg-slate-900 hover:bg-slate-800 active:scale-[0.98] text-white font-sans text-[13.5px] font-bold uppercase tracking-wider transition-all shadow-sm flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-60"
                     >
                       <span>{isSubmitting ? 'MENGIRIM...' : 'KIRIM PESAN'}</span>
                       <Send className="w-4 h-4 fill-current" />
