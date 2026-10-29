@@ -184,6 +184,8 @@ export default function AdminDashboardPage() {
     stat2Label: 'Guru & Staf',
     stat3Value: '35+',
     stat3Label: 'Prestasi',
+    teachersSectionTitle: 'Guru',
+    teachersSectionSubtitle: 'Menyambut Anda ke Dunia Pembelajaran yang Dipandu Guru-guru Terbaik',
   });
 
   const [fullProfileData, setFullProfileData] = useState<FullProfileData>({

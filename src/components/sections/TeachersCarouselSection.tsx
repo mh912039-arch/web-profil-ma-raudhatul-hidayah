@@ -57,7 +57,15 @@ const initialTeachers: TeacherItem[] = Array.isArray(teachersJson) && teachersJs
       }))
   : [];
 
-export const TeachersCarouselSection: React.FC = () => {
+interface TeachersCarouselSectionProps {
+  title?: string;
+  subtitle?: string;
+}
+
+export const TeachersCarouselSection: React.FC<TeachersCarouselSectionProps> = ({
+  title = 'Guru',
+  subtitle = 'Menyambut Anda ke Dunia Pembelajaran yang Dipandu Guru-guru Terbaik',
+}) => {
   const [teachers, setTeachers] = useState<TeacherItem[]>(initialTeachers);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -163,11 +171,11 @@ export const TeachersCarouselSection: React.FC = () => {
         {/* Section Header: Guru & Subtitle (Sesuai Referensi) */}
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
           <h2 className="font-serif text-[32px] sm:text-[40px] font-bold text-slate-900 tracking-tight leading-tight">
-            Guru
+            {title}
           </h2>
           <div className="w-14 h-1 bg-amber-400 rounded-full mx-auto mt-2.5" />
           <p className="font-sans text-[14.5px] sm:text-[16px] text-slate-600 mt-3 leading-relaxed">
-            Menyambut Anda ke Dunia Pembelajaran yang Dipandu Guru-guru Terbaik
+            {subtitle}
           </p>
         </div>
 

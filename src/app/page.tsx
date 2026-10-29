@@ -56,6 +56,8 @@ const defaultHomeConfig = {
   stat2Label: 'Guru & Staf',
   stat3Value: '35+',
   stat3Label: 'Prestasi',
+  teachersSectionTitle: 'Guru',
+  teachersSectionSubtitle: 'Menyambut Anda ke Dunia Pembelajaran yang Dipandu Guru-guru Terbaik',
 };
 
 export default function HomePage() {
@@ -302,7 +304,10 @@ export default function HomePage() {
         {/* =========================================================
             3.5 TEACHERS CAROUSEL SECTION (Dewan Guru Beranda - Auto Slide 4 Detik)
         ========================================================= */}
-        <TeachersCarouselSection />
+        <TeachersCarouselSection
+          title={home.teachersSectionTitle}
+          subtitle={home.teachersSectionSubtitle}
+        />
 
         {/* =========================================================
             4. VISITOR METRICS & DISTRIBUTION GRAPH (Live Data Showcase)

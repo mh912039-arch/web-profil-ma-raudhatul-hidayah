@@ -16,6 +16,7 @@ import {
   AlertCircle,
   Trash2,
   Plus,
+  Users,
 } from 'lucide-react';
 import { uploadImageWithAutoCompression } from '@/lib/imageCompression';
 
@@ -48,6 +49,8 @@ export interface HomepageConfig {
   stat2Label: string;
   stat3Value: string;
   stat3Label: string;
+  teachersSectionTitle?: string;
+  teachersSectionSubtitle?: string;
 }
 
 interface HomepageTabProps {
@@ -995,6 +998,68 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
             <Save className={`w-4 h-4 ${isSaving ? 'animate-spin' : ''}`} />
             <span>{isSaving ? 'Menyimpan...' : 'Simpan Tampilan Depan'}</span>
           </button>
+        </div>
+      </div>
+
+      {/* 5. SLIDER GURU & PENDIDIK DI BERANDA */}
+      <div id="slider-guru" className="bg-white p-6 rounded-2xl border-2 border-blue-500/80 shadow-sm space-y-6 scroll-mt-20">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <h4 className="font-serif text-[17px] sm:text-[18px] font-bold text-slate-900 flex items-center gap-2">
+                <Users className="w-5 h-5 text-blue-600" />
+                <span>5. Bagian Slider Guru &amp; Pendidik di Beranda</span>
+              </h4>
+              <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-blue-100 text-blue-800">
+                Live di Beranda
+              </span>
+            </div>
+            <p className="text-[12.5px] text-slate-500 mt-1">
+              Atur judul dan subjudul untuk slider guru yang bergeser otomatis 4 detik sekali di halaman depan. Untuk menambah guru baru, mengunggah foto, atau menyunting 11 atribut biodata lengkap, silakan buka tab <strong>Dewan Guru &amp; Pendidik</strong>.
+            </p>
+          </div>
+
+          <button
+            type="submit"
+            disabled={isSaving}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1e3a8a] hover:bg-[#172554] text-white text-[12.5px] font-bold transition-all shadow-xs active:scale-95 disabled:opacity-50 shrink-0 self-start sm:self-center cursor-pointer"
+          >
+            <Save className="w-3.5 h-3.5" />
+            <span>{isSaving ? 'Menyimpan...' : 'Simpan Slider Guru'}</span>
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[12.5px] font-bold text-slate-700">Judul Bagian Slider</label>
+            <input
+              type="text"
+              name="teachersSectionTitle"
+              value={formData.teachersSectionTitle || ''}
+              onChange={handleChange}
+              placeholder="Guru"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[13.5px] font-medium text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+            />
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[12.5px] font-bold text-slate-700">Subjudul Keterangan</label>
+            <input
+              type="text"
+              name="teachersSectionSubtitle"
+              value={formData.teachersSectionSubtitle || ''}
+              onChange={handleChange}
+              placeholder="Menyambut Anda ke Dunia Pembelajaran yang Dipandu Guru-guru Terbaik"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[13.5px] font-medium text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+            />
+          </div>
+        </div>
+
+        <div className="p-4 rounded-xl bg-blue-50/60 border border-blue-200 text-[12.5px] text-blue-900 flex items-center gap-3">
+          <Users className="w-4 h-4 text-blue-600 shrink-0" />
+          <span>
+            Seluruh data nama, NIP, status, jabatan, mata pelajaran, serta foto profil guru dikelola langsung pada tab <strong>Dewan Guru &amp; Pendidik</strong>.
+          </span>
         </div>
       </div>
     </form>
