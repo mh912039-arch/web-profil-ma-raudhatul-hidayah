@@ -4,238 +4,65 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import {
   Search,
-  GraduationCap,
   LayoutGrid,
   Table as TableIcon,
   CheckCircle2,
   FileText,
-  UserCheck,
+  Heart,
+  X,
+  School,
+  Building2,
+  GraduationCap,
+  BookOpen,
 } from 'lucide-react';
 import { StitchNavbar } from '@/components/layout/StitchNavbar';
 import { StitchFooter } from '@/components/layout/StitchFooter';
 import teachersJson from '@/data/teachersData.json';
 
-interface ScheduleEntry {
+export interface TeacherEntry {
   no: number;
   code: string;
-  subjectName: string;
-  teacherName: string;
-  classLevel: string;
-  categoryLabel: string;
+  name: string;
+  nip: string;
+  certification_year: string;
+  status: string;
+  education: string;
+  subject_name: string;
+  class_level: string;
+  gender: string;
+  religion: string;
+  rank_group: string;
+  birth_date: string;
+  position: string;
+  jenjang?: 'sd' | 'smp' | 'sma';
+  category_label: string;
   image: string;
+  is_active: boolean;
 }
 
-// Data awal terisi otomatis dari teachersData.json
-const defaultScheduleEntries: ScheduleEntry[] = Array.isArray(teachersJson) && teachersJson.length > 0
+// Inisialisasi awal terisi otomatis dari teachersData.json
+const defaultScheduleEntries: TeacherEntry[] = Array.isArray(teachersJson) && teachersJson.length > 0
   ? teachersJson.map((t: any, idx: number) => ({
       no: Number(t.order_no) || idx + 1,
       code: String(t.code || t.order_no || idx + 1),
-      subjectName: t.subject_name || '',
-      teacherName: t.name || '',
-      classLevel: t.class_level || 'Semua Kelas',
-      categoryLabel: t.category_label || 'Pendidikan Agama Islam',
+      name: t.name || '',
+      nip: t.nip || '-',
+      certification_year: t.certification_year || '0000',
+      status: t.status || 'Guru',
+      education: t.education || 'S1',
+      subject_name: t.subject_name || '',
+      class_level: t.class_level || 'Semua Kelas',
+      gender: t.gender || 'L',
+      religion: t.religion || 'Islam',
+      rank_group: t.rank_group || '-',
+      birth_date: t.birth_date || '0000-00-00',
+      position: t.position || t.role || 'Guru Mata Pelajaran',
+      jenjang: t.jenjang || 'sma',
+      category_label: t.category_label || 'Pendidikan Agama Islam',
       image: t.image_url || '/hero/slide-1.jpg',
+      is_active: t.is_active !== undefined ? Boolean(t.is_active) : true,
     }))
-  : [
-    {
-      no: 1,
-      code: '1',
-      subjectName: "QUR'AN-HADITS",
-      teacherName: 'TAJUDIN, S.Pd.I',
-      classLevel: 'Semua Kelas',
-      categoryLabel: 'Pendidikan Agama Islam',
-      image: '/hero/slide-3.jpg',
-    },
-    {
-      no: 2,
-      code: '2',
-      subjectName: 'AQIDAH-AKHLAK',
-      teacherName: 'JAKARIA, S.Pd.I',
-      classLevel: 'Semua Kelas',
-      categoryLabel: 'Pendidikan Agama Islam',
-      image: '/kelas.jpeg',
-    },
-    {
-      no: 3,
-      code: '3',
-      subjectName: 'FIQIH KLS 11',
-      teacherName: 'TAJUDIN, S.Pd.I',
-      classLevel: 'Kelas XI',
-      categoryLabel: 'Pendidikan Agama Islam',
-      image: '/hero/slide-3.jpg',
-    },
-    {
-      no: 4,
-      code: '3',
-      subjectName: 'FIQIH KLS 10 & 12',
-      teacherName: 'JAKARIA, S.Pd.I',
-      classLevel: 'Kelas X & XII',
-      categoryLabel: 'Pendidikan Agama Islam',
-      image: '/kelas.jpeg',
-    },
-    {
-      no: 5,
-      code: '4',
-      subjectName: 'SKI',
-      teacherName: 'YAHYA HIDAYATULLOH, S.Pd.I',
-      classLevel: 'Semua Kelas',
-      categoryLabel: 'Sejarah Kebudayaan Islam',
-      image: '/hero/slide-1.jpg',
-    },
-    {
-      no: 6,
-      code: '5',
-      subjectName: 'BHS. ARAB',
-      teacherName: 'SITI KHAERUNNISA, S.Pd.I',
-      classLevel: 'Semua Kelas',
-      categoryLabel: 'Bahasa Asing',
-      image: '/perpus2.jpeg',
-    },
-    {
-      no: 7,
-      code: '6',
-      subjectName: 'PEND. PANCASILA',
-      teacherName: 'Drs. MULYADI',
-      classLevel: 'Semua Kelas',
-      categoryLabel: 'Pendidikan Kewarganegaraan',
-      image: '/hero/slide-2.jpg',
-    },
-    {
-      no: 8,
-      code: '7',
-      subjectName: 'B. INDONESIA',
-      teacherName: 'KUSTYANINGSIH, S.Pd',
-      classLevel: 'Semua Kelas',
-      categoryLabel: 'Bahasa & Sastra',
-      image: '/kelas.jpeg',
-    },
-    {
-      no: 9,
-      code: '8',
-      subjectName: 'MATEMATIKA',
-      teacherName: 'MADROSYID, S.Pd',
-      classLevel: 'Semua Kelas',
-      categoryLabel: 'MIPA',
-      image: '/perpus2.jpeg',
-    },
-    {
-      no: 10,
-      code: '9',
-      subjectName: 'FISIKA',
-      teacherName: 'SARNAH, S.Pd.I',
-      classLevel: 'Peminatan MIPA',
-      categoryLabel: 'MIPA',
-      image: '/hero/slide-1.jpg',
-    },
-    {
-      no: 11,
-      code: '10',
-      subjectName: 'BIOLOGI',
-      teacherName: 'SARNAH, S.Pd.I',
-      classLevel: 'Peminatan MIPA',
-      categoryLabel: 'MIPA',
-      image: '/hero/slide-1.jpg',
-    },
-    {
-      no: 12,
-      code: '11',
-      subjectName: 'SEJARAH KLS 10&11',
-      teacherName: 'AHMAD NURUL KAHFI, SE',
-      classLevel: 'Kelas X & XI',
-      categoryLabel: 'IPS',
-      image: '/hero/slide-2.jpg',
-    },
-    {
-      no: 13,
-      code: '13',
-      subjectName: 'EKONOMI',
-      teacherName: 'AHMAD NURUL KAHFI, SE',
-      classLevel: 'Peminatan IPS',
-      categoryLabel: 'IPS',
-      image: '/hero/slide-2.jpg',
-    },
-    {
-      no: 14,
-      code: '14',
-      subjectName: 'SEJARAH KLS 12',
-      teacherName: 'SARNAH, S.Pd.I',
-      classLevel: 'Kelas XII',
-      categoryLabel: 'IPS',
-      image: '/hero/slide-1.jpg',
-    },
-    {
-      no: 15,
-      code: '15',
-      subjectName: 'GEOGRAFI',
-      teacherName: 'YAHYA HIDAYATULLOH, S.Pd.I',
-      classLevel: 'Peminatan IPS',
-      categoryLabel: 'IPS',
-      image: '/hero/slide-1.jpg',
-    },
-    {
-      no: 16,
-      code: '16',
-      subjectName: 'BHS. INGGRIS',
-      teacherName: 'SITI KHAERUNNISA, S.Pd.I',
-      classLevel: 'Semua Kelas',
-      categoryLabel: 'Bahasa Asing',
-      image: '/perpus2.jpeg',
-    },
-    {
-      no: 17,
-      code: '17',
-      subjectName: 'PENJASKES',
-      teacherName: 'AHMAD NURUL KAHFI, SE',
-      classLevel: 'Semua Kelas',
-      categoryLabel: 'Olahraga & Kesehatan',
-      image: '/hero/slide-2.jpg',
-    },
-    {
-      no: 18,
-      code: '18',
-      subjectName: 'SENI-BUDAYA 11 & 12',
-      teacherName: 'LILIS KASTIRI, S.Pd.I',
-      classLevel: 'Kelas XI & XII',
-      categoryLabel: 'Seni & Budaya',
-      image: '/kelas.jpeg',
-    },
-    {
-      no: 19,
-      code: '19',
-      subjectName: 'MULOK (BTQ)',
-      teacherName: 'TISKA PUSPITA DEWI, S.Pd.I',
-      classLevel: 'Semua Kelas',
-      categoryLabel: 'Muatan Lokal',
-      image: '/perpus2.jpeg',
-    },
-    {
-      no: 20,
-      code: '20',
-      subjectName: 'PRAKARYA & WIRAUSAHA',
-      teacherName: 'TISKA PUSPITA DEWI, S.Pd.I',
-      classLevel: 'Semua Kelas',
-      categoryLabel: 'Prakarya & Kewirausahaan',
-      image: '/perpus2.jpeg',
-    },
-    {
-      no: 21,
-      code: '21',
-      subjectName: 'SENI BUDAYA 10',
-      teacherName: 'TISKA PUSPITA DEWI, S.Pd.I',
-      classLevel: 'Kelas X',
-      categoryLabel: 'Seni & Budaya',
-      image: '/perpus2.jpeg',
-    },
-    {
-      no: 22,
-      code: '22',
-      subjectName: 'TIKOM',
-      teacherName: 'MADROSYID, S.Pd',
-      classLevel: 'Semua Kelas',
-      categoryLabel: 'Teknologi Informasi & Komunikasi',
-      image: '/perpus2.jpeg',
-    },
-  ];
+  : [];
 
 function getInitials(name: string): string {
   if (!name) return 'GP';
@@ -259,56 +86,49 @@ function isGenericPlaceholder(img?: string): boolean {
   );
 }
 
-function getCategoryBadgeStyle(category: string) {
-  const cat = (category || '').toLowerCase();
-  if (cat.includes('islam') || cat.includes('agama') || cat.includes('muatan') || cat.includes('btq') || cat.includes('sejarah kebudayaan')) {
-    return {
-      avatarBg: 'bg-emerald-50 text-emerald-800 border-emerald-200/90',
-      badgeBg: 'bg-emerald-50 text-emerald-700 border-emerald-200/70',
-    };
-  }
-  if (cat.includes('mipa') || cat.includes('teknologi') || cat.includes('komunikasi') || cat.includes('matematika')) {
-    return {
-      avatarBg: 'bg-blue-50 text-blue-800 border-blue-200/90',
-      badgeBg: 'bg-blue-50 text-blue-700 border-blue-200/70',
-    };
-  }
-  if (cat.includes('ips') || cat.includes('sosial') || cat.includes('kewarganegaraan')) {
-    return {
-      avatarBg: 'bg-amber-50 text-amber-800 border-amber-200/90',
-      badgeBg: 'bg-amber-50 text-amber-800 border-amber-200/70',
-    };
-  }
-  if (cat.includes('bahasa') || cat.includes('seni') || cat.includes('olahraga')) {
-    return {
-      avatarBg: 'bg-indigo-50 text-indigo-800 border-indigo-200/90',
-      badgeBg: 'bg-indigo-50 text-indigo-700 border-indigo-200/70',
-    };
-  }
-  return {
-    avatarBg: 'bg-slate-100 text-slate-800 border-slate-200',
-    badgeBg: 'bg-slate-100 text-slate-700 border-slate-200/70',
-  };
-}
-
 export default function GuruTendikPage() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedJenjang, setSelectedJenjang] = useState<'all' | 'sma' | 'smp' | 'sd'>('all');
   const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
-  const [entries, setEntries] = useState<ScheduleEntry[]>(defaultScheduleEntries);
+  const [entries, setEntries] = useState<TeacherEntry[]>(defaultScheduleEntries);
+  const [selectedTeacher, setSelectedTeacher] = useState<TeacherEntry | null>(null);
 
+  // Esc key listener to close modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSelectedTeacher(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Fetch dynamic teachers from unified API
   useEffect(() => {
     fetch('/api/teachers', { cache: 'no-store' })
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (Array.isArray(data) && data.length > 0) {
-          const mapped: ScheduleEntry[] = data.map((t: any, idx: number) => ({
+          const mapped: TeacherEntry[] = data.map((t: any, idx: number) => ({
             no: Number(t.order_no) || idx + 1,
             code: String(t.code || t.order_no || idx + 1),
-            subjectName: t.subject_name || '',
-            teacherName: t.name || '',
-            classLevel: t.class_level || 'Semua Kelas',
-            categoryLabel: t.category_label || 'Pendidikan Agama Islam',
+            name: t.name || '',
+            nip: t.nip || '-',
+            certification_year: t.certification_year || '0000',
+            status: t.status || 'Guru',
+            education: t.education || 'S1',
+            subject_name: t.subject_name || '',
+            class_level: t.class_level || 'Semua Kelas',
+            gender: t.gender || 'L',
+            religion: t.religion || 'Islam',
+            rank_group: t.rank_group || '-',
+            birth_date: t.birth_date || '0000-00-00',
+            position: t.position || t.role || 'Guru Mata Pelajaran',
+            jenjang: t.jenjang || 'sma',
+            category_label: t.category_label || 'Pendidikan Agama Islam',
             image: t.image_url || '/hero/slide-1.jpg',
+            is_active: t.is_active !== undefined ? Boolean(t.is_active) : true,
           }));
           setEntries(mapped);
         }
@@ -316,17 +136,20 @@ export default function GuruTendikPage() {
       .catch((err) => console.warn('Could not fetch dynamic teachers:', err));
   }, []);
 
-  // Filtering dynamic entries based on search query
+  // Filter entries
   const filteredEntries = entries.filter((item) => {
+    const matchesJenjang = selectedJenjang === 'all' || item.jenjang === selectedJenjang;
     const q = searchQuery.toLowerCase().trim();
-    if (!q) return true;
-    return (
-      item.subjectName.toLowerCase().includes(q) ||
-      item.teacherName.toLowerCase().includes(q) ||
+    if (!q) return matchesJenjang;
+    const matchesSearch =
+      item.name.toLowerCase().includes(q) ||
+      item.subject_name.toLowerCase().includes(q) ||
+      item.nip.toLowerCase().includes(q) ||
+      item.position.toLowerCase().includes(q) ||
       item.code.toLowerCase().includes(q) ||
-      item.classLevel.toLowerCase().includes(q) ||
-      item.categoryLabel.toLowerCase().includes(q)
-    );
+      item.class_level.toLowerCase().includes(q) ||
+      item.category_label.toLowerCase().includes(q);
+    return matchesJenjang && matchesSearch;
   });
 
   return (
@@ -334,16 +157,19 @@ export default function GuruTendikPage() {
       <StitchNavbar />
 
       <main className="w-full pt-20 bg-background flex-grow">
-        <section className="w-full py-12 sm:py-20 bg-[#fbfbfa]">
+        <section className="w-full py-10 sm:py-16 bg-[#fbfbfa]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Header section with Title and Search Input */}
+            {/* Header section with Title and Controls */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 pb-8 border-b border-slate-200/80">
               <div>
+                <span className="text-xs font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-3 py-1 rounded-full border border-blue-200 inline-block mb-2">
+                  Profil Tenaga Pendidik &amp; Kependidikan
+                </span>
                 <h1 className="font-serif text-[28px] sm:text-[38px] font-bold text-slate-900 tracking-tight leading-tight">
-                  Keterangan Kode Pendidik &amp; Mata Pelajaran
+                  Guru dan Staf Pendidik
                 </h1>
-                <p className="font-sans text-[14.5px] sm:text-[15.5px] text-slate-600 max-w-xl leading-relaxed">
-                  Daftar mata pelajaran resmi beserta kode dan guru pengampu MA Raudlatul Hidayah sesuai jadwal pembagian tugas mengajar.
+                <p className="font-sans text-[14px] sm:text-[15.5px] text-slate-600 max-w-2xl leading-relaxed mt-1">
+                  Direktori resmi pendidik dan tenaga kependidikan MA Raudlatul Hidayah. Klik &quot;Read More&quot; pada profil guru untuk melihat rincian biodata pendidik lengkap.
                 </p>
               </div>
 
@@ -353,10 +179,10 @@ export default function GuruTendikPage() {
                   <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5 pointer-events-none" />
                   <input
                     type="text"
-                    placeholder="Cari mapel, kode, atau guru..."
+                    placeholder="Cari guru, NIP, mapel..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white font-sans text-[13.5px] text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/30 border border-slate-200 shadow-sm"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white font-sans text-[13.5px] text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/30 border border-slate-200 shadow-xs"
                   />
                 </div>
 
@@ -367,32 +193,87 @@ export default function GuruTendikPage() {
                     onClick={() => setViewMode('cards')}
                     className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-[12.5px] font-semibold transition-all cursor-pointer ${
                       viewMode === 'cards'
-                        ? 'bg-white text-slate-900 shadow-sm'
+                        ? 'bg-white text-slate-900 shadow-xs'
                         : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
                     <LayoutGrid className="w-3.5 h-3.5 text-blue-600" />
-                    <span>Roster Direktori ({entries.length} Mapel)</span>
+                    <span>Direktori ({filteredEntries.length})</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => setViewMode('table')}
                     className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-[12.5px] font-semibold transition-all cursor-pointer ${
                       viewMode === 'table'
-                        ? 'bg-white text-slate-900 shadow-sm'
+                        ? 'bg-white text-slate-900 shadow-xs'
                         : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
                     <TableIcon className="w-3.5 h-3.5 text-blue-600" />
-                    <span>Tabel Resmi ({entries.length} Baris)</span>
+                    <span>Tabel Roster</span>
                   </button>
                 </div>
               </div>
             </div>
 
+            {/* Jenjang Filter Tabs */}
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-3 mb-6">
+              <button
+                type="button"
+                onClick={() => setSelectedJenjang('all')}
+                className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  selectedJenjang === 'all'
+                    ? 'bg-blue-600 text-white shadow-xs'
+                    : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+                }`}
+              >
+                <BookOpen className="w-3.5 h-3.5" />
+                <span>Semua Jenjang ({entries.length})</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setSelectedJenjang('sma')}
+                className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  selectedJenjang === 'sma'
+                    ? 'bg-blue-700 text-white shadow-xs'
+                    : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+                }`}
+              >
+                <Building2 className="w-3.5 h-3.5" />
+                <span>MA / SMA ({entries.filter((t) => t.jenjang === 'sma').length})</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setSelectedJenjang('smp')}
+                className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  selectedJenjang === 'smp'
+                    ? 'bg-sky-600 text-white shadow-xs'
+                    : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+                }`}
+              >
+                <GraduationCap className="w-3.5 h-3.5" />
+                <span>SMP ({entries.filter((t) => t.jenjang === 'smp').length})</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setSelectedJenjang('sd')}
+                className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  selectedJenjang === 'sd'
+                    ? 'bg-emerald-600 text-white shadow-xs'
+                    : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+                }`}
+              >
+                <School className="w-3.5 h-3.5" />
+                <span>SD ({entries.filter((t) => t.jenjang === 'sd').length})</span>
+              </button>
+            </div>
+
             {/* Spotlight Kepala Madrasah */}
-            <div className="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-sm mb-8 flex flex-col sm:flex-row items-center gap-5">
-              <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden bg-slate-100 shrink-0 border border-slate-200">
+            <div className="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-xs mb-8 flex flex-col sm:flex-row items-center gap-5">
+              <div className="relative w-20 h-24 sm:w-24 sm:h-28 rounded-xl overflow-hidden bg-slate-100 shrink-0 border border-slate-200 shadow-xs">
                 <Image
                   src="/kepala-madrasah.jpg"
                   alt="A. KHUTBI. AR, S.Pd"
@@ -401,99 +282,115 @@ export default function GuruTendikPage() {
                 />
               </div>
               <div className="flex-1 text-center sm:text-left">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200 inline-block mb-1">
+                  Kepala Madrasah
+                </span>
                 <h2 className="font-serif text-[20px] sm:text-[22px] font-bold text-slate-900 leading-snug">
                   A. KHUTBI. AR, S.Pd
                 </h2>
                 <p className="font-sans text-[13px] text-slate-600 mt-0.5">
-                  Kepala Madrasah MA Raudlatul Hidayah • Penanggung Jawab Distribusi Beban Mengajar Pendidik
+                  Kepala Satuan Pendidikan MA Raudlatul Hidayah • Penanggung Jawab Distribusi Tugas Pendidik &amp; Tenaga Kependidikan
+                </p>
+                <p className="text-[12px] text-slate-500 font-mono mt-1">
+                  NIP: - • Pendidikan: S1 • Status: Guru Tetap
                 </p>
               </div>
               <div className="text-center sm:text-right shrink-0 border-t sm:border-t-0 sm:border-l border-slate-200 pt-3 sm:pt-0 sm:pl-6 text-[12px] text-slate-500">
                 <span className="block font-semibold text-slate-800">Tangerang, 13 Juli 2026</span>
-                <span className="block text-emerald-700 font-medium mt-0.5">Tervalidasi &amp; Ditandatangani</span>
+                <span className="block text-emerald-700 font-medium mt-0.5">Tervalidasi &amp; Terakreditasi</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedTeacher({
+                      no: 0,
+                      code: 'KM',
+                      name: 'A. KHUTBI. AR, S.Pd',
+                      nip: '-',
+                      certification_year: '2015',
+                      status: 'Kepala Madrasah',
+                      education: 'S1',
+                      subject_name: 'Kepemimpinan & Manajemen Pendidikan',
+                      class_level: 'Semua Jenjang',
+                      gender: 'L',
+                      religion: 'Islam',
+                      rank_group: 'Pembina - IV/a',
+                      birth_date: '0000-00-00',
+                      position: 'Kepala Madrasah MA Raudlatul Hidayah',
+                      jenjang: 'sma',
+                      category_label: 'Pimpinan Satuan Pendidikan',
+                      image: '/kepala-madrasah.jpg',
+                      is_active: true,
+                    });
+                  }}
+                  className="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold transition-all cursor-pointer"
+                >
+                  <Heart className="w-3.5 h-3.5 fill-blue-600 text-blue-600" />
+                  <span>Lihat Biodata Lengkap</span>
+                </button>
               </div>
             </div>
 
-            {/* Counter bar */}
-            <div className="flex items-center justify-between text-[13px] text-slate-600 font-medium mb-6">
-              <span>
-                Menampilkan <strong className="text-slate-900 font-bold">{filteredEntries.length}</strong> dari {entries.length} Mata Pelajaran &amp; Pendidik
-              </span>
-              <span className="text-[12px] text-slate-400">
-                Tahun Ajaran 2026/2027 • Jenjang MA
-              </span>
-            </div>
-
-            {/* View Mode 1: Roster Direktori Horizontal Kompak (Flat, Non-Clickable) */}
+            {/* View Mode 1: Direktori Kartu Guru (Sesuai Screenshot 3) */}
             {viewMode === 'cards' && (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-7">
                   {filteredEntries.map((item) => {
-                    const catStyle = getCategoryBadgeStyle(item.categoryLabel);
                     const hasCustomPhoto = !isGenericPlaceholder(item.image);
 
                     return (
                       <div
                         key={item.no}
-                        className="bg-white rounded-xl border border-slate-200/90 p-3.5 sm:p-4 flex items-center gap-3.5 select-text cursor-default shadow-[0_1px_2px_rgba(0,0,0,0.02)]"
+                        onClick={() => setSelectedTeacher(item)}
+                        className="group relative flex flex-col items-center bg-white rounded-xl p-3 border border-slate-200/90 shadow-2xs hover:shadow-md transition-all duration-200 cursor-pointer"
                       >
-                        {/* Avatar Profil / Monogram */}
-                        <div
-                          className={`relative w-13 h-13 sm:w-14 sm:h-14 rounded-full overflow-hidden shrink-0 flex items-center justify-center border ${
-                            hasCustomPhoto
-                              ? 'border-slate-200 bg-slate-100'
-                              : catStyle.avatarBg
-                          }`}
-                        >
+                        {/* Container Foto Portrait (Sesuai Screenshot 3) */}
+                        <div className="relative w-full aspect-[3/4] rounded-lg overflow-hidden bg-slate-100 border border-slate-200/60">
                           {hasCustomPhoto ? (
                             <Image
                               src={item.image}
-                              alt={item.teacherName}
+                              alt={item.name}
                               fill
-                              className="object-cover object-top"
-                              sizes="56px"
+                              className="object-cover object-top transition-transform duration-300 group-hover:scale-105"
+                              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                             />
                           ) : (
-                            <span className="font-mono text-[13.5px] font-bold tracking-wider select-none">
-                              {getInitials(item.teacherName)}
-                            </span>
+                            <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 text-slate-700">
+                              <span className="font-mono text-2xl font-bold tracking-wider">
+                                {getInitials(item.name)}
+                              </span>
+                              <span className="text-[11px] text-slate-500 font-medium mt-1">
+                                {item.subject_name}
+                              </span>
+                            </div>
                           )}
+
+                          {/* Hover Overlay Kuning/Amber & Tombol Cyan Read More (Sesuai Screenshot 3) */}
+                          <div className="absolute inset-0 bg-[#e5a035]/85 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center p-4 backdrop-blur-[0.5px]">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedTeacher(item);
+                              }}
+                              className="inline-flex items-center gap-2 bg-[#00a3e0] hover:bg-[#0092c8] text-white font-bold text-xs sm:text-[13px] px-4 py-2.5 rounded shadow-lg transform scale-95 group-hover:scale-100 transition-transform active:scale-90 cursor-pointer"
+                            >
+                              <Heart className="w-4 h-4 fill-white text-white shrink-0" />
+                              <span>Read More</span>
+                            </button>
+                          </div>
                         </div>
 
-                        {/* Content Column */}
-                        <div className="flex-1 min-w-0 flex flex-col justify-center gap-0.5">
-                          {/* Row 1: Subject Name */}
-                          <div>
-                            <h3
-                              className="font-sans text-[14px] sm:text-[14.5px] font-bold text-slate-900 truncate"
-                              title={item.subjectName}
-                            >
-                              {item.subjectName}
-                            </h3>
-                          </div>
-
-                          {/* Row 2: Teacher Name */}
-                          <div
-                            className="text-[12.5px] sm:text-[13px] text-slate-800 font-semibold truncate flex items-center gap-1.5 pt-0.5"
-                            title={item.teacherName}
+                        {/* Nama Guru di Bawah Foto (Teks Biru Tebal Sesuai Screenshot 3) */}
+                        <div className="w-full text-center mt-3 px-1 flex flex-col items-center">
+                          <h3
+                            className="font-bold text-[#0066cc] group-hover:text-blue-800 text-center text-[15px] sm:text-[15.5px] leading-snug transition-colors line-clamp-2 uppercase tracking-tight"
+                            title={item.name}
                           >
-                            <span className="text-[10.5px] font-normal text-slate-400 uppercase tracking-wider shrink-0">
-                              Guru:
-                            </span>
-                            <span className="truncate">{item.teacherName}</span>
-                          </div>
-
-                          {/* Row 3: Class Allocation & Status */}
-                          <div className="flex items-center gap-2 pt-1 text-[11px] text-slate-500">
-                            <span className="inline-block px-1.5 py-0.5 rounded bg-slate-50 text-slate-600 font-medium border border-slate-200/60 truncate max-w-[130px]">
-                              {item.classLevel}
-                            </span>
-                            <span className="text-slate-300">•</span>
-                            <span className="inline-flex items-center gap-1 text-emerald-700 font-medium shrink-0">
-                              <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
-                              <span>Aktif</span>
-                            </span>
-                          </div>
+                            {item.name}
+                          </h3>
+                          <p className="text-[12px] text-slate-500 font-medium mt-1 truncate max-w-full">
+                            {item.position || item.subject_name}
+                          </p>
                         </div>
                       </div>
                     );
@@ -507,10 +404,13 @@ export default function GuruTendikPage() {
                       Data Tidak Ditemukan
                     </p>
                     <p className="font-sans text-[13.5px] text-slate-500 mb-4">
-                      Tidak ada mata pelajaran atau guru yang cocok dengan kata kunci &quot;{searchQuery}&quot;.
+                      Tidak ada pendidik atau tenaga kependidikan yang cocok dengan kata kunci &quot;{searchQuery}&quot;.
                     </p>
                     <button
-                      onClick={() => setSearchQuery('')}
+                      onClick={() => {
+                        setSearchQuery('');
+                        setSelectedJenjang('all');
+                      }}
                       className="px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-semibold hover:bg-slate-800 transition-all cursor-pointer"
                     >
                       Reset Pencarian
@@ -520,36 +420,34 @@ export default function GuruTendikPage() {
               </>
             )}
 
-            {/* View Mode 2: 22 Rows Official Table */}
+            {/* View Mode 2: Tabel Roster Resmi */}
             {viewMode === 'table' && (
-              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                {/* Table Header Banner */}
+              <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
                 <div className="bg-slate-900 text-white p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800">
                   <div>
                     <h2 className="font-serif text-xl sm:text-2xl font-bold tracking-tight">
-                      Keterangan Kode Pendidik dan Mata Pelajaran
+                      Roster Pendidik dan Mata Pelajaran
                     </h2>
                     <p className="text-xs text-slate-300 mt-1">
-                      Daftar {entries.length} entri mata pelajaran dan guru pengampu resmi MA Raudlatul Hidayah
+                      Daftar {filteredEntries.length} entri mata pelajaran dan guru pengampu resmi MA Raudlatul Hidayah
                     </p>
                   </div>
                   <div className="shrink-0 flex items-center gap-2 bg-slate-800/80 px-3.5 py-1.5 rounded-lg border border-slate-700 text-xs font-mono text-amber-300">
                     <FileText className="w-4 h-4 text-amber-400" />
-                    <span>{entries.length} Item Lengkap</span>
+                    <span>{filteredEntries.length} Pendidik</span>
                   </div>
                 </div>
 
-                {/* Table with all 22 rows */}
                 <div className="overflow-x-auto">
                   <table className="w-full text-left font-sans text-sm border-collapse">
                     <thead>
                       <tr className="bg-slate-100/80 border-b border-slate-200 text-slate-700 text-[12px] uppercase font-bold tracking-wider">
                         <th className="py-3.5 px-4 w-14 text-center">No</th>
-                        <th className="py-3.5 px-4 w-20 text-center">Kode</th>
+                        <th className="py-3.5 px-4">Pendidik</th>
+                        <th className="py-3.5 px-4">NIP</th>
                         <th className="py-3.5 px-4">Mata Pelajaran</th>
-                        <th className="py-3.5 px-4">Alokasi Kelas</th>
-                        <th className="py-3.5 px-4">Pendidik Pengampu</th>
-                        <th className="py-3.5 px-4 text-center">Status</th>
+                        <th className="py-3.5 px-4">Jabatan</th>
+                        <th className="py-3.5 px-4 text-center">Aksi</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 text-[13px] text-slate-700">
@@ -561,63 +459,198 @@ export default function GuruTendikPage() {
                           <td className="py-3.5 px-4 text-center font-mono text-slate-400 font-semibold">
                             {item.no}
                           </td>
-                          <td className="py-3.5 px-4 text-center">
-                            <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-800 border border-slate-200">
-                              {item.code}
-                            </span>
-                          </td>
                           <td className="py-3.5 px-4 font-bold text-slate-900">
-                            {item.subjectName}
+                            <div className="flex items-center gap-2.5">
+                              <div className="relative w-8 h-8 rounded-lg overflow-hidden bg-slate-100 shrink-0 border border-slate-200">
+                                <Image
+                                  src={item.image}
+                                  alt={item.name}
+                                  fill
+                                  className="object-cover object-top"
+                                />
+                              </div>
+                              <span>{item.name}</span>
+                            </div>
                           </td>
-                          <td className="py-3.5 px-4">
-                            <span className="inline-block px-2 py-0.5 rounded text-[11.5px] font-medium bg-slate-100 text-slate-700">
-                              {item.classLevel}
-                            </span>
+                          <td className="py-3.5 px-4 font-mono text-xs text-slate-600">
+                            {item.nip}
                           </td>
-                          <td className="py-3.5 px-4 font-semibold text-blue-900">
-                            {item.teacherName}
+                          <td className="py-3.5 px-4 font-medium text-slate-800">
+                            {item.subject_name}
+                          </td>
+                          <td className="py-3.5 px-4 text-slate-600">
+                            {item.position}
                           </td>
                           <td className="py-3.5 px-4 text-center">
-                            <span className="inline-flex items-center gap-1 text-[11.5px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                              <span>Aktif</span>
-                            </span>
+                            <button
+                              type="button"
+                              onClick={() => setSelectedTeacher(item)}
+                              className="px-3 py-1 rounded bg-[#00a3e0] hover:bg-[#0092c8] text-white text-xs font-bold transition-all cursor-pointer shadow-2xs"
+                            >
+                              Detail
+                            </button>
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
-
-                {/* Table Signatory Footer (Matching document signature) */}
-                <div className="bg-slate-50 border-t border-slate-200 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-                  <div className="text-xs text-slate-500 max-w-md">
-                    <p className="font-semibold text-slate-700">Pengesahan Jadwal &amp; Tugas Mengajar:</p>
-                    <p className="mt-0.5">
-                      Distribusi beban mengajar pendidik MA Raudlatul Hidayah mengacu pada kalender pendidikan dan ketentuan Kurikulum Merdeka Kementerian Agama Republik Indonesia.
-                    </p>
-                  </div>
-
-                  <div className="bg-white border border-slate-200 rounded-xl p-4 text-right shadow-sm shrink-0">
-                    <span className="text-[11.5px] text-slate-500 block">
-                      Tangerang, 13 Juli 2026
-                    </span>
-                    <span className="text-[12px] font-bold text-slate-700 block mt-0.5">
-                      Kepala Madrasah,
-                    </span>
-                    <div className="font-serif font-bold text-[15px] text-slate-900 mt-5">
-                      A. KHUTBI. AR, S.Pd
-                    </div>
-                    <span className="text-[11px] text-slate-400 block font-mono">
-                      NIP. -
-                    </span>
-                  </div>
-                </div>
               </div>
             )}
           </div>
         </section>
       </main>
+
+      {/* MODAL BIODATA DETAIL GURU (Sesuai Screenshot 1 & 2) */}
+      {selectedTeacher && (
+        <div
+          className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 overflow-y-auto"
+          onClick={() => setSelectedTeacher(null)}
+        >
+          <div
+            className="relative bg-white rounded-2xl max-w-4xl w-full p-5 sm:p-8 shadow-2xl border border-slate-200 my-auto max-h-[92vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Tombol Tutup X */}
+            <button
+              type="button"
+              onClick={() => setSelectedTeacher(null)}
+              className="absolute top-4 right-4 p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer z-10"
+              title="Tutup (Esc)"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Layout 2 Kolom: Foto di Kiri, Rincian Tabel di Kanan (Sesuai Screenshot 1 & 2) */}
+            <div className="flex flex-col md:flex-row gap-6 sm:gap-8 items-start pt-2">
+              {/* Kolom Kiri: Foto Pendidik */}
+              <div className="w-full md:w-5/12 aspect-[3/4] md:aspect-auto md:h-[460px] relative rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shadow-xs shrink-0">
+                <Image
+                  src={selectedTeacher.image}
+                  alt={selectedTeacher.name}
+                  fill
+                  className="object-cover object-top"
+                  sizes="(max-width: 768px) 100vw, 420px"
+                  priority
+                />
+              </div>
+
+              {/* Kolom Kanan: Rincian Tabel 11 Atribut Resmi (Sesuai Screenshot 1 & 2) */}
+              <div className="flex-1 w-full flex flex-col divide-y divide-slate-200/80 font-sans text-[13.5px] sm:text-[14.5px]">
+                {/* 1. Nama */}
+                <div className="py-2.5 sm:py-3 flex items-start">
+                  <span className="w-36 sm:w-44 font-bold text-slate-900 shrink-0">Nama</span>
+                  <span className="w-6 text-center text-slate-700 font-bold shrink-0">:</span>
+                  <span className="text-slate-800 font-bold flex-1 break-words">
+                    {selectedTeacher.name}
+                  </span>
+                </div>
+
+                {/* 2. Nip */}
+                <div className="py-2.5 sm:py-3 flex items-start">
+                  <span className="w-36 sm:w-44 font-bold text-slate-900 shrink-0">Nip</span>
+                  <span className="w-6 text-center text-slate-700 font-bold shrink-0">:</span>
+                  <span className="text-slate-700 font-mono flex-1 break-words">
+                    {selectedTeacher.nip || '-'}
+                  </span>
+                </div>
+
+                {/* 3. Tahun Sertifikasi */}
+                <div className="py-2.5 sm:py-3 flex items-start">
+                  <span className="w-36 sm:w-44 font-bold text-slate-900 shrink-0">Tahun Sertifikasi</span>
+                  <span className="w-6 text-center text-slate-700 font-bold shrink-0">:</span>
+                  <span className="text-slate-700 flex-1 break-words">
+                    {selectedTeacher.certification_year || '0000'}
+                  </span>
+                </div>
+
+                {/* 4. Status */}
+                <div className="py-2.5 sm:py-3 flex items-start">
+                  <span className="w-36 sm:w-44 font-bold text-slate-900 shrink-0">Status</span>
+                  <span className="w-6 text-center text-slate-700 font-bold shrink-0">:</span>
+                  <span className="text-slate-700 flex-1 break-words">
+                    {selectedTeacher.status || 'Guru'}
+                  </span>
+                </div>
+
+                {/* 5. Pendidikan */}
+                <div className="py-2.5 sm:py-3 flex items-start">
+                  <span className="w-36 sm:w-44 font-bold text-slate-900 shrink-0">Pendidikan</span>
+                  <span className="w-6 text-center text-slate-700 font-bold shrink-0">:</span>
+                  <span className="text-slate-700 flex-1 break-words">
+                    {selectedTeacher.education || 'S1'}
+                  </span>
+                </div>
+
+                {/* 6. Mata Pelajaran */}
+                <div className="py-2.5 sm:py-3 flex items-start">
+                  <span className="w-36 sm:w-44 font-bold text-slate-900 shrink-0">Mata Pelajaran</span>
+                  <span className="w-6 text-center text-slate-700 font-bold shrink-0">:</span>
+                  <span className="text-slate-700 flex-1 break-words">
+                    {selectedTeacher.subject_name}
+                  </span>
+                </div>
+
+                {/* 7. Kelamin Jenis */}
+                <div className="py-2.5 sm:py-3 flex items-start">
+                  <span className="w-36 sm:w-44 font-bold text-slate-900 shrink-0">Kelamin Jenis</span>
+                  <span className="w-6 text-center text-slate-700 font-bold shrink-0">:</span>
+                  <span className="text-slate-700 flex-1 break-words">
+                    {selectedTeacher.gender || 'L'}
+                  </span>
+                </div>
+
+                {/* 8. Agama */}
+                <div className="py-2.5 sm:py-3 flex items-start">
+                  <span className="w-36 sm:w-44 font-bold text-slate-900 shrink-0">Agama</span>
+                  <span className="w-6 text-center text-slate-700 font-bold shrink-0">:</span>
+                  <span className="text-slate-700 flex-1 break-words">
+                    {selectedTeacher.religion || 'Islam'}
+                  </span>
+                </div>
+
+                {/* 9. Pangkat Golongan */}
+                <div className="py-2.5 sm:py-3 flex items-start">
+                  <span className="w-36 sm:w-44 font-bold text-slate-900 shrink-0">Pangkat Golongan</span>
+                  <span className="w-6 text-center text-slate-700 font-bold shrink-0">:</span>
+                  <span className="text-slate-700 flex-1 break-words">
+                    {selectedTeacher.rank_group || '-'}
+                  </span>
+                </div>
+
+                {/* 10. Tanggal Lahir */}
+                <div className="py-2.5 sm:py-3 flex items-start">
+                  <span className="w-36 sm:w-44 font-bold text-slate-900 shrink-0">Tanggal Lahir</span>
+                  <span className="w-6 text-center text-slate-700 font-bold shrink-0">:</span>
+                  <span className="text-slate-700 flex-1 break-words">
+                    {selectedTeacher.birth_date || '0000-00-00'}
+                  </span>
+                </div>
+
+                {/* 11. Jabatan */}
+                <div className="py-2.5 sm:py-3 flex items-start">
+                  <span className="w-36 sm:w-44 font-bold text-slate-900 shrink-0">Jabatan</span>
+                  <span className="w-6 text-center text-slate-700 font-bold shrink-0">:</span>
+                  <span className="text-slate-700 flex-1 break-words">
+                    {selectedTeacher.position || 'Guru Mata Pelajaran'}
+                  </span>
+                </div>
+
+                {/* Footer action */}
+                <div className="pt-4 flex items-center justify-end">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedTeacher(null)}
+                    className="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs transition-all cursor-pointer"
+                  >
+                    Tutup Profil
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <StitchFooter />
     </div>

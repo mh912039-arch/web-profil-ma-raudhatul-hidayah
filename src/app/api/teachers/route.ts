@@ -23,12 +23,19 @@ export interface TeacherItem {
   name: string;
   nip?: string | null;
   role?: string;
+  certification_year?: string | null;
+  status?: string | null;
+  education?: string | null;
   subject_name: string;
   class_level: string;
+  gender?: string | null;
+  religion?: string | null;
+  rank_group?: string | null;
+  birth_date?: string | null;
+  position?: string | null;
   jenjang?: 'sd' | 'smp' | 'sma';
   category_label: string;
   image_url: string;
-  education?: string | null;
   is_active: boolean;
   created_at?: string;
   updated_at?: string;
@@ -86,14 +93,21 @@ async function readTeachersUnified(): Promise<TeacherItem[]> {
         order_no: Number(t.order_no),
         code: String(t.code),
         name: t.name,
-        nip: t.nip || null,
+        nip: t.nip || '-',
         role: t.role || 'Dewan Guru',
+        certification_year: t.certification_year || '0000',
+        status: t.status || 'Guru',
+        education: t.education || 'S1',
         subject_name: t.subject_name,
         class_level: t.class_level || 'Semua Kelas',
+        gender: t.gender || 'L',
+        religion: t.religion || 'Islam',
+        rank_group: t.rank_group || '-',
+        birth_date: t.birth_date || '0000-00-00',
+        position: t.position || t.role || 'Guru Mata Pelajaran',
         jenjang: t.jenjang || detectJenjang(t.class_level, t.code),
         category_label: t.category_label || 'Pendidikan Agama Islam',
         image_url: t.image_url || '/hero/slide-1.jpg',
-        education: t.education || null,
         is_active: t.is_active !== undefined ? t.is_active : true,
       }));
 
@@ -186,14 +200,21 @@ export async function POST(request: Request) {
       order_no: Number(body.order_no) || (currentList.length + 1),
       code: String(body.code || (currentList.length + 1)).trim(),
       name: body.name.trim(),
-      nip: (body.nip || '').trim() || null,
-      role: (body.role || 'Dewan Guru').trim(),
+      nip: (body.nip || '').trim() || '-',
+      role: (body.role || body.position || 'Dewan Guru').trim(),
+      certification_year: (body.certification_year || '').trim() || '0000',
+      status: (body.status || 'Guru').trim(),
+      education: (body.education || '').trim() || 'S1',
       subject_name: body.subject_name.trim(),
       class_level: (body.class_level || 'Semua Kelas').trim(),
+      gender: (body.gender || 'L').trim(),
+      religion: (body.religion || 'Islam').trim(),
+      rank_group: (body.rank_group || '').trim() || '-',
+      birth_date: (body.birth_date || '').trim() || '0000-00-00',
+      position: (body.position || body.role || 'Guru Mata Pelajaran').trim(),
       jenjang: targetJenjang,
       category_label: (body.category_label || 'Pendidikan Agama Islam').trim(),
       image_url: (body.image_url || '/hero/slide-1.jpg').trim(),
-      education: (body.education || '').trim() || null,
       is_active: body.is_active !== undefined ? Boolean(body.is_active) : true,
       updated_at: new Date().toISOString(),
     };

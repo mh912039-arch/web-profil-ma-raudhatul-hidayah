@@ -26,12 +26,21 @@ export interface TeacherRecord {
   code: string;
   name: string;
   nip?: string;
+  certification_year?: string;
+  status?: string;
+  education?: string;
   subject_name: string;
   class_level: string;
+  gender?: string;
+  religion?: string;
+  rank_group?: string;
+  birth_date?: string;
+  position?: string;
   jenjang?: 'sd' | 'smp' | 'sma';
   category_label: string;
   image_url: string;
   is_active: boolean;
+  role?: string;
 }
 
 export type JenjangFilter = 'all' | 'sd' | 'smp' | 'sma';
@@ -72,9 +81,17 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
     order_no: teachers.length + 1,
     code: String(teachers.length + 1),
     name: '',
-    nip: '',
+    nip: '-',
+    certification_year: '0000',
+    status: 'Guru',
+    education: 'S1',
     subject_name: '',
     class_level: 'Semua Kelas',
+    gender: 'L',
+    religion: 'Islam',
+    rank_group: '-',
+    birth_date: '0000-00-00',
+    position: 'Guru Mata Pelajaran',
     jenjang: 'sma',
     category_label: 'Umum',
     image_url: '/hero/slide-1.jpg',
@@ -94,6 +111,8 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
     const matchesSearch =
       t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       t.subject_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (t.nip || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (t.position || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
       t.class_level.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesJenjang && matchesSearch;
   });
@@ -113,9 +132,17 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
       order_no: nextOrder,
       code: String(nextOrder),
       name: '',
-      nip: '',
+      nip: '-',
+      certification_year: '0000',
+      status: 'Guru',
+      education: 'S1',
       subject_name: '',
       class_level: defaultClass,
+      gender: 'L',
+      religion: 'Islam',
+      rank_group: '-',
+      birth_date: '0000-00-00',
+      position: 'Guru Mata Pelajaran',
       jenjang: targetJenjang,
       category_label: 'Pendidikan Agama Islam',
       image_url: '/hero/slide-1.jpg',
@@ -129,6 +156,15 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
     setUploadMessage(null);
     setFormData({
       ...t,
+      nip: t.nip || '-',
+      certification_year: t.certification_year || '0000',
+      status: t.status || 'Guru',
+      education: t.education || 'S1',
+      gender: t.gender || 'L',
+      religion: t.religion || 'Islam',
+      rank_group: t.rank_group || '-',
+      birth_date: t.birth_date || '0000-00-00',
+      position: t.position || t.role || 'Guru Mata Pelajaran',
       jenjang: t.jenjang || detectJenjang(t.class_level, t.code),
     });
     setIsModalOpen(true);
@@ -344,19 +380,29 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
                     </td>
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-3">
-                        <div className="relative w-9 h-9 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0">
+                        <div className="relative w-10 h-10 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0">
                           <Image
                             src={t.image_url || '/hero/slide-1.jpg'}
                             alt={t.name}
                             fill
-                            className="object-cover"
+                            className="object-cover object-top"
                           />
                         </div>
-                        <span className="font-bold text-slate-900">{t.name}</span>
+                        <div className="min-w-0">
+                          <div className="font-bold text-slate-900 truncate">{t.name}</div>
+                          <div className="text-[11px] text-slate-500 flex items-center gap-2 mt-0.5">
+                            <span>NIP: <strong className="font-mono text-slate-700">{t.nip || '-'}</strong></span>
+                            <span>•</span>
+                            <span className="text-slate-600 truncate">{t.position || 'Guru'}</span>
+                          </div>
+                        </div>
                       </div>
                     </td>
-                    <td className="py-3 px-4 font-bold text-slate-900">
-                      {t.subject_name}
+                    <td className="py-3 px-4">
+                      <div className="font-bold text-slate-900">{t.subject_name}</div>
+                      <div className="text-[11px] text-blue-700 font-medium">
+                        {t.status || 'Guru'} {t.education ? `(${t.education})` : ''}
+                      </div>
                     </td>
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-1.5 flex-wrap">
@@ -441,6 +487,9 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
                       <h4 className="font-bold text-slate-900 text-sm truncate">{t.name}</h4>
                     </div>
                     <p className="text-xs font-bold text-blue-700 truncate">{t.subject_name}</p>
+                    <p className="text-[11px] text-slate-500 truncate mt-0.5">
+                      NIP: {t.nip || '-'} • {t.position || 'Guru'}
+                    </p>
                   </div>
                 </div>
 
@@ -502,15 +551,20 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
       {/* Modal Add / Edit Teacher */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-xl w-full p-5 sm:p-7 shadow-2xl border border-slate-200 my-auto max-h-[92vh] overflow-y-auto space-y-4 sm:space-y-5 animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-white rounded-3xl max-w-2xl w-full p-5 sm:p-7 shadow-2xl border border-slate-200 my-auto max-h-[92vh] overflow-y-auto space-y-4 sm:space-y-5 animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h4 className="font-serif text-[18px] font-bold text-slate-900">
-                {editingTeacher ? 'Sunting Data Guru & Mata Pelajaran' : 'Tambah Guru & Mata Pelajaran Baru'}
-              </h4>
+              <div>
+                <h4 className="font-serif text-[18px] font-bold text-slate-900">
+                  {editingTeacher ? 'Sunting Data Guru & Tenaga Kependidikan' : 'Tambah Guru / Tendik Baru'}
+                </h4>
+                <p className="text-[12px] text-slate-500 mt-0.5">
+                  Lengkapi 11 atribut profil resmi pendidik yang tampil pada detail website publik.
+                </p>
+              </div>
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -530,7 +584,7 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
                         class_level: formData.class_level.includes('SD') || /kelas (i|ii|iii|iv|v|vi|[1-6])\b/i.test(formData.class_level) ? formData.class_level : 'Kelas I',
                       });
                     }}
-                    className={`py-2 px-3 rounded-xl text-xs font-bold transition-all border flex items-center justify-center gap-1.5 ${
+                    className={`py-2 px-3 rounded-xl text-xs font-bold transition-all border flex items-center justify-center gap-1.5 cursor-pointer ${
                       activeFormJenjang === 'sd'
                         ? 'bg-emerald-600 text-white border-emerald-600 shadow-2xs'
                         : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
@@ -548,7 +602,7 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
                         class_level: formData.class_level.includes('SMP') || /vii|viii|ix/i.test(formData.class_level) ? formData.class_level : 'Kelas VII',
                       });
                     }}
-                    className={`py-2 px-3 rounded-xl text-xs font-bold transition-all border flex items-center justify-center gap-1.5 ${
+                    className={`py-2 px-3 rounded-xl text-xs font-bold transition-all border flex items-center justify-center gap-1.5 cursor-pointer ${
                       activeFormJenjang === 'smp'
                         ? 'bg-sky-600 text-white border-sky-600 shadow-2xs'
                         : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
@@ -566,7 +620,7 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
                         class_level: formData.class_level.includes('SMA') || /x|xi|xii/i.test(formData.class_level) ? formData.class_level : 'Kelas X',
                       });
                     }}
-                    className={`py-2 px-3 rounded-xl text-xs font-bold transition-all border flex items-center justify-center gap-1.5 ${
+                    className={`py-2 px-3 rounded-xl text-xs font-bold transition-all border flex items-center justify-center gap-1.5 cursor-pointer ${
                       activeFormJenjang === 'sma'
                         ? 'bg-blue-600 text-white border-blue-600 shadow-2xs'
                         : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
@@ -578,36 +632,158 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
                 </div>
               </div>
 
-              {/* Nomor Urut */}
-              <div className="flex flex-col gap-1">
-                <label className="text-[12px] font-bold text-slate-700">Nomor Urut</label>
-                <input
-                  type="number"
-                  value={formData.order_no}
-                  onChange={(e) => {
-                    const val = Number(e.target.value);
-                    setFormData({ ...formData, order_no: val, code: String(val) });
-                  }}
-                  className="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[13px] font-bold"
-                  required
-                />
+              {/* Grid 2 Kolom untuk Profil Lengkap (Sesuai Screenshot 1 & 2) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
+                {/* 1. Nama */}
+                <div className="flex flex-col gap-1 sm:col-span-2">
+                  <label className="text-[12px] font-bold text-slate-700">Nama Lengkap &amp; Gelar</label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="Contoh: H. WAWAN HERMAWAN, S.Pd., M.Pd."
+                    className="px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[13px] font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                    required
+                  />
+                </div>
+
+                {/* 2. Nip */}
+                <div className="flex flex-col gap-1">
+                  <label className="text-[12px] font-bold text-slate-700">Nip</label>
+                  <input
+                    type="text"
+                    value={formData.nip || ''}
+                    onChange={(e) => setFormData({ ...formData, nip: e.target.value })}
+                    placeholder="Contoh: 19700331 200501 1 00 atau -"
+                    className="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[13px] font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                  />
+                </div>
+
+                {/* 3. Jabatan */}
+                <div className="flex flex-col gap-1">
+                  <label className="text-[12px] font-bold text-slate-700">Jabatan</label>
+                  <input
+                    type="text"
+                    value={formData.position || ''}
+                    onChange={(e) => setFormData({ ...formData, position: e.target.value })}
+                    placeholder="Contoh: Wakil Kepala Sekolah Bidang Kurikulum"
+                    className="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[13px] font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                  />
+                </div>
+
+                {/* 4. Mata Pelajaran */}
+                <div className="flex flex-col gap-1">
+                  <label className="text-[12px] font-bold text-slate-700">Mata Pelajaran</label>
+                  <input
+                    type="text"
+                    value={formData.subject_name}
+                    onChange={(e) => setFormData({ ...formData, subject_name: e.target.value })}
+                    placeholder="Contoh: Kimia, Matematika, Fiqih"
+                    className="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[13px] font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                    required
+                  />
+                </div>
+
+                {/* 5. Status */}
+                <div className="flex flex-col gap-1">
+                  <label className="text-[12px] font-bold text-slate-700">Status</label>
+                  <input
+                    type="text"
+                    value={formData.status || ''}
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                    placeholder="Contoh: Guru, Guru Tetap, Staf TU"
+                    className="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[13px] font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                  />
+                </div>
+
+                {/* 6. Tahun Sertifikasi */}
+                <div className="flex flex-col gap-1">
+                  <label className="text-[12px] font-bold text-slate-700">Tahun Sertifikasi</label>
+                  <input
+                    type="text"
+                    value={formData.certification_year || ''}
+                    onChange={(e) => setFormData({ ...formData, certification_year: e.target.value })}
+                    placeholder="Contoh: 2020 atau 0000"
+                    className="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[13px] font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                  />
+                </div>
+
+                {/* 7. Pendidikan */}
+                <div className="flex flex-col gap-1">
+                  <label className="text-[12px] font-bold text-slate-700">Pendidikan</label>
+                  <input
+                    type="text"
+                    value={formData.education || ''}
+                    onChange={(e) => setFormData({ ...formData, education: e.target.value })}
+                    placeholder="Contoh: S1, S2, S1 Pend. Agama Islam"
+                    className="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[13px] font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                  />
+                </div>
+
+                {/* 8. Kelamin Jenis */}
+                <div className="flex flex-col gap-1">
+                  <label className="text-[12px] font-bold text-slate-700">Kelamin Jenis</label>
+                  <select
+                    value={formData.gender || 'L'}
+                    onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+                    className="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[13px] font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                  >
+                    <option value="L">L (Laki-Laki)</option>
+                    <option value="P">P (Perempuan)</option>
+                  </select>
+                </div>
+
+                {/* 9. Agama */}
+                <div className="flex flex-col gap-1">
+                  <label className="text-[12px] font-bold text-slate-700">Agama</label>
+                  <input
+                    type="text"
+                    value={formData.religion || ''}
+                    onChange={(e) => setFormData({ ...formData, religion: e.target.value })}
+                    placeholder="Contoh: Islam"
+                    className="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[13px] font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                  />
+                </div>
+
+                {/* 10. Pangkat Golongan */}
+                <div className="flex flex-col gap-1">
+                  <label className="text-[12px] font-bold text-slate-700">Pangkat Golongan</label>
+                  <input
+                    type="text"
+                    value={formData.rank_group || ''}
+                    onChange={(e) => setFormData({ ...formData, rank_group: e.target.value })}
+                    placeholder="Contoh: Pembina - IV/a atau -"
+                    className="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[13px] font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                  />
+                </div>
+
+                {/* 11. Tanggal Lahir */}
+                <div className="flex flex-col gap-1">
+                  <label className="text-[12px] font-bold text-slate-700">Tanggal Lahir</label>
+                  <input
+                    type="text"
+                    value={formData.birth_date || ''}
+                    onChange={(e) => setFormData({ ...formData, birth_date: e.target.value })}
+                    placeholder="Contoh: 1970-03-31 atau 0000-00-00"
+                    className="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[13px] font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                  />
+                </div>
               </div>
 
               {/* Tingkat Kelas (Dropdown Quick Choice + Input) */}
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col gap-1.5 pt-1">
                 <div className="flex items-center justify-between">
-                  <label className="text-[12px] font-bold text-slate-700">Tingkat Kelas</label>
-                  <span className="text-[11px] text-slate-500">Klik pilihan di bawah atau ketik langsung</span>
+                  <label className="text-[12px] font-bold text-slate-700">Alokasi Tingkat Kelas</label>
+                  <span className="text-[11px] text-slate-500">Klik pilihan di bawah atau ketik manual</span>
                 </div>
 
-                {/* Quick Selection Pills ("seperti kelas 1,2,3 dan seterusnya") */}
                 <div className="flex items-center gap-1.5 flex-wrap p-2 bg-slate-100/80 rounded-xl border border-slate-200/80">
                   {(classPresets[activeFormJenjang] || classPresets.sma).map((option) => (
                     <button
                       key={option}
                       type="button"
                       onClick={() => setFormData({ ...formData, class_level: option })}
-                      className={`text-[11.5px] px-2.5 py-1 rounded-lg font-semibold transition-all ${
+                      className={`text-[11.5px] px-2.5 py-1 rounded-lg font-semibold transition-all cursor-pointer ${
                         formData.class_level === option
                           ? 'bg-blue-600 text-white shadow-xs'
                           : 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200'
@@ -623,47 +799,49 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
                   value={formData.class_level}
                   onChange={(e) => setFormData({ ...formData, class_level: e.target.value })}
                   placeholder="Contoh: Kelas 1, Kelas VII, Kelas X"
-                  className="px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[13px] font-medium"
+                  className="px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[13px] font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
                   required
                 />
               </div>
 
-              {/* Nama Guru */}
-              <div className="flex flex-col gap-1">
-                <label className="text-[12px] font-bold text-slate-700">Nama Lengkap &amp; Gelar Guru</label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="Contoh: TAJUDIN, S.Pd.I"
-                  className="px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[13px] font-medium"
-                  required
-                />
-              </div>
+              {/* Kategori Mapel & Nomor Urut */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div className="flex flex-col gap-1">
+                  <label className="text-[12px] font-bold text-slate-700">Kategori Mata Pelajaran</label>
+                  <input
+                    type="text"
+                    value={formData.category_label || ''}
+                    onChange={(e) => setFormData({ ...formData, category_label: e.target.value })}
+                    placeholder="Contoh: MIPA, Pendidikan Agama Islam, IPS"
+                    className="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[13px] font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                  />
+                </div>
 
-              {/* Mata Pelajaran */}
-              <div className="flex flex-col gap-1">
-                <label className="text-[12px] font-bold text-slate-700">Nama Mata Pelajaran</label>
-                <input
-                  type="text"
-                  value={formData.subject_name}
-                  onChange={(e) => setFormData({ ...formData, subject_name: e.target.value })}
-                  placeholder="Contoh: Matematika Berhitung Ceria, Fiqih, Biologi"
-                  className="px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[13px] font-medium"
-                  required
-                />
+                <div className="flex flex-col gap-1">
+                  <label className="text-[12px] font-bold text-slate-700">Nomor Urut Tampil</label>
+                  <input
+                    type="number"
+                    value={formData.order_no}
+                    onChange={(e) => {
+                      const val = Number(e.target.value);
+                      setFormData({ ...formData, order_no: val, code: String(val) });
+                    }}
+                    className="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[13px] font-bold focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                    required
+                  />
+                </div>
               </div>
 
               {/* Foto Pendidik */}
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2 pt-1">
                 <label className="text-[12px] font-bold text-slate-700">Foto Guru / Pendidik</label>
                 <div className="flex items-center gap-3">
-                  <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0">
+                  <div className="relative w-16 h-20 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0">
                     <Image
                       src={formData.image_url || '/hero/slide-1.jpg'}
                       alt="Preview Foto"
                       fill
-                      className="object-cover"
+                      className="object-cover object-top"
                     />
                   </div>
                   <div className="flex-1 flex flex-col gap-1.5">
@@ -694,24 +872,24 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
                       type="text"
                       value={formData.image_url}
                       onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                      placeholder="/hero/slide-1.jpg atau data:image/..."
-                      className="w-full px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-[11.5px] font-mono text-slate-600"
+                      placeholder="/hero/slide-1.jpg atau URL foto"
+                      className="w-full px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-[11.5px] font-mono text-slate-600 focus:bg-white focus:outline-none"
                     />
                   </div>
                 </div>
               </div>
 
-              {/* Status */}
+              {/* Status Aktif */}
               <div className="flex items-center gap-2 pt-2">
                 <input
                   type="checkbox"
                   id="teacher_active"
                   checked={formData.is_active}
                   onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
-                  className="w-4 h-4 rounded text-blue-600"
+                  className="w-4 h-4 rounded text-blue-600 cursor-pointer"
                 />
-                <label htmlFor="teacher_active" className="text-[13px] font-semibold text-slate-700">
-                  Status Aktif Mengajar
+                <label htmlFor="teacher_active" className="text-[13px] font-semibold text-slate-700 cursor-pointer">
+                  Status Aktif Mengajar &amp; Tampil di Direktori Website
                 </label>
               </div>
 
@@ -720,14 +898,14 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2.5 rounded-xl bg-slate-100 text-slate-700 font-semibold text-[13px] hover:bg-slate-200 transition-colors"
+                  className="px-4 py-2.5 rounded-xl bg-slate-100 text-slate-700 font-semibold text-[13px] hover:bg-slate-200 transition-colors cursor-pointer"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-[13px] transition-all disabled:opacity-50 shadow-xs"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-[13px] transition-all disabled:opacity-50 shadow-xs cursor-pointer active:scale-95"
                 >
                   <Save className="w-4 h-4" />
                   <span>{isSaving ? 'Menyimpan...' : 'Simpan Data'}</span>
