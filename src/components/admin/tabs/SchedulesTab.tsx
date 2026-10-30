@@ -238,21 +238,26 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
 
       if (!uploadRes.ok) {
         const errJson = await uploadRes.json().catch(() => ({}));
-        throw new Error(errJson.message || 'Gagal mengunggah foto');
+        const msg = errJson.message || errJson.error || `Gagal mengunggah foto (Status ${uploadRes.status})`;
+        throw new Error(msg);
       }
 
       const uploadData = await uploadRes.json();
       const photoUrl = uploadData.url;
 
-      // 2. Simpan URL foto ke SYS_SCHIMG
-      await fetch('/api/schedules/photo', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          photo_url: photoUrl,
-          caption: `Foto Jadwal Resmi ${selectedRombel}`,
-        }),
-      });
+      // 2. Simpan URL foto ke SYS_SCHIMG (best-effort)
+      try {
+        await fetch('/api/schedules/photo', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            photo_url: photoUrl,
+            caption: `Foto Jadwal Resmi ${selectedRombel}`,
+          }),
+        });
+      } catch (photoErr) {
+        console.warn('Notice: Failed saving photo URL:', photoErr);
+      }
 
       setSchedulePhoto({
         photo_url: photoUrl,
@@ -261,26 +266,37 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
       });
 
       setScanProgress(35);
-      setScanStatusText('Membaca citra & menjalankan OCR pengenalan teks...');
+      setScanStatusText('Membaca citra & mengenali teks jadwal...');
 
       // 3. OCR via tesseract.js worker
+      // Menggunakan file/uploadFile lokal in-memory untuk mencegah CORS blocking & download lag
       let extractedOcrText = '';
       try {
         const { createWorker } = await import('tesseract.js');
-        const worker = await createWorker(['ind', 'eng'], undefined, {
-          logger: (m) => {
-            if (m.status === 'recognizing text') {
-              const p = Math.min(85, Math.round(35 + m.progress * 45));
-              setScanProgress(p);
-              setScanStatusText(`Mengenali struktur jadwal: ${Math.round(m.progress * 100)}%`);
-            }
-          },
-        });
-        const res = await worker.recognize(photoUrl || file);
-        await worker.terminate();
-        extractedOcrText = res.data.text || '';
+        const ocrPromise = (async () => {
+          const worker = await createWorker('ind', undefined, {
+            logger: (m) => {
+              if (m.status === 'recognizing text') {
+                const p = Math.min(85, Math.round(35 + (m.progress || 0) * 45));
+                setScanProgress(p);
+                setScanStatusText(`Mengenali struktur jadwal: ${Math.round((m.progress || 0) * 100)}%`);
+              }
+            },
+          });
+          const res = await worker.recognize(uploadFile || file);
+          await worker.terminate();
+          return res.data?.text || '';
+        })();
+
+        // Batas timeout OCR 15 detik agar antarmuka tidak membeku
+        const timeoutPromise = new Promise<string>((_, reject) =>
+          setTimeout(() => reject(new Error('OCR Timeout')), 15000)
+        );
+
+        extractedOcrText = await Promise.race([ocrPromise, timeoutPromise]);
       } catch (ocrErr) {
-        console.warn('Client OCR warning, falling back to server parsing:', ocrErr);
+        console.warn('Notice: Client OCR fallback to smart curriculum parser:', ocrErr);
+        extractedOcrText = '';
       }
 
       setScanProgress(85);
@@ -300,7 +316,12 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
 
       if (!scanRes.ok) {
         const errData = await scanRes.json().catch(() => ({}));
-        throw new Error(errData.message || 'Gagal memproses jadwal');
+        const errorMsg =
+          errData.message ||
+          errData.error ||
+          errData.details ||
+          `Gagal memproses jadwal (Status HTTP ${scanRes.status})`;
+        throw new Error(errorMsg);
       }
 
       const scanData = await scanRes.json();

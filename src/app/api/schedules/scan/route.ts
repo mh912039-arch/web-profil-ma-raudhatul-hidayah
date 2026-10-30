@@ -2,54 +2,17 @@ import { NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/auth';
 import { parseScheduleFromText } from '@/lib/scheduleParser';
 import { supabase } from '@/lib/supabaseClient';
+import { applyBatchSchedules } from '@/lib/scheduleStore';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
-export const maxDuration = 60; // Izinkan durasi pemrosesan OCR jika serverless mendukung
+export const maxDuration = 30;
 
 const noCacheHeaders = {
   'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
   Pragma: 'no-cache',
   Expires: '0',
 };
-
-/**
- * Validasi URL gambar untuk mencegah Server-Side Request Forgery (SSRF)
- */
-function isSafeImageUrl(urlStr: string): boolean {
-  if (typeof urlStr !== 'string') return false;
-  const trimmed = urlStr.trim();
-  if (trimmed.startsWith('/uploads/') || trimmed.startsWith('/')) {
-    return !trimmed.includes('..');
-  }
-
-  try {
-    const parsed = new URL(trimmed);
-    if (parsed.protocol !== 'https:') return false;
-
-    const hostname = parsed.hostname.toLowerCase();
-    // Blokir alamat internal, private IP, subnet lokal, dan link-local cloud metadata
-    if (
-      hostname === 'localhost' ||
-      hostname.endsWith('.localhost') ||
-      hostname.endsWith('.local') ||
-      hostname.endsWith('.internal') ||
-      hostname === '169.254.169.254' ||
-      hostname.startsWith('127.') ||
-      hostname.startsWith('10.') ||
-      hostname.startsWith('192.168.') ||
-      /^172\.(1[6-9]|2\d|3[01])\./.test(hostname) ||
-      hostname === '0.0.0.0' ||
-      hostname === '[::1]'
-    ) {
-      return false;
-    }
-
-    return true;
-  } catch {
-    return false;
-  }
-}
 
 export async function POST(req: Request) {
   const auth = await requireAuth(['admin', 'guru']);
@@ -58,83 +21,54 @@ export async function POST(req: Request) {
   }
 
   try {
-    const body = await req.json();
+    const body = await req.json().catch(() => ({}));
     const { imageUrl, text, targetRombel = 'SMP - Kelas VIII', autoApply = false } = body;
 
-    let extractedText = text || '';
+    const extractedText = typeof text === 'string' ? text.trim() : '';
 
-    // Jika imageUrl diberikan dan text belum ada, validasi SSRF lalu coba OCR di server
-    if (!extractedText && imageUrl) {
-      if (!isSafeImageUrl(imageUrl)) {
-        return NextResponse.json(
-          { success: false, message: 'URL gambar tidak valid atau mengarah ke alamat internal yang dilarang.' },
-          { status: 400, headers: noCacheHeaders }
-        );
-      }
-
-      try {
-        const { createWorker } = await import('tesseract.js');
-        const worker = await createWorker(['ind', 'eng']);
-        const {
-          data: { text: ocrText },
-        } = await worker.recognize(imageUrl);
-        await worker.terminate();
-        extractedText = ocrText;
-      } catch (ocrErr: any) {
-        console.warn('Server OCR notice (falling back to parser with sample):', ocrErr?.message);
-        extractedText = '';
-      }
-    }
-
-    // Ambil guru dari database jika ada untuk akurasi pencocokan
+    // Ambil daftar guru dari database untuk pencocokan akurat
     let teachers: { name: string; subject_name?: string }[] = [];
     try {
       const { data: dbTeachers } = await supabase
         .from('teachers_staff')
         .select('name, subject_name')
-        .not('code', 'in', '("SYS_SCH","SYS_TCH","SYS_CAL","SYS_CLS","SYS_AUTH","SYS_SESS","SYS_SCHIMG")')
+        .not('code', 'in', '("SYS_SCH","SYS_TCH","SYS_CAL","SYS_CLS","SYS_AUTH","SYS_SESS","SYS_SCHIMG","SYS_HOME","SYS_PROF")')
         .order('order_no', { ascending: true });
 
-      if (dbTeachers) {
+      if (dbTeachers && Array.isArray(dbTeachers)) {
         teachers = dbTeachers;
       }
-    } catch {}
+    } catch (err) {
+      console.warn('Notice: Teacher pool lookup in schedule scan:', err);
+    }
 
-    // Jalankan intelligent parser
+    // Jalankan intelligent schedule parser
     const parsedSchedules = parseScheduleFromText(extractedText, targetRombel, teachers);
 
-    // Jika autoApply === true, langsung simpan ke batch endpoint internal
+    // Jika autoApply === true, langsung simpan secara internal ke database (tanpa HTTP loopback)
     if (autoApply && parsedSchedules.length > 0) {
       try {
-        const batchRes = await fetch(new URL('/api/schedules/batch', req.url).toString(), {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            cookie: req.headers.get('cookie') || '',
-          },
-          body: JSON.stringify({
-            items: parsedSchedules,
-            replaceRombel: targetRombel,
-            photoUrl: imageUrl,
-          }),
+        const batchResult = await applyBatchSchedules({
+          items: parsedSchedules,
+          replaceRombel: targetRombel,
+          photoUrl: imageUrl || undefined,
+          caption: `Foto Jadwal Resmi ${targetRombel}`,
         });
 
-        if (batchRes.ok) {
-          const batchData = await batchRes.json();
-          return NextResponse.json(
-            {
-              success: true,
-              autoApplied: true,
-              extractedText,
-              schedules: parsedSchedules,
-              message: `Jadwal berhasil dipindai dan ${parsedSchedules.length} sesi otomatis diterapkan untuk ${targetRombel}!`,
-              batchResult: batchData,
-            },
-            { headers: noCacheHeaders }
-          );
-        }
-      } catch (applyErr) {
-        console.warn('Auto apply failed, returning parsed items for manual review:', applyErr);
+        return NextResponse.json(
+          {
+            success: true,
+            autoApplied: true,
+            extractedText,
+            schedules: parsedSchedules,
+            count: parsedSchedules.length,
+            message: `Jadwal resmi ${targetRombel} berhasil dipindai dan ${parsedSchedules.length} sesi diterapkan otomatis ke database digital!`,
+            batchResult,
+          },
+          { headers: noCacheHeaders }
+        );
+      } catch (applyErr: any) {
+        console.warn('Auto apply direct save warning:', applyErr?.message);
       }
     }
 
@@ -152,7 +86,7 @@ export async function POST(req: Request) {
   } catch (err: any) {
     console.error('Error in scan schedule route:', err);
     return NextResponse.json(
-      { success: false, message: err?.message || 'Gagal memindai jadwal' },
+      { success: false, message: err?.message || 'Gagal memproses pemindaian jadwal' },
       { status: 500, headers: noCacheHeaders }
     );
   }

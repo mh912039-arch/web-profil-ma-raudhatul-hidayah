@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
 import { requireAuth } from '@/lib/auth';
-import { supabase } from '@/lib/supabaseClient';
+import { getExistingSchedules, persistSchedules, ScheduleItem } from '@/lib/scheduleStore';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -13,91 +11,13 @@ const noCacheHeaders = {
   Expires: '0',
 };
 
-const schedulesFilePath = path.join(process.cwd(), 'src', 'data', 'schedulesData.json');
-
-export interface ScheduleItem {
-  id: string;
-  class_rombel: string;
-  day: string;
-  session_no: number;
-  time_start: string;
-  time_end: string;
-  subject_name: string;
-  category: string;
-  teacher_name: string;
-  room: string;
-}
-
-async function getSchedules(): Promise<ScheduleItem[]> {
-  // 1. Prioritaskan data persisten dari Supabase
-  try {
-    const { data: supaData } = await supabase
-      .from('teachers_staff')
-      .select('education')
-      .eq('code', 'SYS_SCH')
-      .maybeSingle();
-
-    if (supaData?.education) {
-      const parsed = JSON.parse(supaData.education);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed;
-      }
-    }
-  } catch (err) {
-    console.warn('Supabase SYS_SCH read error:', err);
-  }
-
-  // 2. Fallback ke file JSON lokal
-  try {
-    if (fs.existsSync(schedulesFilePath)) {
-      const data = fs.readFileSync(schedulesFilePath, 'utf8');
-      return JSON.parse(data);
-    }
-  } catch (error) {
-    console.error('Error reading schedules:', error);
-  }
-  return [];
-}
-
-async function saveSchedules(schedules: ScheduleItem[]): Promise<void> {
-  // 1. Simpan ke Supabase agar persisten di Vercel Serverless
-  try {
-    const { data: updated, error } = await supabase
-      .from('teachers_staff')
-      .update({ education: JSON.stringify(schedules) })
-      .eq('code', 'SYS_SCH')
-      .select('id');
-
-    if (error || !updated || updated.length === 0) {
-      await supabase.from('teachers_staff').insert({
-        name: 'System Schedules Store',
-        code: 'SYS_SCH',
-        category_label: 'Sistem',
-        subject_name: 'Schedules',
-        education: JSON.stringify(schedules),
-        order_no: 9997,
-        role: 'system',
-      });
-    }
-  } catch (err) {
-    console.warn('Failed to sync schedules to Supabase:', err);
-  }
-
-  // 2. Best-effort write ke file lokal (abaikan aman jika read-only di Vercel)
-  try {
-    fs.writeFileSync(schedulesFilePath, JSON.stringify(schedules, null, 2), 'utf8');
-  } catch (error) {
-    // EROFS safe
-  }
-}
-
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const rombel = searchParams.get('rombel');
     const day = searchParams.get('day');
 
-    let schedules = await getSchedules();
+    let schedules = await getExistingSchedules();
 
     if (rombel) {
       schedules = schedules.filter((s) => s.class_rombel.toLowerCase() === rombel.toLowerCase());
@@ -121,7 +41,7 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json();
-    const schedules = await getSchedules();
+    const schedules = await getExistingSchedules();
 
     const newItem: ScheduleItem = {
       id: body.id || `sch-${Date.now()}`,
@@ -137,7 +57,7 @@ export async function POST(req: Request) {
     };
 
     schedules.push(newItem);
-    await saveSchedules(schedules);
+    await persistSchedules(schedules);
 
     return NextResponse.json({ success: true, item: newItem }, { headers: noCacheHeaders });
   } catch (err: unknown) {
@@ -154,7 +74,7 @@ export async function PUT(req: Request) {
 
   try {
     const body = await req.json();
-    const schedules = await getSchedules();
+    const schedules = await getExistingSchedules();
 
     const index = schedules.findIndex((s) => s.id === body.id);
     if (index === -1) {
@@ -167,7 +87,7 @@ export async function PUT(req: Request) {
       session_no: Number(body.session_no) || schedules[index].session_no,
     };
 
-    await saveSchedules(schedules);
+    await persistSchedules(schedules);
     return NextResponse.json({ success: true, item: schedules[index] }, { headers: noCacheHeaders });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Unknown error';
@@ -189,7 +109,7 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ error: 'Schedule ID required' }, { status: 400, headers: noCacheHeaders });
     }
 
-    let schedules = await getSchedules();
+    let schedules = await getExistingSchedules();
     const originalLength = schedules.length;
     schedules = schedules.filter((s) => s.id !== id);
 
@@ -197,7 +117,7 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ error: 'Schedule not found' }, { status: 404, headers: noCacheHeaders });
     }
 
-    await saveSchedules(schedules);
+    await persistSchedules(schedules);
     return NextResponse.json({ success: true, message: 'Schedule deleted' }, { headers: noCacheHeaders });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Unknown error';
