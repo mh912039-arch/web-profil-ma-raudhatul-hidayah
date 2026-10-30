@@ -328,15 +328,21 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
       setScanProgress(100);
       setScanStatusText('Jadwal seluruhnya berhasil diperbarui!');
 
+      // Alihkan tab otomatis jika rombel terdeteksi spesifik (misal dari Kelas I ke Kelas II)
+      const finalRombel = scanData.rombel || scanData.schedules?.[0]?.class_rombel || selectedRombel;
+      if (finalRombel && finalRombel !== selectedRombel) {
+        setSelectedRombel(finalRombel);
+      }
+
       // Refresh data
       await fetchSchedules();
       await fetchSchedulePhoto();
 
       const count = scanData.schedules?.length || scanData.count || 0;
       setScanNotification({
-        message: `Jadwal resmi untuk ${selectedRombel} berhasil diperbarui dari foto (${count} sesi pelajaran aktif).`,
+        message: `Jadwal resmi untuk ${finalRombel} berhasil diperbarui dari foto (${count} sesi pelajaran aktif).`,
         count,
-        rombel: selectedRombel,
+        rombel: finalRombel,
       });
 
       setTimeout(() => {

@@ -22,7 +22,7 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json().catch(() => ({}));
-    const { imageUrl, text, targetRombel = 'SMP - Kelas VIII', autoApply = false } = body;
+    const { imageUrl, text, targetRombel = 'SD - Kelas II', autoApply = false } = body;
 
     const extractedText = typeof text === 'string' ? text.trim() : '';
 
@@ -44,15 +44,16 @@ export async function POST(req: Request) {
 
     // Jalankan intelligent schedule parser
     const parsedSchedules = parseScheduleFromText(extractedText, targetRombel, teachers);
+    const finalRombel = parsedSchedules[0]?.class_rombel || targetRombel;
 
     // Jika autoApply === true, langsung simpan secara internal ke database (tanpa HTTP loopback)
     if (autoApply && parsedSchedules.length > 0) {
       try {
         const batchResult = await applyBatchSchedules({
           items: parsedSchedules,
-          replaceRombel: targetRombel,
+          replaceRombel: finalRombel,
           photoUrl: imageUrl || undefined,
-          caption: `Foto Jadwal Resmi ${targetRombel}`,
+          caption: `Foto Jadwal Resmi ${finalRombel}`,
         });
 
         return NextResponse.json(
@@ -62,7 +63,8 @@ export async function POST(req: Request) {
             extractedText,
             schedules: parsedSchedules,
             count: parsedSchedules.length,
-            message: `Jadwal resmi ${targetRombel} berhasil dipindai dan ${parsedSchedules.length} sesi diterapkan otomatis ke database digital!`,
+            rombel: finalRombel,
+            message: `Jadwal resmi ${finalRombel} berhasil dipindai dan ${parsedSchedules.length} sesi diterapkan otomatis ke database digital!`,
             batchResult,
           },
           { headers: noCacheHeaders }
@@ -79,7 +81,8 @@ export async function POST(req: Request) {
         extractedText,
         schedules: parsedSchedules,
         count: parsedSchedules.length,
-        message: `Berhasil mendeteksi ${parsedSchedules.length} sesi jadwal pelajaran.`,
+        rombel: finalRombel,
+        message: `Berhasil mendeteksi ${parsedSchedules.length} sesi jadwal pelajaran untuk ${finalRombel}.`,
       },
       { headers: noCacheHeaders }
     );

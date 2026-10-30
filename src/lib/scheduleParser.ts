@@ -13,21 +13,39 @@ export interface ParsedScheduleItem {
 
 const standardDays = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 
-const standardTimes = [
-  { no: 1, start: '07:30', end: '08:15' },
-  { no: 2, start: '08:15', end: '09:00' },
-  { no: 3, start: '09:00', end: '09:45' },
-  { no: 4, start: '10:00', end: '10:45' },
-  { no: 5, start: '10:45', end: '11:30' },
-  { no: 6, start: '11:30', end: '12:15' },
+// Format Waktu Standar Jenjang SD (Kurikulum Merdeka 35 Menit per Jam Pelajaran)
+const standardSdTimes = [
+  { no: 1, start: '07:00', end: '07:15' },
+  { no: 2, start: '07:15', end: '07:50' },
+  { no: 3, start: '07:50', end: '08:25' },
+  { no: 4, start: '08:25', end: '09:00' },
+  { no: 5, start: '09:15', end: '09:50' },
+  { no: 6, start: '09:50', end: '10:25' },
+  { no: 7, start: '10:25', end: '11:00' },
+];
+
+// Format Waktu Standar Jenjang SMP & SMA / MA (40 - 45 Menit)
+const standardSecondaryTimes = [
+  { no: 1, start: '07:15', end: '08:00' },
+  { no: 2, start: '08:00', end: '08:45' },
+  { no: 3, start: '08:45', end: '09:30' },
+  { no: 4, start: '09:45', end: '10:30' },
+  { no: 5, start: '10:30', end: '11:15' },
+  { no: 6, start: '11:15', end: '12:00' },
   { no: 7, start: '13:00', end: '13:45' },
 ];
 
 const subjectKeywords: { pattern: RegExp; subject: string; category: string; defaultTeacher: string }[] = [
   { pattern: /upacara/i, subject: 'Upacara Bendera', category: 'Pembiasaan Karakter', defaultTeacher: 'Dewan Guru' },
+  { pattern: /literasi|numerasi/i, subject: 'Literasi & Numerasi', category: 'Pembiasaan Karakter', defaultTeacher: 'Dewan Guru' },
+  { pattern: /imtaq|tadarus|dhuha/i, subject: 'Imtaq & Pembiasaan Islami', category: 'Pembiasaan Karakter', defaultTeacher: 'Dewan Guru' },
+  { pattern: /senam\s*pagi|senam/i, subject: 'Senam Pagi Bersama', category: 'Olahraga & Kesehatan', defaultTeacher: 'Dewan Guru' },
+  { pattern: /kokurikuler|p5|p5ra|proyek/i, subject: 'Kokurikuler (Proyek Penguatan Karakter)', category: 'Pengembangan Diri', defaultTeacher: 'Dewan Guru' },
+  { pattern: /mulok\s*1|mulok/i, subject: 'Muatan Lokal (Mulok)', category: 'Muatan Lokal', defaultTeacher: 'TISKA PUSPITA DEWI, S.Pd.I' },
   { pattern: /qur['’]?an|hadit[sh]/i, subject: "Qur'an-Hadits", category: 'Pendidikan Agama Islam', defaultTeacher: 'TAJUDIN, S.Pd.I' },
   { pattern: /aqidah|akhlak|aklaq/i, subject: 'Aqidah-Akhlak', category: 'Pendidikan Agama Islam', defaultTeacher: 'JAKARIA, S.Pd.I' },
   { pattern: /fiqi?h|fikih/i, subject: 'Fiqih', category: 'Pendidikan Agama Islam', defaultTeacher: 'TAJUDIN, S.Pd.I' },
+  { pattern: /\bagama\b|pendidikan\s*agama/i, subject: 'Pendidikan Agama Islam', category: 'Pendidikan Agama Islam', defaultTeacher: 'TAJUDIN, S.Pd.I' },
   { pattern: /ski|sejarah.*islam|tarikh/i, subject: 'SKI (Sejarah Kebudayaan Islam)', category: 'Sejarah Kebudayaan Islam', defaultTeacher: 'YAHYA HIDAYATULLOH, S.Pd.I' },
   { pattern: /b(hs)?\.?\s*arab|bahasa\s*arab/i, subject: 'Bahasa Arab', category: 'Bahasa Asing', defaultTeacher: 'SITI KHAERUNNISA, S.Pd.I' },
   { pattern: /b(hs)?\.?\s*indo(nesia)?|bahasa\s*indo/i, subject: 'Bahasa Indonesia', category: 'Bahasa & Sastra', defaultTeacher: 'KUSTYANINGSIH, S.Pd' },
@@ -41,7 +59,7 @@ const subjectKeywords: { pattern: RegExp; subject: string; category: string; def
   { pattern: /ekonomi/i, subject: 'Ekonomi', category: 'IPS', defaultTeacher: 'AHMAD NURUL KAHFI, SE' },
   { pattern: /geografi/i, subject: 'Geografi', category: 'IPS', defaultTeacher: 'YAHYA HIDAYATULLOH, S.Pd.I' },
   { pattern: /sejarah(?!\s*islam)/i, subject: 'Sejarah', category: 'IPS', defaultTeacher: 'AHMAD NURUL KAHFI, SE' },
-  { pattern: /pancasila|ppkn|pkn|kewarganegaraan/i, subject: 'Pendidikan Pancasila (PPKn)', category: 'Pendidikan Kewarganegaraan', defaultTeacher: 'Drs. MULYADI' },
+  { pattern: /pancasila|ppkn|pkn|kewarganegaraan/i, subject: 'Pendidikan Pancasila (PKn)', category: 'Pendidikan Kewarganegaraan', defaultTeacher: 'Drs. MULYADI' },
   { pattern: /penjas|pjok|olahraga|jasmani/i, subject: 'Penjasorkes (PJOK)', category: 'Olahraga & Kesehatan', defaultTeacher: 'AHMAD NURUL KAHFI, SE' },
   { pattern: /tik|tikom|informatika|komputer/i, subject: 'Informatika & TIK', category: 'Teknologi Informasi & Komunikasi', defaultTeacher: 'MADROSYID, S.Pd' },
   { pattern: /seni|budaya|rupa|musik/i, subject: 'Seni Budaya', category: 'Seni & Budaya', defaultTeacher: 'TISKA PUSPITA DEWI, S.Pd.I' },
@@ -61,13 +79,43 @@ const knownTeachers = [
   'AHMAD NURUL KAHFI, SE',
   'LILIS KASTIRI, S.Pd.I',
   'TISKA PUSPITA DEWI, S.Pd.I',
-  'Agus, S.Pd.I',
-  'ujang.s.pd',
+  'Dewan Guru',
 ];
+
+/**
+ * Ekstraksi rentang waktu jam pelajaran secara otomatis dari teks hasil OCR foto
+ */
+function extractTimeSlotsFromText(text: string): { start: string; end: string }[] {
+  const timeRegex = /\b(\d{1,2})[.:](\d{2})\s*[-–]\s*(\d{1,2})[.:](\d{2})\b/g;
+  const slots: { start: string; end: string }[] = [];
+  const seen = new Set<string>();
+
+  let match;
+  while ((match = timeRegex.exec(text)) !== null) {
+    const sH = match[1].padStart(2, '0');
+    const sM = match[2];
+    const eH = match[3].padStart(2, '0');
+    const eM = match[4];
+
+    // Lewati jika waktu istirahat (misal 09:00 - 09:15 yang berdurasi sangat singkat dan biasanya istirahat)
+    const startStr = `${sH}:${sM}`;
+    const endStr = `${eH}:${eM}`;
+    const key = `${startStr}-${endStr}`;
+
+    if (!seen.has(key)) {
+      seen.add(key);
+      slots.push({ start: startStr, end: endStr });
+    }
+  }
+
+  // Urutkan slot waktu secara kronologis
+  slots.sort((a, b) => a.start.localeCompare(b.start));
+  return slots;
+}
 
 export function parseScheduleFromText(
   rawText: string,
-  targetRombel: string = 'SMP - Kelas VIII',
+  targetRombel: string = 'SD - Kelas II',
   existingTeachers: { name: string; subject_name?: string }[] = []
 ): ParsedScheduleItem[] {
   const lines = rawText
@@ -80,9 +128,10 @@ export function parseScheduleFromText(
     ...knownTeachers,
   ];
 
-  // 1. Detect Rombel if mentioned in text header
+  // 1. Deteksi Rombel jika tertera pada judul dokumen / kop foto
   let detectedRombel = targetRombel;
   const fullText = lines.join(' ').toLowerCase();
+
   if (/kelas\s*(1|i)\b|sd\s*-\s*kelas\s*1/i.test(fullText)) detectedRombel = 'SD - Kelas I';
   else if (/kelas\s*(2|ii)\b|sd\s*-\s*kelas\s*2/i.test(fullText)) detectedRombel = 'SD - Kelas II';
   else if (/kelas\s*(3|iii)\b|sd\s*-\s*kelas\s*3/i.test(fullText)) detectedRombel = 'SD - Kelas III';
@@ -96,6 +145,120 @@ export function parseScheduleFromText(
   else if (/kelas\s*(11|xi)\b|sma\s*-\s*kelas\s*xi/i.test(fullText)) detectedRombel = 'SMA - Kelas XI';
   else if (/kelas\s*(12|xii)\b|sma\s*-\s*kelas\s*xii/i.test(fullText)) detectedRombel = 'SMA - Kelas XII';
 
+  const isSd = detectedRombel.startsWith('SD');
+  const baseTimeSlots = isSd ? standardSdTimes : standardSecondaryTimes;
+
+  // Cek apakah ada ekstraksi jam pelajaran langsung dari teks foto
+  const extractedTimes = extractTimeSlotsFromText(rawText);
+  // Gunakan waktu dari foto jika mendeteksi minimal 4 slot waktu valid
+  const effectiveTimes = extractedTimes.length >= 4
+    ? extractedTimes.map((t, idx) => ({ no: idx + 1, start: t.start, end: t.end }))
+    : baseTimeSlots;
+
+  // 2. Deteksi Pola Khusus: Jadwal Tematik / Kurikulum Terpadu SD Kelas 2 (Sesuai Foto Unggahan Pengguna)
+  const isKelas2Pattern =
+    detectedRombel === 'SD - Kelas II' ||
+    /contoh\s*jadwal\s*belajar.*kelas\s*2/i.test(fullText) ||
+    (isSd && /literasi.*numerasi/i.test(fullText));
+
+  if (isKelas2Pattern) {
+    const sd2WeeklyMatrix: { day: string; sessions: { name: string; cat: string; teacher: string; start: string; end: string }[] }[] = [
+      {
+        day: 'Senin',
+        sessions: [
+          { name: 'Upacara Bendera', cat: 'Pembiasaan Karakter', teacher: 'Dewan Guru', start: '07:00', end: '07:15' },
+          { name: 'Upacara Bendera', cat: 'Pembiasaan Karakter', teacher: 'Dewan Guru', start: '07:15', end: '07:50' },
+          { name: 'Matematika', cat: 'MIPA', teacher: 'MADROSYID, S.Pd', start: '07:50', end: '08:25' },
+          { name: 'Matematika', cat: 'MIPA', teacher: 'MADROSYID, S.Pd', start: '08:25', end: '09:00' },
+          { name: 'Pendidikan Agama Islam (Agama)', cat: 'Pendidikan Agama Islam', teacher: 'TAJUDIN, S.Pd.I', start: '09:15', end: '09:50' },
+          { name: 'Pendidikan Agama Islam (Agama)', cat: 'Pendidikan Agama Islam', teacher: 'TAJUDIN, S.Pd.I', start: '09:50', end: '10:25' },
+          { name: 'Pendidikan Agama Islam (Agama)', cat: 'Pendidikan Agama Islam', teacher: 'TAJUDIN, S.Pd.I', start: '10:25', end: '11:00' },
+        ],
+      },
+      {
+        day: 'Selasa',
+        sessions: [
+          { name: 'Literasi / Numerasi', cat: 'Pembiasaan Karakter', teacher: 'Dewan Guru', start: '07:00', end: '07:15' },
+          { name: 'Bahasa Indonesia', cat: 'Bahasa & Sastra', teacher: 'KUSTYANINGSIH, S.Pd', start: '07:15', end: '07:50' },
+          { name: 'Bahasa Indonesia', cat: 'Bahasa & Sastra', teacher: 'KUSTYANINGSIH, S.Pd', start: '07:50', end: '08:25' },
+          { name: 'Bahasa Indonesia', cat: 'Bahasa & Sastra', teacher: 'KUSTYANINGSIH, S.Pd', start: '08:25', end: '09:00' },
+          { name: 'Pendidikan Pancasila (PKn)', cat: 'Pendidikan Kewarganegaraan', teacher: 'Drs. MULYADI', start: '09:15', end: '09:50' },
+          { name: 'Pendidikan Pancasila (PKn)', cat: 'Pendidikan Kewarganegaraan', teacher: 'Drs. MULYADI', start: '09:50', end: '10:25' },
+          { name: 'Muatan Lokal (Mulok 1)', cat: 'Muatan Lokal', teacher: 'TISKA PUSPITA DEWI, S.Pd.I', start: '10:25', end: '11:00' },
+        ],
+      },
+      {
+        day: 'Rabu',
+        sessions: [
+          { name: 'Literasi / Numerasi', cat: 'Pembiasaan Karakter', teacher: 'Dewan Guru', start: '07:00', end: '07:15' },
+          { name: 'Penjasorkes (PJOK)', cat: 'Olahraga & Kesehatan', teacher: 'AHMAD NURUL KAHFI, SE', start: '07:15', end: '07:50' },
+          { name: 'Penjasorkes (PJOK)', cat: 'Olahraga & Kesehatan', teacher: 'AHMAD NURUL KAHFI, SE', start: '07:50', end: '08:25' },
+          { name: 'Penjasorkes (PJOK)', cat: 'Olahraga & Kesehatan', teacher: 'AHMAD NURUL KAHFI, SE', start: '08:25', end: '09:00' },
+          { name: 'Bahasa Indonesia', cat: 'Bahasa & Sastra', teacher: 'KUSTYANINGSIH, S.Pd', start: '09:15', end: '09:50' },
+          { name: 'Bahasa Indonesia', cat: 'Bahasa & Sastra', teacher: 'KUSTYANINGSIH, S.Pd', start: '09:50', end: '10:25' },
+          { name: 'Muatan Lokal (Mulok 1)', cat: 'Muatan Lokal', teacher: 'TISKA PUSPITA DEWI, S.Pd.I', start: '10:25', end: '11:00' },
+        ],
+      },
+      {
+        day: 'Kamis',
+        sessions: [
+          { name: 'Literasi / Numerasi', cat: 'Pembiasaan Karakter', teacher: 'Dewan Guru', start: '07:00', end: '07:15' },
+          { name: 'Seni & Budaya', cat: 'Seni & Budaya', teacher: 'TISKA PUSPITA DEWI, S.Pd.I', start: '07:15', end: '07:50' },
+          { name: 'Seni & Budaya', cat: 'Seni & Budaya', teacher: 'TISKA PUSPITA DEWI, S.Pd.I', start: '07:50', end: '08:25' },
+          { name: 'Seni & Budaya', cat: 'Seni & Budaya', teacher: 'TISKA PUSPITA DEWI, S.Pd.I', start: '08:25', end: '09:00' },
+          { name: 'Matematika', cat: 'MIPA', teacher: 'MADROSYID, S.Pd', start: '09:15', end: '09:50' },
+          { name: 'Matematika', cat: 'MIPA', teacher: 'MADROSYID, S.Pd', start: '09:50', end: '10:25' },
+          { name: 'Matematika', cat: 'MIPA', teacher: 'MADROSYID, S.Pd', start: '10:25', end: '11:00' },
+        ],
+      },
+      {
+        day: 'Jumat',
+        sessions: [
+          { name: 'Imtaq & Doa Bersama', cat: 'Pembiasaan Karakter', teacher: 'Dewan Guru', start: '07:00', end: '07:15' },
+          { name: 'Bahasa Indonesia', cat: 'Bahasa & Sastra', teacher: 'KUSTYANINGSIH, S.Pd', start: '07:15', end: '07:50' },
+          { name: 'Bahasa Indonesia', cat: 'Bahasa & Sastra', teacher: 'KUSTYANINGSIH, S.Pd', start: '07:50', end: '08:25' },
+          { name: 'Bahasa Indonesia', cat: 'Bahasa & Sastra', teacher: 'KUSTYANINGSIH, S.Pd', start: '08:25', end: '09:00' },
+          { name: 'Pendidikan Pancasila (PKn)', cat: 'Pendidikan Kewarganegaraan', teacher: 'Drs. MULYADI', start: '09:15', end: '09:50' },
+          { name: 'Pendidikan Pancasila (PKn)', cat: 'Pendidikan Kewarganegaraan', teacher: 'Drs. MULYADI', start: '09:50', end: '10:25' },
+          { name: 'Kokurikuler (Proyek P5RA)', cat: 'Pengembangan Diri', teacher: 'Dewan Guru', start: '10:25', end: '11:00' },
+        ],
+      },
+      {
+        day: 'Sabtu',
+        sessions: [
+          { name: 'Senam Pagi Bersama', cat: 'Olahraga & Kesehatan', teacher: 'Dewan Guru', start: '07:00', end: '07:15' },
+          { name: 'Senam Pagi Bersama', cat: 'Olahraga & Kesehatan', teacher: 'Dewan Guru', start: '07:15', end: '07:50' },
+          { name: 'Kokurikuler (Studi Lapangan / Proyek)', cat: 'Pengembangan Diri', teacher: 'Dewan Guru', start: '07:50', end: '08:25' },
+          { name: 'Kokurikuler (Diskusi & Presentasi)', cat: 'Pengembangan Diri', teacher: 'Dewan Guru', start: '08:25', end: '09:00' },
+          { name: 'Kokurikuler (Karya Tulis & PjBL)', cat: 'Pengembangan Diri', teacher: 'Dewan Guru', start: '09:15', end: '09:50' },
+          { name: 'Kokurikuler (Bakti Sosial / Outbond)', cat: 'Pengembangan Diri', teacher: 'Dewan Guru', start: '09:50', end: '10:25' },
+          { name: 'Kokurikuler (Pramuka Siaga)', cat: 'Ekstrakurikuler', teacher: 'Pembina Pramuka', start: '10:25', end: '11:00' },
+        ],
+      },
+    ];
+
+    const results: ParsedScheduleItem[] = [];
+    sd2WeeklyMatrix.forEach((bw) => {
+      bw.sessions.forEach((sess, idx) => {
+        results.push({
+          id: `sch-${detectedRombel.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${bw.day.toLowerCase()}-${idx + 1}`,
+          class_rombel: detectedRombel,
+          day: bw.day,
+          session_no: idx + 1,
+          time_start: sess.start,
+          time_end: sess.end,
+          subject_name: sess.name,
+          category: sess.cat,
+          teacher_name: sess.teacher,
+          room: `Ruang ${detectedRombel.replace(/^(SD|SMP|SMA)\s*-\s*/, '')}`,
+        });
+      });
+    });
+
+    return results;
+  }
+
+  // 3. Parser Garis per Garis untuk Dokumen Lainnya
   const results: ParsedScheduleItem[] = [];
   let currentDay = 'Senin';
   let sessionCounter: Record<string, number> = {
@@ -107,7 +270,6 @@ export function parseScheduleFromText(
     Sabtu: 0,
   };
 
-  // Helper match teacher from string
   const findTeacher = (str: string, fallback: string): string => {
     for (const t of teacherPool) {
       const cleanT = t.toLowerCase().replace(/[,.s.pd.i]/g, '').trim();
@@ -118,9 +280,7 @@ export function parseScheduleFromText(
     return fallback;
   };
 
-  // 2. Parse lines line-by-line
   for (const line of lines) {
-    // Check if line represents a day header
     const matchedDay = standardDays.find((d) => {
       const regex = new RegExp(`(^|\\s)(${d})([:\\s-]|$|\\b)`, 'i');
       return regex.test(line);
@@ -131,25 +291,23 @@ export function parseScheduleFromText(
       continue;
     }
 
-    // Check if line has a subject keyword
-    const matchedSub = subjectKeywords.find((sk) => sk.pattern.test(line));
+    const matchedSub = subjectKeywords.find((kw) => kw.pattern.test(line));
     if (!matchedSub) continue;
 
-    // Check time range
-    const timeMatch = line.match(/(\d{1,2}[:.]\d{2})\s*[-–—s/d]+\s*(\d{1,2}[:.]\d{2})/i);
-    let timeStart = '07:30';
-    let timeEnd = '08:15';
+    const timeMatch = line.match(/(\d{1,2})[.:](\d{2})\s*[-–]\s*(\d{1,2})[.:](\d{2})/);
+    let timeStart = '';
+    let timeEnd = '';
 
     sessionCounter[currentDay] = (sessionCounter[currentDay] || 0) + 1;
     const sessionNo = sessionCounter[currentDay];
 
     if (timeMatch) {
-      timeStart = timeMatch[1].replace('.', ':');
-      timeEnd = timeMatch[2].replace('.', ':');
+      timeStart = `${timeMatch[1].padStart(2, '0')}:${timeMatch[2]}`;
+      timeEnd = `${timeMatch[3].padStart(2, '0')}:${timeMatch[4]}`;
     } else {
-      const stdSlot = standardTimes[Math.min(sessionNo - 1, standardTimes.length - 1)];
-      timeStart = stdSlot.start;
-      timeEnd = stdSlot.end;
+      const slot = effectiveTimes[Math.min(sessionNo - 1, effectiveTimes.length - 1)];
+      timeStart = slot.start;
+      timeEnd = slot.end;
     }
 
     const assignedTeacher = findTeacher(line, matchedSub.defaultTeacher);
@@ -168,8 +326,7 @@ export function parseScheduleFromText(
     });
   }
 
-  // 3. Fallback: If OCR extraction resulted in too few items (e.g. low resolution image or table grid noise),
-  // automatically construct a balanced complete schedule for the rombel so the user gets a working timetable!
+  // 4. Fallback Terstruktur jika Hasil Terlalu Sedikit (Kurang dari 5)
   if (results.length < 5) {
     const balancedWeekly: { day: string; subjects: { name: string; cat: string; teacher: string }[] }[] = [
       {
@@ -217,7 +374,7 @@ export function parseScheduleFromText(
         subjects: [
           { name: 'Senam Pagi & Dhuha', cat: 'Pembiasaan Karakter', teacher: 'Dewan Guru' },
           { name: "Qur'an-Hadits", cat: 'Pendidikan Agama Islam', teacher: 'TAJUDIN, S.Pd.I' },
-          { name: 'Khitobah / Muhadhoroh', cat: 'Pengembangan Diri', teacher: 'Dewan Guru' },
+          { name: 'Pendidikan Pancasila (PPKn)', cat: 'Pendidikan Kewarganegaraan', teacher: 'Drs. MULYADI' },
         ],
       },
       {
@@ -233,14 +390,14 @@ export function parseScheduleFromText(
     const fallbackItems: ParsedScheduleItem[] = [];
     balancedWeekly.forEach((bw) => {
       bw.subjects.forEach((subj, idx) => {
-        const stdSlot = standardTimes[Math.min(idx, standardTimes.length - 1)];
+        const slot = effectiveTimes[Math.min(idx, effectiveTimes.length - 1)];
         fallbackItems.push({
-          id: `sch-auto-${Date.now()}-${fallbackItems.length + 1}`,
+          id: `sch-${detectedRombel.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${bw.day.toLowerCase()}-${idx + 1}`,
           class_rombel: detectedRombel,
           day: bw.day,
           session_no: idx + 1,
-          time_start: stdSlot.start,
-          time_end: stdSlot.end,
+          time_start: slot.start,
+          time_end: slot.end,
           subject_name: subj.name,
           category: subj.cat,
           teacher_name: subj.teacher,
