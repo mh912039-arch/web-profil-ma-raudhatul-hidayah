@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Playfair_Display, Manrope, Work_Sans } from 'next/font/google';
+import { Playfair_Display, Work_Sans } from 'next/font/google';
 import './globals.css';
 import { VisitorTracker } from '@/components/analytics/VisitorTracker';
 
@@ -7,14 +7,8 @@ const playfair = Playfair_Display({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-playfair',
-  weight: ['500', '600', '700', '800'],
-});
-
-const manrope = Manrope({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-manrope',
-  weight: ['500', '600', '700', '800'],
+  weight: ['600', '700'],
+  preload: true,
 });
 
 const workSans = Work_Sans({
@@ -22,6 +16,7 @@ const workSans = Work_Sans({
   display: 'swap',
   variable: '--font-work-sans',
   weight: ['400', '500', '600'],
+  preload: true,
 });
 
 export const viewport: Viewport = {
@@ -107,11 +102,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id" className={`${playfair.variable} ${manrope.variable} ${workSans.variable}`}>
+    <html lang="id" className={`${playfair.variable} ${workSans.variable}`}>
       <head>
         <link rel="icon" href="/school-logo.png" type="image/png" />
         <link rel="shortcut icon" href="/school-logo.png" type="image/png" />
         <link rel="apple-touch-icon" href="/school-logo.png" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schoolJsonLd) }}

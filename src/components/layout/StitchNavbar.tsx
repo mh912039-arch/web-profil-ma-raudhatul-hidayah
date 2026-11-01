@@ -259,7 +259,6 @@ export function StitchNavbar() {
                 width={36}
                 height={36}
                 className="object-contain drop-shadow-sm"
-                priority
               />
             </div>
             <div className="flex flex-col">

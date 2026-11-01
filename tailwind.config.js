@@ -77,9 +77,9 @@ module.exports = {
       fontFamily: {
         sans: ["var(--font-work-sans)", "sans-serif"],
         serif: ["var(--font-playfair)", "Playfair Display", "Georgia", "serif"],
-        display: ["var(--font-playfair)", "var(--font-manrope)", "serif"],
+        display: ["var(--font-playfair)", "var(--font-work-sans)", "serif"],
         heading: ["var(--font-playfair)", "serif"],
-        manrope: ["var(--font-manrope)", "sans-serif"],
+        manrope: ["var(--font-work-sans)", "sans-serif"],
         "work-sans": ["var(--font-work-sans)", "sans-serif"],
       },
       spacing: {

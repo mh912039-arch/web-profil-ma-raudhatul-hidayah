@@ -29,6 +29,9 @@ const nextConfig = {
     ],
     domains: ['images.unsplash.com', 'picsum.photos', 'zzgobrlhnnqvspuwugkz.supabase.co'],
   },
+  experimental: {
+    optimizePackageImports: ['lucide-react', 'framer-motion'],
+  },
   webpack: (config, { isServer }) => {
     if (!isServer) {
       const emptyPolyfill = path.resolve(__dirname, 'src/empty-polyfill.js');

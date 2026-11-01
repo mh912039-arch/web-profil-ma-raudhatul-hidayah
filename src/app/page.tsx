@@ -65,6 +65,15 @@ export default function HomePage() {
   const [home, setHome] = useState(defaultHomeConfig);
   const [isRegModalOpen, setIsRegModalOpen] = useState(false);
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
+  const [slidesReady, setSlidesReady] = useState(false);
+
+  useEffect(() => {
+    // Defer secondary hero slides so initial mobile LCP and bandwidth are 100% focused on slide 0
+    const timer = setTimeout(() => {
+      setSlidesReady(true);
+    }, 4500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const heroImages = useMemo(() => {
     if (Array.isArray(home.heroBackgrounds) && home.heroBackgrounds.length > 0) {
@@ -118,25 +127,30 @@ export default function HomePage() {
         <section className="relative min-h-[92dvh] lg:min-h-[100dvh] flex flex-col justify-between pt-28 sm:pt-32 pb-0 overflow-hidden border-b border-slate-800/30">
           {/* Real Campus Photo Background Slideshow with Translucent Cinematic Overlay */}
           <div className="absolute inset-0 z-0 overflow-hidden">
-            {heroImages.map((imgSrc, index) => (
-              <div
-                key={`${imgSrc}-${index}`}
-                className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                  index === currentHeroIndex ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
-                }`}
-              >
-                <Image
-                  src={imgSrc}
-                  alt={`${home.heroTitle} Latar ${index + 1}`}
-                  fill
-                  sizes="100vw"
-                  quality={65}
-                  className="object-cover object-center scale-105 transition-transform duration-[12000ms] ease-out"
-                  priority={index === 0}
-                  loading={index === 0 ? undefined : 'lazy'}
-                />
-              </div>
-            ))}
+            {heroImages.map((imgSrc, index) => {
+              // Defer slides 1 & 2 until idle so mobile browser only downloads slide 0 (LCP) initially
+              if (index !== 0 && !slidesReady) return null;
+              return (
+                <div
+                  key={`${imgSrc}-${index}`}
+                  className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                    index === currentHeroIndex ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
+                  }`}
+                >
+                  <Image
+                    src={imgSrc}
+                    alt={`${home.heroTitle} Latar ${index + 1}`}
+                    fill
+                    sizes="100vw"
+                    quality={60}
+                    className="object-cover object-center scale-105 transition-transform duration-[12000ms] ease-out"
+                    priority={index === 0}
+                    fetchPriority={index === 0 ? 'high' : 'auto'}
+                    loading={index === 0 ? undefined : 'lazy'}
+                  />
+                </div>
+              );
+            })}
             {/* Translucent Dark Blue / Slate Overlay */}
             <div className="absolute inset-0 bg-slate-950/60 z-20 pointer-events-none" />
             <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-900/50 to-slate-950/85 z-20 pointer-events-none" />
@@ -153,7 +167,6 @@ export default function HomePage() {
                   fill
                   sizes="(max-width: 640px) 80px, 96px"
                   className="object-contain"
-                  priority
                 />
               </div>
             </div>
