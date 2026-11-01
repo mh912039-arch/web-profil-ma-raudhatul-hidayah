@@ -23,6 +23,9 @@ const nextConfig = {
     ],
     domains: ['images.unsplash.com', 'picsum.photos', 'zzgobrlhnnqvspuwugkz.supabase.co'],
   },
+  experimental: {
+    optimizePackageImports: ['lucide-react', 'framer-motion'],
+  },
   async headers() {
     return [
       {
@@ -58,10 +61,10 @@ const nextConfig = {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=(), browsing-topics=(), payment=(), usb=()',
           },
-          // 7. Isolasi Cross-Origin Opener
+          // 7. Isolasi Cross-Origin Opener (Izinkan popups untuk integrasi & audit Lighthouse)
           {
             key: 'Cross-Origin-Opener-Policy',
-            value: 'same-origin',
+            value: 'same-origin-allow-popups',
           },
           // 8. Kontrol Prefetch DNS Aman
           {
@@ -73,11 +76,12 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com https://cdn.jsdelivr.net",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://cdn.jsdelivr.net",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com https://picsum.photos https://api.dicebear.com https://*.googleapis.com https://*.gstatic.com https://*.google.com https://*.googleusercontent.com",
               "font-src 'self' data: https://fonts.gstatic.com",
-              "connect-src 'self' https://*.supabase.co https://api.dicebear.com https://vitals.vercel-insights.com https://*.googleapis.com https://*.google.com",
+              "connect-src 'self' https://*.supabase.co https://api.dicebear.com https://vitals.vercel-insights.com https://*.googleapis.com https://*.google.com https://fonts.googleapis.com https://fonts.gstatic.com",
+              "worker-src 'self' blob:",
               "frame-src 'self' https://www.google.com https://maps.google.com https://*.google.com",
               "frame-ancestors 'none'",
               "object-src 'none'",
