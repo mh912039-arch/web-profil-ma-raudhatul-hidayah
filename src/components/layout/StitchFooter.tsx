@@ -71,12 +71,12 @@ export function StitchFooter() {
 
   return (
     <footer className="w-full bg-[#1e3a8a] text-white border-t-[4px] border-[#facc15] relative overflow-hidden">
-      {/* Traditional Brocade Pattern Texture Background */}
+      {/* Traditional Brocade Pattern Texture Background (Optimized WebP Texture) */}
       <div
         className="absolute inset-0 bg-repeat bg-center opacity-25 pointer-events-none"
         style={{
-          backgroundImage: "url('/footer-pattern.jpg')",
-          backgroundSize: '540px auto',
+          backgroundImage: "url('/footer-pattern.webp')",
+          backgroundSize: '400px auto',
         }}
         aria-hidden="true"
       />

@@ -83,6 +83,7 @@ export default function FasilitasPage() {
                       src={fac.image || '/kelas.jpeg'}
                       alt={fac.title}
                       fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 580px"
                       className="object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent pointer-events-none" />

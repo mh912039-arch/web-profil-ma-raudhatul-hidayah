@@ -77,6 +77,7 @@ export default function FotoJuaraPage() {
                       src={champ.image || '/foto-juara.jpeg'}
                       alt={champ.title}
                       fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px"
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute top-3 left-3 bg-amber-500 text-blue-950 px-3 py-1 rounded-full text-[11px] font-bold shadow-xs flex items-center gap-1.5">

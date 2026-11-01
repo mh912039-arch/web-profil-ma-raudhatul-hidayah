@@ -96,6 +96,7 @@ export default function SejarahPage() {
                     src="/hero/slide-2.jpg"
                     alt="Kompleks Sekolah MA Raudlatul Hidayah di Mauk Tangerang"
                     fill
+                    sizes="(max-width: 1024px) 100vw, 500px"
                     className="object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/20 to-transparent flex items-end p-5">

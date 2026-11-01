@@ -280,6 +280,7 @@ export default function GuruTendikPage() {
                   src="/kepala-madrasah.jpg"
                   alt="A. KHUTBI. AR, S.Pd"
                   fill
+                  sizes="(max-width: 640px) 80px, 96px"
                   className="object-cover object-top"
                 />
               </div>
@@ -517,6 +518,7 @@ export default function GuruTendikPage() {
                                   src={item.image}
                                   alt={item.name}
                                   fill
+                                  sizes="32px"
                                   className="object-cover object-top"
                                 />
                               </div>

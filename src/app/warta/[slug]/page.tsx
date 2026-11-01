@@ -279,6 +279,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
                   src={article.imageUrl}
                   alt={article.title}
                   fill
+                  sizes="(max-width: 1024px) 100vw, 1024px"
                   className="object-cover"
                   priority
                 />
@@ -354,6 +355,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
                               src={img.url}
                               alt={img.caption}
                               fill
+                              sizes="(max-width: 640px) 100vw, 350px"
                               className="object-cover group-hover:scale-105 transition-transform duration-300"
                             />
                           </div>
@@ -441,6 +443,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
                             src={n.imageUrl}
                             alt={n.title}
                             fill
+                            sizes="64px"
                             className="object-cover group-hover:scale-105 transition-transform"
                           />
                         </div>

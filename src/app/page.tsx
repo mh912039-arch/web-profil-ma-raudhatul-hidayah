@@ -129,8 +129,10 @@ export default function HomePage() {
                   src={imgSrc}
                   alt={`${home.heroTitle} Latar ${index + 1}`}
                   fill
+                  sizes="100vw"
                   className="object-cover object-center scale-105 transition-transform duration-[12000ms] ease-out"
                   priority={index === 0}
+                  loading={index === 0 ? undefined : 'lazy'}
                 />
               </div>
             ))}
@@ -148,6 +150,7 @@ export default function HomePage() {
                   src={home.schoolLogo || '/school-logo.png'}
                   alt={home.heroTitle}
                   fill
+                  sizes="(max-width: 640px) 80px, 96px"
                   className="object-contain"
                   priority
                 />
@@ -271,7 +274,7 @@ export default function HomePage() {
                       src={home.headmasterPhoto || '/kepala-madrasah.jpg'}
                       alt={`${home.headmasterName} - ${home.headmasterRole}`}
                       fill
-                      priority
+                      sizes="(max-width: 640px) 90vw, (max-width: 1024px) 400px, 448px"
                       className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
                     />
                   </div>
