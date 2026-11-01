@@ -112,7 +112,12 @@ export function NewsCarouselSection() {
         console.warn('Fallback to default news list:', err);
       }
     }
-    fetchLatestNews();
+    let idleId: any;
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      idleId = (window as any).requestIdleCallback(fetchLatestNews, { timeout: 3000 });
+    } else {
+      idleId = setTimeout(fetchLatestNews, 800);
+    }
 
     const timer = setTimeout(() => {
       checkScroll();
@@ -120,6 +125,11 @@ export function NewsCarouselSection() {
     window.addEventListener('resize', checkScroll, { passive: true });
     return () => {
       clearTimeout(timer);
+      if (typeof window !== 'undefined' && 'cancelIdleCallback' in window && typeof idleId === 'number') {
+        (window as any).cancelIdleCallback(idleId);
+      } else {
+        clearTimeout(idleId);
+      }
       window.removeEventListener('resize', checkScroll);
     };
   }, [checkScroll]);

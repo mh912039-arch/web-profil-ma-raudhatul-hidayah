@@ -84,14 +84,23 @@ export default function HomePage() {
   }, [heroImages.length]);
 
   useEffect(() => {
-    fetch('/api/profile', { cache: 'no-store' })
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (data && data.homepage) {
-          setHome((prev) => ({ ...prev, ...data.homepage }));
-        }
-      })
-      .catch((err) => console.warn('Could not fetch homepage dynamic data:', err));
+    const syncProfile = () => {
+      fetch('/api/profile', { cache: 'no-store' })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data && data.homepage) {
+            setHome((prev) => ({ ...prev, ...data.homepage }));
+          }
+        })
+        .catch((err) => console.warn('Could not fetch homepage dynamic data:', err));
+    };
+
+    let idleId: any;
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      idleId = (window as any).requestIdleCallback(syncProfile, { timeout: 3000 });
+    } else {
+      idleId = setTimeout(syncProfile, 1000);
+    }
 
     const handleOpenModal = () => setIsRegModalOpen(true);
     window.addEventListener('open-ppdb-registration', handleOpenModal);
@@ -104,7 +113,14 @@ export default function HomePage() {
       }
     } catch (e) {}
 
-    return () => window.removeEventListener('open-ppdb-registration', handleOpenModal);
+    return () => {
+      if (typeof window !== 'undefined' && 'cancelIdleCallback' in window && typeof idleId === 'number') {
+        (window as any).cancelIdleCallback(idleId);
+      } else {
+        clearTimeout(idleId);
+      }
+      window.removeEventListener('open-ppdb-registration', handleOpenModal);
+    };
   }, []);
 
   return (

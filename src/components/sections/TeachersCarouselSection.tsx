@@ -90,19 +90,29 @@ export const TeachersCarouselSection: React.FC<TeachersCarouselSectionProps> = (
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Fetch updated teachers from API
+  // Fetch updated teachers from API during idle time
   useEffect(() => {
-    fetch('/api/teachers', { cache: 'no-store' })
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
-          const active = data.filter((t: any) => t.is_active !== false);
-          if (active.length > 0) {
-            setTeachers(active);
+    const syncTeachers = () => {
+      fetch('/api/teachers', { cache: 'no-store' })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (Array.isArray(data) && data.length > 0) {
+            const active = data.filter((t: any) => t.is_active !== false);
+            if (active.length > 0) {
+              setTeachers(active);
+            }
           }
-        }
-      })
-      .catch((err) => console.warn('TeachersCarousel sync notice:', err));
+        })
+        .catch((err) => console.warn('TeachersCarousel sync notice:', err));
+    };
+
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      const id = (window as any).requestIdleCallback(syncTeachers, { timeout: 3000 });
+      return () => (window as any).cancelIdleCallback(id);
+    } else {
+      const timer = setTimeout(syncTeachers, 1200);
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   // Responsive items count

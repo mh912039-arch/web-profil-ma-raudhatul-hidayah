@@ -19,20 +19,28 @@ export function VisitorTracker() {
     }
     lastPath.current = pathname;
 
-    // 3. Dispatch hit to /api/visitors in background
-    try {
-      fetch('/api/visitors', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          path: pathname,
-          referrer: typeof document !== 'undefined' ? document.referrer || '' : '',
-        }),
-      }).catch(() => {
-        // Silent catch: visitor experience must never be disrupted
-      });
-    } catch {
-      // Ignore client fetch errors
+    // 3. Dispatch hit to /api/visitors in background during idle time
+    const sendHit = () => {
+      try {
+        fetch('/api/visitors', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            path: pathname,
+            referrer: typeof document !== 'undefined' ? document.referrer || '' : '',
+          }),
+        }).catch(() => {
+          // Silent catch: visitor experience must never be disrupted
+        });
+      } catch {
+        // Ignore client fetch errors
+      }
+    };
+
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(sendHit, { timeout: 4000 });
+    } else {
+      setTimeout(sendHit, 1500);
     }
   }, [pathname]);
 
