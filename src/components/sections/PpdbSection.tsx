@@ -145,7 +145,7 @@ export function PpdbSection({ onOpenRegister }: PpdbSectionProps) {
           <div className="lg:col-span-7 flex flex-col gap-6">
             {/* Category Subtitle */}
             <div>
-              <span className="font-sans text-[18px] sm:text-[22px] lg:text-[24px] font-bold text-amber-500 uppercase tracking-wide block">
+              <span className="font-sans text-[18px] sm:text-[22px] lg:text-[24px] font-bold text-amber-700 uppercase tracking-wide block">
                 {data.category}
               </span>
               <h2 className="font-sans text-[32px] sm:text-[44px] lg:text-[50px] font-extrabold text-slate-900 tracking-tight leading-[1.14] mt-2">

@@ -243,7 +243,7 @@ export const TeachersCarouselSection: React.FC<TeachersCarouselSectionProps> = (
                       </h3>
 
                       {/* Subject Name (Mata Pelajaran di Bawah Nama) */}
-                      <p className="font-sans text-[13px] sm:text-[13.5px] text-slate-500 font-medium mt-1">
+                      <p className="font-sans text-[13px] sm:text-[13.5px] text-slate-700 font-medium mt-1">
                         {teacher.subject_name}
                       </p>
 

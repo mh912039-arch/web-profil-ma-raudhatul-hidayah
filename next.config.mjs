@@ -29,9 +29,6 @@ const nextConfig = {
     ],
     domains: ['images.unsplash.com', 'picsum.photos', 'zzgobrlhnnqvspuwugkz.supabase.co'],
   },
-  experimental: {
-    optimizePackageImports: ['lucide-react', 'framer-motion'],
-  },
   webpack: (config, { isServer }) => {
     if (!isServer) {
       const emptyPolyfill = path.resolve(__dirname, 'src/empty-polyfill.js');
@@ -52,15 +49,31 @@ const nextConfig = {
       {
         source: '/admin/:path*',
         headers: [
-          // Isolasi Cross-Origin Opener khusus rute admin untuk keamanan sesi CMS
+          // Isolasi Keamanan Ketat Khusus Panel Admin (COOP & CSP)
           {
             key: 'Cross-Origin-Opener-Policy',
             value: 'same-origin',
           },
+          {
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://cdn.jsdelivr.net",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+              "img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com https://picsum.photos https://api.dicebear.com",
+              "font-src 'self' data: https://fonts.gstatic.com",
+              "connect-src 'self' https://*.supabase.co https://api.dicebear.com https://vitals.vercel-insights.com",
+              "frame-ancestors 'none'",
+              "object-src 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
+            ].join('; '),
+          },
         ],
       },
       {
-        source: '/(.*)',
+        // Hanya terapkan pada rute dokumen / halaman (tidak mengganggu static assets _next/static)
+        source: '/((?!_next/static|_next/image|favicon.ico).*)',
         headers: [
           // 1. HTTP Strict Transport Security (HSTS) - Standar Maksimal A+ / Sucuri Minimal Risk
           {
@@ -96,24 +109,6 @@ const nextConfig = {
           {
             key: 'X-DNS-Prefetch-Control',
             value: 'on',
-          },
-          // 9. Content Security Policy (CSP) Komprehensif
-          {
-            key: 'Content-Security-Policy',
-            value: [
-              "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://cdn.jsdelivr.net",
-              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-              "img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com https://picsum.photos https://api.dicebear.com https://*.googleapis.com https://*.gstatic.com https://*.google.com https://*.googleusercontent.com",
-              "font-src 'self' data: https://fonts.gstatic.com",
-              "connect-src 'self' https://*.supabase.co https://api.dicebear.com https://vitals.vercel-insights.com https://*.googleapis.com https://*.google.com https://fonts.googleapis.com https://fonts.gstatic.com",
-              "worker-src 'self' blob:",
-              "frame-src 'self' https://www.google.com https://maps.google.com https://*.google.com",
-              "frame-ancestors 'none'",
-              "object-src 'none'",
-              "base-uri 'self'",
-              "form-action 'self'",
-            ].join('; '),
           },
         ],
       },
