@@ -85,14 +85,13 @@ export default function HomePage() {
 
   useEffect(() => {
     const syncProfile = () => {
-      fetch('/api/profile', { cache: 'no-store' })
-        .then((res) => (res.ok ? res.json() : null))
-        .then((data) => {
+      import('@/lib/publicProfileClient').then(({ fetchPublicProfile }) => {
+        fetchPublicProfile().then((data) => {
           if (data && data.homepage) {
             setHome((prev) => ({ ...prev, ...data.homepage }));
           }
-        })
-        .catch((err) => console.warn('Could not fetch homepage dynamic data:', err));
+        });
+      });
     };
 
     let idleId: any;

@@ -133,7 +133,7 @@ export async function middleware(request: NextRequest) {
     'Permissions-Policy',
     'camera=(), microphone=(), geolocation=(), browsing-topics=(), payment=(), usb=()'
   );
-  response.headers.set('Cross-Origin-Opener-Policy', 'same-origin');
+  response.headers.set('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
   response.headers.set('X-DNS-Prefetch-Control', 'on');
   response.headers.delete('x-powered-by');
 

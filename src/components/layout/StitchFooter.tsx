@@ -54,19 +54,35 @@ export function StitchFooter() {
   const [profile, setProfile] = useState<FooterProfile>(defaultProfile);
 
   useEffect(() => {
-    fetch('/api/profile', { cache: 'no-store' })
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (data?.profile) {
-          setProfile((prev) => ({
-            ...prev,
-            ...data.profile,
-            accreditation: data.profile.accreditation || prev.accreditation,
-            npsn: data.profile.npsn || prev.npsn,
-          }));
-        }
-      })
-      .catch((err) => console.warn('Could not fetch footer profile:', err));
+    const syncFooter = () => {
+      import('@/lib/publicProfileClient').then(({ fetchPublicProfile }) => {
+        fetchPublicProfile().then((data) => {
+          if (data?.profile) {
+            setProfile((prev) => ({
+              ...prev,
+              ...data.profile,
+              accreditation: data.profile.accreditation || prev.accreditation,
+              npsn: data.profile.npsn || prev.npsn,
+            }));
+          }
+        });
+      });
+    };
+
+    let idleId: any;
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      idleId = (window as any).requestIdleCallback(syncFooter, { timeout: 3000 });
+    } else {
+      idleId = setTimeout(syncFooter, 1200);
+    }
+
+    return () => {
+      if (typeof window !== 'undefined' && 'cancelIdleCallback' in window && typeof idleId === 'number') {
+        (window as any).cancelIdleCallback(idleId);
+      } else {
+        clearTimeout(idleId);
+      }
+    };
   }, []);
 
   return (

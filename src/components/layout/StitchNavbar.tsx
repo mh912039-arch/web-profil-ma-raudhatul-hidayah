@@ -38,19 +38,35 @@ export function StitchNavbar() {
   });
 
   useEffect(() => {
-    fetch('/api/profile', { cache: 'no-store' })
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (data?.profile) {
-          setNavProfile({
-            phone: data.profile.phone || '0817-6614-723',
-            whatsapp: data.profile.whatsapp || '628176614723',
-            email: data.profile.email || 'info@maraudlatulhidayah.sch.id',
-            hoursWeekdays: data.profile.hoursWeekdays || '07.00 - 15.30 WIB',
-          });
-        }
-      })
-      .catch((err) => console.warn('Could not fetch nav profile:', err));
+    const syncNav = () => {
+      import('@/lib/publicProfileClient').then(({ fetchPublicProfile }) => {
+        fetchPublicProfile().then((data) => {
+          if (data?.profile) {
+            setNavProfile({
+              phone: data.profile.phone || '0817-6614-723',
+              whatsapp: data.profile.whatsapp || '628176614723',
+              email: data.profile.email || 'info@maraudlatulhidayah.sch.id',
+              hoursWeekdays: data.profile.hoursWeekdays || '07.00 - 15.30 WIB',
+            });
+          }
+        });
+      });
+    };
+
+    let idleId: any;
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      idleId = (window as any).requestIdleCallback(syncNav, { timeout: 3000 });
+    } else {
+      idleId = setTimeout(syncNav, 1000);
+    }
+
+    return () => {
+      if (typeof window !== 'undefined' && 'cancelIdleCallback' in window && typeof idleId === 'number') {
+        (window as any).cancelIdleCallback(idleId);
+      } else {
+        clearTimeout(idleId);
+      }
+    };
   }, []);
 
   useEffect(() => {
