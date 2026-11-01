@@ -6,7 +6,7 @@ const nextConfig = {
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 31536000,
     deviceSizes: [640, 750, 828, 1080, 1200, 1440, 1600, 1920],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384, 480],
     remotePatterns: [
       {
         protocol: 'https',
@@ -28,6 +28,16 @@ const nextConfig = {
   },
   async headers() {
     return [
+      {
+        source: '/admin/:path*',
+        headers: [
+          // Isolasi Cross-Origin Opener khusus rute admin untuk keamanan sesi CMS
+          {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin',
+          },
+        ],
+      },
       {
         source: '/(.*)',
         headers: [
@@ -61,12 +71,7 @@ const nextConfig = {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=(), browsing-topics=(), payment=(), usb=()',
           },
-          // 7. Isolasi Cross-Origin Opener (Izinkan popups untuk integrasi & audit Lighthouse)
-          {
-            key: 'Cross-Origin-Opener-Policy',
-            value: 'same-origin-allow-popups',
-          },
-          // 8. Kontrol Prefetch DNS Aman
+          // 7. Kontrol Prefetch DNS Aman
           {
             key: 'X-DNS-Prefetch-Control',
             value: 'on',

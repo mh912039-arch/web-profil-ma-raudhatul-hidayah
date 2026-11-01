@@ -92,7 +92,7 @@ export function StitchFooter() {
         className="absolute inset-0 bg-repeat bg-center opacity-25 pointer-events-none"
         style={{
           backgroundImage: "url('/footer-pattern.webp')",
-          backgroundSize: '400px auto',
+          backgroundSize: '360px auto',
         }}
         aria-hidden="true"
       />
