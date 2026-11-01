@@ -168,7 +168,7 @@ export function NewsCarouselSection() {
                 Berita &amp; Agenda
               </h2>
             </div>
-            <p className="font-sans text-[13.5px] text-slate-500 tracking-wide font-medium mt-1">
+            <p className="font-sans text-[13.5px] text-slate-700 tracking-wide font-medium mt-1">
               Pusat informasi, warta prestasi, dan kabar kegiatan terbaru seputar MA Raudlatul Hidayah
             </p>
           </div>
@@ -235,9 +235,9 @@ export function NewsCarouselSection() {
                 <div className="p-5 sm:p-6 flex flex-col flex-1 justify-between bg-white">
                   <div>
                     {/* Date with Calendar Icon */}
-                    <div className="flex items-center gap-2 text-slate-500 mb-2.5">
-                      <Calendar className="w-4 h-4 text-slate-500 shrink-0" />
-                      <span className="font-sans text-[12.5px] font-medium text-slate-500 tracking-wide">
+                    <div className="flex items-center gap-2 text-slate-700 mb-2.5">
+                      <Calendar className="w-4 h-4 text-slate-700 shrink-0" />
+                      <span className="font-sans text-[12.5px] font-semibold text-slate-700 tracking-wide">
                         {item.date}
                       </span>
                     </div>
@@ -248,7 +248,7 @@ export function NewsCarouselSection() {
                     </h3>
 
                     {/* Excerpt Snippet (Matching Image 1) */}
-                    <p className="font-sans text-[13px] sm:text-[13.5px] text-slate-500 leading-relaxed line-clamp-3 mt-2.5">
+                    <p className="font-sans text-[13px] sm:text-[13.5px] text-slate-700 leading-relaxed line-clamp-3 mt-2.5">
                       {item.excerpt}
                     </p>
                   </div>

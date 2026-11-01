@@ -285,7 +285,7 @@ export const PpdbRegistrationModal: React.FC<PpdbRegistrationModalProps> = ({
               {/* Official Receipt Box */}
               <div className="w-full max-w-md bg-slate-50 border-2 border-amber-400/90 rounded-2xl p-5 text-left space-y-3 shadow-xs">
                 <div className="flex items-center justify-between border-b border-slate-200 pb-2.5">
-                  <span className="text-[12px] font-bold text-slate-500 uppercase tracking-wider">
+                  <span className="text-[12px] font-bold text-slate-700 uppercase tracking-wider">
                     Nomor Registrasi Resmi
                   </span>
                   <span className="font-mono text-[16px] font-extrabold text-blue-900 bg-amber-100/90 px-3 py-0.5 rounded-lg border border-amber-300">
@@ -293,23 +293,23 @@ export const PpdbRegistrationModal: React.FC<PpdbRegistrationModalProps> = ({
                   </span>
                 </div>
 
-                <div className="space-y-1.5 text-[13px] text-slate-700">
+                <div className="space-y-1.5 text-[13px] text-slate-800">
                   <div className="flex justify-between">
-                    <span className="text-slate-500">Nama Calon Santri:</span>
+                    <span className="text-slate-700 font-medium">Nama Calon Santri:</span>
                     <span className="font-bold text-slate-900">{registeredData.full_name}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-500">Jalur Pendaftaran:</span>
+                    <span className="text-slate-700 font-medium">Jalur Pendaftaran:</span>
                     <span className="font-bold text-blue-700">
                       {jalurNameMap[registeredData.registration_path] || 'Domisili'}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-500">WhatsApp Terdaftar:</span>
+                    <span className="text-slate-700 font-medium">WhatsApp Terdaftar:</span>
                     <span className="font-mono font-medium text-slate-900">{registeredData.parent_whatsapp}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-500">Status Seleksi:</span>
+                    <span className="text-slate-700 font-medium">Status Seleksi:</span>
                     <span className="font-semibold text-emerald-700">Menunggu Verifikasi Berkas</span>
                   </div>
                 </div>

@@ -256,13 +256,13 @@ export function AcademicCalendarWidget() {
 
       {/* Calendar Grid */}
       <div className="grid grid-cols-7 gap-1 text-center font-sans text-[11.5px] mb-3">
-        <span className="font-bold text-slate-400 py-1">Min</span>
-        <span className="font-bold text-slate-400 py-1">Sen</span>
-        <span className="font-bold text-slate-400 py-1">Sel</span>
-        <span className="font-bold text-slate-400 py-1">Rab</span>
-        <span className="font-bold text-slate-400 py-1">Kam</span>
-        <span className="font-bold text-slate-400 py-1">Jum</span>
-        <span className="font-bold text-slate-400 py-1">Sab</span>
+        <span className="font-bold text-slate-600 py-1">Min</span>
+        <span className="font-bold text-slate-600 py-1">Sen</span>
+        <span className="font-bold text-slate-600 py-1">Sel</span>
+        <span className="font-bold text-slate-600 py-1">Rab</span>
+        <span className="font-bold text-slate-600 py-1">Kam</span>
+        <span className="font-bold text-slate-600 py-1">Jum</span>
+        <span className="font-bold text-slate-600 py-1">Sab</span>
 
         {calendarDays.map((day, idx) => {
           if (!day) {
@@ -301,7 +301,7 @@ export function AcademicCalendarWidget() {
               <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700 bg-blue-100/70 px-2 py-0.5 rounded">
                 {academicEvents[selectedDay].type}
               </span>
-              <span className="text-[11px] font-semibold text-slate-500">
+              <span className="text-[11px] font-semibold text-slate-700">
                 {selectedDay} Oktober 2026
               </span>
             </div>
@@ -313,7 +313,7 @@ export function AcademicCalendarWidget() {
             </p>
           </div>
         ) : (
-          <p className="font-sans text-[11.5px] text-slate-500 italic text-center py-1">
+          <p className="font-sans text-[11.5px] text-slate-600 italic text-center py-1">
             Klik tanggal bertitik biru untuk melihat detail agenda akademik.
           </p>
         )}
@@ -382,7 +382,7 @@ export function ExtracurricularCard({
 
         <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
           <div className="flex flex-col">
-            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
+            <span className="text-[10px] uppercase font-bold text-slate-600 tracking-wider">
               {role}
             </span>
             <span className="text-[12px] font-semibold text-slate-800">

@@ -235,7 +235,7 @@ export default function HomePage() {
                   </h2>
                 </div>
 
-                <div className="font-sans text-[15px] sm:text-[16px] text-slate-600 flex flex-col gap-4 leading-relaxed max-w-xl">
+                <div className="font-sans text-[15px] sm:text-[16px] text-slate-700 flex flex-col gap-4 leading-relaxed max-w-xl">
                   <p>{home.sambutanText1}</p>
                   <p>{home.sambutanText2}</p>
                 </div>
@@ -246,7 +246,7 @@ export default function HomePage() {
                     <span className="font-serif text-[30px] sm:text-[36px] font-bold text-slate-900 block leading-tight">
                       {home.stat1Value}
                     </span>
-                    <span className="font-sans text-[12px] text-slate-500 font-medium">
+                    <span className="font-sans text-[12px] text-slate-700 font-semibold">
                       {home.stat1Label}
                     </span>
                   </div>
@@ -254,15 +254,15 @@ export default function HomePage() {
                     <span className="font-serif text-[30px] sm:text-[36px] font-bold text-slate-900 block leading-tight">
                       {home.stat2Value}
                     </span>
-                    <span className="font-sans text-[12px] text-slate-500 font-medium">
+                    <span className="font-sans text-[12px] text-slate-700 font-semibold">
                       {home.stat2Label}
                     </span>
                   </div>
                   <div>
-                    <span className="font-serif text-[30px] sm:text-[36px] font-bold text-amber-600 block leading-tight">
+                    <span className="font-serif text-[30px] sm:text-[36px] font-bold text-amber-800 block leading-tight">
                       {home.stat3Value}
                     </span>
-                    <span className="font-sans text-[12px] text-slate-500 font-medium">
+                    <span className="font-sans text-[12px] text-slate-700 font-semibold">
                       {home.stat3Label}
                     </span>
                   </div>

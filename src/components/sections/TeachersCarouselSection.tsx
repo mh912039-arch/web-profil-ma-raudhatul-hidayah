@@ -182,7 +182,7 @@ export const TeachersCarouselSection: React.FC<TeachersCarouselSectionProps> = (
             {title}
           </h2>
           <div className="w-14 h-1 bg-amber-400 rounded-full mx-auto mt-2.5" />
-          <p className="font-sans text-[14.5px] sm:text-[16px] text-slate-600 mt-3 leading-relaxed">
+          <p className="font-sans text-[14.5px] sm:text-[16px] text-slate-700 mt-3 leading-relaxed">
             {subtitle}
           </p>
         </div>
@@ -230,12 +230,12 @@ export const TeachersCarouselSection: React.FC<TeachersCarouselSectionProps> = (
                         />
                       </div>
 
-                      {/* Teacher Name (Bold, Cyan-Blue on Hover Sesuai Referensi Screenshot) */}
+                      {/* Teacher Name (Bold, Rich Blue on Hover with WCAG AA compliance) */}
                       <h3
                         className={`font-bold text-[15px] sm:text-[16px] leading-snug mt-4 px-2 transition-colors duration-200 line-clamp-1 uppercase tracking-tight ${
                           isHovered
-                            ? 'text-[#00a3e0]'
-                            : 'text-slate-800 group-hover:text-[#00a3e0]'
+                            ? 'text-sky-700'
+                            : 'text-slate-900 group-hover:text-sky-700'
                         }`}
                         title={teacher.name}
                       >
