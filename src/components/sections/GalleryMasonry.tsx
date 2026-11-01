@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
+import { Camera, ZoomIn } from 'lucide-react';
 import { schoolData, GalleryItem } from '@/data/mockSchoolData';
 import { LightboxGallery } from '@/components/ui/LightboxGallery';
 
@@ -23,7 +24,7 @@ export const GalleryMasonry: React.FC = () => {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
           <div>
             <div className="inline-flex items-center gap-2 text-[12px] font-bold uppercase tracking-wider text-secondary mb-1">
-              <span className="material-symbols-outlined text-[16px]">photo_camera</span>
+              <Camera className="w-4 h-4 text-secondary" />
               <span>Dokumentasi Visual</span>
             </div>
             <h2 className="font-display text-[26px] sm:text-[34px] font-bold text-primary tracking-tight">
@@ -76,7 +77,7 @@ export const GalleryMasonry: React.FC = () => {
                     {photo.category}
                   </span>
                   <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white">
-                    <span className="material-symbols-outlined text-[18px]">zoom_in</span>
+                    <ZoomIn className="w-4 h-4 text-white" />
                   </div>
                 </div>
 

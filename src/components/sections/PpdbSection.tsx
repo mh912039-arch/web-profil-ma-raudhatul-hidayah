@@ -124,9 +124,9 @@ export function PpdbSection({ onOpenRegister }: PpdbSectionProps) {
                 src={data.posterUrl || '/poster-ppdb.png'}
                 alt="Brosur Poster Resmi SPMB MA Raudlatul Hidayah"
                 fill
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 450px, 512px"
+                sizes="(max-width: 640px) 90vw, (max-width: 1024px) 420px, 480px"
+                quality={70}
                 className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
-                priority
               />
 
               {/* Hover Overlay Hint */}

@@ -9,6 +9,19 @@ import { StitchNavbar } from '@/components/layout/StitchNavbar';
 import { StitchFooter } from '@/components/layout/StitchFooter';
 import { schoolData } from '@/data/mockSchoolData';
 import { supabase } from '@/lib/supabaseClient';
+import {
+  Home,
+  ChevronRight,
+  Calendar,
+  Clock,
+  Quote,
+  CheckCircle2,
+  Images,
+  Tag,
+  ArrowLeft,
+  ArrowRight,
+  Bookmark,
+} from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 export const dynamicParams = true;
@@ -211,17 +224,17 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
         <div className="bg-surface-container-lowest border-b border-surface-container py-3">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <nav aria-label="Breadcrumb" className="flex items-center flex-wrap gap-2 text-[12px] text-on-surface-variant">
-              <Link href="/" className="hover:text-primary flex items-center gap-1 transition-colors">
-                <span className="material-symbols-outlined text-[16px]">home</span>
+              <Link href="/" className="hover:text-primary flex items-center gap-1.5 transition-colors">
+                <Home className="w-3.5 h-3.5" />
                 <span>Beranda</span>
               </Link>
-              <span className="material-symbols-outlined text-[14px] text-outline">chevron_right</span>
+              <ChevronRight className="w-3.5 h-3.5 text-outline" />
               <Link href="/warta" className="hover:text-primary transition-colors">
                 <span>Warta &amp; Berita</span>
               </Link>
-              <span className="material-symbols-outlined text-[14px] text-outline">chevron_right</span>
+              <ChevronRight className="w-3.5 h-3.5 text-outline" />
               <span className="text-secondary font-medium">{article.category}</span>
-              <span className="material-symbols-outlined text-[14px] text-outline hidden sm:inline">chevron_right</span>
+              <ChevronRight className="w-3.5 h-3.5 text-outline hidden sm:inline" />
               <span className="text-on-surface font-medium truncate max-w-xs hidden sm:inline">
                 {article.title}
               </span>
@@ -261,11 +274,11 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
 
                 <div className="flex flex-wrap items-center gap-4 text-[12px] text-on-surface-variant">
                   <div className="flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-[16px] text-secondary">calendar_today</span>
+                    <Calendar className="w-3.5 h-3.5 text-secondary" />
                     <span>{article.date} • {article.time}</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-[16px] text-secondary">schedule</span>
+                    <Clock className="w-3.5 h-3.5 text-secondary" />
                     <span>{article.readTime}</span>
                   </div>
                 </div>
@@ -310,9 +323,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
 
                 {article.quote && (
                   <div className="my-6 p-6 rounded-xl bg-secondary-container/10 border border-secondary/20 relative">
-                    <span className="material-symbols-outlined text-[36px] text-secondary/30 absolute top-2 left-2">
-                      format_quote
-                    </span>
+                    <Quote className="w-8 h-8 text-secondary/30 absolute top-2 left-2" />
                     <p className="font-serif italic text-[16px] text-primary leading-relaxed relative z-10 mb-3 pl-6">
                       &quot;{article.quote.text}&quot;
                     </p>
@@ -326,7 +337,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
                 {article.keyPoints && article.keyPoints.length > 0 && (
                   <div className="p-5 rounded-xl bg-surface-container-lowest border border-surface-container shadow-sm">
                     <h3 className="font-display text-[14px] font-bold uppercase tracking-wider text-primary mb-3 flex items-center gap-2">
-                      <span className="material-symbols-outlined text-[18px] text-secondary">check_circle</span>
+                      <CheckCircle2 className="w-4 h-4 text-secondary" />
                       <span>Poin Penting Warta</span>
                     </h3>
                     <ul className="space-y-2">
@@ -344,7 +355,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
                 {article.additionalImages && article.additionalImages.length > 0 && (
                   <div className="my-8 pt-6 border-t border-surface-container">
                     <h3 className="font-display text-[15px] font-bold uppercase tracking-wider text-primary mb-4 flex items-center gap-2">
-                      <span className="material-symbols-outlined text-[20px] text-secondary">photo_library</span>
+                      <Images className="w-5 h-5 text-secondary" />
                       <span>Dokumentasi Foto Terkait</span>
                     </h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -371,7 +382,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
                 {/* Tags */}
                 <div className="pt-4 border-t border-surface-container">
                   <div className="flex items-center gap-1.5 text-[12px] text-on-surface-variant mb-2">
-                    <span className="material-symbols-outlined text-[15px]">label</span>
+                    <Tag className="w-3.5 h-3.5" />
                     <span>Topik Terkait:</span>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -394,7 +405,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
                       className="p-4 rounded-xl border border-surface-container bg-surface-container-lowest hover:border-secondary transition-colors flex flex-col text-left group"
                     >
                       <span className="text-[11px] text-outline flex items-center gap-1 mb-1">
-                        <span className="material-symbols-outlined text-[14px]">arrow_back</span>
+                        <ArrowLeft className="w-3.5 h-3.5" />
                         <span>Artikel Sebelumnya</span>
                       </span>
                       <span className="font-display text-[13px] font-bold text-primary group-hover:text-secondary line-clamp-2">
@@ -412,7 +423,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
                     >
                       <span className="text-[11px] text-outline flex items-center justify-end gap-1 mb-1">
                         <span>Artikel Berikutnya</span>
-                        <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
                       </span>
                       <span className="font-display text-[13px] font-bold text-primary group-hover:text-secondary line-clamp-2">
                         {nextArticle.title}
@@ -428,7 +439,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
               <aside className="lg:col-span-4 space-y-5">
                 <div className="bg-surface-container-lowest rounded-xl p-5 border border-surface-container shadow-sm">
                   <h4 className="font-display text-[14px] font-bold uppercase tracking-wider text-primary pb-2 mb-3 border-b border-surface-container flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-[17px] text-secondary">bookmark</span>
+                    <Bookmark className="w-4 h-4 text-secondary" />
                     <span>Warta Lainnya</span>
                   </h4>
                   <div className="space-y-3.5">

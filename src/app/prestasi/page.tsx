@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { StitchNavbar } from '@/components/layout/StitchNavbar';
 import { StitchFooter } from '@/components/layout/StitchFooter';
+import { Award, Trophy, CheckCircle2, MapPin } from 'lucide-react';
 
 import initialChampionships from '@/data/championshipsData.json';
 
@@ -93,7 +94,7 @@ export default function PrestasiPage() {
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
               <div className="max-w-2xl flex flex-col gap-2">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-container text-secondary-fixed w-fit shadow-sm border border-secondary/20">
-                  <span className="material-symbols-outlined text-[16px]">military_tech</span>
+                  <Award className="w-4 h-4 text-secondary-fixed" />
                   <span className="font-sans text-[12px] tracking-wider uppercase font-semibold">
                     Pencapaian Generasi Rabbani
                   </span>
@@ -108,7 +109,7 @@ export default function PrestasiPage() {
 
               <div className="flex items-center gap-4 bg-primary-container/70 backdrop-blur-md p-4 rounded-xl shadow-md border border-white/5 shrink-0">
                 <div className="w-14 h-14 rounded-lg bg-secondary flex items-center justify-center text-on-secondary shadow-sm shrink-0">
-                  <span className="material-symbols-outlined text-[32px]">emoji_events</span>
+                  <Trophy className="w-8 h-8 text-on-secondary" />
                 </div>
                 <div className="flex flex-col">
                   <div className="flex items-baseline gap-1">
@@ -172,7 +173,7 @@ export default function PrestasiPage() {
             </div>
 
             <div className="flex items-center gap-1.5 text-on-surface-variant font-sans text-[12px] px-2 font-medium">
-              <span className="material-symbols-outlined text-[17px] text-secondary">verified</span>
+              <CheckCircle2 className="w-4 h-4 text-secondary" />
               <span>Terverifikasi Kurikulum 2024/2025</span>
             </div>
           </div>
@@ -197,8 +198,8 @@ export default function PrestasiPage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/25 to-transparent" />
 
                   <div className="absolute top-3 left-3 flex gap-2">
-                    <span className="px-3 py-1 rounded-full bg-secondary text-on-secondary text-[11px] font-semibold shadow-sm flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[14px]">{item.medalIcon}</span>
+                    <span className="px-3 py-1 rounded-full bg-secondary text-on-secondary text-[11px] font-semibold shadow-sm flex items-center gap-1.5">
+                      <Award className="w-3.5 h-3.5 text-on-secondary" />
                       <span>{item.badge}</span>
                     </span>
                     <span className="px-3 py-1 rounded-full bg-primary-container text-on-primary text-[11px] font-medium backdrop-blur-sm">
@@ -232,10 +233,8 @@ export default function PrestasiPage() {
                   </div>
 
                   <div className="pt-3 border-t border-surface-container flex items-center justify-between text-[12px] text-outline font-medium">
-                    <span className="flex items-center gap-1 text-on-surface-variant truncate">
-                      <span className="material-symbols-outlined text-[15px] text-secondary shrink-0">
-                        place
-                      </span>
+                    <span className="flex items-center gap-1.5 text-on-surface-variant truncate">
+                      <MapPin className="w-3.5 h-3.5 text-secondary shrink-0" />
                       <span className="truncate">{item.organizer}</span>
                     </span>
                     <span className="text-secondary font-bold shrink-0">{item.level}</span>

@@ -130,6 +130,7 @@ export default function HomePage() {
                   alt={`${home.heroTitle} Latar ${index + 1}`}
                   fill
                   sizes="100vw"
+                  quality={65}
                   className="object-cover object-center scale-105 transition-transform duration-[12000ms] ease-out"
                   priority={index === 0}
                   loading={index === 0 ? undefined : 'lazy'}

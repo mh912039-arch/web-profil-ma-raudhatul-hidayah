@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { StitchNavbar } from '@/components/layout/StitchNavbar';
 import { StitchFooter } from '@/components/layout/StitchFooter';
 import { supabase } from '@/lib/supabaseClient';
-import { MapPin, Phone, Mail, Send, CheckCircle2 } from 'lucide-react';
+import { MapPin, Phone, Mail, Send, CheckCircle2, AlertCircle, Navigation, PhoneCall } from 'lucide-react';
 
 export default function KontakPage() {
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -340,8 +340,8 @@ export default function KontakPage() {
                     </div>
 
                     {captchaError && (
-                      <p className="text-[12px] text-rose-600 font-medium mt-1.5 flex items-center gap-1">
-                        <span className="material-symbols-outlined text-[15px]">error</span>
+                      <p className="text-[12px] text-rose-600 font-medium mt-1.5 flex items-center gap-1.5">
+                        <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
                         <span>Harap centang verifikasi keamanan &quot;I&apos;m not a robot&quot;.</span>
                       </p>
                     )}
@@ -405,32 +405,24 @@ export default function KontakPage() {
               <div className="lg:col-span-4 flex flex-col gap-4">
                 <div className="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-surface-container">
                   <h3 className="font-display text-[17px] font-bold text-primary mb-3 flex items-center gap-2">
-                    <span className="material-symbols-outlined text-secondary text-[22px]">
-                      directions_car
-                    </span>
+                    <Navigation className="w-5 h-5 text-secondary" />
                     <span>Panduan Navigasi</span>
                   </h3>
                   <ul className="space-y-3 font-sans text-[13px] text-on-surface-variant leading-relaxed">
                     <li className="flex items-start gap-2">
-                      <span className="material-symbols-outlined text-secondary text-[17px] shrink-0 mt-0.5">
-                        check_circle
-                      </span>
+                      <CheckCircle2 className="w-4 h-4 text-secondary shrink-0 mt-0.5" />
                       <span>
                         <strong>Akses Utama:</strong> {profileInfo.navGuideAccess}
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="material-symbols-outlined text-secondary text-[17px] shrink-0 mt-0.5">
-                        check_circle
-                      </span>
+                      <CheckCircle2 className="w-4 h-4 text-secondary shrink-0 mt-0.5" />
                       <span>
                         <strong>Patokan Lokasi:</strong> {profileInfo.navGuideBenchmark}
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="material-symbols-outlined text-secondary text-[17px] shrink-0 mt-0.5">
-                        check_circle
-                      </span>
+                      <CheckCircle2 className="w-4 h-4 text-secondary shrink-0 mt-0.5" />
                       <span>
                         <strong>Fasilitas Parkir:</strong> {profileInfo.navGuideParking}
                       </span>
@@ -440,7 +432,7 @@ export default function KontakPage() {
 
                 <div className="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-surface-container flex flex-col gap-2">
                   <div className="flex items-center gap-2 text-secondary font-bold text-[13px]">
-                    <span className="material-symbols-outlined text-[20px]">call</span>
+                    <PhoneCall className="w-4 h-4 text-secondary" />
                     <span>Butuh Panduan Penjemputan?</span>
                   </div>
                   <p className="font-sans text-[13px] text-on-surface-variant">
