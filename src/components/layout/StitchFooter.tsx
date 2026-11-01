@@ -15,6 +15,7 @@ import {
   Instagram,
   Building2,
 } from 'lucide-react';
+import { fetchPublicProfile } from '@/lib/publicProfileClient';
 
 interface FooterProfile {
   name: string;
@@ -54,35 +55,16 @@ export function StitchFooter() {
   const [profile, setProfile] = useState<FooterProfile>(defaultProfile);
 
   useEffect(() => {
-    const syncFooter = () => {
-      import('@/lib/publicProfileClient').then(({ fetchPublicProfile }) => {
-        fetchPublicProfile().then((data) => {
-          if (data?.profile) {
-            setProfile((prev) => ({
-              ...prev,
-              ...data.profile,
-              accreditation: data.profile.accreditation || prev.accreditation,
-              npsn: data.profile.npsn || prev.npsn,
-            }));
-          }
-        });
-      });
-    };
-
-    let idleId: any;
-    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
-      idleId = (window as any).requestIdleCallback(syncFooter, { timeout: 3000 });
-    } else {
-      idleId = setTimeout(syncFooter, 1200);
-    }
-
-    return () => {
-      if (typeof window !== 'undefined' && 'cancelIdleCallback' in window && typeof idleId === 'number') {
-        (window as any).cancelIdleCallback(idleId);
-      } else {
-        clearTimeout(idleId);
+    fetchPublicProfile().then((data) => {
+      if (data?.profile) {
+        setProfile((prev) => ({
+          ...prev,
+          ...data.profile,
+          accreditation: data.profile.accreditation || prev.accreditation,
+          npsn: data.profile.npsn || prev.npsn,
+        }));
       }
-    };
+    });
   }, []);
 
   return (

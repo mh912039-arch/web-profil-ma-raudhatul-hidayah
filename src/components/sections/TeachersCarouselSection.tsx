@@ -106,13 +106,7 @@ export const TeachersCarouselSection: React.FC<TeachersCarouselSectionProps> = (
         .catch((err) => console.warn('TeachersCarousel sync notice:', err));
     };
 
-    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
-      const id = (window as any).requestIdleCallback(syncTeachers, { timeout: 3000 });
-      return () => (window as any).cancelIdleCallback(id);
-    } else {
-      const timer = setTimeout(syncTeachers, 1200);
-      return () => clearTimeout(timer);
-    }
+    syncTeachers();
   }, []);
 
   // Responsive items count

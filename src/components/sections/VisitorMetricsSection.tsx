@@ -33,13 +33,7 @@ export function VisitorMetricsSection() {
         .catch((err) => console.warn('Could not load public visitor metrics:', err));
     };
 
-    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
-      const id = (window as any).requestIdleCallback(loadMetrics, { timeout: 3000 });
-      return () => (window as any).cancelIdleCallback(id);
-    } else {
-      const timer = setTimeout(loadMetrics, 1500);
-      return () => clearTimeout(timer);
-    }
+    loadMetrics();
   }, []);
 
   const distribution = data?.distribution || [

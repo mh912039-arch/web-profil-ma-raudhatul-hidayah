@@ -22,6 +22,7 @@ import { NewsCarouselSection } from '@/components/sections/NewsCarouselSection';
 import { TeachersCarouselSection } from '@/components/sections/TeachersCarouselSection';
 import { VisitorMetricsSection } from '@/components/sections/VisitorMetricsSection';
 import { PpdbRegistrationModal } from '@/components/modals/PpdbRegistrationModal';
+import { fetchPublicProfile } from '@/lib/publicProfileClient';
 
 const defaultHomeConfig = {
   heroTitle: 'MA Raudlatul Hidayah',
@@ -84,22 +85,11 @@ export default function HomePage() {
   }, [heroImages.length]);
 
   useEffect(() => {
-    const syncProfile = () => {
-      import('@/lib/publicProfileClient').then(({ fetchPublicProfile }) => {
-        fetchPublicProfile().then((data) => {
-          if (data && data.homepage) {
-            setHome((prev) => ({ ...prev, ...data.homepage }));
-          }
-        });
-      });
-    };
-
-    let idleId: any;
-    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
-      idleId = (window as any).requestIdleCallback(syncProfile, { timeout: 3000 });
-    } else {
-      idleId = setTimeout(syncProfile, 1000);
-    }
+    fetchPublicProfile().then((data) => {
+      if (data && data.homepage) {
+        setHome((prev) => ({ ...prev, ...data.homepage }));
+      }
+    });
 
     const handleOpenModal = () => setIsRegModalOpen(true);
     window.addEventListener('open-ppdb-registration', handleOpenModal);
@@ -113,11 +103,6 @@ export default function HomePage() {
     } catch (e) {}
 
     return () => {
-      if (typeof window !== 'undefined' && 'cancelIdleCallback' in window && typeof idleId === 'number') {
-        (window as any).cancelIdleCallback(idleId);
-      } else {
-        clearTimeout(idleId);
-      }
       window.removeEventListener('open-ppdb-registration', handleOpenModal);
     };
   }, []);
