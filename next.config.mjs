@@ -1,3 +1,9 @@
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -25,6 +31,21 @@ const nextConfig = {
   },
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
+  },
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      const emptyPolyfill = path.resolve(__dirname, 'src/empty-polyfill.js');
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        [path.resolve(__dirname, 'node_modules/next/dist/build/polyfills/polyfill-module.js')]: emptyPolyfill,
+        [path.resolve(__dirname, 'node_modules/next/dist/build/polyfills/polyfill-module')]: emptyPolyfill,
+        [path.resolve(__dirname, 'node_modules/next/dist/build/polyfills/polyfill-nomodule.js')]: emptyPolyfill,
+        [path.resolve(__dirname, 'node_modules/next/dist/build/polyfills/polyfill-nomodule')]: emptyPolyfill,
+        '../build/polyfills/polyfill-module': emptyPolyfill,
+        '../build/polyfills/polyfill-nomodule': emptyPolyfill,
+      };
+    }
+    return config;
   },
   async headers() {
     return [
