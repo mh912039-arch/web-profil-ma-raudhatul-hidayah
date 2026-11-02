@@ -138,38 +138,38 @@ export function StitchNavbar() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+    <header className="fixed top-0 left-0 right-0 z-50">
       {/* Topbar: SMP Xaverius 2 inspired Deep Navy (#1E3A8A) with Amber Gold (#F59E0B) highlights */}
       <div
-        className={`w-full bg-[#1e3a8a] text-slate-100 text-[11.5px] border-b border-amber-500/40 transition-all duration-300 ${
-          scrolled ? 'h-0 py-0 opacity-0 overflow-hidden' : 'py-1.5 opacity-100'
+        className={`w-full bg-[#1e3a8a] text-slate-100 text-[11.5px] border-b border-amber-500/40 transition-[opacity,transform] duration-200 ${
+          scrolled ? 'hidden' : 'h-8 flex items-center opacity-100'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          <div className="hidden md:flex items-center gap-6">
-            <span className="flex items-center gap-1.5 text-slate-200">
-              <Clock className="w-3.5 h-3.5 text-amber-400" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between w-full">
+          <div className="hidden md:flex items-center gap-4 lg:gap-6 shrink-0">
+            <span className="flex items-center gap-1.5 text-slate-200 whitespace-nowrap shrink-0">
+              <Clock className="w-3.5 h-3.5 text-amber-400 shrink-0" />
               <span>{navProfile.hoursWeekdays}</span>
             </span>
             <a
               href={`https://wa.me/${navProfile.whatsapp || '628176614723'}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-slate-200 hover:text-amber-300 transition-colors"
+              className="flex items-center gap-1.5 text-slate-200 hover:text-amber-300 transition-colors whitespace-nowrap shrink-0"
             >
-              <Phone className="w-3.5 h-3.5 text-amber-400" />
+              <Phone className="w-3.5 h-3.5 text-amber-400 shrink-0" />
               <span>{navProfile.phone}</span>
             </a>
             <a
               href={`mailto:${navProfile.email}`}
-              className="flex items-center gap-1.5 text-slate-200 hover:text-amber-300 transition-colors"
+              className="flex items-center gap-1.5 text-slate-200 hover:text-amber-300 transition-colors whitespace-nowrap shrink-0"
             >
-              <Mail className="w-3.5 h-3.5 text-amber-400" />
+              <Mail className="w-3.5 h-3.5 text-amber-400 shrink-0" />
               <span>{navProfile.email}</span>
             </a>
           </div>
 
-          <div className="md:hidden flex items-center gap-1.5 text-[11px] text-slate-200">
+          <div className="md:hidden flex items-center gap-1.5 text-[11px] text-slate-200 whitespace-nowrap shrink-0">
             <Clock className="w-3 h-3 text-amber-400 shrink-0" />
             <span>{navProfile.hoursWeekdays}</span>
           </div>
@@ -240,7 +240,7 @@ export function StitchNavbar() {
       </div>
 
       <div
-        className={`w-full transition-all duration-300 border-b-[3px] border-[#facc15] bg-[#1e3a8a] ${
+        className={`w-full transition-colors duration-200 border-b-[3px] border-[#facc15] bg-[#1e3a8a] ${
           scrolled
             ? 'shadow-[0_8px_30px_rgba(15,23,42,0.35)] py-2.5'
             : 'shadow-[0_4px_20px_rgba(15,23,42,0.25)] py-3.5'

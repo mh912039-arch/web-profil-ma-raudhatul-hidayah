@@ -73,7 +73,7 @@ export const TeachersCarouselSection: React.FC<TeachersCarouselSectionProps> = (
   const [teachers, setTeachers] = useState<TeacherItem[]>(initialTeachers);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [itemsPerPage, setItemsPerPage] = useState(4);
+  const [itemsPerPage, setItemsPerPage] = useState(1);
   const [selectedTeacher, setSelectedTeacher] = useState<TeacherItem | null>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
@@ -109,23 +109,37 @@ export const TeachersCarouselSection: React.FC<TeachersCarouselSectionProps> = (
     syncTeachers();
   }, []);
 
-  // Responsive items count
+  // Responsive items count using matchMedia (prevents forced reflow)
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 1024) {
+    if (typeof window === 'undefined') return;
+
+    const mqLg = window.matchMedia('(min-width: 1024px)');
+    const mqMd = window.matchMedia('(min-width: 768px)');
+    const mqSm = window.matchMedia('(min-width: 640px)');
+
+    const updateItemsPerPage = () => {
+      if (mqLg.matches) {
         setItemsPerPage(4);
-      } else if (window.innerWidth >= 768) {
+      } else if (mqMd.matches) {
         setItemsPerPage(3);
-      } else if (window.innerWidth >= 640) {
+      } else if (mqSm.matches) {
         setItemsPerPage(2);
       } else {
         setItemsPerPage(1);
       }
     };
 
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    updateItemsPerPage();
+
+    mqLg.addEventListener('change', updateItemsPerPage);
+    mqMd.addEventListener('change', updateItemsPerPage);
+    mqSm.addEventListener('change', updateItemsPerPage);
+
+    return () => {
+      mqLg.removeEventListener('change', updateItemsPerPage);
+      mqMd.removeEventListener('change', updateItemsPerPage);
+      mqSm.removeEventListener('change', updateItemsPerPage);
+    };
   }, []);
 
   const maxIndex = Math.max(0, teachers.length - itemsPerPage);
@@ -199,13 +213,15 @@ export const TeachersCarouselSection: React.FC<TeachersCarouselSectionProps> = (
           {/* Carousel Track Wrapper */}
           <div className="overflow-hidden py-3">
             <div
-              className="flex transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
+              className="flex transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] transform-gpu will-change-transform"
               style={{
                 transform: `translate3d(-${currentIndex * (100 / itemsPerPage)}%, 0, 0)`,
               }}
             >
               {teachers.map((teacher, idx) => {
                 const isHovered = hoveredIndex === idx;
+                const isVisibleOrBuffer =
+                  idx >= currentIndex - 2 && idx <= currentIndex + itemsPerPage + 1;
 
                 return (
                   <div
@@ -215,90 +231,95 @@ export const TeachersCarouselSection: React.FC<TeachersCarouselSectionProps> = (
                     onMouseEnter={() => setHoveredIndex(idx)}
                     onMouseLeave={() => setHoveredIndex(null)}
                   >
-                    <div
-                      onClick={() => setSelectedTeacher(teacher)}
-                      className="group flex flex-col items-center cursor-pointer w-full text-center"
-                    >
-                      {/* Circular Portrait Image (Sesuai Referensi Screenshot) */}
-                      <div className="relative w-36 h-36 sm:w-44 sm:h-44 md:w-48 md:h-48 rounded-full overflow-hidden mx-auto border-4 border-white shadow-[0_4px_16px_rgba(0,0,0,0.08)] bg-slate-100 group-hover:shadow-[0_8px_24px_rgba(0,163,224,0.25)] transition-all duration-300 transform group-hover:scale-105">
-                        <Image
-                          src={teacher.image_url || '/halaman-sekolah.jpeg'}
-                          alt={teacher.name}
-                          fill
-                          className="object-cover object-top"
-                          sizes="(max-width: 640px) 150px, (max-width: 768px) 180px, 200px"
-                        />
-                      </div>
-
-                      {/* Teacher Name (Bold, Rich Blue on Hover with WCAG AA compliance) */}
-                      <h3
-                        className={`font-bold text-[15px] sm:text-[16px] leading-snug mt-4 px-2 transition-colors duration-200 line-clamp-1 uppercase tracking-tight ${
-                          isHovered
-                            ? 'text-sky-700'
-                            : 'text-slate-900 group-hover:text-sky-700'
-                        }`}
-                        title={teacher.name}
-                      >
-                        {teacher.name}
-                      </h3>
-
-                      {/* Subject Name (Mata Pelajaran di Bawah Nama) */}
-                      <p className="font-sans text-[13px] sm:text-[13.5px] text-slate-700 font-medium mt-1">
-                        {teacher.subject_name}
-                      </p>
-
-                      {/* Social Media Icons (Facebook & Instagram Sesuai Screenshot) */}
+                    {isVisibleOrBuffer ? (
                       <div
-                        className="flex items-center justify-center gap-3 mt-2.5 text-slate-400"
-                        onClick={(e) => e.stopPropagation()}
+                        onClick={() => setSelectedTeacher(teacher)}
+                        className="group flex flex-col items-center cursor-pointer w-full text-center"
                       >
-                        {teacher.facebook_url ? (
-                          <a
-                            href={
-                              teacher.facebook_url.startsWith('http://') || teacher.facebook_url.startsWith('https://')
-                                ? teacher.facebook_url
-                                : `https://${teacher.facebook_url}`
-                            }
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-1 text-blue-600 hover:text-blue-800 hover:scale-110 transition-all cursor-pointer"
-                            title={`Facebook: ${teacher.name}`}
-                          >
-                            <Facebook className="w-3.5 h-3.5" />
-                          </a>
-                        ) : (
-                          <span
-                            className="p-1 text-slate-300 hover:text-slate-400 transition-colors cursor-default"
-                            title="Facebook belum ditambahkan"
-                          >
-                            <Facebook className="w-3.5 h-3.5" />
-                          </span>
-                        )}
+                        {/* Circular Portrait Image (Sesuai Referensi Screenshot) */}
+                        <div className="relative w-36 h-36 sm:w-44 sm:h-44 md:w-48 md:h-48 rounded-full overflow-hidden mx-auto border-4 border-white shadow-[0_4px_16px_rgba(0,0,0,0.08)] bg-slate-100 group-hover:shadow-[0_8px_24px_rgba(0,163,224,0.25)] transition-all duration-300 transform group-hover:scale-105">
+                          <Image
+                            src={teacher.image_url || '/halaman-sekolah.jpeg'}
+                            alt={teacher.name}
+                            fill
+                            className="object-cover object-top"
+                            sizes="(max-width: 640px) 150px, (max-width: 768px) 180px, 200px"
+                            loading="lazy"
+                          />
+                        </div>
 
-                        {teacher.instagram_url ? (
-                          <a
-                            href={
-                              teacher.instagram_url.startsWith('http://') || teacher.instagram_url.startsWith('https://')
-                                ? teacher.instagram_url
-                                : `https://${teacher.instagram_url}`
-                            }
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-1 text-pink-600 hover:text-pink-800 hover:scale-110 transition-all cursor-pointer"
-                            title={`Instagram: ${teacher.name}`}
-                          >
-                            <Instagram className="w-3.5 h-3.5" />
-                          </a>
-                        ) : (
-                          <span
-                            className="p-1 text-slate-300 hover:text-slate-400 transition-colors cursor-default"
-                            title="Instagram belum ditambahkan"
-                          >
-                            <Instagram className="w-3.5 h-3.5" />
-                          </span>
-                        )}
+                        {/* Teacher Name (Bold, Rich Blue on Hover with WCAG AA compliance) */}
+                        <h3
+                          className={`font-bold text-[15px] sm:text-[16px] leading-snug mt-4 px-2 transition-colors duration-200 line-clamp-1 uppercase tracking-tight ${
+                            isHovered
+                              ? 'text-sky-700'
+                              : 'text-slate-900 group-hover:text-sky-700'
+                          }`}
+                          title={teacher.name}
+                        >
+                          {teacher.name}
+                        </h3>
+
+                        {/* Subject Name (Mata Pelajaran di Bawah Nama) */}
+                        <p className="font-sans text-[13px] sm:text-[13.5px] text-slate-700 font-medium mt-1">
+                          {teacher.subject_name}
+                        </p>
+
+                        {/* Social Media Icons (Facebook & Instagram Sesuai Screenshot) */}
+                        <div
+                          className="flex items-center justify-center gap-3 mt-2.5 text-slate-400"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {teacher.facebook_url ? (
+                            <a
+                              href={
+                                teacher.facebook_url.startsWith('http://') || teacher.facebook_url.startsWith('https://')
+                                  ? teacher.facebook_url
+                                  : `https://${teacher.facebook_url}`
+                              }
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="p-1 text-blue-600 hover:text-blue-800 hover:scale-110 transition-all cursor-pointer"
+                              title={`Facebook: ${teacher.name}`}
+                            >
+                              <Facebook className="w-3.5 h-3.5" />
+                            </a>
+                          ) : (
+                            <span
+                              className="p-1 text-slate-300 hover:text-slate-400 transition-colors cursor-default"
+                              title="Facebook belum ditambahkan"
+                            >
+                              <Facebook className="w-3.5 h-3.5" />
+                            </span>
+                          )}
+
+                          {teacher.instagram_url ? (
+                            <a
+                              href={
+                                teacher.instagram_url.startsWith('http://') || teacher.instagram_url.startsWith('https://')
+                                  ? teacher.instagram_url
+                                  : `https://${teacher.instagram_url}`
+                              }
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="p-1 text-pink-600 hover:text-pink-800 hover:scale-110 transition-all cursor-pointer"
+                              title={`Instagram: ${teacher.name}`}
+                            >
+                              <Instagram className="w-3.5 h-3.5" />
+                            </a>
+                          ) : (
+                            <span
+                              className="p-1 text-slate-300 hover:text-slate-400 transition-colors cursor-default"
+                              title="Instagram belum ditambahkan"
+                            >
+                              <Instagram className="w-3.5 h-3.5" />
+                            </span>
+                          )}
+                        </div>
                       </div>
-                    </div>
+                    ) : (
+                      <div className="w-full h-56 pointer-events-none" aria-hidden="true" />
+                    )}
                   </div>
                 );
               })}

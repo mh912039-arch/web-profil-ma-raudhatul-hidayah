@@ -90,7 +90,7 @@ export function VisitorMetricsSection() {
                             width: `${row.percentage}%`,
                             minWidth: row.val > 0 ? '16px' : '0px',
                           }}
-                          className={`h-full rounded-md ${row.color} shadow-xs transition-all duration-700 ease-out flex items-center justify-end pr-1.5`}
+                          className={`h-full rounded-md ${row.color} shadow-xs flex items-center justify-end pr-1.5`}
                         />
                         <span className="ml-2 font-mono text-[11.5px] font-bold text-white/90 shrink-0">
                           {row.val.toLocaleString('id-ID')}

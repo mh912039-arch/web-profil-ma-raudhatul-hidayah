@@ -107,8 +107,6 @@ export default function RootLayout({
         <link rel="icon" href="/school-logo.png" type="image/png" />
         <link rel="shortcut icon" href="/school-logo.png" type="image/png" />
         <link rel="apple-touch-icon" href="/school-logo.png" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schoolJsonLd) }}

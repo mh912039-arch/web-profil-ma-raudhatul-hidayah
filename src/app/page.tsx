@@ -188,7 +188,7 @@ export default function HomePage() {
               {[0, 1].map((copyIndex) => (
                 <div key={copyIndex} className="flex items-center shrink-0">
                   <div className="flex items-center gap-3 px-8 text-[13.5px] sm:text-[14.5px] tracking-wide whitespace-nowrap">
-                    <Megaphone className="w-4 h-4 text-red-600 fill-red-600 shrink-0 animate-bounce" />
+                    <Megaphone className="w-4 h-4 text-red-600 fill-red-600 shrink-0" />
                     <span>{home.marqueeText1}</span>
                     <GraduationCap className="w-4 h-4 text-blue-950 shrink-0" />
                     <button
