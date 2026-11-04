@@ -1,10 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
-import { supabase } from '@/lib/supabaseClient';
+import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { checkEndpointRateLimit } from '@/lib/rateLimiter';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 const METRICS_FILE = path.join(process.cwd(), 'src', 'data', 'visitorMetrics.json');
+
+const noCacheHeaders = {
+  'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+  Pragma: 'no-cache',
+  Expires: '0',
+};
 
 interface DailyRecord {
   views: number;
@@ -26,7 +35,7 @@ interface VisitorData {
 }
 
 // Helper: Read local JSON file safely
-function readVisitorMetrics(): VisitorData {
+function readVisitorMetricsLocal(): VisitorData {
   try {
     if (fs.existsSync(METRICS_FILE)) {
       const raw = fs.readFileSync(METRICS_FILE, 'utf-8');
@@ -43,12 +52,72 @@ function readVisitorMetrics(): VisitorData {
   return { totalAccumulated: 0, dailyRecords: {}, recentLogs: [] };
 }
 
-// Helper: Save local JSON file
-function saveVisitorMetrics(data: VisitorData) {
+// Helper: Read metrics from Supabase SYS_STAT with local JSON fallback
+async function readVisitorMetrics(): Promise<VisitorData> {
+  // 1. Primary: Read from Supabase teachers_staff (SYS_STAT)
+  try {
+    const { data: row, error } = await supabaseAdmin
+      .from('teachers_staff')
+      .select('education')
+      .eq('code', 'SYS_STAT')
+      .maybeSingle();
+
+    if (!error && row && row.education) {
+      const parsed = JSON.parse(row.education);
+      if (typeof parsed.totalAccumulated === 'number') {
+        return {
+          totalAccumulated: parsed.totalAccumulated,
+          dailyRecords: parsed.dailyRecords || {},
+          recentLogs: Array.isArray(parsed.recentLogs) ? parsed.recentLogs : [],
+        };
+      }
+    }
+  } catch (err) {
+    console.warn('Notice reading SYS_STAT from Supabase:', err);
+  }
+
+  // 2. Fallback to local JSON file
+  return readVisitorMetricsLocal();
+}
+
+// Helper: Save metrics to Supabase SYS_STAT and local JSON file
+async function saveVisitorMetrics(data: VisitorData) {
+  const payload = JSON.stringify(data);
+
+  // 1. Primary: Save to Supabase teachers_staff (SYS_STAT)
+  try {
+    const { data: existing } = await supabaseAdmin
+      .from('teachers_staff')
+      .select('id')
+      .eq('code', 'SYS_STAT')
+      .maybeSingle();
+
+    if (existing) {
+      await supabaseAdmin
+        .from('teachers_staff')
+        .update({ education: payload, updated_at: new Date().toISOString() })
+        .eq('id', existing.id);
+    } else {
+      await supabaseAdmin.from('teachers_staff').insert({
+        name: 'System Visitor Analytics Store',
+        code: 'SYS_STAT',
+        category_label: 'Sistem',
+        subject_name: 'Analytics',
+        education: payload,
+        order_no: 9999,
+        role: 'system',
+        is_active: false,
+      });
+    }
+  } catch (err) {
+    console.error('Error saving SYS_STAT to Supabase:', err);
+  }
+
+  // 2. Best-effort write to local file (safely ignored in read-only Vercel lambda)
   try {
     fs.writeFileSync(METRICS_FILE, JSON.stringify(data, null, 2), 'utf-8');
-  } catch (err) {
-    console.error('Error saving visitorMetrics.json:', err);
+  } catch {
+    // EROFS in serverless environment is expected and ignored
   }
 }
 
@@ -70,9 +139,9 @@ function getJakartaDate(offsetDays = 0): { dateStr: string; yearMonth: string; d
 
   const parts = formatter.formatToParts(d);
   const year = parts.find((p) => p.type === 'year')?.value || '2026';
-  const month = parts.find((p) => p.type === 'month')?.value || '10';
-  const day = parts.find((p) => p.type === 'day')?.value || '19';
-  const weekday = parts.find((p) => p.type === 'weekday')?.value || 'Sen';
+  const month = parts.find((p) => p.type === 'month')?.value || '11';
+  const day = parts.find((p) => p.type === 'day')?.value || '05';
+  const weekday = parts.find((p) => p.type === 'weekday')?.value || 'Kam';
 
   // Indonesian weekday mapping
   const dayNameMap: Record<string, string> = {
@@ -112,7 +181,7 @@ function getPreviousYearMonth(currentYearMonth: string): string {
 // GET /api/visitors -> Get aggregated metrics for Admin CMS Overview
 // ====================================================================
 export async function GET() {
-  const data = readVisitorMetrics();
+  const data = await readVisitorMetrics();
 
   const todayInfo = getJakartaDate(0);
   const yesterdayInfo = getJakartaDate(-1);
@@ -181,7 +250,6 @@ export async function GET() {
   }
 
   // 8. Distribution Bar Chart Data
-  // Values: Hari Ini, Kemarin, Minggu Ini, Minggu Lalu, Bulan Ini, Bulan Lalu
   const distributionRaw = [
     { label: 'Hari Ini', val: todayViews, color: 'bg-[#06b6d4]' },
     { label: 'Kemarin', val: yesterdayViews, color: 'bg-[#93c5fd]' },
@@ -215,21 +283,24 @@ export async function GET() {
 
   const lastVisit = data.recentLogs.length > 0 ? data.recentLogs[data.recentLogs.length - 1].timestamp : null;
 
-  return NextResponse.json({
-    today: todayViews,
-    uniqueToday: todayUniques,
-    yesterday: yesterdayViews,
-    uniqueYesterday: yesterdayUniques,
-    thisWeek: thisWeekViews,
-    lastWeek: lastWeekViews,
-    thisMonth: thisMonthViews,
-    lastMonth: lastMonthViews,
-    totalAccumulated: data.totalAccumulated,
-    distribution,
-    last7Days,
-    topPages,
-    lastVisitTime: lastVisit,
-  });
+  return NextResponse.json(
+    {
+      today: todayViews,
+      uniqueToday: todayUniques,
+      yesterday: yesterdayViews,
+      uniqueYesterday: yesterdayUniques,
+      thisWeek: thisWeekViews,
+      lastWeek: lastWeekViews,
+      thisMonth: thisMonthViews,
+      lastMonth: lastMonthViews,
+      totalAccumulated: data.totalAccumulated,
+      distribution,
+      last7Days,
+      topPages,
+      lastVisitTime: lastVisit,
+    },
+    { headers: noCacheHeaders }
+  );
 }
 
 // ====================================================================
@@ -237,14 +308,23 @@ export async function GET() {
 // ====================================================================
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json().catch(() => ({}));
+    let body: any = {};
+    try {
+      body = await req.json();
+    } catch {
+      try {
+        const raw = await req.text();
+        if (raw) body = JSON.parse(raw);
+      } catch {}
+    }
+
     const reqPath = body.path || '/';
     const referrer = body.referrer || '';
     const isSimulation = Boolean(body.isSimulation);
 
     // Filter out admin routes and internal API routes unless simulation
     if (!isSimulation && (reqPath.startsWith('/admin') || reqPath.startsWith('/api'))) {
-      return NextResponse.json({ skipped: true });
+      return NextResponse.json({ skipped: true }, { headers: noCacheHeaders });
     }
 
     // Extract client IP
@@ -258,7 +338,7 @@ export async function POST(req: NextRequest) {
     if (!isSimulation) {
       const rateCheck = checkEndpointRateLimit(clientIp, 'visitor_pv', 20, 60);
       if (!rateCheck.allowed) {
-        return NextResponse.json({ skipped: true, rate_limited: true });
+        return NextResponse.json({ skipped: true, rate_limited: true }, { headers: noCacheHeaders });
       }
     }
 
@@ -276,8 +356,8 @@ export async function POST(req: NextRequest) {
     const { dateStr } = getJakartaDate(0);
     const nowIso = new Date().toISOString();
 
-    // Update local data
-    const data = readVisitorMetrics();
+    // Read current data from Supabase / fallback
+    const data = await readVisitorMetrics();
 
     if (!data.dailyRecords[dateStr]) {
       data.dailyRecords[dateStr] = {
@@ -311,32 +391,18 @@ export async function POST(req: NextRequest) {
       data.recentLogs = data.recentLogs.slice(-50);
     }
 
-    saveVisitorMetrics(data);
+    // Persist to Supabase SYS_STAT & local
+    await saveVisitorMetrics(data);
 
-    // Try persistence to Supabase visitor_logs (safe non-blocking try-catch)
-    try {
-      const { error } = await supabase.from('visitor_logs').insert([
-        {
-          ip_hash: visitorHash,
-          path: reqPath,
-          user_agent: userAgent.slice(0, 200),
-          referrer: referrer.slice(0, 200),
-          visited_at: nowIso,
-          visit_date: dateStr,
-        },
-      ]);
-      if (error && error.code !== '42P01') {
-        console.warn('Supabase visitor_logs insert notice:', error.message);
-      }
-    } catch {
-      // Supabase not reachable or table pending creation
-    }
-
-    return NextResponse.json({
-      success: true,
-      totalAccumulated: data.totalAccumulated,
-      todayViews: todayRec.views,
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        totalAccumulated: data.totalAccumulated,
+        todayViews: todayRec.views,
+        todayUniques: todayRec.uniques,
+      },
+      { headers: noCacheHeaders }
+    );
   } catch (err) {
     console.error('Error tracking visitor:', err);
     return NextResponse.json({ success: false, error: 'Failed to record visit' }, { status: 500 });
