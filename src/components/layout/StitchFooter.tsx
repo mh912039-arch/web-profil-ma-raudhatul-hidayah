@@ -162,10 +162,10 @@ export function StitchFooter() {
               </li>
               <li>
                 <Link
-                  href="/akademik/kurikulum"
+                  href="/akademik/ekstrakurikuler"
                   className="text-white/80 hover:text-white transition-all flex items-center justify-between group"
                 >
-                  <span className="group-hover:text-amber-200 group-hover:translate-x-1 transition-all">Kurikulum &amp; Mata Pelajaran</span>
+                  <span className="group-hover:text-amber-200 group-hover:translate-x-1 transition-all">Ekstrakurikuler</span>
                   <ArrowUpRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-[#facc15]" />
                 </Link>
               </li>

@@ -126,7 +126,6 @@ export function StitchNavbar() {
   ];
 
   const akademikSublinks = [
-    { label: 'Kurikulum & Mata Pelajaran', href: '/akademik/kurikulum' },
     { label: 'Ekstrakurikuler', href: '/akademik/ekstrakurikuler' },
     { label: 'Foto Juara Ekstrakurikuler', href: '/akademik/foto-juara' },
   ];

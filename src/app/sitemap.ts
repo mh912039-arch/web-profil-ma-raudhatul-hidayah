@@ -12,7 +12,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/profil/fasilitas',
     '/profil/guru-tendik',
     '/akademik',
-    '/akademik/kurikulum',
     '/akademik/ekstrakurikuler',
     '/akademik/foto-juara',
     '/kesiswaan',
