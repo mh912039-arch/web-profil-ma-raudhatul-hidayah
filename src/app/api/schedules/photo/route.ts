@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/auth';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase, supabaseAdmin } from '@/lib/supabaseClient';
 import { deleteStorageFile } from '@/lib/storageHelper';
 
 export const dynamic = 'force-dynamic';
@@ -75,7 +75,7 @@ export async function POST(request: Request) {
       updated_at: new Date().toISOString(),
     };
 
-    const { data: updated, error } = await supabase
+    const { data: updated, error } = await supabaseAdmin
       .from('teachers_staff')
       .update({
         education: JSON.stringify(payload),
@@ -85,7 +85,7 @@ export async function POST(request: Request) {
       .select('id');
 
     if (error || !updated || updated.length === 0) {
-      await supabase.from('teachers_staff').insert({
+      await supabaseAdmin.from('teachers_staff').insert({
         name: 'System Schedule Image Store',
         code: 'SYS_SCHIMG',
         category_label: 'Sistem',
@@ -130,7 +130,7 @@ export async function DELETE() {
     } catch {}
 
     const payload = { photo_url: null, updated_at: new Date().toISOString() };
-    await supabase
+    await supabaseAdmin
       .from('teachers_staff')
       .update({
         education: JSON.stringify(payload),

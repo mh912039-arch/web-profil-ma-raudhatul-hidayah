@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { supabase } from '@/lib/supabaseClient';
+import { supabaseAdmin } from '@/lib/supabaseClient';
 
 const schedulesFilePath = path.join(process.cwd(), 'src', 'data', 'schedulesData.json');
 
@@ -20,7 +20,7 @@ export interface ScheduleItem {
 export async function getExistingSchedules(): Promise<ScheduleItem[]> {
   // 1. Prioritaskan data persisten dari Supabase
   try {
-    const { data: supaData } = await supabase
+    const { data: supaData } = await supabaseAdmin
       .from('teachers_staff')
       .select('education')
       .eq('code', 'SYS_SCH')
@@ -52,7 +52,7 @@ export async function getExistingSchedules(): Promise<ScheduleItem[]> {
 export async function persistSchedules(schedules: ScheduleItem[]): Promise<void> {
   // 1. Simpan ke Supabase agar persisten di Vercel Serverless
   try {
-    const { data: updated, error } = await supabase
+    const { data: updated, error } = await supabaseAdmin
       .from('teachers_staff')
       .update({
         education: JSON.stringify(schedules),
@@ -62,7 +62,7 @@ export async function persistSchedules(schedules: ScheduleItem[]): Promise<void>
       .select('id');
 
     if (error || !updated || updated.length === 0) {
-      await supabase.from('teachers_staff').insert({
+      await supabaseAdmin.from('teachers_staff').insert({
         name: 'System Schedules Store',
         code: 'SYS_SCH',
         category_label: 'Sistem',
@@ -194,7 +194,7 @@ export async function applyBatchSchedules(params: ApplyBatchParams): Promise<{
         updated_at: new Date().toISOString(),
       };
 
-      const { data: updatedPhoto } = await supabase
+      const { data: updatedPhoto } = await supabaseAdmin
         .from('teachers_staff')
         .update({
           education: JSON.stringify(photoPayload),
@@ -204,7 +204,7 @@ export async function applyBatchSchedules(params: ApplyBatchParams): Promise<{
         .select('id');
 
       if (!updatedPhoto || updatedPhoto.length === 0) {
-        await supabase.from('teachers_staff').insert({
+        await supabaseAdmin.from('teachers_staff').insert({
           name: 'System Schedule Image Store',
           code: 'SYS_SCHIMG',
           category_label: 'Sistem',
