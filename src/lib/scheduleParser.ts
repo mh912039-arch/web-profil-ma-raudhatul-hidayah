@@ -36,6 +36,176 @@ export const standardSdTimeSlots = universalDefaultTimeSlots;
 export const standardSmpTimeSlots = universalDefaultTimeSlots;
 export const standardSmaTimeSlots = universalDefaultTimeSlots;
 
+export const matrixSubjectKeywords: { pattern: RegExp; name: string; cat: string; defaultTeacher: string }[] = [
+  { pattern: /\bupacara(\s*bendera)?\b/i, name: 'Upacara Bendera', cat: 'Pembiasaan Karakter', defaultTeacher: 'Dewan Guru' },
+  { pattern: /\b(do['’]?a\s*(dan|&)?\s*tadarus|tadarus|doa\s*pagi)\b/i, name: "Do'a dan Tadarus", cat: 'Pembiasaan Karakter', defaultTeacher: 'Dewan Guru' },
+  { pattern: /\b(literasi|numerasi)\b/i, name: 'Literasi / Numerasi', cat: 'Pembiasaan Karakter', defaultTeacher: 'Dewan Guru' },
+  { pattern: /\b(imtaq|tadarus|doa)\b/i, name: 'Imtaq & Sholat Dhuha', cat: 'Pembiasaan Karakter', defaultTeacher: 'Dewan Guru' },
+  { pattern: /\bsenam(\s*pagi)?\b/i, name: 'Senam Pagi Bersama', cat: 'Olahraga & Kesehatan', defaultTeacher: 'Dewan Guru' },
+  { pattern: /\b(btq|bta|baca\s*tulis)\b/i, name: 'BTQ (Baca Tulis Qur’an)', cat: 'Muatan Lokal', defaultTeacher: 'TISKA PUSPITA DEWI, S.Pd.I' },
+  { pattern: /\bpraktek\s*sh?o?lat\b/i, name: 'Praktek Sholat', cat: 'Pendidikan Agama Islam', defaultTeacher: 'TAJUDIN, S.Pd.I' },
+  { pattern: /\b(al[- ]?qur['’]?an\s*hadit[sh]|qur['’]?an\s*hadit[sh])\b/i, name: "Al-Qur'an Hadits", cat: 'Pendidikan Agama Islam', defaultTeacher: 'TAJUDIN, S.Pd.I' },
+  { pattern: /\b(a[qk]idah\s*a[qk][lh]a[qk]|agidah\s*akhlak)\b/i, name: 'Akidah Akhlak', cat: 'Pendidikan Agama Islam', defaultTeacher: 'JAKARIA, S.Pd.I' },
+  { pattern: /\b(a[qk]idah|agidah|a[qk][lh]a[qk])\b/i, name: 'Akidah Akhlak', cat: 'Pendidikan Agama Islam', defaultTeacher: 'JAKARIA, S.Pd.I' },
+  { pattern: /\b(fiqi?h|fikih|figih)\b/i, name: 'Fiqih', cat: 'Pendidikan Agama Islam', defaultTeacher: 'TAJUDIN, S.Pd.I' },
+  { pattern: /\bski\b|sejarah\s*kebudayaan/i, name: 'Sejarah Kebudayaan Islam (SKI)', cat: 'Sejarah Kebudayaan Islam', defaultTeacher: 'YAHYA HIDAYATULLOH, S.Pd.I' },
+  { pattern: /\b(bahasa\s*arab|bhs\s*arab|\barab\b)/i, name: 'Bahasa Arab', cat: 'Bahasa Asing', defaultTeacher: 'SITI KHAERUNNISA, S.Pd.I' },
+  { pattern: /\b(bahasa\s*inggris|bhs\s*inggris|\binggris\b|english)/i, name: 'Bahasa Inggris', cat: 'Bahasa Asing', defaultTeacher: 'SITI KHAERUNNISA, S.Pd.I' },
+  { pattern: /\b(bahasa\s*indonesia|bhs\s*indonesia|\bindonesia\b)/i, name: 'Bahasa Indonesia', cat: 'Bahasa & Sastra', defaultTeacher: 'KUSTYANINGSIH, S.Pd' },
+  { pattern: /\b(matematika|mtk|aljabar)\b/i, name: 'Matematika', cat: 'MIPA', defaultTeacher: 'MADROSYID, S.Pd' },
+  { pattern: /\bfisika\b/i, name: 'Fisika', cat: 'MIPA', defaultTeacher: 'SARNAH, S.Pd.I' },
+  { pattern: /\bbiologi\b/i, name: 'Biologi', cat: 'MIPA', defaultTeacher: 'SARNAH, S.Pd.I' },
+  { pattern: /\bkimia\b/i, name: 'Kimia', cat: 'MIPA', defaultTeacher: 'SARNAH, S.Pd.I' },
+  { pattern: /\b(ipa|sains|ilmu\s*pengetahuan\s*alam)\b/i, name: 'IPA / Sains', cat: 'MIPA', defaultTeacher: 'SARNAH, S.Pd.I' },
+  { pattern: /\b(ips|ilmu\s*pengetahuan\s*sosial)\b/i, name: 'IPS / Sosial', cat: 'IPS', defaultTeacher: 'AHMAD NURUL KAHFI, SE' },
+  { pattern: /\bekonomi\b/i, name: 'Ekonomi', cat: 'IPS', defaultTeacher: 'AHMAD NURUL KAHFI, SE' },
+  { pattern: /\bgeografi\b/i, name: 'Geografi', cat: 'IPS', defaultTeacher: 'YAHYA HIDAYATULLOH, S.Pd.I' },
+  { pattern: /\bsosiologi\b/i, name: 'Sosiologi', cat: 'IPS', defaultTeacher: 'AHMAD NURUL KAHFI, SE' },
+  { pattern: /\bsejarah\b(?!\s*kebudayaan|\s*islam)/i, name: 'Sejarah Indonesia', cat: 'IPS', defaultTeacher: 'AHMAD NURUL KAHFI, SE' },
+  { pattern: /\b(pjok|penjas|olahraga|jasmani)\b/i, name: 'Penjasorkes (PJOK)', cat: 'Olahraga & Kesehatan', defaultTeacher: 'AHMAD NURUL KAHFI, SE' },
+  { pattern: /\b(pkn|ppkn|pancasila|kewarganegaraan)\b/i, name: 'Pendidikan Pancasila (PKn)', cat: 'Pendidikan Kewarganegaraan', defaultTeacher: 'Drs. MULYADI' },
+  { pattern: /\b(pramuka|kepanduan)\b/i, name: 'Pramuka & Kepanduan', cat: 'Ekstrakurikuler', defaultTeacher: 'Pembina Pramuka' },
+  { pattern: /\b(seni\s*(&|dan)?\s*budaya|seni\s*budaya|seni|musik|tari|rupa)\b/i, name: 'Seni Budaya', cat: 'Seni & Budaya', defaultTeacher: 'TISKA PUSPITA DEWI, S.Pd.I' },
+  { pattern: /\b(pkwu|prakarya|kewirausahaan)\b/i, name: 'Prakarya & Kewirausahaan (PKWU)', cat: 'Prakarya & Kewirausahaan', defaultTeacher: 'TISKA PUSPITA DEWI, S.Pd.I' },
+  { pattern: /\b(tik|informatika|komputer)\b/i, name: 'Informatika & TIK', cat: 'Teknologi Informasi & Komunikasi', defaultTeacher: 'MADROSYID, S.Pd' },
+  { pattern: /\b(kokurikuler|proyek|p5|p5ra)\b/i, name: 'Kokurikuler (Proyek P5RA)', cat: 'Pengembangan Diri', defaultTeacher: 'Dewan Guru' },
+  { pattern: /\b(mulok|tahfidz|tahsin|btq)\b/i, name: 'Muatan Lokal (Mulok)', cat: 'Muatan Lokal', defaultTeacher: 'TISKA PUSPITA DEWI, S.Pd.I' },
+  { pattern: /\b(agama|pai|pendidikan\s*agama)\b/i, name: 'Pendidikan Agama Islam (Agama)', cat: 'Pendidikan Agama Islam', defaultTeacher: 'TAJUDIN, S.Pd.I' },
+];
+
+/**
+ * Parser Otomatis Khusus Format Matrix / Grid Table (Excel, Word, Lembar Jadwal Resmi)
+ * Mengurai tabel horizontal dengan kolom hari (Senin s.d. Jumat/Sabtu) dan baris jam pelajaran.
+ */
+export function tryParseMatrixTimetable(
+  rawText: string,
+  targetRombel: string,
+  teacherPool: string[] = []
+): ParsedScheduleItem[] | null {
+  const lines = rawText.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+
+  let headerDays: string[] = [];
+  let headerLineIndex = -1;
+  const dayPatterns = [
+    { name: 'Senin', rx: /\b(senin|mon)\b/i },
+    { name: 'Selasa', rx: /\b(selasa|tue)\b/i },
+    { name: 'Rabu', rx: /\b(rabu|wed)\b/i },
+    { name: 'Kamis', rx: /\b(kamis|thu)\b/i },
+    { name: 'Jumat', rx: /\b(jum['’]?at|jumat|fri)\b/i },
+    { name: 'Sabtu', rx: /\b(sabtu|sat)\b/i },
+  ];
+
+  // Cari baris header yang memuat minimal 3 hari berurutan
+  for (let i = 0; i < Math.min(lines.length, 8); i++) {
+    const l = lines[i];
+    const foundDays: { name: string; index: number }[] = [];
+
+    for (const dp of dayPatterns) {
+      const match = dp.rx.exec(l);
+      if (match) {
+        foundDays.push({ name: dp.name, index: match.index });
+      }
+    }
+
+    if (foundDays.length >= 3) {
+      foundDays.sort((a, b) => a.index - b.index);
+      headerDays = foundDays.map((d) => d.name);
+      headerLineIndex = i;
+      break;
+    }
+  }
+
+  if (headerDays.length < 3) return null;
+
+  const results: ParsedScheduleItem[] = [];
+  const daySessionCounter: Record<string, number> = {};
+  headerDays.forEach((d) => (daySessionCounter[d] = 0));
+
+  const findTeacher = (str: string, fallback: string): string => {
+    for (const t of teacherPool) {
+      const cleanT = t.toLowerCase().replace(/[,.s.pd.i]/g, '').trim();
+      if (cleanT.length > 3 && str.toLowerCase().includes(cleanT)) {
+        return t;
+      }
+    }
+    return fallback;
+  };
+
+  // Urai baris-baris berikutnya yang memuat jam pelajaran
+  for (let i = headerLineIndex + 1; i < lines.length; i++) {
+    const line = lines[i];
+    const timeRegex = /\b(\d{1,2})[.:,](\d{2})\s*(?:[-–—~]|s\/d|\bto\b)\s*(\d{1,2})[.:,](\d{2})\b/i;
+    const timeMatch = line.match(timeRegex);
+    if (!timeMatch) continue;
+
+    const timeStart = `${timeMatch[1].padStart(2, '0')}:${timeMatch[2]}`;
+    const timeEnd = `${timeMatch[3].padStart(2, '0')}:${timeMatch[4]}`;
+    const rowContent = line.replace(timeMatch[0], '').trim();
+
+    // Deteksi dan lewati baris istirahat murni agar tidak dijadikan sesi mata pelajaran
+    if (
+      /\b(istirahat|rehat|break|dhuha)\b/i.test(rowContent) &&
+      !/\b(upacara|matematika|bahasa|fisika|kimia|biologi|pai|fiqih|akidah|ski|seni|pjok|pkwu|mulok|sejarah|pramuka|qur['’]?an|hadit[sh]|btq|bta|tadarus)\b/i.test(rowContent)
+    ) {
+      continue;
+    }
+
+    // Temukan seluruh mata pelajaran di baris tersebut
+    const matches: { index: number; endIndex: number; name: string; cat: string; teacher: string }[] = [];
+    for (const item of matrixSubjectKeywords) {
+      const rx = new RegExp(item.pattern.source, 'gi');
+      let m;
+      while ((m = rx.exec(rowContent)) !== null) {
+        matches.push({
+          index: m.index,
+          endIndex: m.index + m[0].length,
+          name: item.name,
+          cat: item.cat,
+          teacher: item.defaultTeacher,
+        });
+      }
+    }
+    matches.sort((a, b) => a.index - b.index);
+
+    // Filter non-overlapping matches
+    const nonOverlapping: { name: string; cat: string; teacher: string }[] = [];
+    let lastEnd = -1;
+    for (const m of matches) {
+      if (m.index >= lastEnd) {
+        nonOverlapping.push(m);
+        lastEnd = m.endIndex;
+      }
+    }
+
+    if (nonOverlapping.length === 0) continue;
+
+    // Petakan ke kolom-kolom hari
+    headerDays.forEach((day, colIdx) => {
+      const subj = nonOverlapping[colIdx] || nonOverlapping[0];
+      if (subj) {
+        daySessionCounter[day] = (daySessionCounter[day] || 0) + 1;
+        const sessionNo = daySessionCounter[day];
+        const teacherName = findTeacher(subj.name, subj.teacher);
+
+        results.push({
+          id: `sch-${targetRombel.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${day.toLowerCase()}-${sessionNo}`,
+          class_rombel: targetRombel,
+          day,
+          session_no: sessionNo,
+          time_start: timeStart,
+          time_end: timeEnd,
+          subject_name: subj.name,
+          category: subj.cat,
+          teacher_name: teacherName,
+          room: `Ruang ${targetRombel.replace(/^(SD|SMP|SMA)\s*-\s*/, '')}`,
+        });
+      }
+    });
+  }
+
+  return results;
+}
+
 export const subjectKeywords: { pattern: RegExp; subject: string; category: string; defaultTeacher: string }[] = [
   { pattern: /\bupacara\b/i, subject: 'Upacara Bendera', category: 'Pembiasaan Karakter', defaultTeacher: 'Dewan Guru' },
   { pattern: /\b(literasi|numerasi)\b/i, subject: 'Literasi & Numerasi', category: 'Pembiasaan Karakter', defaultTeacher: 'Dewan Guru' },
@@ -196,7 +366,14 @@ export function parseScheduleFromText(
     else if (/kelas\s*(6|vi)\b|sd\s*-\s*kelas\s*6/i.test(fullText)) detectedRombel = 'SD - Kelas VI';
   }
 
-  // 2. Deteksi Pola Khusus Dokumen Foto: Template Kurikulum Merdeka (Karya Agung Ade Yulianto)
+  // 2. Parser Otomatis Tabel Grid / Matrix (Format Excel, Word Spreadsheet, atau Foto Lembar Jadwal)
+  // Membaca langsung kolom hari (Senin s.d. Jumat/Sabtu) dan baris rentang waktu dari foto yang diunggah
+  const matrixResults = tryParseMatrixTimetable(rawText, detectedRombel, teacherPool);
+  if (matrixResults && matrixResults.length >= 4) {
+    return matrixResults;
+  }
+
+  // 3. Deteksi Pola Khusus Dokumen Foto: Template Kurikulum Merdeka (Karya Agung Ade Yulianto)
   // Jam sesi dan jam istirahat disesuaikan persis dengan lembar foto dokumen (07:00 s.d 11:00, istirahat 09:00 - 09:15)
   const fullText = lines.join(' ').toLowerCase();
   const isAgungAdeTemplate =
