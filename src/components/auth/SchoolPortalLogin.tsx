@@ -26,7 +26,7 @@ import {
 } from 'lucide-react';
 
 interface SchoolPortalLoginProps {
-  onLoginSuccess?: (role: 'admin' | 'guru' | 'siswa') => void;
+  onLoginSuccess?: (role: 'admin' | 'guru' | 'siswa', username?: string) => void;
   defaultRole?: 'admin' | 'guru' | 'siswa';
 }
 
@@ -143,10 +143,13 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
       if (typeof window !== 'undefined') {
         localStorage.setItem('mrh_admin_auth', 'true');
         localStorage.setItem('mrh_user_role', data.role);
+        if (data.username) {
+          localStorage.setItem('mrh_username', data.username);
+        }
       }
 
       if (onLoginSuccess) {
-        onLoginSuccess(data.role);
+        onLoginSuccess(data.role, data.username);
       } else {
         router.push(data.role === 'admin' ? '/admin' : '/admin?tab=schedules');
       }

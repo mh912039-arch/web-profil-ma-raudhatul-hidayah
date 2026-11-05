@@ -16,6 +16,8 @@ export async function GET() {
       authenticated: true,
       role: session.role,
       username: session.username,
+      userId: session.userId,
+      email: session.email,
       exp: session.exp,
     },
     {

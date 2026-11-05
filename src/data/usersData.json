@@ -2,9 +2,9 @@
   {
     "id": "usr-1",
     "name": "Administrator Madrasah (TU)",
-    "email": "admin@raudlatulhidayah.sch.id",
+    "email": "admin@raudhatulhidayah.sch.id",
     "username": "admin",
-    "password": "h256:43825049789a21471c1e47948ddc6472da5cb174554c5b8b3cd1fedb444f913e",
+    "password": "h256:b008179d084d4fd582cdc8d1fa91a38bf4245a29aa8bfee4c783ef1c31512a98",
     "role": "admin",
     "status": "Aktif",
     "permissions": [
@@ -24,18 +24,18 @@
       "users"
     ],
     "created_at": "2026-10-01T08:00:00.000Z",
-    "last_login": "Hari ini, 12:51 WIB",
+    "last_login": "Hari ini, 11:09 WIB",
     "last_device": "Windows 11/10 • Google Chrome",
     "last_device_type": "desktop",
-    "last_ip": "180.252.164.21",
-    "is_online": true
+    "last_ip": "202.150.75.102",
+    "is_online": false
   },
   {
     "id": "usr-2",
     "name": "A. Khutbi. AR, S.Pd (Kepala Madrasah)",
-    "email": "kepala@raudlatulhidayah.sch.id",
+    "email": "kepala@raudhatulhidayah.sch.id",
     "username": "kepala",
-    "password": "h256:43825049789a21471c1e47948ddc6472da5cb174554c5b8b3cd1fedb444f913e",
+    "password": "h256:3e86e4a0016cc94211a02af1b808e5c910d05ee8eaa6b8cb503268536e3de197",
     "role": "admin",
     "status": "Aktif",
     "permissions": [
@@ -50,21 +50,23 @@
       "classes",
       "calendar",
       "messages",
-      "profile"
+      "profile",
+      "homepage"
     ],
     "created_at": "2026-10-02T08:00:00.000Z",
-    "last_login": "Hari ini, 09:30 WIB",
-    "last_device": "macOS (MacBook/iMac) • Apple Safari",
-    "last_device_type": "desktop",
-    "last_ip": "36.72.215.10",
-    "is_online": false
+    "last_login": "Hari ini, 20:27 WIB",
+    "last_device": "Android 10 • Google Chrome",
+    "last_device_type": "mobile",
+    "last_ip": "114.10.79.19",
+    "is_online": false,
+    "last_seen": "2026-10-25T15:58:29.942Z"
   },
   {
     "id": "usr-guru",
-    "name": "Dewan Guru MA Raudlatul Hidayah",
-    "email": "guru@raudlatulhidayah.sch.id",
+    "name": "Dewan Guru MA Raudhatul Hidayah",
+    "email": "guru@raudhatulhidayah.sch.id",
     "username": "guru",
-    "password": "h256:54a09c0719aaf5ee88b9ebb4deb693518c72ea48712a75343c57ac1d22ab293e",
+    "password": "h256:8f41e09b5002555e5c7b7dfd9bea3ffe977f2e3431f70aec92185b2a4a250306",
     "role": "guru",
     "status": "Aktif",
     "permissions": [
@@ -76,18 +78,19 @@
       "extracurricular"
     ],
     "created_at": "2026-10-03T08:00:00.000Z",
-    "last_login": "Hari ini, 10:15 WIB",
-    "last_device": "Android 14 • Google Chrome",
-    "last_device_type": "mobile",
-    "last_ip": "114.124.201.88",
-    "is_online": true
+    "last_login": "Hari ini, 17:55 WIB",
+    "last_device": "Windows 11/10 • Google Chrome",
+    "last_device_type": "desktop",
+    "last_ip": "202.150.75.102",
+    "is_online": true,
+    "last_seen": "2026-11-05T11:04:57.155Z"
   },
   {
     "id": "usr-3",
     "name": "TAJUDIN, S.Pd.I",
-    "email": "tajudin@raudlatulhidayah.sch.id",
+    "email": "tajudin@raudhatulhidayah.sch.id",
     "username": "tajudin",
-    "password": "h256:54a09c0719aaf5ee88b9ebb4deb693518c72ea48712a75343c57ac1d22ab293e",
+    "password": "h256:d741621592c0fa9c299b3250b9fb3bbe555dbb8d8db8ac848021cc4be1314e49",
     "role": "guru",
     "status": "Aktif",
     "permissions": [
@@ -108,9 +111,9 @@
   {
     "id": "usr-4",
     "name": "MADROSYID, S.Pd (Kurikulum & TIK)",
-    "email": "madrosyid@raudlatulhidayah.sch.id",
+    "email": "madrosyid@raudhatulhidayah.sch.id",
     "username": "madrosyid",
-    "password": "h256:54a09c0719aaf5ee88b9ebb4deb693518c72ea48712a75343c57ac1d22ab293e",
+    "password": "h256:85f2f1f2ed87a5bc4c323e4751c6a5b9a629f9c9de0ea46a8a55baa0ce2fd86b",
     "role": "guru",
     "status": "Aktif",
     "permissions": [
@@ -130,9 +133,9 @@
   {
     "id": "usr-5",
     "name": "SITI KHAERUNNISA, S.Pd.I",
-    "email": "siti.k@raudlatulhidayah.sch.id",
+    "email": "siti.k@raudhatulhidayah.sch.id",
     "username": "sitikhaerunnisa",
-    "password": "h256:54a09c0719aaf5ee88b9ebb4deb693518c72ea48712a75343c57ac1d22ab293e",
+    "password": "h256:037a9d5df1fe400481d08dea716d9e12e2abd4867f477b826e6ec0a3d70bde8a",
     "role": "guru",
     "status": "Aktif",
     "permissions": [
@@ -151,9 +154,9 @@
   {
     "id": "usr-6",
     "name": "AHMAD NURUL KAHFI, SE",
-    "email": "ahmad.kahfi@raudlatulhidayah.sch.id",
+    "email": "ahmad.kahfi@raudhatulhidayah.sch.id",
     "username": "ahmadkahfi",
-    "password": "h256:54a09c0719aaf5ee88b9ebb4deb693518c72ea48712a75343c57ac1d22ab293e",
+    "password": "h256:60967c1771c98f5e74cad4f1d54e1b26de448eff4082ba9f8f1b33122e70f306",
     "role": "guru",
     "status": "Aktif",
     "permissions": [
@@ -172,10 +175,10 @@
   },
   {
     "id": "usr-7",
-    "name": "Santri & OSIS MA Raudlatul Hidayah",
-    "email": "siswa@raudlatulhidayah.sch.id",
+    "name": "Santri & OSIS MA Raudhatul Hidayah",
+    "email": "siswa@raudhatulhidayah.sch.id",
     "username": "siswa",
-    "password": "h256:71bff7f53c0eb2542b036efedf48edef7766d24fa14bcc78d4b09e4cbf96c130",
+    "password": "h256:c9468937a7139bcf50b1040d97f99dd80a5aed1bf2c225904d76a1a0b2b17a28",
     "role": "siswa",
     "status": "Aktif",
     "permissions": [
@@ -188,14 +191,14 @@
     "last_device": "Android 14 • Google Chrome",
     "last_device_type": "mobile",
     "last_ip": "114.124.90.31",
-    "is_online": true
+    "is_online": false
   },
   {
     "id": "usr-8",
     "name": "H. MUKHLIS, S.Pd (Guru Baru)",
-    "email": "mukhlis@raudlatulhidayah.sch.id",
+    "email": "mukhlis@raudhatulhidayah.sch.id",
     "username": "mukhlis",
-    "password": "h256:79aada7ed47e1dec69e482eef452b24ef3627b849f91e42e3ff5213c7efb243f",
+    "password": "h256:529a9607bbe86970a734ffe902b8fad25b5a72e38ff17df4aba5f159168f6ca9",
     "role": "guru",
     "status": "Nonaktif",
     "permissions": [
@@ -209,5 +212,142 @@
     "last_device_type": "desktop",
     "last_ip": "-",
     "is_online": false
+  },
+  {
+    "id": "usr-1793442037066",
+    "name": "Synara",
+    "email": "araara@gmail.com",
+    "username": "araara",
+    "password": "h256:8e902611123fa2f27ac5c0092ae8487f714b472df129c1b7ed5caa7084673558",
+    "role": "admin",
+    "status": "Aktif",
+    "permissions": [
+      "ppdb",
+      "registrations",
+      "teachers",
+      "schedules",
+      "classes",
+      "calendar",
+      "extracurricular",
+      "articles",
+      "achievements",
+      "homepage",
+      "profile",
+      "messages"
+    ],
+    "created_at": "2026-10-31T10:20:37.066Z",
+    "last_login": "Hari ini, 17:21 WIB",
+    "last_device": "Windows 11/10 • Microsoft Edge",
+    "last_device_type": "desktop",
+    "last_ip": "140.213.134.66",
+    "is_online": false,
+    "last_seen": "2026-10-31T10:39:57.140Z",
+    "nip_nisn": "12345678",
+    "note": "Bahasa Inggris"
+  },
+  {
+    "id": "usr-1793078467101",
+    "name": "hbcahbhcas",
+    "email": "jbfhwbviheb@gmail.com",
+    "username": "jbfhwbviheb",
+    "password": "h256:9e4399a4039fbf437c895e43dba4aff4b067c4243081083747a8af8c0df522c1",
+    "role": "siswa",
+    "status": "Aktif",
+    "permissions": [
+      "schedules",
+      "classes",
+      "calendar"
+    ],
+    "created_at": "2026-10-27T05:21:07.101Z",
+    "last_login": "Hari ini, 14:56 WIB",
+    "last_device": "Windows 11/10 • Google Chrome",
+    "last_device_type": "desktop",
+    "last_ip": "103.239.41.109",
+    "is_online": false,
+    "nip_nisn": "84584",
+    "note": "jgbsjbgs"
+  },
+  {
+    "id": "usr-1792680704682",
+    "name": "zahwa aulya rahma",
+    "email": "alyarhma642@gmail.com",
+    "username": "alyarhma642",
+    "password": "h256:be6bfdb8bc428f31114bae081ae73e1c2193b6ed2afe219ae4ecf45a173b5bc5",
+    "role": "admin",
+    "status": "Aktif",
+    "permissions": [
+      "ppdb",
+      "registrations",
+      "teachers",
+      "schedules",
+      "classes",
+      "calendar",
+      "extracurricular",
+      "articles",
+      "achievements",
+      "homepage",
+      "profile",
+      "messages"
+    ],
+    "created_at": "2026-10-22T14:51:44.682Z",
+    "last_login": "Hari ini, 16:54 WIB",
+    "last_device": "Windows 11/10 • Opera",
+    "last_device_type": "desktop",
+    "last_ip": "125.165.44.242",
+    "is_online": false,
+    "last_seen": "2026-10-31T11:25:42.703Z",
+    "nip_nisn": "1234",
+    "note": "-"
+  },
+  {
+    "id": "usr-1792672291935",
+    "name": "haechan",
+    "email": "vnnyalvrs@gmail.com",
+    "username": "vnnyalvrs",
+    "password": "h256:fa3624816ae8011e9ddc0e966d1efeab91e6ca64caf391b85e8d3442321d012e",
+    "role": "admin",
+    "status": "Aktif",
+    "permissions": [
+      "ppdb",
+      "registrations",
+      "teachers",
+      "schedules",
+      "classes",
+      "calendar",
+      "extracurricular",
+      "articles",
+      "achievements",
+      "homepage",
+      "profile",
+      "messages"
+    ],
+    "created_at": "2026-10-22T12:31:31.935Z",
+    "last_login": "Hari ini, 15:11 WIB",
+    "last_device": "Android 10 • Google Chrome",
+    "last_device_type": "mobile",
+    "last_ip": "111.94.196.118",
+    "is_online": false,
+    "last_seen": "2026-10-31T08:12:19.443Z",
+    "nip_nisn": "-",
+    "note": "-"
+  },
+  {
+    "id": "usr-jakaria",
+    "name": "JAKARIA, S.Pd.I",
+    "email": "jakaria@raudlatulhidayah.sch.id",
+    "username": "jakaria",
+    "password": "h256:54a09c0719aaf5ee88b9ebb4deb693518c72ea48712a75343c57ac1d22ab293e",
+    "role": "guru",
+    "status": "Aktif",
+    "permissions": [
+      "schedules",
+      "classes",
+      "calendar",
+      "articles",
+      "achievements",
+      "extracurricular"
+    ],
+    "created_at": "2026-11-05T11:05:23.883Z",
+    "is_online": true
   }
 ]

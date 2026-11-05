@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
   Clock,
   Plus,
@@ -23,6 +23,12 @@ import {
   ScanLine,
   Eye,
   UploadCloud,
+  UserCheck,
+  MapPin,
+  CalendarCheck,
+  Radio,
+  Layers,
+  Sparkles,
 } from 'lucide-react';
 import { TeacherRecord } from './TeachersTab';
 import { compressImageBelow100Kb } from '@/lib/imageCompression';
@@ -51,6 +57,7 @@ interface SchedulesTabProps {
   initialRombel?: string;
   readOnly?: boolean;
   userRole?: 'admin' | 'guru' | 'siswa';
+  currentUserName?: string;
 }
 
 export type JenjangLevel = 'all' | 'sd' | 'smp' | 'sma';
@@ -85,11 +92,89 @@ export const allRombels: RombelItem[] = [
 
 const days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 
+export function isTeacherMatch(scheduleTeacher?: string, currentTeacherNameOrUsername?: string): boolean {
+  if (!scheduleTeacher || !currentTeacherNameOrUsername) return false;
+  const cleanA = scheduleTeacher.toLowerCase().replace(/[,.s.pd.i()]/g, '').trim();
+  const cleanB = currentTeacherNameOrUsername.toLowerCase().replace(/[,.s.pd.i()]/g, '').trim();
+  if (cleanA === cleanB) return true;
+  if (cleanA.includes(cleanB) || cleanB.includes(cleanA)) return true;
+
+  const wordsA = cleanA.split(/\s+/).filter((w) => w.length > 2);
+  const wordsB = cleanB.split(/\s+/).filter((w) => w.length > 2);
+  return wordsA.some((wa) => wordsB.some((wb) => wa === wb));
+}
+
+export function getTodayDayName(date: Date = new Date()): string {
+  const daysMap = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+  const day = daysMap[date.getDay()];
+  return day === 'Minggu' ? 'Senin' : day;
+}
+
+export function getSessionLiveStatus(
+  sessionDay: string,
+  timeStart: string,
+  timeEnd: string,
+  now: Date
+): {
+  status: 'ongoing' | 'upcoming' | 'completed' | 'other_day';
+  label: string;
+  badgeClass: string;
+  dotClass?: string;
+} {
+  const currentDayName = getTodayDayName(now);
+
+  if (sessionDay.toLowerCase() !== currentDayName.toLowerCase()) {
+    return {
+      status: 'other_day',
+      label: sessionDay,
+      badgeClass: 'bg-slate-100 text-slate-700 border-slate-200',
+    };
+  }
+
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+  const parseToMinutes = (timeStr: string) => {
+    const parts = (timeStr || '').split(/[:.]/).map((n) => parseInt(n, 10) || 0);
+    return (parts[0] || 0) * 60 + (parts[1] || 0);
+  };
+
+  const startMin = parseToMinutes(timeStart);
+  const endMin = parseToMinutes(timeEnd);
+
+  if (currentMinutes >= startMin && currentMinutes < endMin) {
+    return {
+      status: 'ongoing',
+      label: 'Sedang Berlangsung',
+      badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-300 font-bold',
+      dotClass: 'bg-emerald-500 animate-pulse',
+    };
+  } else if (currentMinutes < startMin) {
+    const diff = startMin - currentMinutes;
+    const hours = Math.floor(diff / 60);
+    const mins = diff % 60;
+    const remainingText = hours > 0 ? `${hours}j ${mins}m lagi` : `${mins} menit lagi`;
+    return {
+      status: 'upcoming',
+      label: `Mendatang (${remainingText})`,
+      badgeClass: 'bg-blue-50 text-blue-700 border-blue-200 font-semibold',
+      dotClass: 'bg-blue-500',
+    };
+  } else {
+    return {
+      status: 'completed',
+      label: 'Selesai',
+      badgeClass: 'bg-slate-100 text-slate-500 border-slate-200',
+      dotClass: 'bg-slate-400',
+    };
+  }
+}
+
 export const SchedulesTab: React.FC<SchedulesTabProps> = ({
   teachers,
   initialRombel,
   readOnly = false,
   userRole = 'admin',
+  currentUserName,
 }) => {
   const [schedules, setSchedules] = useState<ScheduleItem[]>([]);
   const [selectedLevel, setSelectedLevel] = useState<JenjangLevel>(() => {
@@ -100,6 +185,38 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
   const [selectedRombel, setSelectedRombel] = useState<string>(initialRombel || 'SMA - Kelas X');
   const [selectedDay, setSelectedDay] = useState<string>('Senin');
   const [isLoading, setIsLoading] = useState(true);
+
+  // Mode Tampilan Opsi 2: 'my_teaching' (default aktif untuk guru) atau 'all_classes'
+  const [scheduleViewMode, setScheduleViewMode] = useState<'my_teaching' | 'all_classes'>(
+    userRole === 'guru' ? 'my_teaching' : 'all_classes'
+  );
+
+  // Realtime clock untuk pembaruan status sesi live secara perpetual
+  const [currentTime, setCurrentTime] = useState<Date>(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 30000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const todayDayName = useMemo(() => getTodayDayName(currentTime), [currentTime]);
+
+  // Tab hari terpilih untuk agenda mengajar guru
+  const [selectedTeacherDay, setSelectedTeacherDay] = useState<string>(todayDayName);
+
+  // Nama guru aktif yang jadwalnya sedang dilihat
+  const [activeTeacherName, setActiveTeacherName] = useState<string>(() => {
+    if (currentUserName && currentUserName.toLowerCase() !== 'guru' && currentUserName.toLowerCase() !== 'admin') {
+      return currentUserName;
+    }
+    return 'JAKARIA, S.Pd.I';
+  });
+
+  useEffect(() => {
+    if (currentUserName && currentUserName.toLowerCase() !== 'guru' && currentUserName.toLowerCase() !== 'admin') {
+      setActiveTeacherName(currentUserName);
+    }
+  }, [currentUserName]);
 
   // Photo & OCR state
   const [schedulePhoto, setSchedulePhoto] = useState<SchedulePhotoInfo | null>(null);
@@ -243,6 +360,66 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
       (s) => isRombelMatch(s.class_rombel, selectedRombel) && s.day === day
     ).length;
   };
+
+  // 1. Daftar seluruh nama guru untuk dropdown Admin
+  const availableTeachersList = useMemo(() => {
+    const fromTeachers = (teachers || []).map((t) => t.name).filter(Boolean);
+    const fromSchedules = schedules
+      .map((s) => s.teacher_name)
+      .filter((n) => n && n !== 'Dewan Guru' && n !== 'Pembina Pramuka');
+    const set = new Set([...fromTeachers, ...fromSchedules]);
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  }, [teachers, schedules]);
+
+  // 2. Seluruh sesi mengajar guru yang aktif diurutkan per hari dan jam
+  const myTeachingSessions = useMemo(() => {
+    const dayOrder: Record<string, number> = {
+      Senin: 1,
+      Selasa: 2,
+      Rabu: 3,
+      Kamis: 4,
+      Jumat: 5,
+      Sabtu: 6,
+    };
+    return schedules
+      .filter((s) => isTeacherMatch(s.teacher_name, activeTeacherName))
+      .sort((a, b) => {
+        const dDiff = (dayOrder[a.day] || 9) - (dayOrder[b.day] || 9);
+        if (dDiff !== 0) return dDiff;
+        return a.time_start.localeCompare(b.time_start);
+      });
+  }, [schedules, activeTeacherName]);
+
+  // 3. Sesi mengajar khusus hari ini
+  const todayTeachingSessions = useMemo(() => {
+    return myTeachingSessions.filter((s) => s.day.toLowerCase() === todayDayName.toLowerCase());
+  }, [myTeachingSessions, todayDayName]);
+
+  // 4. Sesi yang sedang aktif saat ini (Live Indicator)
+  const activeNowSession = useMemo(() => {
+    return todayTeachingSessions.find((s) => {
+      const live = getSessionLiveStatus(s.day, s.time_start, s.time_end, currentTime);
+      return live.status === 'ongoing';
+    });
+  }, [todayTeachingSessions, currentTime]);
+
+  // 5. Sesi berikutnya yang akan datang hari ini
+  const nextUpcomingSession = useMemo(() => {
+    return todayTeachingSessions.find((s) => {
+      const live = getSessionLiveStatus(s.day, s.time_start, s.time_end, currentTime);
+      return live.status === 'upcoming';
+    });
+  }, [todayTeachingSessions, currentTime]);
+
+  // 6. Sesi yang ditampilkan sesuai tab hari yang dipilih guru
+  const displayTeacherSessions = useMemo(() => {
+    if (selectedTeacherDay === 'Semua') {
+      return myTeachingSessions;
+    }
+    return myTeachingSessions.filter(
+      (s) => s.day.toLowerCase() === selectedTeacherDay.toLowerCase()
+    );
+  }, [myTeachingSessions, selectedTeacherDay]);
 
   // Photo File Change Handler
   const handlePhotoFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1089,9 +1266,342 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
         </div>
       )}
 
-      {/* Rombel Selector Pills with SD / SMP / SMA Level Switcher */}
-      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
-        {/* Level Switcher (SD, SMP, SMA) */}
+      {/* Dua Mode Tampilan (Opsi 2): Jadwal Mengajar Saya vs Jadwal Seluruh Kelas */}
+      {userRole !== 'siswa' && (
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white border border-slate-200/90 rounded-2xl p-3 shadow-2xs">
+          <div className="inline-flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl w-full sm:w-auto border border-slate-200/60">
+            <button
+              type="button"
+              onClick={() => setScheduleViewMode('my_teaching')}
+              className={`flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all active:scale-[0.98] ${
+                scheduleViewMode === 'my_teaching'
+                  ? 'bg-blue-600 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
+              }`}
+            >
+              <UserCheck className="w-4 h-4" />
+              <span>{userRole === 'guru' ? 'Jadwal Mengajar Saya' : 'Jadwal Mengajar Guru'}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setScheduleViewMode('all_classes')}
+              className={`flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all active:scale-[0.98] ${
+                scheduleViewMode === 'all_classes'
+                  ? 'bg-blue-600 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
+              }`}
+            >
+              <GraduationCap className="w-4 h-4" />
+              <span>Jadwal Seluruh Kelas</span>
+            </button>
+          </div>
+
+          {/* Teacher Selector for Admin / Teacher identity badge */}
+          {scheduleViewMode === 'my_teaching' && (
+            <div className="flex items-center gap-2">
+              {userRole === 'admin' ? (
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                    PILIH GURU:
+                  </span>
+                  <select
+                    value={activeTeacherName}
+                    onChange={(e) => setActiveTeacherName(e.target.value)}
+                    className="bg-white border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-2xs"
+                  >
+                    {availableTeachersList.map((t) => (
+                      <option key={t} value={t}>
+                        {t}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              ) : (
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 border border-blue-200/80 rounded-xl text-blue-700 text-xs font-bold">
+                  <UserCheck className="w-3.5 h-3.5" />
+                  <span>Guru: {activeTeacherName}</span>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Tampilan Kondisional: Jadwal Mengajar Guru vs Seluruh Kelas */}
+      {scheduleViewMode === 'my_teaching' ? (
+        <div className="space-y-4 sm:space-y-5">
+          {/* 1. Hero Card: Status Mengajar & Live Active Session Indicator */}
+          <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-5 sm:p-6 space-y-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+              <div className="space-y-1">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-blue-50 border border-blue-200 text-blue-700 text-[11px] font-bold uppercase tracking-wider">
+                  <BookOpen className="w-3.5 h-3.5" />
+                  <span>AGENDA MENGAJAR PRIBADI</span>
+                </div>
+                <h3 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+                  {activeTeacherName}
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Agenda tatap muka harian di kelas santri Madrasah Raudlatul Hidayah
+                </p>
+              </div>
+
+              {/* Stat Summary Badges */}
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200/80 text-left">
+                  <div className="text-[10px] uppercase font-bold text-slate-400">Hari Ini</div>
+                  <div className="text-xs sm:text-sm font-bold text-slate-800">
+                    {todayDayName} ({todayTeachingSessions.length} Sesi)
+                  </div>
+                </div>
+                <div className="px-3.5 py-2 rounded-xl bg-blue-50 border border-blue-200/80 text-left">
+                  <div className="text-[10px] uppercase font-bold text-blue-500">Total Mengajar</div>
+                  <div className="text-xs sm:text-sm font-bold text-blue-800">
+                    {myTeachingSessions.length} Sesi / Minggu
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Live Active Session Indicator Banner */}
+            {activeNowSession ? (
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-900 shadow-2xs">
+                <div className="flex items-center gap-3">
+                  <span className="relative flex h-3 w-3 shrink-0">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-600" />
+                  </span>
+                  <div>
+                    <div className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">
+                      SEDANG BERLANGSUNG SAAT INI
+                    </div>
+                    <div className="text-sm sm:text-base font-bold text-slate-900 mt-0.5">
+                      {activeNowSession.subject_name} • {activeNowSession.class_rombel}
+                    </div>
+                  </div>
+                </div>
+                <div className="text-left sm:text-right shrink-0">
+                  <div className="text-xs font-mono font-bold text-emerald-800">
+                    {activeNowSession.time_start} – {activeNowSession.time_end}
+                  </div>
+                  <div className="text-[11px] text-emerald-700 font-medium">
+                    {activeNowSession.room || 'Ruang Kelas'}
+                  </div>
+                </div>
+              </div>
+            ) : nextUpcomingSession ? (
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl bg-blue-50 border border-blue-200 text-blue-900 shadow-2xs">
+                <div className="flex items-center gap-2.5">
+                  <Clock className="w-4 h-4 text-blue-600 shrink-0" />
+                  <div>
+                    <div className="text-[11px] font-bold uppercase tracking-wider text-blue-600">
+                      SESI MENGAJAR BERIKUTNYA HARI INI
+                    </div>
+                    <div className="text-sm sm:text-base font-bold text-slate-900 mt-0.5">
+                      {nextUpcomingSession.subject_name} • {nextUpcomingSession.class_rombel}
+                    </div>
+                  </div>
+                </div>
+                <div className="text-left sm:text-right shrink-0">
+                  <div className="text-xs font-mono font-bold text-blue-800">
+                    {nextUpcomingSession.time_start} – {nextUpcomingSession.time_end}
+                  </div>
+                  <div className="text-[11px] text-blue-600 font-medium">
+                    {nextUpcomingSession.room || 'Ruang Kelas'}
+                  </div>
+                </div>
+              </div>
+            ) : todayTeachingSessions.length > 0 ? (
+              <div className="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-600 text-xs">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>Seluruh sesi tatap muka kelas untuk hari ini telah selesai dilaksanakan.</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-600 text-xs">
+                <CalendarCheck className="w-4 h-4 text-slate-400 shrink-0" />
+                <span>Tidak ada jadwal tatap muka di kelas pada hari {todayDayName}.</span>
+              </div>
+            )}
+          </div>
+
+          {/* 2. Day Selector Tabs (Senin s.d. Sabtu + Semua Hari) */}
+          <div className="bg-white p-3 sm:p-4 rounded-2xl border border-slate-200/90 shadow-xs">
+            <div className="flex items-center justify-between gap-2 mb-2.5">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                PILIH HARI MENGAJAR:
+              </span>
+              <span className="text-xs text-slate-500">
+                {selectedTeacherDay === 'Semua' ? 'Menampilkan seluruh sesi mingguan' : `Hari aktif: ${selectedTeacherDay}`}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-1.5">
+              {['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'].map((dayName) => {
+                const countForDay = myTeachingSessions.filter(
+                  (s) => s.day.toLowerCase() === dayName.toLowerCase()
+                ).length;
+                const isSelected = selectedTeacherDay.toLowerCase() === dayName.toLowerCase();
+                const isToday = todayDayName.toLowerCase() === dayName.toLowerCase();
+
+                return (
+                  <button
+                    key={dayName}
+                    type="button"
+                    onClick={() => setSelectedTeacherDay(dayName)}
+                    className={`relative p-2.5 rounded-xl border text-center transition-all active:scale-[0.98] ${
+                      isSelected
+                        ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                        : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
+                    }`}
+                  >
+                    {isToday && (
+                      <span
+                        className={`absolute top-1 right-1.5 text-[9px] font-bold px-1 rounded ${
+                          isSelected ? 'bg-white/20 text-white' : 'bg-blue-100 text-blue-700'
+                        }`}
+                      >
+                        HARI INI
+                      </span>
+                    )}
+                    <div className="text-xs font-bold leading-tight">{dayName}</div>
+                    <div
+                      className={`text-[10px] mt-0.5 ${
+                        isSelected ? 'text-blue-100' : countForDay > 0 ? 'text-blue-600 font-bold' : 'text-slate-400'
+                      }`}
+                    >
+                      {countForDay} Sesi
+                    </div>
+                  </button>
+                );
+              })}
+
+              {/* Tab Semua Hari */}
+              <button
+                type="button"
+                onClick={() => setSelectedTeacherDay('Semua')}
+                className={`p-2.5 rounded-xl border text-center transition-all active:scale-[0.98] ${
+                  selectedTeacherDay === 'Semua'
+                    ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                    : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
+                }`}
+              >
+                <div className="text-xs font-bold leading-tight">Semua Hari</div>
+                <div
+                  className={`text-[10px] mt-0.5 ${
+                    selectedTeacherDay === 'Semua' ? 'text-blue-100' : 'text-slate-500 font-bold'
+                  }`}
+                >
+                  {myTeachingSessions.length} Total
+                </div>
+              </button>
+            </div>
+          </div>
+
+          {/* 3. Session Cards Grid (Mobile-Friendly & Tactile) */}
+          <div>
+            {displayTeacherSessions.length === 0 ? (
+              <div className="bg-white rounded-2xl border border-slate-200 p-8 sm:p-12 text-center shadow-xs">
+                <div className="w-14 h-14 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center mx-auto text-slate-400 mb-3">
+                  <CalendarCheck className="w-7 h-7" />
+                </div>
+                <h4 className="text-base font-bold text-slate-800">
+                  Tidak Ada Jadwal Mengajar pada Hari {selectedTeacherDay}
+                </h4>
+                <p className="text-xs text-slate-500 max-w-md mx-auto mt-1 leading-relaxed">
+                  Bebas dari jam tatap muka kelas pada hari ini. Dapat dimanfaatkan untuk evaluasi pembelajaran, penyiapan materi ajar, atau kegiatan madrasah lainnya.
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {displayTeacherSessions.map((item) => {
+                  const live = getSessionLiveStatus(item.day, item.time_start, item.time_end, currentTime);
+                  const isSd = item.class_rombel.toLowerCase().startsWith('sd');
+                  const isSmp = item.class_rombel.toLowerCase().startsWith('smp');
+
+                  return (
+                    <div
+                      key={item.id}
+                      className={`bg-white rounded-2xl border p-5 shadow-xs transition-all active:scale-[0.98] hover:shadow-md flex flex-col justify-between gap-4 ${
+                        live.status === 'ongoing'
+                          ? 'border-emerald-400 ring-2 ring-emerald-200/60 bg-emerald-50/20'
+                          : 'border-slate-200 hover:border-slate-300'
+                      }`}
+                    >
+                      <div className="space-y-3">
+                        {/* Top Meta: Jam + Live Badge */}
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-100 border border-slate-200/80 text-slate-900 font-mono text-xs font-bold">
+                            <Clock className="w-3.5 h-3.5 text-blue-600" />
+                            <span>
+                              {item.time_start} – {item.time_end}
+                            </span>
+                          </div>
+
+                          <div
+                            className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[11px] ${live.badgeClass}`}
+                          >
+                            {live.dotClass && (
+                              <span className={`w-2 h-2 rounded-full ${live.dotClass}`} />
+                            )}
+                            <span>{live.label}</span>
+                          </div>
+                        </div>
+
+                        {/* Rombel + Mapel Title */}
+                        <div>
+                          <div className="flex items-center gap-2 mb-1.5">
+                            <span
+                              className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[11px] font-bold border ${
+                                isSd
+                                  ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                                  : isSmp
+                                  ? 'bg-blue-50 text-blue-800 border-blue-200'
+                                  : 'bg-purple-50 text-purple-800 border-purple-200'
+                              }`}
+                            >
+                              <GraduationCap className="w-3.5 h-3.5" />
+                              <span>{item.class_rombel}</span>
+                            </span>
+
+                            <span className="text-[11px] font-bold text-slate-400 bg-slate-50 border border-slate-200 px-2 py-0.5 rounded-md">
+                              SESI KE-{item.session_no}
+                            </span>
+                          </div>
+
+                          <h4 className="text-base sm:text-lg font-bold text-slate-900 leading-snug">
+                            {item.subject_name}
+                          </h4>
+                          <p className="text-xs text-slate-500 mt-0.5 font-medium">
+                            {item.category || 'Mata Pelajaran Wajib'}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Bottom Footer: Ruangan & Day */}
+                      <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                        <div className="inline-flex items-center gap-1 text-[11px] text-slate-600 font-medium">
+                          <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                          <span>{item.room || 'Ruang Kelas'}</span>
+                        </div>
+
+                        {selectedTeacherDay === 'Semua' && (
+                          <div className="text-[11px] font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md">
+                            Hari {item.day}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      ) : (
+        /* View: Jadwal Seluruh Kelas (Existing Class Schedule) */
+        <div className="space-y-4 sm:space-y-6">
+          {/* Rombel Selector Pills with SD / SMP / SMA Level Switcher */}
+          <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
           <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
             PILIH JENJANG PENDIDIKAN:
@@ -1448,6 +1958,8 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
           </div>
         )}
       </div>
+    </div>
+  )}
 
       {/* Lightbox Zoom Modal for Photo (Hanya untuk Admin dan Guru) */}
       {isZoomOpen && schedulePhoto?.photo_url && userRole !== 'siswa' && (

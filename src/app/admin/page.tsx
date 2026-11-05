@@ -71,6 +71,12 @@ const GURU_ALLOWED_TABS: AdminTab[] = [
 export default function AdminDashboardPage() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [userRole, setUserRole] = useState<'admin' | 'guru' | 'siswa'>('admin');
+  const [currentUserName, setCurrentUserName] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('mrh_username') || '';
+    }
+    return '';
+  });
   const [activeTab, setActiveTab] = useState<AdminTab>('overview');
   const [isOpenMobile, setIsOpenMobile] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -86,6 +92,12 @@ export default function AdminDashboardPage() {
         if (data.authenticated && data.role) {
           setIsAuthenticated(true);
           setUserRole(data.role);
+          if (data.username) {
+            setCurrentUserName(data.username);
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('mrh_username', data.username);
+            }
+          }
           if (typeof window !== 'undefined') {
             localStorage.setItem('mrh_admin_auth', 'true');
             localStorage.setItem('mrh_user_role', data.role);
@@ -101,6 +113,7 @@ export default function AdminDashboardPage() {
           if (typeof window !== 'undefined') {
             localStorage.removeItem('mrh_admin_auth');
             localStorage.removeItem('mrh_user_role');
+            localStorage.removeItem('mrh_username');
           }
         }
       })
@@ -800,10 +813,16 @@ export default function AdminDashboardPage() {
   if (!isAuthenticated) {
     return (
       <SchoolPortalLogin
-        onLoginSuccess={(role) => {
+        onLoginSuccess={(role, username) => {
           setIsAuthenticated(true);
           const r = role || 'admin';
           setUserRole(r);
+          if (username) {
+            setCurrentUserName(username);
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('mrh_username', username);
+            }
+          }
           if (r === 'siswa') {
             setActiveTab('schedules');
           } else if (r === 'guru') {
@@ -828,10 +847,12 @@ export default function AdminDashboardPage() {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('mrh_admin_auth');
       localStorage.removeItem('mrh_user_role');
+      localStorage.removeItem('mrh_username');
       window.location.href = '/masuk';
     }
     setIsAuthenticated(false);
     setUserRole('admin');
+    setCurrentUserName('');
   };
 
   return (
@@ -933,6 +954,7 @@ export default function AdminDashboardPage() {
               initialRombel={targetRombelForSchedule}
               readOnly={userRole !== 'admin'}
               userRole={userRole}
+              currentUserName={currentUserName}
             />
           )}
 

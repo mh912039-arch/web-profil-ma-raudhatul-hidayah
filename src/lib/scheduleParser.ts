@@ -233,6 +233,9 @@ export function tryParseMatrixTimetable(
           cat: item.cat,
           teacher: item.defaultTeacher,
         });
+        if (m.index === rx.lastIndex) {
+          rx.lastIndex++;
+        }
       }
     }
     matches.sort((a, b) => a.index - b.index);
@@ -353,6 +356,9 @@ export function extractTimeSlotsFromText(text: string): TimeSlot[] {
     const timeRegex = /\b(\d{1,2})[.:,](\d{2})\s*(?:[-–—~_]|s\/?d|\bto\b|\s+)\s*(\d{1,2})[.:,](\d{2})\b/gi;
     let match;
     while ((match = timeRegex.exec(clean)) !== null) {
+      if (match.index === timeRegex.lastIndex) {
+        timeRegex.lastIndex++;
+      }
       const sH = parseInt(match[1], 10);
       const sM = parseInt(match[2], 10);
       const eH = parseInt(match[3], 10);
