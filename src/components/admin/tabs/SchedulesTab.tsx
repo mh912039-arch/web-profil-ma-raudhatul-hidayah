@@ -210,6 +210,47 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
     e.target.value = '';
   };
 
+  // Helper persiapan citra khusus OCR (upscale jika gambar kecil agar angka jam & teks tabel terbaca akurat)
+  const prepareImageForOcr = (sourceFile: File): Promise<Blob> => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(sourceFile);
+      reader.onload = (e) => {
+        const img = new Image();
+        img.src = e.target?.result as string;
+        img.onload = () => {
+          let width = img.width;
+          let height = img.height;
+
+          // Jika citra kecil (< 1400px), perbesar agar angka & teks kecil di tabel terbaca jelas oleh Tesseract
+          if (width < 1400) {
+            const scale = Math.max(2, Math.min(3, 1600 / width));
+            width = Math.round(width * scale);
+            height = Math.round(height * scale);
+          } else if (width > 2200) {
+            const scale = 1800 / width;
+            width = 1800;
+            height = Math.round(height * scale);
+          }
+
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          if (!ctx) return resolve(sourceFile);
+
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, width, height);
+          ctx.drawImage(img, 0, 0, width, height);
+
+          canvas.toBlob((b) => resolve(b || sourceFile), 'image/jpeg', 0.95);
+        };
+        img.onerror = () => resolve(sourceFile);
+      };
+      reader.onerror = () => resolve(sourceFile);
+    });
+  };
+
   // Intelligent OCR & Auto-Update Handler
   const processSchedulePhoto = async (file: File) => {
     try {
@@ -270,9 +311,10 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
       setScanStatusText('Membaca citra & mengenali teks jadwal...');
 
       // 3. OCR via tesseract.js worker
-      // Menggunakan uploadFile (gambar hasil optimasi resolusi 1600px) agar OCR selesai sangat cepat (2-4 detik)
+      // Menggunakan ocrTarget hasil optimasi resolusi/upscale agar angka & teks kecil di tabel terbaca akurat
       let extractedOcrText = '';
       try {
+        const ocrTarget = await prepareImageForOcr(file);
         const { createWorker } = await import('tesseract.js');
         const ocrPromise = (async () => {
           let worker = null;
@@ -286,7 +328,7 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
                 }
               },
             });
-            const res = await worker.recognize(uploadFile);
+            const res = await worker.recognize(ocrTarget);
             return res.data?.text || '';
           } finally {
             if (worker) {
