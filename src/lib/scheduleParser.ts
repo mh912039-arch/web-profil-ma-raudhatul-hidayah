@@ -45,9 +45,8 @@ export const matrixSubjectKeywords: { pattern: RegExp; name: string; cat: string
   { pattern: /\b(btq|bta|baca\s*tulis)\b/i, name: 'BTQ (Baca Tulis Qur’an)', cat: 'Muatan Lokal', defaultTeacher: 'TISKA PUSPITA DEWI, S.Pd.I' },
   { pattern: /\bpraktek\s*sh?o?lat\b/i, name: 'Praktek Sholat', cat: 'Pendidikan Agama Islam', defaultTeacher: 'TAJUDIN, S.Pd.I' },
   { pattern: /\b(al[- ]?qur['’]?an\s*hadit[sh]|qur['’]?an\s*hadit[sh])\b/i, name: "Al-Qur'an Hadits", cat: 'Pendidikan Agama Islam', defaultTeacher: 'TAJUDIN, S.Pd.I' },
-  { pattern: /\b(a[qk]idah\s*a[qk][lh]a[qk]|agidah\s*akhlak)\b/i, name: 'Akidah Akhlak', cat: 'Pendidikan Agama Islam', defaultTeacher: 'JAKARIA, S.Pd.I' },
-  { pattern: /\b(a[qk]idah|agidah|a[qk][lh]a[qk])\b/i, name: 'Akidah Akhlak', cat: 'Pendidikan Agama Islam', defaultTeacher: 'JAKARIA, S.Pd.I' },
-  { pattern: /\b(fiqi?h|fikih|figih)\b/i, name: 'Fiqih', cat: 'Pendidikan Agama Islam', defaultTeacher: 'TAJUDIN, S.Pd.I' },
+  { pattern: /\b(a[qkg]{1,2}idah\s*a[qk][lh]a[qk]|agidah\s*akhlak|a[qkg]{1,2}idah|a[qk][lh]a[qk])\b/i, name: 'Akidah Akhlak', cat: 'Pendidikan Agama Islam', defaultTeacher: 'JAKARIA, S.Pd.I' },
+  { pattern: /\b(fiqi?h|fikih|figih|figi?h)\b/i, name: 'Fiqih', cat: 'Pendidikan Agama Islam', defaultTeacher: 'TAJUDIN, S.Pd.I' },
   { pattern: /\bski\b|sejarah\s*kebudayaan/i, name: 'Sejarah Kebudayaan Islam (SKI)', cat: 'Sejarah Kebudayaan Islam', defaultTeacher: 'YAHYA HIDAYATULLOH, S.Pd.I' },
   { pattern: /\b(bahasa\s*arab|bhs\s*arab|\barab\b)/i, name: 'Bahasa Arab', cat: 'Bahasa Asing', defaultTeacher: 'SITI KHAERUNNISA, S.Pd.I' },
   { pattern: /\b(bahasa\s*inggris|bhs\s*inggris|\binggris\b|english)/i, name: 'Bahasa Inggris', cat: 'Bahasa Asing', defaultTeacher: 'SITI KHAERUNNISA, S.Pd.I' },
@@ -73,6 +72,86 @@ export const matrixSubjectKeywords: { pattern: RegExp; name: string; cat: string
   { pattern: /\b(agama|pai|pendidikan\s*agama)\b/i, name: 'Pendidikan Agama Islam (Agama)', cat: 'Pendidikan Agama Islam', defaultTeacher: 'TAJUDIN, S.Pd.I' },
 ];
 
+export function resolveTeacherForSubject(
+  subjectName: string,
+  teachersList: { name: string; subject_name?: string }[] = [],
+  fallbackTeacher: string = 'Dewan Guru',
+  targetRombel: string = 'SD - Kelas II'
+): string {
+  const isSd = targetRombel.toLowerCase().startsWith('sd');
+  const sub = subjectName.toLowerCase();
+
+  if (/upacara|tadarus|doa/i.test(sub)) return 'Dewan Guru';
+  if (/pramuka/i.test(sub)) return 'Pembina Pramuka';
+
+  // 1. Cek kecocokan subjek spesifik di database guru
+  if (/btq|baca\s*tulis/i.test(sub)) {
+    const t = teachersList.find((x) => /btq|mulok/i.test(x.subject_name || ''));
+    if (t) return t.name;
+    return isSd ? 'JAKARIA, S.Pd.I' : 'TISKA PUSPITA DEWI, S.Pd.I';
+  }
+  if (/qur['’]?an|hadit[sh]/i.test(sub)) {
+    const t = teachersList.find((x) => /qur['’]?an|agama/i.test(x.subject_name || ''));
+    if (t) return t.name;
+    return 'TAJUDIN, S.Pd.I';
+  }
+  if (/praktek\s*sh?o?lat|fiqi?h|fikih/i.test(sub)) {
+    const t = teachersList.find((x) => /fiqih|ibadah|agama/i.test(x.subject_name || ''));
+    if (t) return t.name;
+    return 'TAJUDIN, S.Pd.I';
+  }
+  if (/a[qkg]{1,2}idah|a[qk][lh]a[qk]/i.test(sub)) {
+    const t = teachersList.find((x) => /a[qk]idah/i.test(x.subject_name || ''));
+    if (t) return t.name;
+    return 'JAKARIA, S.Pd.I';
+  }
+  if (/pjok|penjas|olahraga/i.test(sub)) {
+    const t = teachersList.find((x) => /pjok|jasmani/i.test(x.subject_name || ''));
+    if (t) return t.name;
+    return 'AHMAD NURUL KAHFI, SE';
+  }
+  if (/mate?matika|\bmtk\b/i.test(sub)) {
+    const t = teachersList.find((x) => /matematika/i.test(x.subject_name || ''));
+    if (t) return t.name;
+    return 'MADROSYID, S.Pd';
+  }
+  if (/(bahasa|bhs|\bb\b)?\.?\s*indonesia|\bindo\b/i.test(sub)) {
+    const t = teachersList.find((x) => /indonesia/i.test(x.subject_name || ''));
+    if (t) return t.name;
+    return 'KUSTYANINGSIH, S.Pd';
+  }
+  if (/(bahasa|bhs|\bb\b)?\.?\s*inggris|\bingg/i.test(sub)) {
+    const t = teachersList.find((x) => /inggris/i.test(x.subject_name || ''));
+    if (t) return t.name;
+    return 'SITI KHAERUNNISA, S.Pd.I';
+  }
+  if (/(bahasa|bhs|\bb\b)?\.?\s*arab|\barab\b/i.test(sub)) {
+    const t = teachersList.find((x) => /arab|asing/i.test(x.subject_name || ''));
+    if (t) return t.name;
+    return 'SITI KHAERUNNISA, S.Pd.I';
+  }
+  if (/ski|sejarah\s*kebudayaan/i.test(sub)) {
+    const t = teachersList.find((x) => /ski|sejarah/i.test(x.subject_name || ''));
+    if (t) return t.name;
+    return 'YAHYA HIDAYATULLOH, S.Pd.I';
+  }
+  if (/pkn|ppkn|pancasila/i.test(sub)) {
+    const t = teachersList.find((x) => /pancasila|ppkn/i.test(x.subject_name || ''));
+    if (t) return t.name;
+    return 'Drs. MULYADI';
+  }
+
+  // 2. Pencocokan langsung teks nama guru dari database
+  for (const t of teachersList) {
+    const cleanT = t.name.toLowerCase().replace(/[,.s.pd.i]/g, '').trim();
+    if (cleanT.length > 3 && sub.includes(cleanT)) {
+      return t.name;
+    }
+  }
+
+  return fallbackTeacher || 'Dewan Guru';
+}
+
 /**
  * Parser Otomatis Khusus Format Matrix / Grid Table (Excel, Word, Lembar Jadwal Resmi)
  * Mengurai tabel horizontal dengan kolom hari (Senin s.d. Jumat/Sabtu) dan baris jam pelajaran.
@@ -80,6 +159,7 @@ export const matrixSubjectKeywords: { pattern: RegExp; name: string; cat: string
 export function tryParseMatrixTimetable(
   rawText: string,
   targetRombel: string,
+  existingTeachers: { name: string; subject_name?: string }[] = [],
   teacherPool: string[] = []
 ): ParsedScheduleItem[] | null {
   const lines = rawText.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
@@ -120,16 +200,6 @@ export function tryParseMatrixTimetable(
   const results: ParsedScheduleItem[] = [];
   const daySessionCounter: Record<string, number> = {};
   headerDays.forEach((d) => (daySessionCounter[d] = 0));
-
-  const findTeacher = (str: string, fallback: string): string => {
-    for (const t of teacherPool) {
-      const cleanT = t.toLowerCase().replace(/[,.s.pd.i]/g, '').trim();
-      if (cleanT.length > 3 && str.toLowerCase().includes(cleanT)) {
-        return t;
-      }
-    }
-    return fallback;
-  };
 
   // Urai baris-baris berikutnya yang memuat jam pelajaran
   for (let i = headerLineIndex + 1; i < lines.length; i++) {
@@ -185,7 +255,12 @@ export function tryParseMatrixTimetable(
       if (subj) {
         daySessionCounter[day] = (daySessionCounter[day] || 0) + 1;
         const sessionNo = daySessionCounter[day];
-        const teacherName = findTeacher(subj.name, subj.teacher);
+        const teacherName = resolveTeacherForSubject(
+          subj.name,
+          existingTeachers,
+          subj.teacher,
+          targetRombel
+        );
 
         results.push({
           id: `sch-${targetRombel.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${day.toLowerCase()}-${sessionNo}`,
@@ -368,7 +443,7 @@ export function parseScheduleFromText(
 
   // 2. Parser Otomatis Tabel Grid / Matrix (Format Excel, Word Spreadsheet, atau Foto Lembar Jadwal)
   // Membaca langsung kolom hari (Senin s.d. Jumat/Sabtu) dan baris rentang waktu dari foto yang diunggah
-  const matrixResults = tryParseMatrixTimetable(rawText, detectedRombel, teacherPool);
+  const matrixResults = tryParseMatrixTimetable(rawText, detectedRombel, existingTeachers, teacherPool);
   if (matrixResults && matrixResults.length >= 4) {
     return matrixResults;
   }
@@ -470,7 +545,7 @@ export function parseScheduleFromText(
           time_end: sess.end,
           subject_name: sess.name,
           category: sess.cat,
-          teacher_name: sess.teacher,
+          teacher_name: resolveTeacherForSubject(sess.name, existingTeachers, sess.teacher, detectedRombel),
           room: `Ruang ${detectedRombel.replace(/^(SD|SMP|SMA)\s*-\s*/, '')}`,
         });
       });
@@ -545,7 +620,7 @@ export function parseScheduleFromText(
           time_end: sess.end,
           subject_name: sess.name,
           category: sess.cat,
-          teacher_name: sess.teacher,
+          teacher_name: resolveTeacherForSubject(sess.name, existingTeachers, sess.teacher, detectedRombel),
           room: `Ruang ${detectedRombel.replace(/^(SD|SMP|SMA)\s*-\s*/, '')}`,
         });
       });
@@ -641,7 +716,8 @@ export function parseScheduleFromText(
       timeEnd = slot.end;
     }
 
-    const assignedTeacher = findTeacher(line, defaultTeacherName);
+    const matchedTeacher = findTeacher(line, defaultTeacherName);
+    const assignedTeacher = resolveTeacherForSubject(subjectName, existingTeachers, matchedTeacher, detectedRombel);
 
     results.push({
       id: `sch-scan-${Date.now()}-${results.length + 1}`,
@@ -734,7 +810,7 @@ export function parseScheduleFromText(
           time_end: slot.end,
           subject_name: subj.name,
           category: subj.cat,
-          teacher_name: subj.teacher,
+          teacher_name: resolveTeacherForSubject(subj.name, existingTeachers, subj.teacher, detectedRombel),
           room: `Ruang ${detectedRombel.replace(/^(SD|SMP|SMA)\s*-\s*/, '')}`,
         });
       });
