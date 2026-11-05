@@ -22,6 +22,8 @@ export async function POST(req: Request) {
     const newItems: ScheduleItem[] = Array.isArray(body.items) ? body.items : [];
     const replaceRombel = body.replaceRombel as string | undefined;
     const replaceAll = Boolean(body.replaceAll);
+    const replaceDay = body.replaceDay as string | undefined;
+    const replaceSessionNo = typeof body.replaceSessionNo === 'number' ? body.replaceSessionNo : undefined;
     const photoUrl = body.photoUrl as string | undefined;
     const caption = body.caption as string | undefined;
 
@@ -36,6 +38,8 @@ export async function POST(req: Request) {
       items: newItems,
       replaceRombel,
       replaceAll,
+      replaceDay,
+      replaceSessionNo,
       photoUrl,
       caption,
     });

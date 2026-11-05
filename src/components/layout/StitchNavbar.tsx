@@ -140,13 +140,13 @@ export function StitchNavbar() {
     <header className="fixed top-0 left-0 right-0 z-50">
       {/* Topbar: SMP Xaverius 2 inspired Deep Navy (#1E3A8A) with Amber Gold (#F59E0B) highlights */}
       <div
-        className={`w-full bg-[#1e3a8a] text-slate-100 text-[11.5px] border-b border-amber-500/40 transition-[opacity,transform] duration-200 ${
-          scrolled ? 'hidden' : 'h-8 flex items-center opacity-100'
+        className={`w-full bg-[#1e3a8a] text-slate-100 text-[11.5px] border-b border-amber-500/40 min-h-[32px] h-8 shrink-0 flex items-center transition-[opacity,transform] duration-200 ${
+          scrolled ? 'hidden' : 'opacity-100'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between w-full">
-          <div className="hidden md:flex items-center gap-4 lg:gap-6 shrink-0">
-            <span className="flex items-center gap-1.5 text-slate-200 whitespace-nowrap shrink-0">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between w-full h-full min-h-[32px]">
+          <div className="hidden md:flex items-center gap-4 lg:gap-6 shrink-0 h-full">
+            <span className="inline-flex items-center gap-1.5 text-slate-200 whitespace-nowrap shrink-0">
               <Clock className="w-3.5 h-3.5 text-amber-400 shrink-0" />
               <span>{navProfile.hoursWeekdays}</span>
             </span>
@@ -154,17 +154,17 @@ export function StitchNavbar() {
               href={`https://wa.me/${navProfile.whatsapp || '628176614723'}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-slate-200 hover:text-amber-300 transition-colors whitespace-nowrap shrink-0"
+              className="inline-flex items-center gap-1.5 text-slate-200 hover:text-amber-300 transition-colors whitespace-nowrap shrink-0"
             >
               <Phone className="w-3.5 h-3.5 text-amber-400 shrink-0" />
               <span>{navProfile.phone}</span>
             </a>
             <a
               href={`mailto:${navProfile.email}`}
-              className="flex items-center gap-1.5 text-slate-200 hover:text-amber-300 transition-colors whitespace-nowrap shrink-0"
+              className="inline-flex items-center gap-1.5 text-slate-200 hover:text-amber-300 transition-colors whitespace-nowrap shrink-0 max-w-[260px] sm:max-w-none"
             >
               <Mail className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-              <span>{navProfile.email}</span>
+              <span className="truncate">{navProfile.email}</span>
             </a>
           </div>
 

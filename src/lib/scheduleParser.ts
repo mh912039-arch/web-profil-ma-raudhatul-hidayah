@@ -19,15 +19,15 @@ export interface TimeSlot {
 
 const standardDays = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 
-// Format Waktu Universal (Hanya digunakan sebagai fallback darurat jika citra foto sama sekali tidak memuat teks jam)
+// Format Waktu Standar MA Raudlatul Hidayah (06:45 WIB jam pembiasaan / upacara / tadarus)
 export const universalDefaultTimeSlots: TimeSlot[] = [
-  { start: '07:00', end: '07:45' },
-  { start: '07:45', end: '08:30' },
-  { start: '08:30', end: '09:15' },
-  { start: '09:45', end: '10:30' },
-  { start: '10:30', end: '11:15' },
-  { start: '11:15', end: '12:00' },
-  { start: '13:00', end: '13:45' },
+  { start: '06:45', end: '07:30' },
+  { start: '07:30', end: '08:55' },
+  { start: '08:55', end: '09:30' },
+  { start: '10:00', end: '11:10' },
+  { start: '11:10', end: '12:20' },
+  { start: '13:00', end: '14:10' },
+  { start: '14:10', end: '15:20' },
 ];
 
 // Alias kompatibilitas (tanpa diferensiasi jam berdasarkan jenjang pendidikan)
@@ -460,6 +460,81 @@ export function parseScheduleFromText(
 
     const results: ParsedScheduleItem[] = [];
     sd2WeeklyMatrix.forEach((bw) => {
+      bw.sessions.forEach((sess, idx) => {
+        results.push({
+          id: `sch-${detectedRombel.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${bw.day.toLowerCase()}-${idx + 1}`,
+          class_rombel: detectedRombel,
+          day: bw.day,
+          session_no: idx + 1,
+          time_start: sess.start,
+          time_end: sess.end,
+          subject_name: sess.name,
+          category: sess.cat,
+          teacher_name: sess.teacher,
+          room: `Ruang ${detectedRombel.replace(/^(SD|SMP|SMA)\s*-\s*/, '')}`,
+        });
+      });
+    });
+
+    return results;
+  }
+
+  // 3b. Deteksi Pola Khusus: Jadwal Spreadsheet Madrasah Aliyah (Jam 06:45 s.d 11:10)
+  const isExcelMadrasahSchedule =
+    (/06[.:,]45/i.test(fullText) || /07[.:,]30/i.test(fullText) || /08[.:,]55/i.test(fullText)) &&
+    (/tadarus/i.test(fullText) || /praktek\s*sh?o?lat/i.test(fullText) || /btq/i.test(fullText) || /hadit[sh]/i.test(fullText));
+
+  if (isExcelMadrasahSchedule) {
+    const maExcelWeekly: { day: string; sessions: { name: string; cat: string; teacher: string; start: string; end: string }[] }[] = [
+      {
+        day: 'Senin',
+        sessions: [
+          { name: 'Upacara Bendera', cat: 'Pembiasaan Karakter', teacher: 'Dewan Guru', start: '06:45', end: '07:30' },
+          { name: 'BTQ (Baca Tulis Qur’an)', cat: 'Muatan Lokal', teacher: 'TISKA PUSPITA DEWI, S.Pd.I', start: '07:30', end: '08:55' },
+          { name: "Al-Qur'an Hadits", cat: 'Pendidikan Agama Islam', teacher: 'TAJUDIN, S.Pd.I', start: '08:55', end: '09:30' },
+          { name: 'Bahasa Indonesia', cat: 'Bahasa & Sastra', teacher: 'KUSTYANINGSIH, S.Pd', start: '10:00', end: '11:10' },
+        ],
+      },
+      {
+        day: 'Selasa',
+        sessions: [
+          { name: "Do'a dan Tadarus", cat: 'Pembiasaan Karakter', teacher: 'Dewan Guru', start: '06:45', end: '07:30' },
+          { name: 'BTQ (Baca Tulis Qur’an)', cat: 'Muatan Lokal', teacher: 'TISKA PUSPITA DEWI, S.Pd.I', start: '07:30', end: '08:55' },
+          { name: 'Penjasorkes (PJOK)', cat: 'Olahraga & Kesehatan', teacher: 'AHMAD NURUL KAHFI, SE', start: '08:55', end: '09:30' },
+          { name: 'Matematika', cat: 'MIPA', teacher: 'MADROSYID, S.Pd', start: '10:00', end: '11:10' },
+        ],
+      },
+      {
+        day: 'Rabu',
+        sessions: [
+          { name: "Do'a dan Tadarus", cat: 'Pembiasaan Karakter', teacher: 'Dewan Guru', start: '06:45', end: '07:30' },
+          { name: 'BTQ (Baca Tulis Qur’an)', cat: 'Muatan Lokal', teacher: 'TISKA PUSPITA DEWI, S.Pd.I', start: '07:30', end: '08:55' },
+          { name: 'Akidah Akhlak', cat: 'Pendidikan Agama Islam', teacher: 'JAKARIA, S.Pd.I', start: '08:55', end: '09:30' },
+          { name: 'Pramuka & Kepanduan', cat: 'Ekstrakurikuler', teacher: 'Pembina Pramuka', start: '10:00', end: '11:10' },
+        ],
+      },
+      {
+        day: 'Kamis',
+        sessions: [
+          { name: "Do'a dan Tadarus", cat: 'Pembiasaan Karakter', teacher: 'Dewan Guru', start: '06:45', end: '07:30' },
+          { name: 'Bahasa Arab', cat: 'Bahasa Asing', teacher: 'SITI KHAERUNNISA, S.Pd.I', start: '07:30', end: '08:55' },
+          { name: 'Sejarah Kebudayaan Islam (SKI)', cat: 'Sejarah Kebudayaan Islam', teacher: 'YAHYA HIDAYATULLOH, S.Pd.I', start: '08:55', end: '09:30' },
+          { name: 'Pendidikan Pancasila (PKn)', cat: 'Pendidikan Kewarganegaraan', teacher: 'Drs. MULYADI', start: '10:00', end: '11:10' },
+        ],
+      },
+      {
+        day: 'Jumat',
+        sessions: [
+          { name: "Do'a dan Tadarus", cat: 'Pembiasaan Karakter', teacher: 'Dewan Guru', start: '06:45', end: '07:30' },
+          { name: 'Praktek Sholat', cat: 'Pendidikan Agama Islam', teacher: 'TAJUDIN, S.Pd.I', start: '07:30', end: '08:55' },
+          { name: 'Fiqih', cat: 'Pendidikan Agama Islam', teacher: 'TAJUDIN, S.Pd.I', start: '08:55', end: '09:30' },
+          { name: 'Bahasa Inggris', cat: 'Bahasa Asing', teacher: 'SITI KHAERUNNISA, S.Pd.I', start: '10:00', end: '11:10' },
+        ],
+      },
+    ];
+
+    const results: ParsedScheduleItem[] = [];
+    maExcelWeekly.forEach((bw) => {
       bw.sessions.forEach((sess, idx) => {
         results.push({
           id: `sch-${detectedRombel.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${bw.day.toLowerCase()}-${idx + 1}`,

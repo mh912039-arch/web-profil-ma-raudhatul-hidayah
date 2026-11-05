@@ -88,6 +88,8 @@ export interface ApplyBatchParams {
   items: ScheduleItem[];
   replaceRombel?: string;
   replaceAll?: boolean;
+  replaceDay?: string;
+  replaceSessionNo?: number;
   photoUrl?: string;
   caption?: string;
 }
@@ -118,7 +120,15 @@ export async function applyBatchSchedules(params: ApplyBatchParams): Promise<{
   total: number;
   items: ScheduleItem[];
 }> {
-  const { items: newItems, replaceRombel, replaceAll = false, photoUrl, caption } = params;
+  const {
+    items: newItems,
+    replaceRombel,
+    replaceAll = false,
+    replaceDay,
+    replaceSessionNo,
+    photoUrl,
+    caption,
+  } = params;
 
   if (!Array.isArray(newItems) || newItems.length === 0) {
     throw new Error('Daftar jadwal baru tidak boleh kosong.');
@@ -130,6 +140,24 @@ export async function applyBatchSchedules(params: ApplyBatchParams): Promise<{
   if (replaceAll) {
     // Ganti seluruh jadwal sekolah
     finalSchedules = [...newItems];
+  } else if (replaceRombel && replaceDay) {
+    // Hapus jadwal untuk rombel target pada hari tertentu saja, lalu masukkan item baru
+    finalSchedules = currentSchedules.filter(
+      (s) => !(isSameRombel(s.class_rombel, replaceRombel) && s.day.toLowerCase() === replaceDay.toLowerCase())
+    );
+    finalSchedules.push(...newItems);
+  } else if (replaceRombel && typeof replaceSessionNo === 'number') {
+    // Hapus sesi tertentu pada hari-hari yang disertakan dalam newItems
+    const daysInNewItems = new Set(newItems.map((ni) => ni.day.toLowerCase()));
+    finalSchedules = currentSchedules.filter(
+      (s) =>
+        !(
+          isSameRombel(s.class_rombel, replaceRombel) &&
+          s.session_no === replaceSessionNo &&
+          daysInNewItems.has(s.day.toLowerCase())
+        )
+    );
+    finalSchedules.push(...newItems);
   } else if (replaceRombel) {
     // Hapus jadwal khusus untuk rombel target, lalu tambahkan jadwal baru tanpa sengaja menghapus kelas lain
     finalSchedules = currentSchedules.filter((s) => !isSameRombel(s.class_rombel, replaceRombel));
