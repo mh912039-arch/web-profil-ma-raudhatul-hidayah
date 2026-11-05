@@ -1096,8 +1096,8 @@ export default function AdminDashboardPage() {
         unreadCount={unreadMessagesCount}
       />
 
-      {/* PWA Floating Install Prompt */}
-      <PwaInstallPrompt variant="floating" />
+      {/* PWA Floating Install Prompt (Diberi offset agar tidak menutupi Bottom Navigation) */}
+      <PwaInstallPrompt variant="floating" bottomOffset="nav" />
     </div>
   );
 }

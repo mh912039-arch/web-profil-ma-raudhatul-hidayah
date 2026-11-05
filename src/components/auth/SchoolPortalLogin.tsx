@@ -243,11 +243,6 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
           </div>
         </header>
 
-        {/* PWA Banner Prompt jika belum terinstal */}
-        <div className="mt-3">
-          <PwaInstallPrompt variant="banner" className="w-full" />
-        </div>
-
         {/* =========================================================================
             CENTER SECTION: LOGIN / REGISTER / SUCCESS VIEW
         ========================================================================= */}
@@ -661,6 +656,9 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
           </div>
         </footer>
       </div>
+
+      {/* Floating PWA Install Prompt (Mengambang halus tanpa merusak tata letak login) */}
+      <PwaInstallPrompt variant="floating" bottomOffset="default" />
     </div>
   );
 };
