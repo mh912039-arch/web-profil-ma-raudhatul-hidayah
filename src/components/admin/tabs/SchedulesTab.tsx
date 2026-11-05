@@ -329,26 +329,6 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
       const uploadData = await uploadRes.json();
       const photoUrl = uploadData.url;
 
-      // 2. Simpan URL foto ke SYS_SCHIMG (best-effort)
-      try {
-        await fetch('/api/schedules/photo', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            photo_url: photoUrl,
-            caption: `Foto Jadwal Resmi ${selectedRombel}`,
-          }),
-        });
-      } catch (photoErr) {
-        console.warn('Notice: Failed saving photo URL:', photoErr);
-      }
-
-      setSchedulePhoto({
-        photo_url: photoUrl,
-        updated_at: new Date().toISOString(),
-        caption: `Foto Jadwal Resmi ${selectedRombel}`,
-      });
-
       setScanProgress(35);
       setScanStatusText('Membaca citra & mengenali teks jadwal...');
 
@@ -427,9 +407,12 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
       else if (finalRombel.startsWith('SMP')) setSelectedLevel('smp');
       else if (finalRombel.startsWith('SMA')) setSelectedLevel('sma');
 
+      // Otomatis hilangkan banner foto dan tutup kotak pilihan agar tampilan langsung bersih tanpa menumpuk
+      setSchedulePhoto(null);
+      setShowUploadBox(false);
+
       // Refresh data
       await fetchSchedules();
-      await fetchSchedulePhoto();
 
       const count = scanData.schedules?.length || scanData.count || 0;
       setScanNotification({
@@ -767,11 +750,11 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
 
             <button
               type="button"
-              onClick={() => fileInputRef.current?.click()}
+              onClick={() => setShowUploadBox((prev) => !prev)}
               className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold shadow-xs transition-all active:scale-[0.98]"
             >
               <Camera className="w-4 h-4 text-amber-400" />
-              <span>Unggah Foto Jadwal (Scan Otomatis)</span>
+              <span>{showUploadBox ? 'Tutup Pilihan Foto' : 'Unggah Foto Jadwal (Scan Otomatis)'}</span>
             </button>
 
             <button
@@ -927,7 +910,7 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
       ) : null}
 
       {/* Upload Box dengan Pilihan Target Kelas SD / SMP / SMA Lengkap */}
-      {!readOnly && (!schedulePhoto?.photo_url || showUploadBox) ? (
+      {!readOnly && showUploadBox ? (
         <div className="bg-white rounded-2xl border-2 border-dashed border-slate-300 hover:border-blue-400 p-5 sm:p-7 transition-all text-center shadow-xs">
           <div className="max-w-2xl mx-auto space-y-4">
             <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-200 text-blue-600 flex items-center justify-center mx-auto">
