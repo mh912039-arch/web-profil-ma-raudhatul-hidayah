@@ -94,11 +94,11 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
   const [schedules, setSchedules] = useState<ScheduleItem[]>([]);
   const [selectedLevel, setSelectedLevel] = useState<JenjangLevel>(() => {
     if (initialRombel?.startsWith('SD')) return 'sd';
-    if (initialRombel?.startsWith('SMA')) return 'sma';
-    return 'smp';
+    if (initialRombel?.startsWith('SMP')) return 'smp';
+    return 'sma';
   });
-  const [selectedRombel, setSelectedRombel] = useState<string>(initialRombel || 'SMP - Kelas VIII');
-  const [selectedDay, setSelectedDay] = useState<string>('Rabu');
+  const [selectedRombel, setSelectedRombel] = useState<string>(initialRombel || 'SMA - Kelas X');
+  const [selectedDay, setSelectedDay] = useState<string>('Senin');
   const [isLoading, setIsLoading] = useState(true);
 
   // Photo & OCR state
@@ -128,11 +128,11 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<ScheduleItem | null>(null);
   const [formData, setFormData] = useState<Partial<ScheduleItem>>({
-    class_rombel: 'SMP - Kelas VIII',
-    day: 'Rabu',
+    class_rombel: initialRombel || 'SMA - Kelas X',
+    day: 'Senin',
     session_no: 1,
-    time_start: '07:30',
-    time_end: '08:15',
+    time_start: '06:45',
+    time_end: '07:30',
     subject_name: '',
     teacher_name: teachers[0]?.name || 'Dewan Guru',
   });
@@ -283,7 +283,7 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
               }
             },
           });
-          const res = await worker.recognize(uploadFile || file);
+          const res = await worker.recognize(file || uploadFile);
           await worker.terminate();
           return res.data?.text || '';
         })();
@@ -368,15 +368,29 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
     }
   };
 
+  const defaultMaSlots = [
+    { start: '06:45', end: '07:30' },
+    { start: '07:30', end: '08:55' },
+    { start: '08:55', end: '09:30' },
+    { start: '10:00', end: '11:10' },
+    { start: '11:10', end: '12:20' },
+    { start: '13:00', end: '14:10' },
+    { start: '14:10', end: '15:20' },
+  ];
+
   const handleOpenAdd = (presetSession?: number) => {
     setEditingItem(null);
     const nextSession = presetSession ?? (currentSchedules.length + 1);
+    const slot = defaultMaSlots[Math.min(Math.max(0, nextSession - 1), defaultMaSlots.length - 1)] || {
+      start: '06:45',
+      end: '07:30',
+    };
     setFormData({
       class_rombel: selectedRombel,
       day: selectedDay,
       session_no: nextSession,
-      time_start: '07:30',
-      time_end: '08:15',
+      time_start: slot.start,
+      time_end: slot.end,
       subject_name: '',
       teacher_name: teachers[0]?.name || 'Dewan Guru',
     });
