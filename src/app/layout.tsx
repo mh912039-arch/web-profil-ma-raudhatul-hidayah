@@ -55,13 +55,13 @@ export const metadata: Metadata = {
     ],
     shortcut: '/school-logo.png',
     apple: [
-      { url: '/school-logo.png', sizes: '180x180', type: 'image/png' },
+      { url: '/icon-192.png', sizes: '180x180', type: 'image/png' },
     ],
   },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Portal MRH',
+    title: 'MAS RH Mobile',
   },
   formatDetection: {
     telephone: false,

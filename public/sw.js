@@ -1,5 +1,5 @@
 // Service Worker untuk Portal MA Raudlatul Hidayah (PWA)
-const CACHE_NAME = 'mrh-portal-cache-v1';
+const CACHE_NAME = 'mrh-portal-cache-v2';
 
 // Daftar aset inti yang dapat dicache awal
 const PRECACHE_ASSETS = [

@@ -2,13 +2,13 @@ import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Portal MA Raudlatul Hidayah',
-    short_name: 'Portal MRH',
-    description: 'Portal Akademik, Jadwal Pelajaran, dan Layanan MA Raudlatul Hidayah',
+    name: 'MAS RH Mobile',
+    short_name: 'MAS RH Mobile',
+    description: 'Portal Akademik, Jadwal Pelajaran, dan Layanan MAS Raudlatul Hidayah',
     start_url: '/admin',
     id: '/admin',
     display: 'standalone',
-    background_color: '#0f172a',
+    background_color: '#ffffff',
     theme_color: '#1e3a8a',
     orientation: 'portrait-primary',
     scope: '/',
@@ -26,7 +26,13 @@ export default function manifest(): MetadataRoute.Manifest {
         purpose: 'maskable',
       },
       {
-        src: '/school-logo.png',
+        src: '/icon-192.png',
+        sizes: '192x192',
+        type: 'image/png',
+        purpose: 'any',
+      },
+      {
+        src: '/icon-512.png',
         sizes: '512x512',
         type: 'image/png',
         purpose: 'any',
