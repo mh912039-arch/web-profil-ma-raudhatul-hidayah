@@ -150,10 +150,16 @@ export function verifyPassword(plainText: string, storedPassword?: string): bool
       return true;
     }
 
-    // 2. Dukungan migrasi hash warisan (legacy anon key fallback)
+    // 2. Dukungan migrasi hash warisan (legacy key pool untuk sinkronisasi lokal & Vercel)
     const legacyKeys = [
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      'c249e2acb590dd3195c7c71aa82744cc29dceb93e4c3dc538b790fa9c4cd1e5f',
+      'mrh-auth-server-secret-salt-2026-secure-key',
       'mrh-secret-key-2026-salt',
+      process.env.AUTH_SECRET,
+      process.env.SUPABASE_SERVICE_ROLE_KEY,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp6Z29icmxobm5xdnNwdXd1Z2t6Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MTM1MzY4NywiZXhwIjoyMTA2OTI5Njg3fQ.s9M2c-_EIg0dbqTCPHU7p87ALePVXXtFtawjASxWzXo',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp6Z29icmxobm5xdnNwdXd1Z2t6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEzNTM2ODcsImV4cCI6MjEwNjkyOTY4N30.OxHpl2ITfkYMnsxlX87D4ZCAZPgQxiL3KIoIeSKL1mE',
     ].filter(Boolean) as string[];
 
     for (const legacyKey of legacyKeys) {
