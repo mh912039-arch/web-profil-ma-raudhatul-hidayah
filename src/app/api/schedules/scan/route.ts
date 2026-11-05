@@ -24,26 +24,7 @@ export async function POST(req: Request) {
     const body = await req.json().catch(() => ({}));
     const { imageUrl, text, targetRombel = 'SMA - Kelas X', autoApply = false } = body;
 
-    let extractedText = typeof text === 'string' ? text.trim() : '';
-
-    // Fallback OCR di sisi server jika teks dari browser kosong atau terlalu minim
-    if ((!extractedText || extractedText.length < 10) && imageUrl && typeof imageUrl === 'string') {
-      try {
-        const { createWorker } = await import('tesseract.js');
-        const worker = await createWorker('ind');
-        const ocrPromise = worker.recognize(imageUrl);
-        const timeoutPromise = new Promise<{ data: { text: string } }>((_, reject) =>
-          setTimeout(() => reject(new Error('Server OCR timeout')), 10000)
-        );
-        const ocrResult = await Promise.race([ocrPromise, timeoutPromise]);
-        await worker.terminate();
-        if (ocrResult?.data?.text) {
-          extractedText = ocrResult.data.text.trim();
-        }
-      } catch (ocrServerErr) {
-        console.warn('Notice: Server OCR fallback notice:', ocrServerErr);
-      }
-    }
+    const extractedText = typeof text === 'string' ? text.trim() : '';
 
     // Ambil daftar guru dari database untuk pencocokan akurat
     let teachers: { name: string; subject_name?: string }[] = [];

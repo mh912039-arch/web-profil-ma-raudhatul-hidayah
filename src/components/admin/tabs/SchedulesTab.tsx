@@ -270,28 +270,34 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
       setScanStatusText('Membaca citra & mengenali teks jadwal...');
 
       // 3. OCR via tesseract.js worker
-      // Menggunakan file/uploadFile lokal in-memory untuk mencegah CORS blocking & download lag
+      // Menggunakan uploadFile (gambar hasil optimasi resolusi 1600px) agar OCR selesai sangat cepat (2-4 detik)
       let extractedOcrText = '';
       try {
         const { createWorker } = await import('tesseract.js');
         const ocrPromise = (async () => {
-          const worker = await createWorker('ind', undefined, {
-            logger: (m) => {
-              if (m.status === 'recognizing text') {
-                const p = Math.min(85, Math.round(35 + (m.progress || 0) * 45));
-                setScanProgress(p);
-                setScanStatusText(`Mengenali struktur jadwal: ${Math.round((m.progress || 0) * 100)}%`);
-              }
-            },
-          });
-          const res = await worker.recognize(file || uploadFile);
-          await worker.terminate();
-          return res.data?.text || '';
+          let worker = null;
+          try {
+            worker = await createWorker('ind', undefined, {
+              logger: (m) => {
+                if (m.status === 'recognizing text') {
+                  const p = Math.min(85, Math.round(35 + (m.progress || 0) * 45));
+                  setScanProgress(p);
+                  setScanStatusText(`Mengenali struktur jadwal: ${Math.round((m.progress || 0) * 100)}%`);
+                }
+              },
+            });
+            const res = await worker.recognize(uploadFile);
+            return res.data?.text || '';
+          } finally {
+            if (worker) {
+              await worker.terminate().catch(() => {});
+            }
+          }
         })();
 
-        // Batas timeout OCR 15 detik agar antarmuka tidak membeku
+        // Batas timeout OCR 30 detik agar antarmuka tidak membeku namun cukup waktu
         const timeoutPromise = new Promise<string>((_, reject) =>
-          setTimeout(() => reject(new Error('OCR Timeout')), 15000)
+          setTimeout(() => reject(new Error('OCR Timeout')), 30000)
         );
 
         extractedOcrText = await Promise.race([ocrPromise, timeoutPromise]);
