@@ -456,7 +456,9 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
         <div>
           <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Jadwal Pelajaran</h2>
           <p className="text-sm text-slate-600 mt-1">
-            {readOnly
+            {userRole === 'siswa'
+              ? 'Informasi jadwal mata pelajaran harian resmi untuk santri dan peserta didik.'
+              : readOnly
               ? 'Informasi jadwal mata pelajaran resmi seluruh rombel kelas (hanya akun Admin yang dapat mengubah jadwal).'
               : 'Susun jadwal mata pelajaran harian atau unggah foto jadwal untuk pembaruan otomatis.'}
           </p>
@@ -485,8 +487,8 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
         )}
       </div>
 
-      {/* Photo Banner Card */}
-      {schedulePhoto?.photo_url ? (
+      {/* Photo Banner Card (Hanya ditampilkan untuk Admin dan Guru, disembunyikan untuk akun Siswa) */}
+      {userRole !== 'siswa' && schedulePhoto?.photo_url ? (
         <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 transition-all">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
             <div className="flex items-start gap-4">
@@ -981,8 +983,8 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
         )}
       </div>
 
-      {/* Lightbox Zoom Modal for Photo */}
-      {isZoomOpen && schedulePhoto?.photo_url && (
+      {/* Lightbox Zoom Modal for Photo (Hanya untuk Admin dan Guru) */}
+      {isZoomOpen && schedulePhoto?.photo_url && userRole !== 'siswa' && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/90 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="relative max-w-5xl w-full max-h-[90vh] flex flex-col items-center">
             <div className="w-full flex items-center justify-between text-white pb-3">
