@@ -12,6 +12,7 @@ import {
   LogOut,
 } from 'lucide-react';
 import { AdminTab } from './AdminSidebar';
+import { PwaInstallPrompt } from '@/components/pwa/PwaInstallPrompt';
 
 interface AdminHeaderProps {
   activeTab: AdminTab;
@@ -151,6 +152,9 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
 
         {/* Right: Actions & Status */}
         <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+          {/* PWA Install Button */}
+          <PwaInstallPrompt variant="button" />
+
           {/* Refresh Action */}
           <button
             type="button"

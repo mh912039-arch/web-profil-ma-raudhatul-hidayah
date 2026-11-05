@@ -24,6 +24,7 @@ import {
   ShieldAlert,
   Clock,
 } from 'lucide-react';
+import { PwaInstallPrompt } from '@/components/pwa/PwaInstallPrompt';
 
 interface SchoolPortalLoginProps {
   onLoginSuccess?: (role: 'admin' | 'guru' | 'siswa', username?: string) => void;
@@ -246,6 +247,9 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
           MA RAUDLATUL HIDAYAH
         </h1>
       </div>
+
+      {/* PWA App Install Banner */}
+      <PwaInstallPrompt variant="banner" className="w-full max-w-[440px] mb-4" />
 
       {/* Main Authentication & Registration Card */}
       <div className="w-full max-w-[440px] bg-white rounded-3xl border border-slate-200/90 shadow-sm p-6 sm:p-8 relative">

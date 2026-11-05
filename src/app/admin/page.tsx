@@ -19,6 +19,7 @@ import { UsersTab } from '@/components/admin/tabs/UsersTab';
 import { ExtracurricularTab } from '@/components/admin/tabs/ExtracurricularTab';
 import { SchoolPortalLogin } from '@/components/auth/SchoolPortalLogin';
 import { PpdbData } from '@/components/sections/PpdbSection';
+import { PwaInstallPrompt } from '@/components/pwa/PwaInstallPrompt';
 import { supabase } from '@/lib/supabaseClient';
 import { CheckCircle2, AlertCircle, X } from 'lucide-react';
 
@@ -1059,6 +1060,9 @@ export default function AdminDashboardPage() {
           )}
         </main>
       </div>
+
+      {/* PWA Floating Install Prompt */}
+      <PwaInstallPrompt variant="floating" />
     </div>
   );
 }
