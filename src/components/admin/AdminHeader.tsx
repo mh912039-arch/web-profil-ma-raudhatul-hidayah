@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   Menu,
   ExternalLink,
@@ -121,30 +122,39 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
   return (
     <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3.5 transition-all">
       <div className="flex items-center justify-between gap-2.5 sm:gap-4">
-        {/* Left: Mobile Toggle & Breadcrumb Title */}
-        <div className="flex items-center gap-2 sm:gap-3.5 min-w-0">
+        {/* Left: Mobile Toggle & Brand Header */}
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           <button
             type="button"
             onClick={() => setIsOpenMobile(true)}
-            className="p-1.5 sm:p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 lg:hidden transition-colors"
-            aria-label="Buka Menu Sidebar"
+            className="p-1.5 sm:p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 lg:hidden transition-colors shrink-0"
+            aria-label="Buka Menu Lengkap"
+            title="Menu Navigasi"
           >
             <Menu className="w-5 h-5" />
           </button>
 
+          <div className="w-8 h-8 rounded-xl bg-blue-50 border border-blue-200/80 flex items-center justify-center p-1 shrink-0 shadow-2xs">
+            <Image
+              src="/school-logo.png"
+              width={28}
+              height={28}
+              alt="Logo MAS RH"
+              className="w-full h-full object-contain"
+            />
+          </div>
+
           <div className="flex flex-col min-w-0">
-            <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-[11px] font-semibold text-slate-400 uppercase tracking-wider truncate">
+            <div className="flex items-center gap-1.5 text-[9.5px] sm:text-[10.5px] font-bold text-blue-700 tracking-wider uppercase truncate">
               <span>
                 {userRole === 'siswa'
-                  ? 'Santri'
+                  ? 'PORTAL TERPADU  /  SANTRI'
                   : userRole === 'guru'
-                  ? 'Dewan Guru'
-                  : 'Portal Admin'}
+                  ? 'PORTAL TERPADU  /  GURU'
+                  : 'PORTAL TERPADU  /  ADMIN'}
               </span>
-              <span>/</span>
-              <span className="text-blue-700 font-bold truncate">{current.title}</span>
             </div>
-            <h1 className="font-serif text-[16px] sm:text-[22px] font-bold text-slate-900 tracking-tight leading-snug truncate">
+            <h1 className="font-serif text-[15px] sm:text-[20px] font-bold text-slate-900 tracking-tight leading-snug truncate">
               {current.title}
             </h1>
           </div>

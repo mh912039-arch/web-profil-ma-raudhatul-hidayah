@@ -20,8 +20,20 @@ import { ExtracurricularTab } from '@/components/admin/tabs/ExtracurricularTab';
 import { SchoolPortalLogin } from '@/components/auth/SchoolPortalLogin';
 import { PpdbData } from '@/components/sections/PpdbSection';
 import { PwaInstallPrompt } from '@/components/pwa/PwaInstallPrompt';
+import { MobileBottomNav } from '@/components/admin/MobileBottomNav';
+import { PortalOverviewTab } from '@/components/admin/tabs/PortalOverviewTab';
 import { supabase } from '@/lib/supabaseClient';
-import { CheckCircle2, AlertCircle, X } from 'lucide-react';
+import {
+  CheckCircle2,
+  AlertCircle,
+  X,
+  School,
+  CalendarClock,
+  GraduationCap,
+  CalendarDays,
+  Newspaper,
+  ArrowRight,
+} from 'lucide-react';
 
 // Default initial teachers (22 dewan guru resmi MA Raudlatul Hidayah)
 const initial22Teachers: TeacherRecord[] = [
@@ -51,14 +63,18 @@ const initial22Teachers: TeacherRecord[] = [
 
 // Tabs yang boleh diakses oleh Siswa / Santri (Hanya Baca)
 const SISWA_ALLOWED_TABS: AdminTab[] = [
+  'overview',
   'schedules',
   'classes',
   'calendar',
   'agenda',
+  'articles',
+  'achievements',
 ];
 
 // Tabs yang boleh diakses oleh Dewan Guru
 const GURU_ALLOWED_TABS: AdminTab[] = [
+  'overview',
   'schedules',
   'classes',
   'calendar',
@@ -825,9 +841,9 @@ export default function AdminDashboardPage() {
             }
           }
           if (r === 'siswa') {
-            setActiveTab('schedules');
+            setActiveTab('overview');
           } else if (r === 'guru') {
-            setActiveTab('schedules');
+            setActiveTab('overview');
           }
         }}
       />
@@ -836,9 +852,9 @@ export default function AdminDashboardPage() {
 
   const effectiveActiveTab: AdminTab =
     userRole === 'siswa' && !SISWA_ALLOWED_TABS.includes(activeTab)
-      ? 'schedules'
+      ? 'overview'
       : userRole === 'guru' && !GURU_ALLOWED_TABS.includes(activeTab)
-      ? 'schedules'
+      ? 'overview'
       : activeTab;
 
   const handleLogout = async () => {
@@ -929,7 +945,7 @@ export default function AdminDashboardPage() {
         )}
 
         {/* Content View Tabs */}
-        <main className="flex-1 p-3 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto min-w-0 overflow-x-hidden">
+        <main className="flex-1 p-3 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto min-w-0 overflow-x-hidden pb-24 lg:pb-8">
           {userRole === 'admin' && effectiveActiveTab === 'overview' && (
             <OverviewTab
               setActiveTab={setActiveTab}
@@ -946,6 +962,17 @@ export default function AdminDashboardPage() {
               homepageData={homepageData}
               onSaveHomepage={handleSaveHomepage}
               isSaving={isSaving}
+            />
+          )}
+
+          {(userRole === 'guru' || userRole === 'siswa') && effectiveActiveTab === 'overview' && (
+            <PortalOverviewTab
+              userRole={userRole}
+              currentUserName={currentUserName}
+              teachers={teachers}
+              articlesCount={articles.length}
+              achievementsCount={championshipPhotos.length}
+              setActiveTab={setActiveTab}
             />
           )}
 
@@ -1060,6 +1087,14 @@ export default function AdminDashboardPage() {
           )}
         </main>
       </div>
+
+      {/* 3. Mobile Bottom Navigation Bar (Sesuai Desain Figma Mobile MAS RH) */}
+      <MobileBottomNav
+        activeTab={effectiveActiveTab}
+        setActiveTab={setActiveTab}
+        userRole={userRole}
+        unreadCount={unreadMessagesCount}
+      />
 
       {/* PWA Floating Install Prompt */}
       <PwaInstallPrompt variant="floating" />
