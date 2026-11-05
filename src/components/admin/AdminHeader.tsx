@@ -139,13 +139,13 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
               src="/school-logo.png"
               width={28}
               height={28}
-              alt="Logo MAS RH"
+              alt="Logo MA RH"
               className="w-full h-full object-contain"
             />
           </div>
 
           <div className="flex flex-col min-w-0">
-            <div className="flex items-center gap-1.5 text-[9.5px] sm:text-[10.5px] font-bold text-blue-700 tracking-wider uppercase truncate">
+            <div className="hidden sm:flex items-center gap-1.5 text-[9.5px] sm:text-[10.5px] font-bold text-blue-700 tracking-wider uppercase truncate">
               <span>
                 {userRole === 'siswa'
                   ? 'PORTAL TERPADU  /  SANTRI'
@@ -170,7 +170,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
             type="button"
             onClick={onRefresh}
             disabled={isRefreshing}
-            className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-2xs transition-all active:scale-[0.98] disabled:opacity-50"
+            className="hidden sm:inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-2xs transition-all active:scale-[0.98] disabled:opacity-50"
             title="Muat ulang sinkronisasi data"
           >
             <RefreshCw
@@ -184,11 +184,10 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
             href="/"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-semibold shadow-xs transition-all active:scale-[0.98]"
+            className="hidden sm:inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-semibold shadow-xs transition-all active:scale-[0.98]"
             title="Buka Website Publik"
           >
             <span className="hidden sm:inline">Buka Website</span>
-            <span className="sm:hidden text-[11px] font-bold">Web</span>
             <ExternalLink className="w-3.5 h-3.5 text-amber-300" />
           </Link>
 
