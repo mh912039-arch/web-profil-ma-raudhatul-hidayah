@@ -112,6 +112,7 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
     count: number;
     rombel: string;
   } | null>(null);
+  const [showUploadBox, setShowUploadBox] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -328,11 +329,12 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
       setScanProgress(100);
       setScanStatusText('Jadwal seluruhnya berhasil diperbarui!');
 
-      // Alihkan tab otomatis jika rombel terdeteksi spesifik (misal dari Kelas I ke Kelas II)
+      // Alihkan tab otomatis ke rombel target yang diperbarui
       const finalRombel = scanData.rombel || scanData.schedules?.[0]?.class_rombel || selectedRombel;
-      if (finalRombel && finalRombel !== selectedRombel) {
-        setSelectedRombel(finalRombel);
-      }
+      setSelectedRombel(finalRombel);
+      if (finalRombel.startsWith('SD')) setSelectedLevel('sd');
+      else if (finalRombel.startsWith('SMP')) setSelectedLevel('smp');
+      else if (finalRombel.startsWith('SMA')) setSelectedLevel('sma');
 
       // Refresh data
       await fetchSchedules();
@@ -570,13 +572,50 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
               </a>
               {!readOnly && (
                 <>
+                  <div className="inline-flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1">
+                    <span className="text-[11px] font-bold text-slate-500 uppercase">Target:</span>
+                    <select
+                      value={selectedRombel}
+                      onChange={(e) => {
+                        const target = e.target.value;
+                        setSelectedRombel(target);
+                        const found = allRombels.find((r) => r.name === target);
+                        if (found) setSelectedLevel(found.level);
+                      }}
+                      className="text-xs font-bold text-slate-800 bg-transparent focus:outline-none cursor-pointer"
+                    >
+                      <optgroup label="Jenjang SD (Kelas 1 - 6)">
+                        {allRombels.filter((r) => r.level === 'sd').map((r) => (
+                          <option key={r.id} value={r.name}>{r.name}</option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="Jenjang SMP (Kelas VII - IX)">
+                        {allRombels.filter((r) => r.level === 'smp').map((r) => (
+                          <option key={r.id} value={r.name}>{r.name}</option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="Jenjang SMA / MA (Kelas X - XII)">
+                        {allRombels.filter((r) => r.level === 'sma').map((r) => (
+                          <option key={r.id} value={r.name}>{r.name}</option>
+                        ))}
+                      </optgroup>
+                    </select>
+                  </div>
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-semibold transition-colors"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors shadow-2xs active:scale-[0.98]"
                   >
                     <ScanLine className="w-3.5 h-3.5" />
-                    <span>Ganti Foto & Scan Ulang</span>
+                    <span>Scan Ulang ({selectedRombel})</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowUploadBox(!showUploadBox)}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-semibold transition-colors"
+                  >
+                    <UploadCloud className="w-3.5 h-3.5" />
+                    <span>{showUploadBox ? 'Tutup Pilihan Kelas' : 'Unggah Kelas Lain'}</span>
                   </button>
                   <button
                     type="button"
@@ -591,28 +630,164 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
             </div>
           </div>
         </div>
-      ) : !readOnly ? (
-        <div className="bg-white rounded-2xl border-2 border-dashed border-slate-300 hover:border-blue-400 p-6 transition-all text-center">
-          <div className="max-w-md mx-auto space-y-3">
+      ) : null}
+
+      {/* Upload Box dengan Pilihan Target Kelas SD / SMP / SMA Lengkap */}
+      {!readOnly && (!schedulePhoto?.photo_url || showUploadBox) ? (
+        <div className="bg-white rounded-2xl border-2 border-dashed border-slate-300 hover:border-blue-400 p-5 sm:p-7 transition-all text-center shadow-xs">
+          <div className="max-w-2xl mx-auto space-y-4">
             <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-200 text-blue-600 flex items-center justify-center mx-auto">
-              <Camera className="w-6 h-6" />
+              <Camera className="w-6 h-6 stroke-[1.8]" />
             </div>
+
             <div>
-              <h3 className="text-sm font-bold text-slate-900">
+              <h3 className="text-sm sm:text-base font-bold text-slate-900">
                 Unggah Foto Jadwal Pelajaran (Pindai Otomatis)
               </h3>
-              <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                Pilih atau potret foto lembar jadwal resmi. Sistem otomatis membaca hari, jam, mata pelajaran, dan guru, lalu langsung memperbarui seluruh tabel jadwal kelas.
+              <p className="text-xs text-slate-500 mt-1 max-w-lg mx-auto leading-relaxed">
+                Pilih jenjang dan kelas target di bawah ini, lalu pilih atau potret lembar foto jadwal resmi. Sistem otomatis membaca waktu dan mata pelajaran, kemudian langsung memperbarui tabel jadwal digital untuk kelas yang dipilih.
               </p>
             </div>
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-all active:scale-[0.98]"
-            >
-              <UploadCloud className="w-4 h-4" />
-              <span>Pilih / Ambil Foto Jadwal</span>
-            </button>
+
+            {/* Pilihan Jenjang & Kelas Target */}
+            <div className="bg-slate-50/90 border border-slate-200/90 rounded-2xl p-4 text-left space-y-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-600 flex items-center gap-1.5">
+                  <GraduationCap className="w-4 h-4 text-blue-600" />
+                  Pilih Target Kelas / Rombel:
+                </span>
+                <span className="text-xs font-bold text-blue-700 bg-blue-100/70 border border-blue-200 px-2.5 py-0.5 rounded-lg w-fit">
+                  Target Aktif: {selectedRombel}
+                </span>
+              </div>
+
+              {/* Jenjang Switcher Tabs */}
+              <div className="grid grid-cols-3 gap-1.5 p-1 bg-slate-200/60 rounded-xl">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedLevel('sd');
+                    if (!selectedRombel.startsWith('SD')) setSelectedRombel('SD - Kelas I');
+                  }}
+                  className={`py-1.5 px-2 rounded-lg text-xs font-bold transition-all text-center ${
+                    selectedLevel === 'sd'
+                      ? 'bg-blue-600 text-white shadow-2xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  Jenjang SD (1 - 6)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedLevel('smp');
+                    if (!selectedRombel.startsWith('SMP')) setSelectedRombel('SMP - Kelas VII');
+                  }}
+                  className={`py-1.5 px-2 rounded-lg text-xs font-bold transition-all text-center ${
+                    selectedLevel === 'smp'
+                      ? 'bg-blue-600 text-white shadow-2xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  Jenjang SMP (VII - IX)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedLevel('sma');
+                    if (!selectedRombel.startsWith('SMA')) setSelectedRombel('SMA - Kelas X');
+                  }}
+                  className={`py-1.5 px-2 rounded-lg text-xs font-bold transition-all text-center ${
+                    selectedLevel === 'sma'
+                      ? 'bg-blue-600 text-white shadow-2xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  Jenjang SMA / MA (X - XII)
+                </button>
+              </div>
+
+              {/* Class Pills Grid sesuai jenjang aktif */}
+              <div>
+                <div className="text-[11px] font-semibold text-slate-500 mb-2">
+                  Klik Kelas Target:
+                </div>
+                <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                  {allRombels
+                    .filter((r) => selectedLevel === 'all' || r.level === selectedLevel)
+                    .map((rombel) => {
+                      const isSelected = isRombelMatch(rombel.name, selectedRombel);
+                      return (
+                        <button
+                          key={rombel.id}
+                          type="button"
+                          onClick={() => {
+                            setSelectedRombel(rombel.name);
+                            setSelectedLevel(rombel.level);
+                          }}
+                          className={`p-2 rounded-xl border text-center transition-all ${
+                            isSelected
+                              ? 'bg-blue-600 text-white border-blue-600 shadow-xs ring-2 ring-blue-300'
+                              : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200'
+                          }`}
+                        >
+                          <div className={`text-[10px] font-bold uppercase tracking-wider ${isSelected ? 'text-blue-100' : 'text-slate-400'}`}>
+                            {rombel.badge}
+                          </div>
+                          <div className="text-xs font-bold whitespace-nowrap">
+                            {rombel.shortName}
+                          </div>
+                        </button>
+                      );
+                    })}
+                </div>
+              </div>
+
+              {/* Mobile Quick Dropdown */}
+              <div className="sm:hidden pt-1">
+                <label className="text-[11px] font-semibold text-slate-500 block mb-1">
+                  Atau pilih via menu dropdown:
+                </label>
+                <select
+                  value={selectedRombel}
+                  onChange={(e) => {
+                    const target = e.target.value;
+                    setSelectedRombel(target);
+                    const found = allRombels.find((r) => r.name === target);
+                    if (found) setSelectedLevel(found.level);
+                  }}
+                  className="w-full text-xs font-semibold text-slate-800 bg-white border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <optgroup label="Jenjang SD (Kelas 1 - 6)">
+                    {allRombels.filter((r) => r.level === 'sd').map((r) => (
+                      <option key={r.id} value={r.name}>{r.name}</option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="Jenjang SMP (Kelas VII - IX)">
+                    {allRombels.filter((r) => r.level === 'smp').map((r) => (
+                      <option key={r.id} value={r.name}>{r.name}</option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="Jenjang SMA / MA (Kelas X - XII)">
+                    {allRombels.filter((r) => r.level === 'sma').map((r) => (
+                      <option key={r.id} value={r.name}>{r.name}</option>
+                    ))}
+                  </optgroup>
+                </select>
+              </div>
+            </div>
+
+            {/* Tombol Unggah dengan nama target rombel */}
+            <div className="pt-1">
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-xs transition-all active:scale-[0.98]"
+              >
+                <UploadCloud className="w-4 h-4 stroke-[2]" />
+                <span>Pilih / Ambil Foto Jadwal ({selectedRombel})</span>
+              </button>
+            </div>
           </div>
         </div>
       ) : null}

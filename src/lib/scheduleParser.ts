@@ -147,7 +147,8 @@ function getEffectiveTimeSlot(
 export function parseScheduleFromText(
   rawText: string,
   targetRombel: string = 'SMA - Kelas X',
-  existingTeachers: { name: string; subject_name?: string }[] = []
+  existingTeachers: { name: string; subject_name?: string }[] = [],
+  forceTargetRombel: boolean = true
 ): ParsedScheduleItem[] {
   const lines = rawText
     .split(/\r?\n/)
@@ -159,22 +160,23 @@ export function parseScheduleFromText(
     ...knownTeachers,
   ];
 
-  // 1. Deteksi Rombel jika tertera pada judul dokumen / kop foto
+  // 1. Tentukan Rombel: Mengutamakan kelas yang dipilih pengguna pada form unggah
   let detectedRombel = targetRombel;
-  const fullText = lines.join(' ').toLowerCase();
-
-  if (/kelas\s*(10|x)\b|sma\s*-\s*kelas\s*x/i.test(fullText)) detectedRombel = 'SMA - Kelas X';
-  else if (/kelas\s*(11|xi)\b|sma\s*-\s*kelas\s*xi/i.test(fullText)) detectedRombel = 'SMA - Kelas XI';
-  else if (/kelas\s*(12|xii)\b|sma\s*-\s*kelas\s*xii/i.test(fullText)) detectedRombel = 'SMA - Kelas XII';
-  else if (/kelas\s*(7|vii)\b|smp\s*-\s*kelas\s*vii/i.test(fullText)) detectedRombel = 'SMP - Kelas VII';
-  else if (/kelas\s*(8|viii)\b|smp\s*-\s*kelas\s*viii/i.test(fullText)) detectedRombel = 'SMP - Kelas VIII';
-  else if (/kelas\s*(9|ix)\b|smp\s*-\s*kelas\s*ix/i.test(fullText)) detectedRombel = 'SMP - Kelas IX';
-  else if (/kelas\s*(1|i)\b|sd\s*-\s*kelas\s*1/i.test(fullText)) detectedRombel = 'SD - Kelas I';
-  else if (/kelas\s*(2|ii)\b|sd\s*-\s*kelas\s*2/i.test(fullText)) detectedRombel = 'SD - Kelas II';
-  else if (/kelas\s*(3|iii)\b|sd\s*-\s*kelas\s*3/i.test(fullText)) detectedRombel = 'SD - Kelas III';
-  else if (/kelas\s*(4|iv)\b|sd\s*-\s*kelas\s*4/i.test(fullText)) detectedRombel = 'SD - Kelas IV';
-  else if (/kelas\s*(5|v)\b|sd\s*-\s*kelas\s*5/i.test(fullText)) detectedRombel = 'SD - Kelas V';
-  else if (/kelas\s*(6|vi)\b|sd\s*-\s*kelas\s*6/i.test(fullText)) detectedRombel = 'SD - Kelas VI';
+  if (!forceTargetRombel || targetRombel === 'AUTO') {
+    const fullText = lines.join(' ').toLowerCase();
+    if (/kelas\s*(10|x)\b|sma\s*-\s*kelas\s*x/i.test(fullText)) detectedRombel = 'SMA - Kelas X';
+    else if (/kelas\s*(11|xi)\b|sma\s*-\s*kelas\s*xi/i.test(fullText)) detectedRombel = 'SMA - Kelas XI';
+    else if (/kelas\s*(12|xii)\b|sma\s*-\s*kelas\s*xii/i.test(fullText)) detectedRombel = 'SMA - Kelas XII';
+    else if (/kelas\s*(7|vii)\b|smp\s*-\s*kelas\s*vii/i.test(fullText)) detectedRombel = 'SMP - Kelas VII';
+    else if (/kelas\s*(8|viii)\b|smp\s*-\s*kelas\s*viii/i.test(fullText)) detectedRombel = 'SMP - Kelas VIII';
+    else if (/kelas\s*(9|ix)\b|smp\s*-\s*kelas\s*ix/i.test(fullText)) detectedRombel = 'SMP - Kelas IX';
+    else if (/kelas\s*(1|i)\b|sd\s*-\s*kelas\s*1/i.test(fullText)) detectedRombel = 'SD - Kelas I';
+    else if (/kelas\s*(2|ii)\b|sd\s*-\s*kelas\s*2/i.test(fullText)) detectedRombel = 'SD - Kelas II';
+    else if (/kelas\s*(3|iii)\b|sd\s*-\s*kelas\s*3/i.test(fullText)) detectedRombel = 'SD - Kelas III';
+    else if (/kelas\s*(4|iv)\b|sd\s*-\s*kelas\s*4/i.test(fullText)) detectedRombel = 'SD - Kelas IV';
+    else if (/kelas\s*(5|v)\b|sd\s*-\s*kelas\s*5/i.test(fullText)) detectedRombel = 'SD - Kelas V';
+    else if (/kelas\s*(6|vi)\b|sd\s*-\s*kelas\s*6/i.test(fullText)) detectedRombel = 'SD - Kelas VI';
+  }
 
   // 2. Ekstraksi rentang waktu jam pelajaran langsung dari teks foto
   const extractedTimes = extractTimeSlotsFromText(rawText);

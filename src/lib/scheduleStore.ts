@@ -92,6 +92,26 @@ export interface ApplyBatchParams {
   caption?: string;
 }
 
+export function isSameRombel(a: string, b: string): boolean {
+  if (!a || !b) return false;
+  const normA = a.toLowerCase().trim().replace(/\s+/g, ' ');
+  const normB = b.toLowerCase().trim().replace(/\s+/g, ' ');
+  if (normA === normB) return true;
+
+  const getPrefix = (s: string) => {
+    const m = s.match(/^(sd|smp|sma)\b/i);
+    return m ? m[1].toLowerCase() : null;
+  };
+  const prefixA = getPrefix(normA);
+  const prefixB = getPrefix(normB);
+
+  // Jika kedua rombel memiliki jenjang berbeda (misal SD vs SMP/SMA), jangan disamakan
+  if (prefixA && prefixB && prefixA !== prefixB) return false;
+
+  const stripPrefix = (s: string) => s.replace(/^(sd|smp|sma)\s*-\s*/i, '').trim();
+  return stripPrefix(normA) === stripPrefix(normB);
+}
+
 export async function applyBatchSchedules(params: ApplyBatchParams): Promise<{
   success: boolean;
   count: number;
@@ -111,12 +131,8 @@ export async function applyBatchSchedules(params: ApplyBatchParams): Promise<{
     // Ganti seluruh jadwal sekolah
     finalSchedules = [...newItems];
   } else if (replaceRombel) {
-    // Hapus jadwal untuk rombel target, lalu tambahkan jadwal baru
-    const cleanTarget = replaceRombel.toLowerCase().trim();
-    finalSchedules = currentSchedules.filter((s) => {
-      const cleanItem = (s.class_rombel || '').toLowerCase().trim();
-      return cleanItem !== cleanTarget && !cleanItem.includes(cleanTarget) && !cleanTarget.includes(cleanItem);
-    });
+    // Hapus jadwal khusus untuk rombel target, lalu tambahkan jadwal baru tanpa sengaja menghapus kelas lain
+    finalSchedules = currentSchedules.filter((s) => !isSameRombel(s.class_rombel, replaceRombel));
     finalSchedules.push(...newItems);
   } else {
     finalSchedules = [...currentSchedules, ...newItems];

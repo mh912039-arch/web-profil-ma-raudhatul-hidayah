@@ -61,9 +61,9 @@ export async function POST(req: Request) {
       console.warn('Notice: Teacher pool lookup in schedule scan:', err);
     }
 
-    // Jalankan intelligent schedule parser
-    const parsedSchedules = parseScheduleFromText(extractedText, targetRombel, teachers);
-    const finalRombel = parsedSchedules[0]?.class_rombel || targetRombel;
+    // Jalankan intelligent schedule parser dengan target rombel yang dipilih pengguna
+    const parsedSchedules = parseScheduleFromText(extractedText, targetRombel, teachers, true);
+    const finalRombel = targetRombel || parsedSchedules[0]?.class_rombel || 'SMA - Kelas X';
 
     // Jika autoApply === true, langsung simpan secara internal ke database (tanpa HTTP loopback)
     if (autoApply && parsedSchedules.length > 0) {
