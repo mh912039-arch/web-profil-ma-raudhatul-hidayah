@@ -92,10 +92,21 @@ export const allRombels: RombelItem[] = [
 
 const days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 
+export function cleanTeacherName(name?: string): string {
+  if (!name) return '';
+  return name
+    .toLowerCase()
+    .replace(/\b(s\.?pd\.?i|s\.?pd|m\.?pd\.?i|m\.?pd|s\.?ag|m\.?ag|drs|dra|se|lc|st|kom|h|hj)\b/gi, '')
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 export function isTeacherMatch(scheduleTeacher?: string, currentTeacherNameOrUsername?: string): boolean {
   if (!scheduleTeacher || !currentTeacherNameOrUsername) return false;
-  const cleanA = scheduleTeacher.toLowerCase().replace(/[,.s.pd.i()]/g, '').trim();
-  const cleanB = currentTeacherNameOrUsername.toLowerCase().replace(/[,.s.pd.i()]/g, '').trim();
+  const cleanA = cleanTeacherName(scheduleTeacher);
+  const cleanB = cleanTeacherName(currentTeacherNameOrUsername);
+  if (!cleanA || !cleanB) return false;
   if (cleanA === cleanB) return true;
   if (cleanA.includes(cleanB) || cleanB.includes(cleanA)) return true;
 
@@ -1505,10 +1516,16 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
                   <CalendarCheck className="w-7 h-7" />
                 </div>
                 <h4 className="text-base font-bold text-slate-800">
-                  Tidak Ada Jadwal Mengajar pada Hari {selectedTeacherDay}
+                  {myTeachingSessions.length === 0
+                    ? 'Belum Ada Jadwal Mengajar Terdaftar'
+                    : selectedTeacherDay === 'Semua'
+                    ? 'Tidak Ada Jadwal Mengajar yang Ditemukan'
+                    : `Tidak Ada Jadwal Mengajar pada Hari ${selectedTeacherDay}`}
                 </h4>
                 <p className="text-xs text-slate-500 max-w-md mx-auto mt-1 leading-relaxed">
-                  Bebas dari jam tatap muka kelas pada hari ini. Dapat dimanfaatkan untuk evaluasi pembelajaran, penyiapan materi ajar, atau kegiatan madrasah lainnya.
+                  {myTeachingSessions.length === 0
+                    ? `Akun Anda terhubung atas nama "${activeTeacherName}". Sesi mengajar akan otomatis muncul di sini begitu mata pelajaran dan kelas Anda dialokasikan oleh Admin kurikulum.`
+                    : 'Bebas dari jam tatap muka kelas pada hari ini. Dapat dimanfaatkan untuk evaluasi pembelajaran, penyiapan materi ajar, atau kegiatan madrasah lainnya.'}
                 </p>
               </div>
             ) : (
