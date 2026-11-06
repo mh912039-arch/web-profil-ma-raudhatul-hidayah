@@ -440,17 +440,6 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
       <div className="flex flex-wrap gap-2 p-1.5 bg-slate-100 rounded-xl w-fit">
         <button
           type="button"
-          onClick={() => setActiveSubTab('kontak')}
-          className={`px-4 py-2 rounded-lg text-[13px] font-semibold transition-all ${
-            activeSubTab === 'kontak'
-              ? 'bg-white text-blue-700 shadow-xs'
-              : 'text-slate-600 hover:text-slate-900'
-          }`}
-        >
-          Halaman Kontak
-        </button>
-        <button
-          type="button"
           onClick={() => setActiveSubTab('legal')}
           className={`px-4 py-2 rounded-lg text-[13px] font-semibold transition-all ${
             activeSubTab === 'legal'
@@ -459,6 +448,17 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
           }`}
         >
           Identitas Lembaga
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveSubTab('kontak')}
+          className={`px-4 py-2 rounded-lg text-[13px] font-semibold transition-all ${
+            activeSubTab === 'kontak'
+              ? 'bg-white text-blue-700 shadow-xs'
+              : 'text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          Halaman Kontak
         </button>
         <button
           type="button"

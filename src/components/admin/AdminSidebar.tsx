@@ -22,7 +22,6 @@ import {
   FileText,
   UserCheck,
   Mail,
-  Phone,
   ChevronDown,
   ChevronUp,
   X,
@@ -111,7 +110,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   };
 
   const getItemClass = (id: AdminTab) => {
-    const isActive = activeTab === id;
+    const isActive = activeTab === id || (id === 'profile' && (activeTab === 'contact' || activeTab === 'facilities'));
     if (isActive) {
       return 'bg-blue-600 text-white font-semibold shadow-xs';
     }
@@ -119,7 +118,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   };
 
   const getIconClass = (id: AdminTab) => {
-    const isActive = activeTab === id;
+    const isActive = activeTab === id || (id === 'profile' && (activeTab === 'contact' || activeTab === 'facilities'));
     if (isActive) return 'text-white';
     return 'text-slate-500';
   };
@@ -573,21 +572,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                   </div>
                 </button>
 
-                {/* 2. Pengaturan Halaman Kontak */}
-                <button
-                  type="button"
-                  onClick={() => handleSelectTab('contact')}
-                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-[13px] transition-all ${getItemClass(
-                    'contact'
-                  )}`}
-                >
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <Phone className={`w-4 h-4 shrink-0 ${getIconClass('contact')}`} />
-                    <span className="truncate">Pengaturan Halaman Kontak</span>
-                  </div>
-                </button>
-
-                {/* 3. Profil & Legalitas Lembaga */}
+                {/* 2. Profil & Legalitas Lembaga */}
                 <button
                   type="button"
                   onClick={() => handleSelectTab('profile')}
@@ -601,7 +586,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                   </div>
                 </button>
 
-                {/* 2. Berita & Agenda */}
+                {/* 3. Berita & Agenda */}
                 <button
                   type="button"
                   onClick={() => handleSelectTab('articles')}
@@ -612,20 +597,6 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                   <div className="flex items-center gap-2.5 min-w-0">
                     <Newspaper className={`w-4 h-4 shrink-0 ${getIconClass('articles')}`} />
                     <span className="truncate">Berita & Agenda</span>
-                  </div>
-                </button>
-
-                {/* 3. Fasilitas & Sarpras */}
-                <button
-                  type="button"
-                  onClick={() => handleSelectTab('facilities')}
-                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-[13px] transition-all ${getItemClass(
-                    'facilities'
-                  )}`}
-                >
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <Building2 className={`w-4 h-4 shrink-0 ${getIconClass('facilities')}`} />
-                    <span className="truncate">Fasilitas & Sarpras</span>
                   </div>
                 </button>
 
