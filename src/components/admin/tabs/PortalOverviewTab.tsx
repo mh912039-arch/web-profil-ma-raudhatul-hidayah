@@ -133,9 +133,9 @@ export function PortalOverviewTab({
   return (
     <div className="space-y-4 sm:space-y-5 pb-6">
       {/* =========================================================================
-          1. HEADER RINGKAS & STATUS SISTEM
+          1. HEADER RINGKAS & STATUS SISTEM (Disembunyikan di Mobile)
       ========================================================================= */}
-      <div className="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-5 shadow-2xs">
+      <div className="hidden md:block bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-5 shadow-2xs">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="space-y-1">
             <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-blue-50 border border-blue-200/80 text-blue-800 text-[10px] font-bold tracking-wider uppercase">

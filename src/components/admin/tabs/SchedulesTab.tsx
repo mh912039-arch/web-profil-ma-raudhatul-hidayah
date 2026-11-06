@@ -243,6 +243,7 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
   const [showUploadBox, setShowUploadBox] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const cameraInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     if (initialRombel) {
@@ -925,9 +926,18 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
 
   return (
     <div className="space-y-4 sm:space-y-6 w-full max-w-full min-w-0 overflow-hidden">
-      {/* Hidden File Input for Photo Upload / Mobile Camera */}
+      {/* 1. File Input: Membuka File / Galeri Foto HP (tanpa capture agar tidak memaksa buka kamera) */}
       <input
         ref={fileInputRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp,image/*"
+        onChange={handlePhotoFileChange}
+        className="hidden"
+      />
+
+      {/* 2. Camera Input: Khusus untuk memotret langsung jadwal fisik jika diinginkan */}
+      <input
+        ref={cameraInputRef}
         type="file"
         accept="image/jpeg,image/png,image/webp,image/*"
         capture="environment"
@@ -1273,15 +1283,24 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
               </div>
             </div>
 
-            {/* Tombol Unggah dengan nama target rombel */}
-            <div className="pt-1">
+            {/* Tombol Pilihan Unggah: Galeri / File atau Kamera */}
+            <div className="pt-1 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-xs transition-all active:scale-[0.98]"
+                className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-xs transition-all active:scale-[0.98] cursor-pointer"
               >
                 <UploadCloud className="w-4 h-4 stroke-[2]" />
-                <span>Pilih / Ambil Foto Jadwal ({selectedRombel})</span>
+                <span>Pilih dari Galeri / File ({selectedRombel})</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => cameraInputRef.current?.click()}
+                className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 text-xs font-bold transition-all active:scale-[0.98] cursor-pointer"
+              >
+                <Camera className="w-4 h-4 text-slate-600 stroke-[2]" />
+                <span>Buka Kamera</span>
               </button>
             </div>
           </div>
