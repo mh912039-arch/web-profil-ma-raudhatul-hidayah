@@ -259,7 +259,7 @@ export const ClassesTab: React.FC<ClassesTabProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name.trim()) {
-      showToast('error', 'Nama rombel/kelas wajib diisi.');
+      showToast('error', 'Nama ruang kelas wajib diisi.');
       return;
     }
 
@@ -274,10 +274,10 @@ export const ClassesTab: React.FC<ClassesTabProps> = ({
         const resJson = await res.json();
         if (res.ok && resJson.success) {
           setClassesList((prev) => [resJson.item, ...prev]);
-          showToast('success', `Rombel "${formData.name}" berhasil ditambahkan.`);
+          showToast('success', `Ruang Kelas "${formData.name}" berhasil ditambahkan.`);
           setIsModalOpen(false);
         } else {
-          showToast('error', resJson.message || 'Gagal menambahkan rombel.');
+          showToast('error', resJson.message || 'Gagal menambahkan ruang kelas.');
         }
       } else {
         const res = await fetch('/api/classes', {
@@ -290,10 +290,10 @@ export const ClassesTab: React.FC<ClassesTabProps> = ({
           setClassesList((prev) =>
             prev.map((c) => (c.id === formData.id ? resJson.item : c))
           );
-          showToast('success', `Rombel "${formData.name}" berhasil diperbarui.`);
+          showToast('success', `Ruang Kelas "${formData.name}" berhasil diperbarui.`);
           setIsModalOpen(false);
         } else {
-          showToast('error', resJson.message || 'Gagal memperbarui rombel.');
+          showToast('error', resJson.message || 'Gagal memperbarui ruang kelas.');
         }
       }
     } catch {
@@ -307,7 +307,7 @@ export const ClassesTab: React.FC<ClassesTabProps> = ({
   const handleDeleteClass = async (cls: ClassRombel) => {
     if (readOnly) return;
     const confirmDelete = window.confirm(
-      `Apakah Anda yakin ingin menghapus rombel "${cls.name}"? Data jadwal dan santri terkait mungkin perlu disesuaikan.`
+      `Apakah Anda yakin ingin menghapus ruang kelas "${cls.name}"? Data jadwal dan santri terkait mungkin perlu disesuaikan.`
     );
     if (!confirmDelete) return;
 
@@ -318,12 +318,12 @@ export const ClassesTab: React.FC<ClassesTabProps> = ({
       const resJson = await res.json();
       if (res.ok && resJson.success) {
         setClassesList((prev) => prev.filter((c) => c.id !== cls.id));
-        showToast('success', `Rombel "${cls.name}" berhasil dihapus.`);
+        showToast('success', `Ruang Kelas "${cls.name}" berhasil dihapus.`);
       } else {
-        showToast('error', resJson.message || 'Gagal menghapus rombel.');
+        showToast('error', resJson.message || 'Gagal menghapus ruang kelas.');
       }
     } catch {
-      showToast('error', 'Gagal menghubungi server untuk menghapus rombel.');
+      showToast('error', 'Gagal menghubungi server untuk menghapus ruang kelas.');
     }
   };
 
@@ -336,7 +336,7 @@ export const ClassesTab: React.FC<ClassesTabProps> = ({
       case 'sma':
         return { label: 'SMA', bg: 'bg-blue-50 text-blue-700 border-blue-200' };
       default:
-        return { label: 'Rombel', bg: 'bg-slate-50 text-slate-700 border-slate-200' };
+        return { label: 'Kelas', bg: 'bg-slate-50 text-slate-700 border-slate-200' };
     }
   };
 
@@ -377,7 +377,7 @@ export const ClassesTab: React.FC<ClassesTabProps> = ({
 
         <div className="flex items-center gap-2.5">
           <div className="px-3.5 py-2 rounded-xl bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold">
-            {filteredClasses.length} Rombel · {totalSantri} Santri
+            {filteredClasses.length} Ruang Kelas · {totalSantri} Santri
           </div>
 
           {!readOnly && (
@@ -387,7 +387,7 @@ export const ClassesTab: React.FC<ClassesTabProps> = ({
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-900 hover:bg-blue-800 text-white text-xs font-semibold shadow-xs transition-all active:scale-[0.98]"
             >
               <Plus className="w-4 h-4" />
-              <span>Tambah Rombel Baru</span>
+              <span>Tambah Ruang Kelas</span>
             </button>
           )}
         </div>
