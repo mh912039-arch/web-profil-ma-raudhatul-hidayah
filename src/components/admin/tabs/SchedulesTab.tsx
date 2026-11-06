@@ -436,6 +436,27 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
   const handlePhotoFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    // Validasi berkas PDF
+    if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+      alert(
+        'Format berkas PDF belum didukung untuk pemindaian OCR gambar otomatis.\n\n' +
+        'Solusi Cepat (10 Detik):\n' +
+        '1. Buka dokumen PDF jadwal di HP atau komputer Anda.\n' +
+        '2. Ambil tangkapan layar (screenshot) pada bagian tabel jadwalnya (tersimpan sebagai JPG / PNG).\n' +
+        '3. Unggah foto screenshot tersebut ke sini agar sistem otomatis membaca hari, jam, mapel, dan guru.'
+      );
+      e.target.value = '';
+      return;
+    }
+
+    // Validasi tipe berkas non-gambar
+    if (!file.type.startsWith('image/')) {
+      alert('Format berkas tidak dikenali. Silakan pilih berkas foto atau gambar jadwal (JPG, PNG, atau WebP).');
+      e.target.value = '';
+      return;
+    }
+
     await processSchedulePhoto(file);
     e.target.value = '';
   };
@@ -603,11 +624,18 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
       await fetchSchedules();
 
       const count = scanData.schedules?.length || scanData.count || 0;
-      setScanNotification({
-        message: `Jadwal resmi untuk ${finalRombel} berhasil diperbarui dari foto (${count} sesi pelajaran aktif).`,
-        count,
-        rombel: finalRombel,
-      });
+      if (count === 0) {
+        alert(
+          `Sistem tidak dapat mendeteksi baris jadwal yang valid dari berkas yang diunggah untuk ${finalRombel}.\n\n` +
+          'Pastikan foto dokumen jadwal jelas, tidak miring/buram, dan teks tabel terbaca. Anda juga dapat menggunakan tombol "Tambah Sesi Manual" untuk memasukkan jadwal secara langsung.'
+        );
+      } else {
+        setScanNotification({
+          message: `Jadwal resmi untuk ${finalRombel} berhasil diperbarui dari foto (${count} sesi pelajaran aktif).`,
+          count,
+          rombel: finalRombel,
+        });
+      }
 
       setTimeout(() => {
         setIsScanning(false);
@@ -901,7 +929,7 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
       <input
         ref={fileInputRef}
         type="file"
-        accept="image/*"
+        accept="image/jpeg,image/png,image/webp,image/*"
         capture="environment"
         onChange={handlePhotoFileChange}
         className="hidden"
@@ -1112,6 +1140,9 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
               <p className="text-xs text-slate-500 mt-1 max-w-lg mx-auto leading-relaxed">
                 Pilih jenjang dan kelas target di bawah ini, lalu pilih atau potret lembar foto jadwal resmi. Sistem otomatis membaca waktu dan mata pelajaran, kemudian langsung memperbarui tabel jadwal digital untuk kelas yang dipilih.
               </p>
+              <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-[11px] font-medium text-slate-600 border border-slate-200">
+                <span>Format: JPG / PNG / WebP. Jika berupa dokumen PDF, silakan screenshot tabel jadwal lalu unggah gambarnya.</span>
+              </div>
             </div>
 
             {/* Pilihan Jenjang & Kelas Target */}
