@@ -99,6 +99,57 @@ const PRESETS: Record<'admin' | 'guru' | 'siswa', string[]> = {
   siswa: ['schedules', 'classes', 'calendar'],
 };
 
+// Daftar kata bahasa Indonesia pilihan untuk generator sandi acak (xkcd memorable passphrase)
+const PASSPHRASE_WORDS = [
+  // Hewan
+  'kucing', 'kelinci', 'burung', 'kancil', 'merpati', 'kijang', 'elang', 'lebah',
+  'panda', 'harimau', 'koala', 'lumba', 'rusa', 'kupu', 'belalang',
+  // Alam & Cuaca
+  'hujan', 'pelangi', 'bintang', 'sungai', 'gunung', 'pantai', 'ombak', 'embun',
+  'awan', 'senja', 'mentari', 'samudra', 'lembah', 'danau', 'hutan', 'cakrawala',
+  'fajar', 'surya', 'gerimis', 'gemintang',
+  // Benda & Objek
+  'sepeda', 'lentera', 'perahu', 'kereta', 'pesawat', 'kompas', 'payung', 'kamera',
+  'cermin', 'pensil', 'kertas', 'cangkir', 'sepatu', 'jaket', 'mutiara', 'delman',
+  'kunci', 'buku', 'lampu', 'radio', 'aroma', 'pintu',
+  // Makanan & Minuman
+  'teh', 'kopi', 'kelapa', 'madu', 'cokelat', 'jagung', 'melon', 'semangka',
+  'mangga', 'jeruk', 'pisang', 'alpukat', 'stroberi', 'anggur', 'pepaya', 'durian',
+  // Karakter & Harmoni
+  'angin', 'cahaya', 'melodi', 'langkah', 'semangat', 'damai', 'harmoni', 'senyum',
+  'cerita', 'sahabat', 'pustaka', 'pesona', 'harapan', 'kencana', 'zamrud', 'delima',
+  // Tumbuhan & Bunga
+  'bunga', 'melati', 'mawar', 'anggrek', 'kenanga', 'teratai', 'dahlia', 'tulip',
+  'pohon', 'beringin', 'cemara', 'bambu', 'pandan', 'gaharu', 'cendana', 'akar', 'daun'
+];
+
+/**
+ * Menghasilkan kata sandi 4 kata acak bahasa Indonesia dengan panjang minimal 15 karakter
+ * Contoh: kucing-hujan-sepeda-teh
+ */
+const generateMemorablePassphrase = (): string => {
+  let passphrase = '';
+  while (passphrase.length < 15) {
+    const selected: string[] = [];
+    while (selected.length < 4) {
+      let randIdx: number;
+      if (typeof window !== 'undefined' && window.crypto && window.crypto.getRandomValues) {
+        const arr = new Uint32Array(1);
+        window.crypto.getRandomValues(arr);
+        randIdx = arr[0] % PASSPHRASE_WORDS.length;
+      } else {
+        randIdx = Math.floor(Math.random() * PASSPHRASE_WORDS.length);
+      }
+      const word = PASSPHRASE_WORDS[randIdx];
+      if (!selected.includes(word)) {
+        selected.push(word);
+      }
+    }
+    passphrase = selected.join('-');
+  }
+  return passphrase;
+};
+
 interface UsersTabProps {
   mode?: 'users' | 'activation';
 }
@@ -150,18 +201,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
   };
 
   const generateRandomPassword = () => {
-    const chars = 'abcdefghjkmnpqrstuvwxyz23456789';
-    let rand = '';
-    for (let i = 0; i < 6; i++) {
-      rand += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    const prefix =
-      editingUser?.role === 'siswa'
-        ? 'santri'
-        : editingUser?.role === 'admin'
-        ? 'adm'
-        : 'guru';
-    const newPass = `${prefix}#${rand}`;
+    const newPass = generateMemorablePassphrase();
     if (editingUser) {
       setEditingUser({ ...editingUser, password: newPass });
       setShowEditPassword(true);
@@ -1840,7 +1880,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                           handleQuickSavePassword();
                         }
                       }}
-                      placeholder="Ketik kata sandi baru..."
+                      placeholder="Ketik kata sandi baru (contoh: kucing-hujan-sepeda-teh)..."
                       className="w-full pl-3.5 pr-10 py-2.5 text-xs font-mono font-bold text-slate-900 rounded-xl bg-white border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all"
                     />
                     <button
@@ -1882,7 +1922,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                 </div>
 
                 <p className="text-[11.5px] text-slate-600 leading-relaxed">
-                  Ketik kata sandi baru atau klik <span className="font-semibold text-slate-800">Buat Sandi Acak</span>, lalu tekan tombol <span className="font-semibold text-blue-700">Simpan Sandi</span> agar perubahan langsung aktif dan tersimpan permanen.
+                  Ketik kata sandi baru atau klik <span className="font-semibold text-slate-800">Buat Sandi Acak</span> (otomatis 4 kata acak mudah diingat &amp; aman), lalu tekan tombol <span className="font-semibold text-blue-700">Simpan Sandi</span> agar perubahan langsung aktif dan tersimpan permanen.
                 </p>
               </div>
 
@@ -2084,18 +2124,8 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                   <button
                     type="button"
                     onClick={() => {
-                      const chars = 'abcdefghjkmnpqrstuvwxyz23456789';
-                      let rand = '';
-                      for (let i = 0; i < 5; i++) {
-                        rand += chars.charAt(Math.floor(Math.random() * chars.length));
-                      }
-                      const prefix =
-                        newUserForm.role === 'siswa'
-                          ? 'santri'
-                          : newUserForm.role === 'admin'
-                          ? 'adm'
-                          : 'guru';
-                      setNewUserForm({ ...newUserForm, password: `${prefix}#${rand}` });
+                      const newPass = generateMemorablePassphrase();
+                      setNewUserForm({ ...newUserForm, password: newPass });
                       setShowNewUserPassword(true);
                     }}
                     className="text-[11px] font-bold text-blue-700 hover:text-blue-900 flex items-center gap-1 active:scale-95 bg-white border border-blue-200 px-2 py-0.5 rounded-md shadow-2xs"
@@ -2113,7 +2143,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                     onChange={(e) =>
                       setNewUserForm({ ...newUserForm, password: e.target.value })
                     }
-                    placeholder="Masukkan kata sandi akun..."
+                    placeholder="Contoh: kucing-hujan-sepeda-teh"
                     className="w-full pl-3 pr-10 py-2 text-xs font-mono font-bold rounded-xl border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-900"
                   />
                   <button
