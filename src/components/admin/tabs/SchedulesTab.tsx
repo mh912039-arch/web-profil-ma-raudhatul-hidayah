@@ -255,8 +255,8 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
   }, [initialRombel]);
 
   // Modal State for manual add/edit
-  type ModalMode = 'row' | 'day' | 'single';
-  const [modalMode, setModalMode] = useState<ModalMode>('row');
+  type ModalMode = 'day' | 'single';
+  const [modalMode, setModalMode] = useState<ModalMode>('day');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<ScheduleItem | null>(null);
   const [formData, setFormData] = useState<Partial<ScheduleItem>>({
@@ -267,28 +267,6 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
     time_end: '07:30',
     subject_name: '',
     teacher_name: teachers[0]?.name || 'Dewan Guru',
-  });
-
-  // State Form Mode Baris Sesi Jam (Matriks Horizontal: Jam Mulai-Selesai, Mapel Senin-Jumat/Sabtu)
-  const [rowForm, setRowForm] = useState<{
-    class_rombel: string;
-    session_no: number;
-    time_start: string;
-    time_end: string;
-    days: Record<string, { enabled: boolean; subject_name: string; teacher_name: string }>;
-  }>({
-    class_rombel: initialRombel || 'SMA - Kelas X',
-    session_no: 1,
-    time_start: '06:45',
-    time_end: '07:30',
-    days: {
-      Senin: { enabled: true, subject_name: '', teacher_name: teachers[0]?.name || 'Dewan Guru' },
-      Selasa: { enabled: true, subject_name: '', teacher_name: teachers[0]?.name || 'Dewan Guru' },
-      Rabu: { enabled: true, subject_name: '', teacher_name: teachers[0]?.name || 'Dewan Guru' },
-      Kamis: { enabled: true, subject_name: '', teacher_name: teachers[0]?.name || 'Dewan Guru' },
-      Jumat: { enabled: true, subject_name: '', teacher_name: teachers[0]?.name || 'Dewan Guru' },
-      Sabtu: { enabled: false, subject_name: '', teacher_name: teachers[0]?.name || 'Dewan Guru' },
-    },
   });
 
   // State Form Mode Harian (Batch Vertikal Sesi 1..N dalam 1 Hari)
@@ -676,50 +654,6 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
     { start: '14:10', end: '15:20' },
   ];
 
-  // Buka Form Mode Baris Sesi Jam (Horizontal Grid: Jam Mulai-Selesai, Mapel Senin-Jumat/Sabtu)
-  const handleOpenAddRow = (presetSession?: number) => {
-    setEditingItem(null);
-    setModalMode('row');
-    const targetSession = presetSession ?? 1;
-    const slot = defaultMaSlots[Math.min(Math.max(0, targetSession - 1), defaultMaSlots.length - 1)] || {
-      start: '06:45',
-      end: '07:30',
-    };
-
-    const existingForSession = schedules.filter(
-      (s) => isSameRombel(s.class_rombel, selectedRombel) && s.session_no === targetSession
-    );
-
-    const initialDays: Record<string, { enabled: boolean; subject_name: string; teacher_name: string }> = {
-      Senin: { enabled: true, subject_name: '', teacher_name: teachers[0]?.name || 'Dewan Guru' },
-      Selasa: { enabled: true, subject_name: '', teacher_name: teachers[0]?.name || 'Dewan Guru' },
-      Rabu: { enabled: true, subject_name: '', teacher_name: teachers[0]?.name || 'Dewan Guru' },
-      Kamis: { enabled: true, subject_name: '', teacher_name: teachers[0]?.name || 'Dewan Guru' },
-      Jumat: { enabled: true, subject_name: '', teacher_name: teachers[0]?.name || 'Dewan Guru' },
-      Sabtu: { enabled: false, subject_name: '', teacher_name: teachers[0]?.name || 'Dewan Guru' },
-    };
-
-    existingForSession.forEach((item) => {
-      if (initialDays[item.day]) {
-        initialDays[item.day] = {
-          enabled: true,
-          subject_name: item.subject_name,
-          teacher_name: item.teacher_name,
-        };
-      }
-    });
-
-    setRowForm({
-      class_rombel: selectedRombel,
-      session_no: targetSession,
-      time_start: existingForSession[0]?.time_start || slot.start,
-      time_end: existingForSession[0]?.time_end || slot.end,
-      days: initialDays,
-    });
-
-    setIsModalOpen(true);
-  };
-
   // Buka Form Mode Harian (Batch Vertikal Sesi Hari Terpilih)
   const handleOpenAddDay = (targetDayName?: string) => {
     setEditingItem(null);
@@ -759,7 +693,7 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
   };
 
   const handleOpenAdd = (presetSession?: number) => {
-    handleOpenAddRow(presetSession);
+    handleOpenAddDay(selectedDay);
   };
 
   const handleOpenEdit = (item: ScheduleItem) => {
@@ -778,58 +712,6 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
       }
     } catch (err) {
       console.error('Failed to delete schedule:', err);
-    }
-  };
-
-  // Simpan Form Mode Baris Sesi Jam (Senin-Jumat)
-  const handleSaveRow = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!rowForm.time_start || !rowForm.time_end) {
-      alert('Harap tentukan jam mulai dan jam selesai untuk baris sesi ini.');
-      return;
-    }
-    const enabledDays = Object.entries(rowForm.days).filter(([_, v]) => v.enabled && v.subject_name.trim());
-    if (enabledDays.length === 0) {
-      alert('Harap isi minimal 1 nama mata pelajaran pada hari yang dicentang.');
-      return;
-    }
-
-    setIsSubmitting(true);
-    try {
-      const itemsToSave: ScheduleItem[] = enabledDays.map(([dayName, v]) => ({
-        id: `sch-${rowForm.class_rombel.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${dayName.toLowerCase()}-${rowForm.session_no}-${Date.now()}`,
-        class_rombel: rowForm.class_rombel,
-        day: dayName,
-        session_no: rowForm.session_no,
-        time_start: rowForm.time_start.trim(),
-        time_end: rowForm.time_end.trim(),
-        subject_name: v.subject_name.trim(),
-        category: 'Pelajaran Reguler',
-        teacher_name: v.teacher_name || teachers[0]?.name || 'Dewan Guru',
-        room: `Ruang ${rowForm.class_rombel.replace(/^(SD|SMP|SMA)\s*-\s*/, '')}`,
-      }));
-
-      const res = await fetch('/api/schedules/batch', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          items: itemsToSave,
-          replaceRombel: rowForm.class_rombel,
-          replaceSessionNo: rowForm.session_no,
-        }),
-      });
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.message || 'Gagal menyimpan baris sesi jadwal.');
-      }
-
-      await fetchSchedules();
-      setIsModalOpen(false);
-    } catch (err: any) {
-      alert(`Pemberitahuan: ${err.message || 'Gagal menyimpan baris sesi'}`);
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -985,22 +867,12 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
 
             <button
               type="button"
-              onClick={() => handleOpenAddRow()}
-              className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-all active:scale-[0.98]"
-              title="Input satu baris sesi jam pelajaran untuk seluruh hari (Senin s.d. Jumat)"
-            >
-              <Clock className="w-4 h-4" />
-              <span>Input Per Baris Sesi Jam</span>
-            </button>
-
-            <button
-              type="button"
               onClick={() => handleOpenAddDay()}
-              className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-xs transition-all active:scale-[0.98]"
-              title="Input seluruh sesi untuk satu hari (Senin - Jumat/Sabtu)"
+              className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-all active:scale-[0.98]"
+              title="Input jadwal pelajaran harian (Senin - Jumat/Sabtu)"
             >
               <Calendar className="w-4 h-4" />
-              <span>Input Per Hari</span>
+              <span>Input Jadwal Per Hari</span>
             </button>
           </div>
         )}
@@ -1807,7 +1679,7 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
       {/* Schedule Table Container */}
       <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
         {/* Table Subheader */}
-        <div className="px-5 py-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/70">
+        <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between gap-3 bg-slate-50/70">
           <div className="flex items-center gap-3">
             <span className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse" />
             <h3 className="font-bold text-slate-900 text-sm sm:text-base">
@@ -1817,17 +1689,6 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
               {currentSchedules.length} Sesi
             </span>
           </div>
-
-          {!readOnly && (
-            <button
-              type="button"
-              onClick={() => handleOpenAdd()}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 text-xs font-semibold border border-blue-200 transition-colors"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              <span>+ Tambah Jam Pelajaran</span>
-            </button>
-          )}
         </div>
 
         {/* Schedule Table View (Desktop) & Cards (Mobile) */}
@@ -2104,9 +1965,7 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
             <div className="px-5 py-3.5 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
               <div>
                 <h3 className="font-bold text-slate-900 text-base">
-                  {modalMode === 'row'
-                    ? 'Input Jadwal Per Baris Sesi Jam (Senin–Jum\'at)'
-                    : modalMode === 'day'
+                  {modalMode === 'day'
                     ? `Input Jadwal Per Hari (${dayForm.day})`
                     : editingItem
                     ? 'Sunting Sesi Pelajaran'
@@ -2115,9 +1974,7 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
                 <p className="text-xs text-slate-500 mt-0.5">
                   Rombel Target:{' '}
                   <span className="font-semibold text-slate-700">
-                    {modalMode === 'row'
-                      ? rowForm.class_rombel
-                      : modalMode === 'day'
+                    {modalMode === 'day'
                       ? dayForm.class_rombel
                       : formData.class_rombel}
                   </span>
@@ -2137,27 +1994,15 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
             <div className="flex border-b border-slate-200 bg-slate-100/80 p-1.5 gap-1 shrink-0 overflow-x-auto">
               <button
                 type="button"
-                onClick={() => setModalMode('row')}
+                onClick={() => setModalMode('day')}
                 className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
-                  modalMode === 'row'
+                  modalMode === 'day'
                     ? 'bg-white text-blue-700 shadow-xs'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
                 }`}
               >
-                <Clock className="w-3.5 h-3.5 shrink-0" />
-                <span>1. Per Baris Sesi Jam (Senin–Jum&apos;at)</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setModalMode('day')}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
-                  modalMode === 'day'
-                    ? 'bg-white text-indigo-700 shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
-                }`}
-              >
                 <Calendar className="w-3.5 h-3.5 shrink-0" />
-                <span>2. Per Hari (Harian)</span>
+                <span>1. Input Per Hari ({dayForm.day})</span>
               </button>
               <button
                 type="button"
@@ -2169,266 +2014,13 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
                 }`}
               >
                 <Edit2 className="w-3.5 h-3.5 shrink-0" />
-                <span>3. Satu Sesi</span>
+                <span>2. Tambah / Edit Satu Sesi</span>
               </button>
             </div>
 
             {/* Modal Body Container */}
             <div className="p-4 sm:p-6 overflow-y-auto flex-1 space-y-4">
-              {/* ============================================================== */}
-              {/* MODE 1: PER BARIS SESI JAM (HORIZONTAL MATRIX)                */}
-              {/* ============================================================== */}
-              {modalMode === 'row' && (
-                <form onSubmit={handleSaveRow} className="space-y-4">
-                  <div className="bg-blue-50/70 border border-blue-200/80 rounded-xl p-3 text-xs text-blue-900">
-                    <p className="font-semibold">Struktur Matriks Jam Pelajaran:</p>
-                    <p className="text-blue-700 mt-0.5">
-                      Tentukan jam sesi sekali saja, lalu masukkan mata pelajaran untuk setiap hari (Senin s.d. Jum&apos;at/Sabtu) pada baris sesi tersebut. Cocok dengan format tabel Excel.
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">
-                        Rombel Target
-                      </label>
-                      <select
-                        value={rowForm.class_rombel}
-                        onChange={(e) => setRowForm({ ...rowForm, class_rombel: e.target.value })}
-                        className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                        required
-                      >
-                        <optgroup label="Jenjang SD (Kelas 1 - 6)">
-                          {allRombels
-                            .filter((r) => r.level === 'sd')
-                            .map((r) => (
-                              <option key={r.id} value={r.name}>
-                                {r.name}
-                              </option>
-                            ))}
-                        </optgroup>
-                        <optgroup label="Jenjang SMP (Kelas VII - IX)">
-                          {allRombels
-                            .filter((r) => r.level === 'smp')
-                            .map((r) => (
-                              <option key={r.id} value={r.name}>
-                                {r.name}
-                              </option>
-                            ))}
-                        </optgroup>
-                        <optgroup label="Jenjang SMA / MA (Kelas X - XII)">
-                          {allRombels
-                            .filter((r) => r.level === 'sma')
-                            .map((r) => (
-                              <option key={r.id} value={r.name}>
-                                {r.name}
-                              </option>
-                            ))}
-                        </optgroup>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">
-                        Sesi Ke-
-                      </label>
-                      <select
-                        value={rowForm.session_no}
-                        onChange={(e) => {
-                          const sNo = parseInt(e.target.value) || 1;
-                          const slot = defaultMaSlots[sNo - 1] || defaultMaSlots[0];
-                          setRowForm({
-                            ...rowForm,
-                            session_no: sNo,
-                            time_start: slot.start,
-                            time_end: slot.end,
-                          });
-                        }}
-                        className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                      >
-                        {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
-                          <option key={num} value={num}>
-                            Sesi Ke-{num}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-2">
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-700 mb-1">
-                          Jam Mulai
-                        </label>
-                        <input
-                          type="text"
-                          value={rowForm.time_start}
-                          onChange={(e) => setRowForm({ ...rowForm, time_start: e.target.value })}
-                          placeholder="06:45"
-                          className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-700 mb-1">
-                          Jam Selesai
-                        </label>
-                        <input
-                          type="text"
-                          value={rowForm.time_end}
-                          onChange={(e) => setRowForm({ ...rowForm, time_end: e.target.value })}
-                          placeholder="07:30"
-                          className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          required
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Preset jam cepat */}
-                  <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                    <span className="text-[11px] font-semibold text-slate-500 mr-1">Preset Jam:</span>
-                    {defaultMaSlots.slice(0, 5).map((sl, idx) => (
-                      <button
-                        key={idx}
-                        type="button"
-                        onClick={() =>
-                          setRowForm({
-                            ...rowForm,
-                            session_no: idx + 1,
-                            time_start: sl.start,
-                            time_end: sl.end,
-                          })
-                        }
-                        className={`text-[11px] px-2.5 py-1 rounded-lg border transition-all ${
-                          rowForm.session_no === idx + 1 &&
-                          rowForm.time_start === sl.start &&
-                          rowForm.time_end === sl.end
-                            ? 'bg-blue-600 border-blue-600 text-white font-bold'
-                            : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-100'
-                        }`}
-                      >
-                        Sesi {idx + 1} ({sl.start} - {sl.end})
-                      </button>
-                    ))}
-                  </div>
-
-                  {/* Hari-hari: Senin s.d. Sabtu */}
-                  <div className="space-y-2 pt-2">
-                    <label className="block text-xs font-bold text-slate-900">
-                      Mata Pelajaran &amp; Guru Per Hari (Sesi {rowForm.session_no} · {rowForm.time_start} - {rowForm.time_end}):
-                    </label>
-
-                    {(['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'] as const).map((dayName) => {
-                      const dayVal = rowForm.days[dayName] || {
-                        enabled: dayName !== 'Sabtu',
-                        subject_name: '',
-                        teacher_name: teachers[0]?.name || 'Dewan Guru',
-                      };
-
-                      return (
-                        <div
-                          key={dayName}
-                          className={`p-3 rounded-xl border transition-all flex flex-col sm:flex-row sm:items-center gap-2.5 ${
-                            dayVal.enabled
-                              ? 'bg-white border-slate-200 shadow-2xs'
-                              : 'bg-slate-50 border-slate-200/60 opacity-60'
-                          }`}
-                        >
-                          <div className="flex items-center gap-2 sm:w-28 shrink-0">
-                            <input
-                              type="checkbox"
-                              id={`check-${dayName}`}
-                              checked={dayVal.enabled}
-                              onChange={(e) =>
-                                setRowForm({
-                                  ...rowForm,
-                                  days: {
-                                    ...rowForm.days,
-                                    [dayName]: { ...dayVal, enabled: e.target.checked },
-                                  },
-                                })
-                              }
-                              className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
-                            />
-                            <label
-                              htmlFor={`check-${dayName}`}
-                              className="text-xs font-bold text-slate-800 cursor-pointer select-none"
-                            >
-                              {dayName}
-                            </label>
-                          </div>
-
-                          <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                            <input
-                              type="text"
-                              disabled={!dayVal.enabled}
-                              value={dayVal.subject_name}
-                              onChange={(e) =>
-                                setRowForm({
-                                  ...rowForm,
-                                  days: {
-                                    ...rowForm.days,
-                                    [dayName]: { ...dayVal, subject_name: e.target.value },
-                                  },
-                                })
-                              }
-                              placeholder={
-                                dayName === 'Senin'
-                                  ? 'Contoh: Upacara Bendera'
-                                  : dayName === 'Jumat'
-                                  ? 'Contoh: Praktek Sholat / Fiqih'
-                                  : 'Nama Mata Pelajaran'
-                              }
-                              className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-slate-100"
-                            />
-
-                            <select
-                              disabled={!dayVal.enabled}
-                              value={dayVal.teacher_name}
-                              onChange={(e) =>
-                                setRowForm({
-                                  ...rowForm,
-                                  days: {
-                                    ...rowForm.days,
-                                    [dayName]: { ...dayVal, teacher_name: e.target.value },
-                                  },
-                                })
-                              }
-                              className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white disabled:bg-slate-100"
-                            >
-                              {teachers.map((t) => (
-                                <option key={t.order_no} value={t.name}>
-                                  {t.name}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  <div className="pt-3 border-t border-slate-200 flex items-center justify-end gap-2 shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => setIsModalOpen(false)}
-                      className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-colors"
-                    >
-                      Batal
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="px-5 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors shadow-xs disabled:opacity-50"
-                    >
-                      {isSubmitting ? 'Menyimpan...' : `Simpan Baris Sesi ${rowForm.session_no} (Senin–Jum'at)`}
-                    </button>
-                  </div>
-                </form>
-              )}
-
-              {/* ============================================================== */}
-              {/* MODE 2: PER HARI (BATCH VERTICAL DAY)                         */}
+                            {/* MODE 1: PER HARI (BATCH VERTICAL DAY)                         */}
               {/* ============================================================== */}
               {modalMode === 'day' && (
                 <form onSubmit={handleSaveDay} className="space-y-4">
