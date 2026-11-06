@@ -946,34 +946,60 @@ export default function AdminDashboardPage() {
 
         {/* Content View Tabs */}
         <main className="flex-1 p-3 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto min-w-0 overflow-x-hidden pb-24 lg:pb-8">
-          {userRole === 'admin' && effectiveActiveTab === 'overview' && (
-            <OverviewTab
-              setActiveTab={setActiveTab}
-              stats={{
-                teachersCount: teachers.length,
-                articlesCount: articles.length,
-                championshipCount: championshipPhotos.length,
-                unreadMessages: unreadMessagesCount,
-                registrationsCount: applicants.length,
-                academicYear: ppdbData.academicYear,
-                isPpdbOpen: ppdbData.isRegistrationOpen,
-              }}
-              supabaseConnected={supabaseConnected}
-              homepageData={homepageData}
-              onSaveHomepage={handleSaveHomepage}
-              isSaving={isSaving}
-            />
-          )}
-
-          {(userRole === 'guru' || userRole === 'siswa') && effectiveActiveTab === 'overview' && (
-            <PortalOverviewTab
-              userRole={userRole}
-              currentUserName={currentUserName}
-              teachers={teachers}
-              articlesCount={articles.length}
-              achievementsCount={championshipPhotos.length}
-              setActiveTab={setActiveTab}
-            />
+          {effectiveActiveTab === 'overview' && (
+            <>
+              {/* Untuk Admin: Di Desktop tampilkan OverviewTab (Analytics & Slider), di Mobile tampilkan Modern App Hub */}
+              {userRole === 'admin' ? (
+                <>
+                  <div className="hidden md:block">
+                    <OverviewTab
+                      setActiveTab={setActiveTab}
+                      stats={{
+                        teachersCount: teachers.length,
+                        articlesCount: articles.length,
+                        championshipCount: championshipPhotos.length,
+                        unreadMessages: unreadMessagesCount,
+                        registrationsCount: applicants.length,
+                        academicYear: ppdbData.academicYear,
+                        isPpdbOpen: ppdbData.isRegistrationOpen,
+                      }}
+                      supabaseConnected={supabaseConnected}
+                      homepageData={homepageData}
+                      onSaveHomepage={handleSaveHomepage}
+                      isSaving={isSaving}
+                    />
+                  </div>
+                  <div className="block md:hidden">
+                    <PortalOverviewTab
+                      userRole="admin"
+                      currentUserName={currentUserName}
+                      teachers={teachers}
+                      articlesCount={articles.length}
+                      achievementsCount={championshipPhotos.length}
+                      unreadMessagesCount={unreadMessagesCount}
+                      registrationsCount={applicants.length}
+                      academicYear={ppdbData.academicYear}
+                      isPpdbOpen={ppdbData.isRegistrationOpen}
+                      setActiveTab={setActiveTab}
+                    />
+                  </div>
+                </>
+              ) : (
+                /* Untuk Guru & Santri: Tampilkan Modern App Hub */
+                <PortalOverviewTab
+                  userRole={userRole}
+                  currentUserName={currentUserName}
+                  teachers={teachers}
+                  articlesCount={articles.length}
+                  achievementsCount={championshipPhotos.length}
+                  unreadMessagesCount={unreadMessagesCount}
+                  registrationsCount={applicants.length}
+                  academicYear={ppdbData.academicYear}
+                  isPpdbOpen={ppdbData.isRegistrationOpen}
+                  setActiveTab={setActiveTab}
+                />
+              )}
+            </>
           )}
 
           {effectiveActiveTab === 'schedules' && (

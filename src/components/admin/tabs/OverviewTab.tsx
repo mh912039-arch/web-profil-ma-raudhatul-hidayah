@@ -162,8 +162,9 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
           <h3 className="font-serif text-[18px] font-bold text-slate-900 tracking-tight">
             Metrik &amp; Indikator Utama
           </h3>
-          <span className="text-[11px] sm:text-[12px] text-slate-500 font-medium truncate">
-            Proyek Database: <strong className="font-mono text-slate-700">zzgobrlhnnqvspuwugkz</strong>
+          <span className="text-[11px] sm:text-[12px] text-slate-500 font-medium inline-flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+            <span>Sistem Terhubung Cloud Database</span>
           </span>
         </div>
 
