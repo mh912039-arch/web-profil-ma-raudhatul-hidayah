@@ -75,8 +75,8 @@ const tabTitles: Record<AdminTab, { title: string; subtitle: string }> = {
     subtitle: 'Galeri piala kejuaraan, piagam prestasi, dan foto dokumentasi kemenangan santri madrasah',
   },
   facilities: {
-    title: 'Fasilitas & Sarpras',
-    subtitle: 'Sarana, prasarana gedung, laboratorium, dan fasilitas madrasah',
+    title: 'Fasilitas Madrasah',
+    subtitle: 'Sarana, gedung, laboratorium, dan fasilitas madrasah',
   },
   gallery: {
     title: 'Dokumentasi Juara',

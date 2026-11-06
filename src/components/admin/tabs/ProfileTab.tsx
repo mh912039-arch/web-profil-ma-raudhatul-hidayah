@@ -402,7 +402,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
               : activeSubTab === 'visi'
               ? 'Visi & Misi Madrasah (/profil/visi-misi)'
               : activeSubTab === 'fasilitas'
-              ? 'Fasilitas & Sarpras'
+              ? 'Fasilitas Madrasah'
               : 'Identitas & Profil Web'}
           </h3>
           <p className="text-[13px] text-slate-500">
@@ -411,7 +411,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
               : activeSubTab === 'visi'
               ? 'Sesuaikan teks visi utama, judul misi pokok, subtitle pengantar, dan butir misi madrasah'
               : activeSubTab === 'fasilitas'
-              ? 'Sarana, prasarana gedung, laboratorium, dan fasilitas madrasah'
+              ? 'Sarana, gedung, laboratorium, dan fasilitas madrasah'
               : 'NPSN, NSM, visi misi kelembagaan, alamat resmi, dan profil madrasah'}
           </p>
         </div>
@@ -430,7 +430,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
               : activeSubTab === 'visi'
               ? 'Simpan Visi & Misi'
               : activeSubTab === 'fasilitas'
-              ? 'Simpan Fasilitas & Sarpras'
+              ? 'Simpan Fasilitas Madrasah'
               : 'Simpan Profil Web'}
           </span>
         </button>
@@ -491,7 +491,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
               : 'text-slate-600 hover:text-slate-900'
           }`}
         >
-          Fasilitas &amp; Sarpras
+          Fasilitas Madrasah
         </button>
       </div>
 
@@ -1154,7 +1154,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
             <div>
               <h4 className="font-serif text-[16px] font-bold text-slate-900 flex items-center gap-2">
                 <BookOpen className="w-5 h-5 text-blue-600" />
-                <span>Fasilitas &amp; Sarpras Madrasah (/profil/fasilitas)</span>
+                <span>Fasilitas Madrasah (/profil/fasilitas)</span>
               </h4>
               <p className="text-[12.5px] text-slate-500 mt-0.5">
                 Kelola kartu fasilitas dengan gambar yang dikompresi otomatis
@@ -1273,7 +1273,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
             {isSaving
               ? 'Menyimpan...'
               : activeSubTab === 'fasilitas'
-              ? 'Simpan Fasilitas & Sarpras'
+              ? 'Simpan Fasilitas Madrasah'
               : activeSubTab === 'kontak'
               ? 'Simpan Halaman Kontak'
               : activeSubTab === 'visi'
