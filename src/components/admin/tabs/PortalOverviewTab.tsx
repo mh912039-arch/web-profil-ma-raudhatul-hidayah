@@ -432,17 +432,6 @@ export function PortalOverviewTab({
           3. GRID MENU CEPAT (QUICK ACTION HUB - SIMPLE, RAPIH & MUDAH DIKLIK)
       ========================================================================= */}
       <div className="space-y-4 pt-1">
-        <div className="flex items-center justify-between">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
-            {userRole === 'admin'
-              ? 'MENU AKSI CEPAT'
-              : userRole === 'guru'
-              ? 'PINTASAN GURU'
-              : 'MENU SANTRI / SISWA'}
-          </h3>
-          <span className="text-[11px] text-slate-400">Pilih menu untuk membuka</span>
-        </div>
-
         {/* --- KELOMPOK 1: AKADEMIK & KURIKULUM --- */}
         <div className="space-y-2">
           <div className="text-[11px] font-bold text-slate-700 uppercase tracking-wide">
@@ -752,13 +741,6 @@ export function PortalOverviewTab({
             </div>
           </div>
         )}
-      </div>
-
-      {/* =========================================================================
-          4. CATATAN IDENTITAS LEMBAGA
-      ========================================================================= */}
-      <div className="rounded-xl border border-slate-200/80 bg-white p-3 text-center text-xs font-semibold text-slate-600">
-        <span className="text-blue-700 font-bold">Madrasah Aliyah Raudlatul Hidayah</span> &mdash; Berilmu, berakhlak, berprestasi.
       </div>
     </div>
   );
