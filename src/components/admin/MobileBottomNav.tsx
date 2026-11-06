@@ -47,7 +47,7 @@ export function MobileBottomNav({
       id: 'classes',
       label: 'Kelas',
       icon: GraduationCap,
-      matchTabs: ['classes', 'teachers', 'website-teachers', 'users', 'activation'],
+      matchTabs: ['classes', 'teachers', 'users', 'activation'],
     },
     {
       id: 'calendar',
