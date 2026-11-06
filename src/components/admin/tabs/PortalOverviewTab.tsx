@@ -211,7 +211,7 @@ export function PortalOverviewTab({
                   Jadwal Pelajaran
                 </div>
                 <div className="text-base sm:text-lg font-bold text-slate-900 mt-0.5 group-hover:text-blue-700 transition-colors">
-                  {activeRombelsCount} Rombel
+                  {activeRombelsCount} Ruang Kelas
                 </div>
                 <div className="text-[10.5px] text-slate-500 truncate mt-0.5">
                   SD, SMP &amp; SMA Aktif
@@ -464,9 +464,9 @@ export function PortalOverviewTab({
                   </div>
                   <div className="text-[11px] text-slate-500 truncate">
                     {userRole === 'guru'
-                      ? 'Agenda mengajar & seluruh rombel'
+                      ? 'Agenda mengajar & seluruh kelas'
                       : userRole === 'admin'
-                      ? 'Kelola matriks jadwal seluruh rombel'
+                      ? 'Kelola matriks jadwal seluruh kelas'
                       : 'Jadwal belajar harian santri'}
                   </div>
                 </div>
@@ -512,8 +512,8 @@ export function PortalOverviewTab({
                   </div>
                   <div className="text-[11px] text-slate-500 truncate">
                     {userRole === 'admin'
-                      ? 'Daftar rombel dan penugasan wali'
-                      : 'Informasi rombel & pembimbing kelas'}
+                      ? 'Daftar ruang kelas dan penugasan wali'
+                      : 'Informasi ruang kelas & pembimbing kelas'}
                   </div>
                 </div>
               </div>

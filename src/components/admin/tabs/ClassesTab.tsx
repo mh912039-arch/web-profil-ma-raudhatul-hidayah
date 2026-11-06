@@ -452,9 +452,9 @@ export const ClassesTab: React.FC<ClassesTabProps> = ({
       {filteredClasses.length === 0 ? (
         <div className="bg-white rounded-2xl border border-slate-200/90 p-12 text-center space-y-3">
           <School className="w-10 h-10 text-slate-300 mx-auto" />
-          <h4 className="font-bold text-slate-800 text-[16px]">Belum Ada Rombongan Belajar</h4>
+          <h4 className="font-bold text-slate-800 text-[16px]">Belum Ada Ruang Kelas</h4>
           <p className="text-slate-500 text-xs max-w-sm mx-auto">
-            Belum ada data rombel untuk kategori ini. Klik &quot;Tambah Rombel Baru&quot; untuk menambahkan kelas.
+            Belum ada data ruang kelas untuk kategori ini. Klik &quot;Tambah Ruang Kelas&quot; untuk menambahkan kelas.
           </p>
         </div>
       ) : (
@@ -513,7 +513,7 @@ export const ClassesTab: React.FC<ClassesTabProps> = ({
                           type="button"
                           onClick={() => handleOpenEdit(cls)}
                           className="px-2.5 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold flex items-center gap-1 border border-blue-200 transition-colors active:scale-95"
-                          title="Edit Lengkap Rombel & Wali Kelas"
+                          title="Edit Ruang Kelas & Wali Kelas"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
                           <span>Edit</span>
@@ -523,7 +523,7 @@ export const ClassesTab: React.FC<ClassesTabProps> = ({
                           type="button"
                           onClick={() => handleDeleteClass(cls)}
                           className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
-                          title="Hapus Rombel"
+                          title="Hapus Ruang Kelas"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -560,12 +560,12 @@ export const ClassesTab: React.FC<ClassesTabProps> = ({
                 </div>
                 <div>
                   <h3 className="font-bold text-slate-900 text-[17px]">
-                    {modalMode === 'add' ? 'Tambah Rombel / Kelas Baru' : 'Edit Rombel & Wali Kelas'}
+                    {modalMode === 'add' ? 'Tambah Ruang Kelas Baru' : 'Edit Ruang Kelas & Wali Kelas'}
                   </h3>
                   <p className="text-[12px] text-slate-500">
                     {modalMode === 'add'
-                      ? 'Daftarkan rombongan belajar baru beserta wali kelas resminya'
-                      : `Perbarui informasi kelas ${formData.name}`}
+                      ? 'Daftarkan ruang kelas baru beserta wali kelas resminya'
+                      : `Perbarui informasi ruang kelas ${formData.name}`}
                   </p>
                 </div>
               </div>
@@ -618,7 +618,7 @@ export const ClassesTab: React.FC<ClassesTabProps> = ({
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-[12px] font-bold text-slate-700">Nama Lengkap Rombel *</label>
+                <label className="text-[12px] font-bold text-slate-700">Nama Ruang Kelas *</label>
                 <input
                   type="text"
                   value={formData.name}
@@ -706,7 +706,7 @@ export const ClassesTab: React.FC<ClassesTabProps> = ({
                   className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl bg-blue-900 hover:bg-blue-800 text-white text-xs font-bold shadow-xs transition-all active:scale-95 disabled:opacity-50"
                 >
                   <Save className="w-3.5 h-3.5" />
-                  <span>{isSubmitting ? 'Menyimpan...' : modalMode === 'add' ? 'Simpan Rombel' : 'Simpan Perubahan'}</span>
+                  <span>{isSubmitting ? 'Menyimpan...' : modalMode === 'add' ? 'Simpan Ruang Kelas' : 'Simpan Perubahan'}</span>
                 </button>
               </div>
             </form>

@@ -32,7 +32,7 @@ const tabTitles: Record<AdminTab, { title: string; subtitle: string }> = {
   },
   schedules: {
     title: 'Jadwal Pelajaran',
-    subtitle: 'Susun jadwal mata pelajaran harian untuk setiap rombel kelas',
+    subtitle: 'Susun jadwal mata pelajaran harian untuk setiap ruang kelas',
   },
   teachers: {
     title: 'Guru Mata Pelajaran',
@@ -40,7 +40,7 @@ const tabTitles: Record<AdminTab, { title: string; subtitle: string }> = {
   },
   classes: {
     title: 'Kelas & Wali Kelas',
-    subtitle: 'Manajemen rombongan belajar (rombel), penetapan wali kelas, dan kuota santri',
+    subtitle: 'Manajemen ruang kelas, penetapan wali kelas, dan kuota santri',
   },
   calendar: {
     title: 'Kalender Akademik',

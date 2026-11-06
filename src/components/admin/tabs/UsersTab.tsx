@@ -77,7 +77,7 @@ const AVAILABLE_MODULES: { id: string; label: string; group: 'ppdb' | 'akademik'
 
   // Akademik
   { id: 'teachers', label: 'Data Dewan Guru & Tendik', group: 'akademik' },
-  { id: 'schedules', label: 'Jadwal Pelajaran & Rombel', group: 'akademik' },
+  { id: 'schedules', label: 'Jadwal Pelajaran & Ruang Kelas', group: 'akademik' },
   { id: 'classes', label: 'Kelas & Wali Kelas', group: 'akademik' },
   { id: 'calendar', label: 'Kalender Akademik & Agenda', group: 'akademik' },
   { id: 'extracurricular', label: 'Kegiatan Ekstrakurikuler', group: 'akademik' },

@@ -44,7 +44,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
   const cards = [
     {
       label: 'Jadwal Pelajaran',
-      value: '12 Rombel Aktif',
+      value: '12 Ruang Kelas',
       detail: 'Jenjang SD, SMP, & SMA',
       icon: Clock,
       color: 'bg-blue-50 text-blue-900 border-blue-200',
