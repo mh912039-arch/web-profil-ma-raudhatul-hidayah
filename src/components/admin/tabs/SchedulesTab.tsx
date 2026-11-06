@@ -1605,9 +1605,6 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
 
         {/* Rombel Pills */}
         <div>
-          <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2.5">
-            PILIH ROMBEL KELAS ({displayedRombels.length} Rombel Tersedia):
-          </div>
           <div className="flex items-center gap-2 overflow-x-auto pb-1.5 no-scrollbar">
             {displayedRombels.map((rombel) => {
               const isSelected = isRombelMatch(rombel.name, selectedRombel);

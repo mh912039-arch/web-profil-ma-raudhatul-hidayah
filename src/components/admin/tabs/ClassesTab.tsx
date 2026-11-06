@@ -373,11 +373,6 @@ export const ClassesTab: React.FC<ClassesTabProps> = ({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
         <div>
           <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Kelas &amp; Wali Kelas</h2>
-          <p className="text-sm text-slate-600 mt-1">
-            {readOnly
-              ? 'Daftar rombongan belajar (rombel) terintegrasi jenjang SD, SMP, dan SMA beserta informasi wali kelas.'
-              : 'Kelola rombongan belajar: tambah rombel baru, edit data & wali kelas, atau hapus kelas.'}
-          </p>
         </div>
 
         <div className="flex items-center gap-2.5">
