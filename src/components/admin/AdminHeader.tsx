@@ -1,19 +1,9 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
-import {
-  Menu,
-  ExternalLink,
-  RefreshCw,
-  Sparkles,
-  Database,
-  CheckCircle2,
-  LogOut,
-} from 'lucide-react';
+import { Menu, LogOut } from 'lucide-react';
 import { AdminTab } from './AdminSidebar';
-import { PwaInstallPrompt } from '@/components/pwa/PwaInstallPrompt';
 
 interface AdminHeaderProps {
   activeTab: AdminTab;
@@ -160,47 +150,17 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
           </div>
         </div>
 
-        {/* Right: Actions & Status */}
-        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
-          {/* PWA Install Button */}
-          <PwaInstallPrompt variant="button" />
-
-          {/* Refresh Action */}
-          <button
-            type="button"
-            onClick={onRefresh}
-            disabled={isRefreshing}
-            className="hidden sm:inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-2xs transition-all active:scale-[0.98] disabled:opacity-50"
-            title="Muat ulang sinkronisasi data"
-          >
-            <RefreshCw
-              className={`w-3.5 h-3.5 text-slate-500 ${isRefreshing ? 'animate-spin text-blue-600' : ''}`}
-            />
-            <span className="hidden sm:inline">Segarkan Data</span>
-          </button>
-
-          {/* Outbound public portal */}
-          <Link
-            href="/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden sm:inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-semibold shadow-xs transition-all active:scale-[0.98]"
-            title="Buka Website Publik"
-          >
-            <span className="hidden sm:inline">Buka Website</span>
-            <ExternalLink className="w-3.5 h-3.5 text-amber-300" />
-          </Link>
-
-          {/* Logout Action */}
+        {/* Right: Actions (Mobile logout only; Desktop actions are already available in the sidebar) */}
+        <div className="flex items-center gap-1.5 shrink-0">
           {onLogout && (
             <button
               type="button"
               onClick={onLogout}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-rose-50 hover:border-rose-200 hover:text-rose-700 text-slate-700 text-xs font-semibold shadow-2xs transition-all active:scale-[0.98] cursor-pointer"
-              title="Keluar dari Panel Admin"
+              className="sm:hidden p-2 rounded-xl text-slate-600 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+              title="Keluar dari Akun"
+              aria-label="Keluar dari Akun"
             >
-              <LogOut className="w-3.5 h-3.5 text-slate-400 hover:text-rose-600" />
-              <span className="hidden sm:inline">Keluar</span>
+              <LogOut className="w-5 h-5 text-slate-500 hover:text-rose-600" />
             </button>
           )}
         </div>

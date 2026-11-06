@@ -831,13 +831,6 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
         <div>
           <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Jadwal Pelajaran</h2>
-          <p className="text-sm text-slate-600 mt-1">
-            {userRole === 'siswa'
-              ? 'Informasi jadwal mata pelajaran harian resmi untuk santri dan peserta didik.'
-              : readOnly
-              ? 'Informasi jadwal mata pelajaran resmi seluruh rombel kelas (hanya akun Admin yang dapat mengubah jadwal).'
-              : 'Susun jadwal mata pelajaran harian atau unggah foto jadwal untuk pembaruan otomatis.'}
-          </p>
         </div>
 
         {!readOnly && (
@@ -863,16 +856,6 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
             >
               <Camera className="w-4 h-4 text-amber-400" />
               <span>{showUploadBox ? 'Tutup Pilihan Foto' : 'Unggah Foto Jadwal (Scan Otomatis)'}</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleOpenAddDay()}
-              className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-all active:scale-[0.98]"
-              title="Input jadwal pelajaran harian (Senin - Jumat/Sabtu)"
-            >
-              <Calendar className="w-4 h-4" />
-              <span>Input Jadwal Per Hari</span>
             </button>
           </div>
         )}
