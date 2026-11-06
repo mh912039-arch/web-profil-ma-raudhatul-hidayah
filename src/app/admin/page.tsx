@@ -1059,13 +1059,13 @@ export default function AdminDashboardPage() {
             />
           )}
 
-          {userRole === 'admin' && (effectiveActiveTab === 'teachers' || effectiveActiveTab === 'website-teachers') && (
+          {userRole === 'admin' && (effectiveActiveTab === 'teachers' || (effectiveActiveTab as string) === 'website-teachers') && (
             <TeachersTab
               teachers={teachers}
               onSaveTeacher={handleSaveTeacher}
               onDeleteTeacher={handleDeleteTeacher}
               isSaving={isSaving}
-              mode={effectiveActiveTab === 'website-teachers' ? 'website-teachers' : 'teachers'}
+              mode="teachers"
             />
           )}
 

@@ -615,21 +615,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                   </div>
                 </button>
 
-                {/* 3. Dewan Guru & Pendidik */}
-                <button
-                  type="button"
-                  onClick={() => handleSelectTab('website-teachers')}
-                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-[13px] transition-all ${getItemClass(
-                    'website-teachers'
-                  )}`}
-                >
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <GraduationCap className={`w-4 h-4 shrink-0 ${getIconClass('website-teachers')}`} />
-                    <span className="truncate">Dewan Guru & Pendidik</span>
-                  </div>
-                </button>
-
-                {/* 4. Fasilitas & Sarpras */}
+                {/* 3. Fasilitas & Sarpras */}
                 <button
                   type="button"
                   onClick={() => handleSelectTab('facilities')}

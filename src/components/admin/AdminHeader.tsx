@@ -67,8 +67,8 @@ const tabTitles: Record<AdminTab, { title: string; subtitle: string }> = {
     subtitle: 'Kalender dan jadwal agenda kegiatan civitas madrasah tahun ajaran aktif',
   },
   'website-teachers': {
-    title: 'Dewan Guru & Pendidik',
-    subtitle: 'Profil tenaga pendidik yang ditampilkan pada direktori website publik',
+    title: 'Guru Mata Pelajaran',
+    subtitle: 'Kelola daftar pendidik resmi, penugasan mata pelajaran, dan beban jam mengajar jenjang SD, SMP, & SMA',
   },
   achievements: {
     title: 'Dokumentasi Juara',
