@@ -44,8 +44,12 @@ export function extractStorageFilename(urlOrPath: string | null | undefined): st
 }
 
 export async function deleteStorageFile(urlOrPath: string | null | undefined): Promise<boolean> {
-  const filename = extractStorageFilename(urlOrPath);
-  if (!filename) return false;
+  const rawFilename = extractStorageFilename(urlOrPath);
+  if (!rawFilename) return false;
+
+  // Sanitasi ketat: pastikan nama berkas hanya basename murni (mencegah Directory Traversal ../)
+  const filename = path.basename(rawFilename);
+  if (!filename || filename === '.' || filename === '..') return false;
 
   let supaDeleted = false;
   let localDeleted = false;

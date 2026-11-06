@@ -111,16 +111,27 @@ export async function POST(request: Request) {
       });
     }
 
-    if (!body.name || !body.message) {
+    if (!body.name || !body.message || typeof body.name !== 'string' || typeof body.message !== 'string') {
       return NextResponse.json(
         { success: false, message: 'Nama dan isi pesan wajib diisi.' },
         { status: 400 }
       );
     }
 
-    const contactStr = (body.contact || '').trim();
-    const email = body.email?.trim() || (contactStr.includes('@') ? contactStr : '');
-    const phone = body.phone?.trim() || (!contactStr.includes('@') ? contactStr : '');
+    const cleanName = body.name.trim().slice(0, 100);
+    const cleanMessage = body.message.trim().slice(0, 2000);
+    const cleanSubject = typeof body.subject === 'string' ? body.subject.trim().slice(0, 150) : 'Pertanyaan Pengunjung';
+
+    if (cleanName.length < 2 || cleanMessage.length < 5) {
+      return NextResponse.json(
+        { success: false, message: 'Nama minimal 2 karakter dan pesan minimal 5 karakter.' },
+        { status: 400 }
+      );
+    }
+
+    const contactStr = (typeof body.contact === 'string' ? body.contact : '').trim().slice(0, 100);
+    const email = (typeof body.email === 'string' ? body.email.trim() : (contactStr.includes('@') ? contactStr : '')).slice(0, 100);
+    const phone = (typeof body.phone === 'string' ? body.phone.trim() : (!contactStr.includes('@') ? contactStr : '')).slice(0, 30);
 
     let assignedId = `msg-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
 
@@ -129,11 +140,11 @@ export async function POST(request: Request) {
       const { data: supaInserted, error: supaErr } = await supabase
         .from('contact_messages')
         .insert({
-          name: body.name.trim(),
+          name: cleanName,
           email: email || null,
           phone: phone || null,
-          subject: body.subject?.trim() || 'Pertanyaan Pengunjung',
-          message: body.message.trim(),
+          subject: cleanSubject,
+          message: cleanMessage,
           status: 'unread',
         })
         .select()
