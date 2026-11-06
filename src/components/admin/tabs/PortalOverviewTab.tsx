@@ -434,7 +434,7 @@ export function PortalOverviewTab({
       <div className="space-y-4 pt-1">
         {/* --- KELOMPOK 1: AKADEMIK & KURIKULUM --- */}
         <div className="space-y-2">
-          <div className="text-[11px] font-bold text-slate-700 uppercase tracking-wide">
+          <div className="text-xs font-bold text-slate-800">
             Akademik &amp; Kurikulum
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -534,8 +534,8 @@ export function PortalOverviewTab({
 
         {/* --- KELOMPOK 2: KESISWAAN & PPDB --- */}
         <div className="space-y-2 pt-1">
-          <div className="text-[11px] font-bold text-slate-700 uppercase tracking-wide">
-            {userRole === 'admin' ? 'Kesiswaan &amp; PPDB Online' : 'Warta &amp; Kesiswaan'}
+          <div className="text-xs font-bold text-slate-800">
+            {userRole === 'admin' ? 'Kesiswaan & PPDB Online' : 'Warta & Kesiswaan'}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             {/* Pendaftar PPDB Online (Khusus Admin) */}
@@ -651,7 +651,7 @@ export function PortalOverviewTab({
         {/* --- KELOMPOK 3: KELOLA WEBSITE & PENGGUNA (KHUSUS ADMIN) --- */}
         {userRole === 'admin' && (
           <div className="space-y-2 pt-1">
-            <div className="text-[11px] font-bold text-slate-700 uppercase tracking-wide">
+            <div className="text-xs font-bold text-slate-800">
               Website &amp; Akun Pengguna
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
