@@ -34,12 +34,14 @@ interface OverviewTabProps {
   homepageData?: HomepageConfig;
   onSaveHomepage?: (data: HomepageConfig) => Promise<void>;
   isSaving?: boolean;
+  currentUserEmail?: string;
 }
 
 export const OverviewTab: React.FC<OverviewTabProps> = ({
   setActiveTab,
   stats,
   supabaseConnected,
+  currentUserEmail,
 }) => {
   const cards = [
     {
@@ -169,65 +171,117 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
       {/* 3. Live Traffic & Visitor Analytics (Domain & Public Profile Tracker) */}
       <VisitorAnalyticsSection />
 
-      {/* 4. Integrasi & Status Supabase Cloud */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-8 bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center border border-emerald-200 shrink-0">
-                <Database className="w-5 h-5" />
+      {/* 4. Integrasi & Status Supabase Cloud (Hanya tampil untuk akun Developer: admin@raudhatulhidayah.sch.id) */}
+      {currentUserEmail === 'admin@raudhatulhidayah.sch.id' ? (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="lg:col-span-8 bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center border border-emerald-200 shrink-0">
+                  <Database className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="font-serif text-[16px] font-bold text-slate-900">
+                    Status Koneksi Supabase PostgreSQL
+                  </h4>
+                  <p className="text-[12.5px] text-slate-500">
+                    Sinkronisasi langsung antara dashboard CMS dan tampilan website publik
+                  </p>
+                </div>
               </div>
-              <div>
-                <h4 className="font-serif text-[16px] font-bold text-slate-900">
-                  Status Koneksi Supabase PostgreSQL
-                </h4>
-                <p className="text-[12.5px] text-slate-500">
-                  Sinkronisasi langsung antara dashboard CMS dan tampilan website publik
-                </p>
-              </div>
+
+              <span
+                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-bold ${
+                  supabaseConnected
+                    ? 'bg-emerald-100 text-emerald-800'
+                    : 'bg-amber-100 text-amber-800'
+                }`}
+              >
+                <span
+                  className={`w-2 h-2 rounded-full ${
+                    supabaseConnected ? 'bg-emerald-600 animate-pulse' : 'bg-amber-600'
+                  }`}
+                />
+                {supabaseConnected ? 'Live Connected' : 'Siap Sinkron'}
+              </span>
             </div>
 
-            <span
-              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-bold ${
-                supabaseConnected
-                  ? 'bg-emerald-100 text-emerald-800'
-                  : 'bg-amber-100 text-amber-800'
-              }`}
-            >
-              <span
-                className={`w-2 h-2 rounded-full ${
-                  supabaseConnected ? 'bg-emerald-600 animate-pulse' : 'bg-amber-600'
-                }`}
-              />
-              {supabaseConnected ? 'Live Connected' : 'Siap Sinkron'}
-            </span>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-2">
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                <span className="text-[11px] font-semibold text-slate-500 block uppercase">Project ID</span>
+                <span className="font-mono text-[13px] font-bold text-slate-800 truncate block mt-0.5">
+                  zzgobrlhnnqvspuwugkz
+                </span>
+              </div>
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                <span className="text-[11px] font-semibold text-slate-500 block uppercase">Tabel Database</span>
+                <span className="text-[13px] font-bold text-slate-800 block mt-0.5">
+                  15 Tabel Terkonfigurasi
+                </span>
+              </div>
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                <span className="text-[11px] font-semibold text-slate-500 block uppercase">Keamanan RLS</span>
+                <span className="text-[13px] font-bold text-emerald-700 flex items-center gap-1 mt-0.5">
+                  <CheckCircle2 className="w-4 h-4" />
+                  Aktif &amp; Terlindungi
+                </span>
+              </div>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-2">
-            <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
-              <span className="text-[11px] font-semibold text-slate-500 block uppercase">Project ID</span>
-              <span className="font-mono text-[13px] font-bold text-slate-800 truncate block mt-0.5">
-                zzgobrlhnnqvspuwugkz
-              </span>
+          {/* Quick Shortcuts */}
+          <div className="lg:col-span-4 bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3.5 flex flex-col justify-between">
+            <div>
+              <h4 className="font-serif text-[16px] font-bold text-slate-900">
+                Aksi Cepat Admin
+              </h4>
+              <p className="text-[12.5px] text-slate-500 mt-0.5">
+                Pintasan tugas harian madrasah
+              </p>
             </div>
-            <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
-              <span className="text-[11px] font-semibold text-slate-500 block uppercase">Tabel Database</span>
-              <span className="text-[13px] font-bold text-slate-800 block mt-0.5">
-                15 Tabel Terkonfigurasi
-              </span>
-            </div>
-            <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
-              <span className="text-[11px] font-semibold text-slate-500 block uppercase">Keamanan RLS</span>
-              <span className="text-[13px] font-bold text-emerald-700 flex items-center gap-1 mt-0.5">
-                <CheckCircle2 className="w-4 h-4" />
-                Aktif &amp; Terlindungi
-              </span>
+
+            <div className="space-y-2">
+              <button
+                type="button"
+                onClick={() => setActiveTab('articles')}
+                className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-800 text-[13px] font-semibold border border-slate-200 transition-colors"
+              >
+                <span className="flex items-center gap-2">
+                  <Plus className="w-4 h-4 text-blue-600" />
+                  Tulis Artikel Baru
+                </span>
+                <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveTab('teachers')}
+                className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-800 text-[13px] font-semibold border border-slate-200 transition-colors"
+              >
+                <span className="flex items-center gap-2">
+                  <Users className="w-4 h-4 text-amber-600" />
+                  Perbarui Jadwal Guru
+                </span>
+                <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveTab('messages')}
+                className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-800 text-[13px] font-semibold border border-slate-200 transition-colors"
+              >
+                <span className="flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-rose-600" />
+                  Periksa Buku Tamu
+                </span>
+                <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+              </button>
             </div>
           </div>
         </div>
-
-        {/* Quick Shortcuts */}
-        <div className="lg:col-span-4 bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3.5 flex flex-col justify-between">
+      ) : (
+        /* Untuk Admin Lainnya: Hanya tampilkan Aksi Cepat dengan tata letak bersih dan proporsional */
+        <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs space-y-4">
           <div>
             <h4 className="font-serif text-[16px] font-bold text-slate-900">
               Aksi Cepat Admin
@@ -237,13 +291,13 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
             </p>
           </div>
 
-          <div className="space-y-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
             <button
               type="button"
               onClick={() => setActiveTab('articles')}
-              className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-800 text-[13px] font-semibold border border-slate-200 transition-colors"
+              className="w-full flex items-center justify-between p-4 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-800 text-[13px] font-semibold border border-slate-200 transition-colors"
             >
-              <span className="flex items-center gap-2">
+              <span className="flex items-center gap-2.5">
                 <Plus className="w-4 h-4 text-blue-600" />
                 Tulis Artikel Baru
               </span>
@@ -253,9 +307,9 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
             <button
               type="button"
               onClick={() => setActiveTab('teachers')}
-              className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-800 text-[13px] font-semibold border border-slate-200 transition-colors"
+              className="w-full flex items-center justify-between p-4 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-800 text-[13px] font-semibold border border-slate-200 transition-colors"
             >
-              <span className="flex items-center gap-2">
+              <span className="flex items-center gap-2.5">
                 <Users className="w-4 h-4 text-amber-600" />
                 Perbarui Jadwal Guru
               </span>
@@ -265,9 +319,9 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
             <button
               type="button"
               onClick={() => setActiveTab('messages')}
-              className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-800 text-[13px] font-semibold border border-slate-200 transition-colors"
+              className="w-full flex items-center justify-between p-4 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-800 text-[13px] font-semibold border border-slate-200 transition-colors"
             >
-              <span className="flex items-center gap-2">
+              <span className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-rose-600" />
                 Periksa Buku Tamu
               </span>
@@ -275,7 +329,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
             </button>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

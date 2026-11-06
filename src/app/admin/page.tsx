@@ -94,6 +94,12 @@ export default function AdminDashboardPage() {
     }
     return '';
   });
+  const [currentUserEmail, setCurrentUserEmail] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('mrh_email') || '';
+    }
+    return '';
+  });
   const [activeTab, setActiveTab] = useState<AdminTab>('overview');
   const [isOpenMobile, setIsOpenMobile] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -109,6 +115,12 @@ export default function AdminDashboardPage() {
         if (data.authenticated && data.role) {
           setIsAuthenticated(true);
           setUserRole(data.role);
+          if (data.email) {
+            setCurrentUserEmail(data.email);
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('mrh_email', data.email);
+            }
+          }
           if (data.username) {
             setCurrentUserName(data.username);
             if (typeof window !== 'undefined') {
@@ -131,6 +143,7 @@ export default function AdminDashboardPage() {
             localStorage.removeItem('mrh_admin_auth');
             localStorage.removeItem('mrh_user_role');
             localStorage.removeItem('mrh_username');
+            localStorage.removeItem('mrh_email');
           }
         }
       })
@@ -865,11 +878,13 @@ export default function AdminDashboardPage() {
       localStorage.removeItem('mrh_admin_auth');
       localStorage.removeItem('mrh_user_role');
       localStorage.removeItem('mrh_username');
+      localStorage.removeItem('mrh_email');
       window.location.href = '/masuk';
     }
     setIsAuthenticated(false);
     setUserRole('admin');
     setCurrentUserName('');
+    setCurrentUserEmail('');
   };
 
   return (
@@ -967,6 +982,7 @@ export default function AdminDashboardPage() {
                       homepageData={homepageData}
                       onSaveHomepage={handleSaveHomepage}
                       isSaving={isSaving}
+                      currentUserEmail={currentUserEmail}
                     />
                   </div>
                   <div className="block md:hidden">

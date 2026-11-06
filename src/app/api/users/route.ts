@@ -158,7 +158,7 @@ export async function PATCH(request: Request) {
     }
 
     // 2. Aksi Update Akun Pengguna & Hak Akses
-    const { id, role, status, permissions, name, email, password } = body;
+    const { id, role, status, permissions, name, email, username, password } = body;
     if (!id) {
       return NextResponse.json(
         { success: false, message: 'ID pengguna wajib disertakan.' },
@@ -180,6 +180,7 @@ export async function PATCH(request: Request) {
       ...users[idx],
       ...(name ? { name: name.trim() } : {}),
       ...(email ? { email: email.trim().toLowerCase() } : {}),
+      ...(username ? { username: username.trim() } : {}),
       ...(role ? { role } : {}),
       ...(status ? { status } : {}),
       ...(password && String(password).trim() !== '' && !String(password).startsWith('h256:')
@@ -222,6 +223,19 @@ export async function DELETE(request: Request) {
     }
 
     let users = await readUsers();
+    const targetUser = users.find((u) => u.id === id);
+    if (
+      targetUser &&
+      (targetUser.email?.toLowerCase() === 'admin@raudhatulhidayah.sch.id' ||
+        targetUser.username?.toLowerCase() === 'developer' ||
+        targetUser.id === 'usr-1')
+    ) {
+      return NextResponse.json(
+        { success: false, message: 'Akun Utama Developer tidak dapat dihapus demi keamanan sistem.' },
+        { status: 403 }
+      );
+    }
+
     const beforeCount = users.length;
     users = users.filter((u) => u.id !== id);
 

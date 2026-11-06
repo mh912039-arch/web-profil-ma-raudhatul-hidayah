@@ -1,10 +1,10 @@
 [
   {
     "id": "usr-1",
-    "name": "Administrator Madrasah (TU)",
+    "name": "Developer",
     "email": "admin@raudhatulhidayah.sch.id",
-    "username": "admin",
-    "password": "h256:b008179d084d4fd582cdc8d1fa91a38bf4245a29aa8bfee4c783ef1c31512a98",
+    "username": "Developer",
+    "password": "h256:d572e5f603628d0ebb989f88506a1e5e186ec0199a599bc2a41653f05cdc58b8",
     "role": "admin",
     "status": "Aktif",
     "permissions": [

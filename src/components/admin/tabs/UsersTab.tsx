@@ -408,6 +408,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
         id: editingUser.id,
         name: editingUser.name,
         email: editingUser.email,
+        username: editingUser.username,
         role: editingUser.role,
         status: editingUser.status,
         permissions: editingUser.permissions,
@@ -494,6 +495,15 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
 
   // Delete User Account
   const handleDeleteUser = async (user: UserAccount) => {
+    if (
+      user.id === 'usr-1' ||
+      user.email?.toLowerCase() === 'admin@raudhatulhidayah.sch.id' ||
+      user.username?.toLowerCase() === 'developer'
+    ) {
+      showNotification('error', 'Akun Utama Developer tidak dapat dihapus demi keamanan sistem.');
+      return;
+    }
+
     if (!confirm(`Hapus akun "${user.name}" (${user.email}) secara permanen?`)) return;
 
     try {

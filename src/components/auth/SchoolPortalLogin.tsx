@@ -141,12 +141,15 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
       setLockoutSeconds(0);
       setWarningAttempts(null);
 
-      // Simpan role di localStorage untuk sinkronisasi state instan di browser
+      // Simpan role & email di localStorage untuk sinkronisasi state instan di browser
       if (typeof window !== 'undefined') {
         localStorage.setItem('mrh_admin_auth', 'true');
         localStorage.setItem('mrh_user_role', data.role);
         if (data.username) {
           localStorage.setItem('mrh_username', data.username);
+        }
+        if (data.email) {
+          localStorage.setItem('mrh_email', data.email);
         }
       }
 
