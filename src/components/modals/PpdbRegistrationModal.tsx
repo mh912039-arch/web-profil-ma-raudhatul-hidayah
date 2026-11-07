@@ -22,6 +22,7 @@ import {
   AlertCircle,
   Info,
 } from 'lucide-react';
+import { TurnstileWidget } from '@/components/ui/TurnstileWidget';
 
 interface PpdbRegistrationModalProps {
   isOpen: boolean;
@@ -37,6 +38,7 @@ export const PpdbRegistrationModal: React.FC<PpdbRegistrationModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [uploadingDoc, setUploadingDoc] = useState<string | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string>('');
 
   const [registeredData, setRegisteredData] = useState<{
     registration_number: string;
@@ -176,6 +178,12 @@ export const PpdbRegistrationModal: React.FC<PpdbRegistrationModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
+
+    if (!turnstileToken) {
+      setErrorMessage('Harap selesaikan verifikasi keamanan (CAPTCHA) sebelum mengirim pendaftaran.');
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -184,6 +192,7 @@ export const PpdbRegistrationModal: React.FC<PpdbRegistrationModalProps> = ({
         registration_path: registrationPath,
         documents,
         hp_website: honeypot,
+        turnstileToken,
       };
 
       const res = await fetch('/api/registrations', {
@@ -200,6 +209,7 @@ export const PpdbRegistrationModal: React.FC<PpdbRegistrationModalProps> = ({
           parent_whatsapp: resJson.applicant.parent_whatsapp,
           registration_path: resJson.applicant.registration_path || registrationPath,
         });
+        setTurnstileToken('');
       } else {
         setErrorMessage(resJson.message || 'Gagal mengirim formulir pendaftaran.');
       }
@@ -213,6 +223,7 @@ export const PpdbRegistrationModal: React.FC<PpdbRegistrationModalProps> = ({
   const handleResetAndClose = () => {
     setRegisteredData(null);
     setErrorMessage(null);
+    setTurnstileToken('');
     onClose();
   };
 
@@ -1041,9 +1052,22 @@ export const PpdbRegistrationModal: React.FC<PpdbRegistrationModalProps> = ({
                     Pernyataan &amp; Persetujuan Orang Tua / Wali
                   </span>
                   <p className="text-[12px] text-slate-700 leading-relaxed">
-                    Dengan mengirimkan formulir ini, orang tua/wali murid memberikan persetujuan kepada panitia MA Raudlatul Hidayah untuk memverifikasi data dan dokumen persyaratan khusus untuk keperluan seleksi PPDB.
+                    Dengan mengirimkan formulir ini, orang tua/wali murid memberikan persetujuan kepada panitia MAS Raudlatul Hidayah untuk memverifikasi data dan dokumen persyaratan khusus untuk keperluan seleksi PPDB.
                   </p>
                 </div>
+              </div>
+
+              {/* Cloudflare Turnstile Smart CAPTCHA Widget */}
+              <div className="pt-1">
+                <TurnstileWidget
+                  action="ppdb_registration"
+                  onVerify={(token) => {
+                    setTurnstileToken(token);
+                    setErrorMessage(null);
+                  }}
+                  onExpire={() => setTurnstileToken('')}
+                  onError={() => setTurnstileToken('')}
+                />
               </div>
 
               {/* Submit Button */}

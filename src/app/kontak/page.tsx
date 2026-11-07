@@ -5,11 +5,12 @@ import { StitchNavbar } from '@/components/layout/StitchNavbar';
 import { StitchFooter } from '@/components/layout/StitchFooter';
 import { supabase } from '@/lib/supabaseClient';
 import { MapPin, Phone, Mail, Send, CheckCircle2, AlertCircle, Navigation, PhoneCall } from 'lucide-react';
+import { TurnstileWidget } from '@/components/ui/TurnstileWidget';
 
 export default function KontakPage() {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [captchaState, setCaptchaState] = useState<'idle' | 'verifying' | 'verified'>('idle');
+  const [turnstileToken, setTurnstileToken] = useState<string>('');
   const [captchaError, setCaptchaError] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -18,15 +19,6 @@ export default function KontakPage() {
     message: '',
     hp_website: '',
   });
-
-  const handleToggleCaptcha = () => {
-    if (captchaState === 'verified') return;
-    setCaptchaState('verifying');
-    setCaptchaError(false);
-    setTimeout(() => {
-      setCaptchaState('verified');
-    }, 450);
-  };
 
   const [profileInfo, setProfileInfo] = useState({
     contactTitle: 'Hubungi Layanan Kami',
@@ -76,7 +68,7 @@ export default function KontakPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (captchaState !== 'verified') {
+    if (!turnstileToken) {
       setCaptchaError(true);
       return;
     }
@@ -87,14 +79,17 @@ export default function KontakPage() {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          turnstileToken,
+        }),
       });
       const data = await res.json();
       if (!res.ok || !data.success) {
         throw new Error(data.message || 'Gagal mengirim pesan');
       }
       setFormSubmitted(true);
-      setCaptchaState('idle');
+      setTurnstileToken('');
       setFormData({ name: '', contact: '', subject: '', message: '', hp_website: '' });
     } catch (err: any) {
       console.warn('Error submitting contact message:', err);
@@ -256,93 +251,22 @@ export default function KontakPage() {
                     />
                   </div>
 
-                  {/* Google reCAPTCHA v2 Widget */}
+                  {/* Cloudflare Turnstile Smart CAPTCHA Widget */}
                   <div className="pt-1">
-                    <div
-                      onClick={handleToggleCaptcha}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(e) => {
-                        if (e.key === ' ' || e.key === 'Enter') {
-                          e.preventDefault();
-                          handleToggleCaptcha();
-                        }
+                    <TurnstileWidget
+                      action="contact_message"
+                      onVerify={(token) => {
+                        setTurnstileToken(token);
+                        setCaptchaError(false);
                       }}
-                      className={`w-full max-w-[302px] h-[76px] px-3.5 py-2.5 rounded-[3px] border transition-all cursor-pointer select-none flex items-center justify-between shadow-2xs ${
-                        captchaState === 'verified'
-                          ? 'bg-[#fcfdfc] border-emerald-300 ring-1 ring-emerald-400/20'
-                          : 'bg-[#fafafa] border-[#d3d3d3] hover:border-[#b5b5b5] hover:bg-[#f5f5f5]'
-                      }`}
-                    >
-                      {/* Checkbox & Text */}
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`w-[26px] h-[26px] rounded-[2px] flex items-center justify-center transition-all ${
-                            captchaState === 'verified'
-                              ? 'bg-transparent text-emerald-600'
-                              : captchaState === 'verifying'
-                              ? 'bg-white border-2 border-blue-500'
-                              : 'bg-white border-2 border-[#c1c1c1] hover:border-[#9e9e9e]'
-                          }`}
-                        >
-                          {captchaState === 'verifying' && (
-                            <div className="w-4 h-4 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
-                          )}
-                          {captchaState === 'verified' && (
-                            <svg className="w-6 h-6 text-emerald-600 animate-in zoom-in-75 duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                              <polyline points="20 6 9 17 4 12" />
-                            </svg>
-                          )}
-                        </div>
-
-                        <span className="font-sans text-[13.5px] font-normal text-slate-800">
-                          I&apos;m not a robot
-                        </span>
-                      </div>
-
-                      {/* reCAPTCHA Official Branding */}
-                      <div className="flex flex-col items-center justify-center pl-2 shrink-0">
-                        <svg className="w-7 h-7" viewBox="0 0 64 64" fill="none">
-                          <path
-                            d="M32 6C17.64 6 6 17.64 6 32h6c0-11.05 8.95-20 20-20 6.13 0 11.64 2.76 15.34 7.12L39.88 27H58V8.88l-6.42 6.42C46.88 10.02 39.8 6 32 6z"
-                            fill="#4285F4"
-                          />
-                          <path
-                            d="M52 32c0 11.05-8.95 20-20 20-6.13 0-11.64-2.76-15.34-7.12L24.12 37H6v18.12l6.42-6.42C17.12 53.98 24.2 58 32 58c14.36 0 26-11.64 26-26h-6z"
-                            fill="#9AA0A6"
-                          />
-                        </svg>
-                        <span className="text-[9px] font-sans font-semibold text-slate-500 tracking-tight leading-tight mt-0.5">
-                          reCAPTCHA
-                        </span>
-                        <div className="flex items-center gap-1 text-[8px] text-slate-400 leading-none">
-                          <a
-                            href="https://www.google.com/intl/en/policies/privacy/"
-                            target="_blank"
-                            rel="noreferrer"
-                            onClick={(e) => e.stopPropagation()}
-                            className="hover:underline"
-                          >
-                            Privacy
-                          </a>
-                          <span>-</span>
-                          <a
-                            href="https://www.google.com/intl/en/policies/terms/"
-                            target="_blank"
-                            rel="noreferrer"
-                            onClick={(e) => e.stopPropagation()}
-                            className="hover:underline"
-                          >
-                            Terms
-                          </a>
-                        </div>
-                      </div>
-                    </div>
+                      onExpire={() => setTurnstileToken('')}
+                      onError={() => setTurnstileToken('')}
+                    />
 
                     {captchaError && (
                       <p className="text-[12px] text-rose-600 font-medium mt-1.5 flex items-center gap-1.5">
                         <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
-                        <span>Harap centang verifikasi keamanan &quot;I&apos;m not a robot&quot;.</span>
+                        <span>Harap selesaikan verifikasi keamanan Cloudflare Turnstile sebelum mengirim pesan.</span>
                       </p>
                     )}
                   </div>

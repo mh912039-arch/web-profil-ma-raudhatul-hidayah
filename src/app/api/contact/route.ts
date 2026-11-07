@@ -6,6 +6,7 @@ import { requireAuth } from '@/lib/auth';
 import { checkEndpointRateLimit } from '@/lib/rateLimiter';
 import { sanitizeText, sanitizeEmail, sanitizePhone } from '@/lib/sanitizer';
 import { contactFormSchema } from '@/lib/schemas';
+import { verifyTurnstileToken } from '@/lib/turnstile';
 
 const dataFilePath = path.join(process.cwd(), 'src', 'data', 'messagesData.json');
 
@@ -136,7 +137,19 @@ export async function POST(request: Request) {
       });
     }
 
-    // 2. Sanitasi Karakter & Proteksi Anti-XSS
+    // 2. Proteksi Cloudflare Turnstile Smart CAPTCHA
+    const turnstileResult = await verifyTurnstileToken(validData.turnstileToken, clientIp);
+    if (!turnstileResult.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: turnstileResult.message || 'Verifikasi keamanan (CAPTCHA) gagal. Silakan verifikasi ulang.',
+        },
+        { status: 403 }
+      );
+    }
+
+    // 3. Sanitasi Karakter & Proteksi Anti-XSS
     const cleanName = sanitizeText(validData.name, 100);
     const cleanMessage = sanitizeText(validData.message, 2000);
     const cleanSubject = sanitizeText(validData.subject || 'Pertanyaan Pengunjung', 150);

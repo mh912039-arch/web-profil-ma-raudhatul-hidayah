@@ -35,6 +35,8 @@ export const contactFormSchema = z.object({
     .max(30)
     .optional()
     .or(z.literal('')),
+  // Cloudflare Turnstile CAPTCHA token
+  turnstileToken: z.string().optional().nullable(),
   // Anti-Bot Honeypot fields
   hp_website: z.string().optional(),
   bot_field: z.string().optional(),
@@ -106,6 +108,8 @@ export const ppdbRegistrationSchema = z.object({
     .optional()
     .default('submitted'),
   admin_notes: z.string().trim().max(500).optional().nullable(),
+  // Cloudflare Turnstile CAPTCHA token
+  turnstileToken: z.string().optional().nullable(),
   // Anti-Bot Honeypot fields
   hp_website: z.string().optional(),
   bot_field: z.string().optional(),

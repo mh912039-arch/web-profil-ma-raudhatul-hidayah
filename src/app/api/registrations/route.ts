@@ -7,6 +7,7 @@ import { deleteStorageFile } from '@/lib/storageHelper';
 import { checkEndpointRateLimit } from '@/lib/rateLimiter';
 import { sanitizeText, sanitizePhone } from '@/lib/sanitizer';
 import { ppdbRegistrationSchema } from '@/lib/schemas';
+import { verifyTurnstileToken } from '@/lib/turnstile';
 
 const dataFilePath = path.join(process.cwd(), 'src', 'data', 'ppdbRegistrationsData.json');
 
@@ -172,6 +173,18 @@ export async function POST(request: Request) {
           message: 'Formulir pendaftaran berhasil dikirim dan tersimpan di database.',
         },
         { headers: noCacheHeaders }
+      );
+    }
+
+    // 2. Proteksi Cloudflare Turnstile Smart CAPTCHA
+    const turnstileResult = await verifyTurnstileToken(validData.turnstileToken, clientIp);
+    if (!turnstileResult.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: turnstileResult.message || 'Verifikasi keamanan (CAPTCHA) gagal. Silakan verifikasi ulang.',
+        },
+        { status: 403, headers: noCacheHeaders }
       );
     }
 
