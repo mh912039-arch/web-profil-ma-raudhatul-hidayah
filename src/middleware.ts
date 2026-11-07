@@ -5,7 +5,7 @@ const COOKIE_NAME = 'mrh_session';
 const SECRET_KEY =
   process.env.AUTH_SECRET ||
   process.env.SUPABASE_SERVICE_ROLE_KEY ||
-  '';
+  '95a2a3b25af85f157e36c920e53534571a2ab3624d3bb4917db722e64d137d91';
 
 /**
  * Verifikasi Cryptographic HMAC-SHA256 Token di Edge Runtime

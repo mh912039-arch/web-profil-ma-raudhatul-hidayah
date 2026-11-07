@@ -841,6 +841,41 @@ export default function AdminDashboardPage() {
     }
   };
 
+  const handleLogout = useCallback(async (reason?: 'timeout' | 'manual') => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch {}
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('mrh_admin_auth');
+      localStorage.removeItem('mrh_user_role');
+      localStorage.removeItem('mrh_username');
+      localStorage.removeItem('mrh_email');
+      localStorage.removeItem('mrh_last_active_time');
+      window.location.href = reason === 'timeout' ? '/masuk?reason=timeout' : '/masuk';
+    }
+    setIsAuthenticated(false);
+    setUserRole('admin');
+    setCurrentUserName('');
+    setCurrentUserEmail('');
+  }, []);
+
+  // Keamanan: Auto-logout otomatis jika tidak ada aktivitas selama 30 menit (peringatan di 2 menit terakhir)
+  const { isWarningOpen, remainingSeconds, extendSession } = useIdleTimeout({
+    timeoutMs: 30 * 60 * 1000, // 30 Menit batas idle
+    warningMs: 2 * 60 * 1000,  // Peringatan 2 menit sebelum keluar otomatis
+    enabled: isAuthenticated === true,
+    onTimeout: () => {
+      handleLogout('timeout');
+    },
+  });
+
+  const effectiveActiveTab: AdminTab =
+    userRole === 'siswa' && !SISWA_ALLOWED_TABS.includes(activeTab)
+      ? 'overview'
+      : userRole === 'guru' && !GURU_ALLOWED_TABS.includes(activeTab)
+      ? 'overview'
+      : activeTab;
+
   const unreadMessagesCount = messages.filter((m) => m.status === 'unread').length;
 
   if (isAuthenticated === null) {
@@ -873,41 +908,6 @@ export default function AdminDashboardPage() {
       />
     );
   }
-
-  const effectiveActiveTab: AdminTab =
-    userRole === 'siswa' && !SISWA_ALLOWED_TABS.includes(activeTab)
-      ? 'overview'
-      : userRole === 'guru' && !GURU_ALLOWED_TABS.includes(activeTab)
-      ? 'overview'
-      : activeTab;
-
-  const handleLogout = async (reason?: 'timeout' | 'manual') => {
-    try {
-      await fetch('/api/auth/logout', { method: 'POST' });
-    } catch {}
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('mrh_admin_auth');
-      localStorage.removeItem('mrh_user_role');
-      localStorage.removeItem('mrh_username');
-      localStorage.removeItem('mrh_email');
-      localStorage.removeItem('mrh_last_active_time');
-      window.location.href = reason === 'timeout' ? '/masuk?reason=timeout' : '/masuk';
-    }
-    setIsAuthenticated(false);
-    setUserRole('admin');
-    setCurrentUserName('');
-    setCurrentUserEmail('');
-  };
-
-  // Keamanan: Auto-logout otomatis jika tidak ada aktivitas selama 30 menit (peringatan di 2 menit terakhir)
-  const { isWarningOpen, remainingSeconds, extendSession } = useIdleTimeout({
-    timeoutMs: 30 * 60 * 1000, // 30 Menit batas idle
-    warningMs: 2 * 60 * 1000,  // Peringatan 2 menit sebelum keluar otomatis
-    enabled: isAuthenticated === true,
-    onTimeout: () => {
-      handleLogout('timeout');
-    },
-  });
 
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-800 font-sans flex">

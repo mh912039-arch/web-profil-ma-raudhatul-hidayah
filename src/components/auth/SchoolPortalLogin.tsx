@@ -170,7 +170,13 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
       if (onLoginSuccess) {
         onLoginSuccess(data.role, data.username);
       } else {
-        router.push('/admin');
+        const params = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
+        const redirectTarget = params.get('redirect') || '/admin';
+        if (typeof window !== 'undefined') {
+          window.location.href = redirectTarget;
+        } else {
+          router.push(redirectTarget);
+        }
       }
     } catch {
       setErrorMessage('Gagal menghubungi server. Periksa koneksi internet Anda.');
