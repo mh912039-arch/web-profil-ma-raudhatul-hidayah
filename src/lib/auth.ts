@@ -16,12 +16,15 @@ const COOKIE_NAME = 'mrh_session';
 const SECRET_KEY =
   process.env.AUTH_SECRET ||
   process.env.SUPABASE_SERVICE_ROLE_KEY ||
-  'mrh-auth-server-secret-salt-2026-secure-key';
+  '';
 
 /**
  * Buat signed token aman berbasis HMAC-SHA256
  */
 export function createSessionToken(payload: Omit<SessionData, 'exp'>, maxAgeSeconds = 7 * 24 * 3600): string {
+  if (!SECRET_KEY) {
+    throw new Error('Fatal Security Error: Missing AUTH_SECRET or SUPABASE_SERVICE_ROLE_KEY environment variable.');
+  }
   const exp = Math.floor(Date.now() / 1000) + maxAgeSeconds;
   const data: SessionData = { ...payload, exp };
   const jsonStr = JSON.stringify(data);
@@ -40,7 +43,7 @@ export function createSessionToken(payload: Omit<SessionData, 'exp'>, maxAgeSeco
  */
 export function verifySessionToken(token: string): SessionData | null {
   try {
-    if (!token || !token.includes('.')) return null;
+    if (!SECRET_KEY || !token || !token.includes('.')) return null;
 
     const [base64Data, providedSig] = token.split('.');
     if (!base64Data || !providedSig) return null;
@@ -131,6 +134,9 @@ export { COOKIE_NAME };
  * Hash kata sandi menggunakan HMAC-SHA256 dengan secret key salt
  */
 export function hashPassword(plainText: string): string {
+  if (!SECRET_KEY) {
+    throw new Error('Fatal Security Error: Missing AUTH_SECRET or SUPABASE_SERVICE_ROLE_KEY environment variable.');
+  }
   const hash = crypto.createHmac('sha256', SECRET_KEY).update(plainText).digest('hex');
   return `h256:${hash}`;
 }
@@ -150,16 +156,11 @@ export function verifyPassword(plainText: string, storedPassword?: string): bool
       return true;
     }
 
-    // 2. Dukungan migrasi hash warisan (legacy key pool untuk sinkronisasi lokal & Vercel)
+    // 2. Dukungan migrasi hash warisan murni berbasis environment variables yang sah
     const legacyKeys = [
-      'c249e2acb590dd3195c7c71aa82744cc29dceb93e4c3dc538b790fa9c4cd1e5f',
-      'mrh-auth-server-secret-salt-2026-secure-key',
-      'mrh-secret-key-2026-salt',
       process.env.AUTH_SECRET,
       process.env.SUPABASE_SERVICE_ROLE_KEY,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp6Z29icmxobm5xdnNwdXd1Z2t6Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MTM1MzY4NywiZXhwIjoyMTA2OTI5Njg3fQ.s9M2c-_EIg0dbqTCPHU7p87ALePVXXtFtawjASxWzXo',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp6Z29icmxobm5xdnNwdXd1Z2t6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEzNTM2ODcsImV4cCI6MjEwNjkyOTY4N30.OxHpl2ITfkYMnsxlX87D4ZCAZPgQxiL3KIoIeSKL1mE',
     ].filter(Boolean) as string[];
 
     for (const legacyKey of legacyKeys) {

@@ -5,14 +5,14 @@ const COOKIE_NAME = 'mrh_session';
 const SECRET_KEY =
   process.env.AUTH_SECRET ||
   process.env.SUPABASE_SERVICE_ROLE_KEY ||
-  'mrh-auth-server-secret-salt-2026-secure-key';
+  '';
 
 /**
  * Verifikasi Cryptographic HMAC-SHA256 Token di Edge Runtime
  */
 async function verifyEdgeSession(token: string): Promise<any | null> {
   try {
-    if (!token || !token.includes('.')) return null;
+    if (!SECRET_KEY || !token || !token.includes('.')) return null;
     const [base64Data, providedSig] = token.split('.');
     if (!base64Data || !providedSig) return null;
 
