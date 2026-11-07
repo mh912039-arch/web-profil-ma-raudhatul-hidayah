@@ -6,6 +6,7 @@ import { requireAuth } from '@/lib/auth';
 import { deleteStorageFile } from '@/lib/storageHelper';
 import { checkEndpointRateLimit } from '@/lib/rateLimiter';
 import { sanitizeText, sanitizePhone } from '@/lib/sanitizer';
+import { ppdbRegistrationSchema } from '@/lib/schemas';
 
 const dataFilePath = path.join(process.cwd(), 'src', 'data', 'ppdbRegistrationsData.json');
 
@@ -138,27 +139,39 @@ export async function POST(request: Request) {
       );
     }
 
-    const body = await request.json();
+    const body = await request.json().catch(() => null);
 
-    // Anti-Bot Honeypot Protection
-    if (body.hp_website || body.bot_field || body.website) {
-      return NextResponse.json({
-        success: true,
-        message: 'Formulir pendaftaran berhasil dikirim dan tersimpan di database.',
-      }, { headers: noCacheHeaders });
-    }
-
-    if (!body.full_name || !body.full_name.trim()) {
+    if (!body || typeof body !== 'object') {
       return NextResponse.json(
-        { success: false, message: 'Nama lengkap calon santri wajib diisi.' },
+        { success: false, message: 'Format data formulir pendaftaran tidak valid.' },
         { status: 400, headers: noCacheHeaders }
       );
     }
 
-    if (!body.parent_name || !body.parent_name.trim() || !body.parent_whatsapp || !body.parent_whatsapp.trim()) {
+    // 1. Validasi Input Ketat berbasis Skema Zod
+    const validation = ppdbRegistrationSchema.safeParse(body);
+    if (!validation.success) {
+      const firstError = validation.error.issues[0]?.message || 'Data formulir pendaftaran tidak valid.';
       return NextResponse.json(
-        { success: false, message: 'Nama dan nomor WhatsApp orang tua/wali wajib diisi.' },
+        {
+          success: false,
+          message: firstError,
+          errors: validation.error.flatten().fieldErrors,
+        },
         { status: 400, headers: noCacheHeaders }
+      );
+    }
+
+    const validData = validation.data;
+
+    // Anti-Bot Honeypot Protection: buang bot secara diam-diam
+    if (validData.hp_website || validData.bot_field || validData.website) {
+      return NextResponse.json(
+        {
+          success: true,
+          message: 'Formulir pendaftaran berhasil dikirim dan tersimpan di database.',
+        },
+        { headers: noCacheHeaders }
       );
     }
 
@@ -181,32 +194,30 @@ export async function POST(request: Request) {
 
     const academicYear = '2027';
     const regNumber =
-      body.registration_number ||
+      (body as any).registration_number ||
       `RH-${academicYear}-${String(existingCount + 1).padStart(3, '0')}`;
 
-    const regPath = body.registration_path || 'domisili';
+    const regPath = validData.registration_path || 'domisili';
     const docObj = {
-      ...(typeof body.documents === 'object' && body.documents ? body.documents : {}),
+      ...(typeof validData.documents === 'object' && validData.documents ? validData.documents : {}),
       registration_path: regPath,
     };
 
-    // Sanitize birth_date for Postgres DATE column
-    const birthDate = body.birth_date && String(body.birth_date).trim() ? String(body.birth_date).trim() : null;
-
+    // 2. Sanitasi Karakter & Proteksi Anti-XSS
     const insertPayload = {
       registration_number: regNumber,
-      full_name: sanitizeText(body.full_name, 100),
-      nisn: body.nisn && String(body.nisn).trim() ? sanitizeText(body.nisn, 20) : null,
-      gender: body.gender === 'P' ? 'P' : 'L',
-      birth_place: sanitizeText(body.birth_place || 'Tangerang', 80),
-      birth_date: birthDate,
-      previous_school: body.previous_school && String(body.previous_school).trim() ? sanitizeText(body.previous_school, 120) : null,
-      parent_name: sanitizeText(body.parent_name, 100),
-      parent_whatsapp: sanitizePhone(body.parent_whatsapp),
-      home_address: body.home_address && String(body.home_address).trim() ? sanitizeText(body.home_address, 300) : null,
-      status: body.status || 'submitted',
+      full_name: sanitizeText(validData.full_name, 100),
+      nisn: validData.nisn ? sanitizeText(validData.nisn, 20) : null,
+      gender: validData.gender,
+      birth_place: sanitizeText(validData.birth_place || 'Tangerang', 80),
+      birth_date: validData.birth_date || null,
+      previous_school: validData.previous_school ? sanitizeText(validData.previous_school, 120) : null,
+      parent_name: sanitizeText(validData.parent_name, 100),
+      parent_whatsapp: sanitizePhone(validData.parent_whatsapp),
+      home_address: validData.home_address ? sanitizeText(validData.home_address, 300) : null,
+      status: validData.status || 'submitted',
       documents: docObj,
-      admin_notes: body.admin_notes && String(body.admin_notes).trim() ? sanitizeText(body.admin_notes, 500) : null,
+      admin_notes: validData.admin_notes ? sanitizeText(validData.admin_notes, 500) : null,
     };
 
     let savedItem: PpdbApplicantItem;

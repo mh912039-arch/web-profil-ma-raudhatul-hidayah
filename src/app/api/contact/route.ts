@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { requireAuth } from '@/lib/auth';
 import { checkEndpointRateLimit } from '@/lib/rateLimiter';
 import { sanitizeText, sanitizeEmail, sanitizePhone } from '@/lib/sanitizer';
+import { contactFormSchema } from '@/lib/schemas';
 
 const dataFilePath = path.join(process.cwd(), 'src', 'data', 'messagesData.json');
 
@@ -102,37 +103,47 @@ export async function POST(request: Request) {
       );
     }
 
-    const body = await request.json();
+    const body = await request.json().catch(() => null);
+
+    if (!body || typeof body !== 'object') {
+      return NextResponse.json(
+        { success: false, message: 'Format data pesan kontak tidak valid.' },
+        { status: 400 }
+      );
+    }
+
+    // 1. Validasi Input Ketat berbasis Skema Zod
+    const validation = contactFormSchema.safeParse(body);
+    if (!validation.success) {
+      const firstError = validation.error.issues[0]?.message || 'Data pesan tidak valid.';
+      return NextResponse.json(
+        {
+          success: false,
+          message: firstError,
+          errors: validation.error.flatten().fieldErrors,
+        },
+        { status: 400 }
+      );
+    }
+
+    const validData = validation.data;
 
     // Anti-Bot Honeypot Protection: tolak bot pengirim spam secara otomatis
-    if (body.hp_website || body.bot_field || body.website) {
+    if (validData.hp_website || validData.bot_field || validData.website) {
       return NextResponse.json({
         success: true,
         message: 'Pesan berhasil dikirim dan tersimpan.',
       });
     }
 
-    if (!body.name || !body.message || typeof body.name !== 'string' || typeof body.message !== 'string') {
-      return NextResponse.json(
-        { success: false, message: 'Nama dan isi pesan wajib diisi.' },
-        { status: 400 }
-      );
-    }
+    // 2. Sanitasi Karakter & Proteksi Anti-XSS
+    const cleanName = sanitizeText(validData.name, 100);
+    const cleanMessage = sanitizeText(validData.message, 2000);
+    const cleanSubject = sanitizeText(validData.subject || 'Pertanyaan Pengunjung', 150);
 
-    const cleanName = sanitizeText(body.name, 100);
-    const cleanMessage = sanitizeText(body.message, 2000);
-    const cleanSubject = sanitizeText(body.subject || 'Pertanyaan Pengunjung', 150);
-
-    if (cleanName.length < 2 || cleanMessage.length < 5) {
-      return NextResponse.json(
-        { success: false, message: 'Nama minimal 2 karakter dan pesan minimal 5 karakter.' },
-        { status: 400 }
-      );
-    }
-
-    const contactStr = sanitizeText(body.contact || '', 100);
-    const email = sanitizeEmail(body.email || (contactStr.includes('@') ? contactStr : ''));
-    const phone = sanitizePhone(body.phone || (!contactStr.includes('@') ? contactStr : ''));
+    const contactStr = sanitizeText(validData.contact || '', 100);
+    const email = sanitizeEmail(validData.email || (contactStr.includes('@') ? contactStr : ''));
+    const phone = sanitizePhone(validData.phone || (!contactStr.includes('@') ? contactStr : ''));
 
     let assignedId = `msg-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
 
