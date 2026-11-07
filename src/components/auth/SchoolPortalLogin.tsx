@@ -24,6 +24,7 @@ import {
   ShieldAlert,
   Clock,
   Info,
+  X,
 } from 'lucide-react';
 import { PwaInstallPrompt } from '@/components/pwa/PwaInstallPrompt';
 
@@ -49,6 +50,19 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
   const [errorMessage, setErrorMessage] = useState('');
   const [warningAttempts, setWarningAttempts] = useState<number | null>(null);
   const [lockoutSeconds, setLockoutSeconds] = useState<number>(0);
+  const [timeoutNotice, setTimeoutNotice] = useState<string | null>(null);
+
+  // Deteksi jika pengguna dialihkan kembali ke login karena sesi idle berakhir
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('reason') === 'timeout') {
+        setTimeoutNotice(
+          'Sesi Anda telah berakhir otomatis demi keamanan karena tidak ada aktivitas selama 30 menit. Silakan masukkan kredensial kembali.'
+        );
+      }
+    }
+  }, []);
 
   // Hitung mundur live saat perangkat/akun terkunci oleh proteksi brute-force
   useEffect(() => {
@@ -338,6 +352,23 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
                     </div>
                   </div>
                 ) : null}
+
+                {timeoutNotice && (
+                  <div className="mb-4 p-3.5 rounded-xl bg-amber-950/40 border border-amber-500/40 text-amber-200 text-xs flex items-start gap-2.5 animate-in fade-in duration-150">
+                    <Clock className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                      <p className="leading-relaxed font-medium">{timeoutNotice}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setTimeoutNotice(null)}
+                      className="text-amber-400/80 hover:text-amber-200 p-0.5 cursor-pointer"
+                      aria-label="Tutup pemberitahuan"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
 
                 <form onSubmit={handleLoginSubmit} className="space-y-3.5">
                   <div className="relative">
@@ -767,6 +798,23 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
                   </div>
                 </div>
               ) : null}
+
+              {timeoutNotice && (
+                <div className="mb-4 p-3.5 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 text-xs flex items-start gap-2.5 animate-in fade-in duration-150">
+                  <Clock className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="leading-relaxed font-semibold">{timeoutNotice}</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setTimeoutNotice(null)}
+                    className="text-amber-700/80 hover:text-amber-950 p-0.5 cursor-pointer"
+                    aria-label="Tutup pemberitahuan"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              )}
 
               <form onSubmit={handleLoginSubmit} className="space-y-4">
                 <div className="space-y-1.5">

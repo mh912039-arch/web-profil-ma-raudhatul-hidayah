@@ -22,6 +22,8 @@ import { PpdbData } from '@/components/sections/PpdbSection';
 import { PwaInstallPrompt } from '@/components/pwa/PwaInstallPrompt';
 import { MobileBottomNav } from '@/components/admin/MobileBottomNav';
 import { PortalOverviewTab } from '@/components/admin/tabs/PortalOverviewTab';
+import { useIdleTimeout } from '@/hooks/useIdleTimeout';
+import { IdleTimeoutModal } from '@/components/auth/IdleTimeoutModal';
 import { supabase } from '@/lib/supabaseClient';
 import {
   CheckCircle2,
@@ -152,15 +154,24 @@ export default function AdminDashboardPage() {
       });
   }, []);
 
-  // Realtime Heartbeat: Jaga status online aktif selama sesi terbuka di browser
+  // Realtime Heartbeat: Jaga status online aktif jika user aktif (dijeda jika idle > 5 menit)
   useEffect(() => {
     if (!isAuthenticated) return;
 
-    fetch('/api/auth/heartbeat', { method: 'POST' }).catch(() => {});
-
-    const heartbeatInterval = setInterval(() => {
+    const pingHeartbeat = () => {
+      if (typeof window !== 'undefined') {
+        const lastActive = parseInt(localStorage.getItem('mrh_last_active_time') || '0', 10);
+        // Jika user tidak aktif lebih dari 5 menit, jeda heartbeat
+        if (lastActive && Date.now() - lastActive > 5 * 60 * 1000) {
+          return;
+        }
+      }
       fetch('/api/auth/heartbeat', { method: 'POST' }).catch(() => {});
-    }, 45000);
+    };
+
+    pingHeartbeat();
+
+    const heartbeatInterval = setInterval(pingHeartbeat, 45000);
 
     return () => clearInterval(heartbeatInterval);
   }, [isAuthenticated]);
@@ -870,7 +881,7 @@ export default function AdminDashboardPage() {
       ? 'overview'
       : activeTab;
 
-  const handleLogout = async () => {
+  const handleLogout = async (reason?: 'timeout' | 'manual') => {
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
     } catch {}
@@ -879,13 +890,24 @@ export default function AdminDashboardPage() {
       localStorage.removeItem('mrh_user_role');
       localStorage.removeItem('mrh_username');
       localStorage.removeItem('mrh_email');
-      window.location.href = '/masuk';
+      localStorage.removeItem('mrh_last_active_time');
+      window.location.href = reason === 'timeout' ? '/masuk?reason=timeout' : '/masuk';
     }
     setIsAuthenticated(false);
     setUserRole('admin');
     setCurrentUserName('');
     setCurrentUserEmail('');
   };
+
+  // Keamanan: Auto-logout otomatis jika tidak ada aktivitas selama 30 menit (peringatan di 2 menit terakhir)
+  const { isWarningOpen, remainingSeconds, extendSession } = useIdleTimeout({
+    timeoutMs: 30 * 60 * 1000, // 30 Menit batas idle
+    warningMs: 2 * 60 * 1000,  // Peringatan 2 menit sebelum keluar otomatis
+    enabled: isAuthenticated === true,
+    onTimeout: () => {
+      handleLogout('timeout');
+    },
+  });
 
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-800 font-sans flex">
@@ -1140,6 +1162,14 @@ export default function AdminDashboardPage() {
 
       {/* PWA Floating Install Prompt (Diberi offset agar tidak menutupi Bottom Navigation) */}
       <PwaInstallPrompt variant="floating" bottomOffset="nav" />
+
+      {/* Modal Peringatan Auto-Logout Tidak Ada Aktivitas (Idle Timeout) */}
+      <IdleTimeoutModal
+        isOpen={isWarningOpen}
+        remainingSeconds={remainingSeconds}
+        onExtend={extendSession}
+        onLogout={() => handleLogout('manual')}
+      />
     </div>
   );
 }
