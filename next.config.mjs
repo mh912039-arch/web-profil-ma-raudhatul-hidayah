@@ -56,33 +56,7 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/admin/:path*',
-        headers: [
-          // Isolasi Keamanan Ketat Khusus Panel Admin (COOP & CSP)
-          {
-            key: 'Cross-Origin-Opener-Policy',
-            value: 'same-origin',
-          },
-          {
-            key: 'Content-Security-Policy',
-            value: [
-              "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://cdn.jsdelivr.net https://challenges.cloudflare.com",
-              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-              "img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com https://picsum.photos https://api.dicebear.com",
-              "font-src 'self' data: https://fonts.gstatic.com",
-              "connect-src 'self' https://*.supabase.co https://api.dicebear.com https://vitals.vercel-insights.com https://challenges.cloudflare.com",
-              "frame-src 'self' https://challenges.cloudflare.com",
-              "frame-ancestors 'none'",
-              "object-src 'none'",
-              "base-uri 'self'",
-              "form-action 'self'",
-            ].join('; '),
-          },
-        ],
-      },
-      {
-        // Hanya terapkan pada rute dokumen / halaman (tidak mengganggu static assets _next/static)
+        // Terapkan header keamanan komprehensif ke seluruh rute halaman dan admin
         source: '/((?!_next/static|_next/image|favicon.ico).*)',
         headers: [
           // 0. Content Security Policy (CSP) Menyeluruh - Mencegah XSS & Script Injection

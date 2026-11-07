@@ -137,43 +137,23 @@ export async function middleware(request: NextRequest) {
   response.headers.set('X-DNS-Prefetch-Control', 'on');
   response.headers.delete('x-powered-by');
 
-  // Injeksi Content-Security-Policy (CSP)
-  if (pathname.startsWith('/admin')) {
-    response.headers.set('Cross-Origin-Opener-Policy', 'same-origin');
-    response.headers.set(
-      'Content-Security-Policy',
-      [
-        "default-src 'self'",
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://cdn.jsdelivr.net https://challenges.cloudflare.com",
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-        "img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com https://picsum.photos https://api.dicebear.com",
-        "font-src 'self' data: https://fonts.gstatic.com",
-        "connect-src 'self' https://*.supabase.co https://api.dicebear.com https://vitals.vercel-insights.com https://challenges.cloudflare.com",
-        "frame-src 'self' https://challenges.cloudflare.com",
-        "frame-ancestors 'none'",
-        "object-src 'none'",
-        "base-uri 'self'",
-        "form-action 'self'",
-      ].join('; ')
-    );
-  } else {
-    response.headers.set(
-      'Content-Security-Policy',
-      [
-        "default-src 'self'",
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://cdn.jsdelivr.net https://challenges.cloudflare.com",
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-        "img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com https://picsum.photos https://api.dicebear.com https://*.google.com https://*.googleapis.com https://*.gstatic.com",
-        "font-src 'self' data: https://fonts.gstatic.com",
-        "connect-src 'self' https://*.supabase.co https://api.dicebear.com https://vitals.vercel-insights.com https://challenges.cloudflare.com",
-        "frame-src 'self' https://www.google.com https://maps.google.com https://*.google.com https://challenges.cloudflare.com",
-        "frame-ancestors 'none'",
-        "object-src 'none'",
-        "base-uri 'self'",
-        "form-action 'self'",
-      ].join('; ')
-    );
-  }
+  // Injeksi Content-Security-Policy (CSP) yang Komprehensif
+  response.headers.set(
+    'Content-Security-Policy',
+    [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://cdn.jsdelivr.net https://challenges.cloudflare.com",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com https://picsum.photos https://api.dicebear.com https://*.google.com https://*.googleapis.com https://*.gstatic.com",
+      "font-src 'self' data: https://fonts.gstatic.com",
+      "connect-src 'self' https://*.supabase.co https://api.dicebear.com https://vitals.vercel-insights.com https://challenges.cloudflare.com",
+      "frame-src 'self' https://www.google.com https://maps.google.com https://*.google.com https://challenges.cloudflare.com",
+      "frame-ancestors 'none'",
+      "object-src 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+    ].join('; ')
+  );
 
   return response;
 }

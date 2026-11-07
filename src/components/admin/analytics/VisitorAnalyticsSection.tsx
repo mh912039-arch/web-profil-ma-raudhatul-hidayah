@@ -271,10 +271,10 @@ export const VisitorAnalyticsSection: React.FC = () => {
                   </div>
                   <div className="flex items-baseline gap-1.5">
                     <span className="text-[15.5px] font-bold text-white">
-                      {data?.today.toLocaleString('id-ID') ?? 0}
+                      {typeof data?.today === 'number' ? data.today.toLocaleString('id-ID') : 0}
                     </span>
                     <span className="text-[10.5px] text-white/60">
-                      ({data?.uniqueToday ?? 0} unik)
+                      ({typeof data?.uniqueToday === 'number' ? data.uniqueToday : 0} unik)
                     </span>
                   </div>
                 </div>
@@ -286,7 +286,7 @@ export const VisitorAnalyticsSection: React.FC = () => {
                     <span className="text-[13.5px] font-medium text-white">Kemarin</span>
                   </div>
                   <span className="text-[15.5px] font-bold text-white">
-                    {data?.yesterday.toLocaleString('id-ID') ?? 0}
+                    {typeof data?.yesterday === 'number' ? data.yesterday.toLocaleString('id-ID') : 0}
                   </span>
                 </div>
 
@@ -297,7 +297,7 @@ export const VisitorAnalyticsSection: React.FC = () => {
                     <span className="text-[13.5px] font-medium text-white">Minggu Ini</span>
                   </div>
                   <span className="text-[15.5px] font-bold text-white">
-                    {data?.thisWeek.toLocaleString('id-ID') ?? 0}
+                    {typeof data?.thisWeek === 'number' ? data.thisWeek.toLocaleString('id-ID') : 0}
                   </span>
                 </div>
 
@@ -308,7 +308,7 @@ export const VisitorAnalyticsSection: React.FC = () => {
                     <span className="text-[13.5px] font-medium text-white">Bulan Ini</span>
                   </div>
                   <span className="text-[15.5px] font-bold text-white">
-                    {data?.thisMonth.toLocaleString('id-ID') ?? 0}
+                    {typeof data?.thisMonth === 'number' ? data.thisMonth.toLocaleString('id-ID') : 0}
                   </span>
                 </div>
               </div>
@@ -321,7 +321,7 @@ export const VisitorAnalyticsSection: React.FC = () => {
                   Akumulasi Kunjungan
                 </span>
                 <span className="font-sans font-extrabold text-[28px] sm:text-[34px] text-[#facc15] leading-none">
-                  {data?.totalAccumulated.toLocaleString('id-ID') ?? 0}
+                  {typeof data?.totalAccumulated === 'number' ? data.totalAccumulated.toLocaleString('id-ID') : 0}
                 </span>
               </div>
 
@@ -344,8 +344,8 @@ export const VisitorAnalyticsSection: React.FC = () => {
               Tren Trafik 7 Hari Terakhir
             </span>
             <div className="grid grid-cols-7 gap-2 items-end h-16 pt-2">
-              {data?.last7Days.map((day, i) => {
-                const maxDayViews = Math.max(...(data.last7Days.map((d) => d.views) || [1]), 1);
+              {(data?.last7Days || []).map((day, i) => {
+                const maxDayViews = Math.max(...((data?.last7Days || []).map((d) => d.views) || [1]), 1);
                 const heightPct = day.views === 0 ? 8 : Math.max(Math.round((day.views / maxDayViews) * 100), 12);
                 return (
                   <div key={i} className="flex flex-col items-center gap-1 h-full justify-end">
