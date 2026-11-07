@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabaseClient';
+import { supabaseAdmin } from '@/lib/supabaseClient';
 import path from 'path';
 import fs from 'fs/promises';
 
@@ -56,7 +56,7 @@ export async function deleteStorageFile(urlOrPath: string | null | undefined): P
 
   // 1. Hapus dari Supabase Storage Bucket 'articles'
   try {
-    const { error } = await supabase.storage.from('articles').remove([filename]);
+    const { error } = await supabaseAdmin.storage.from('articles').remove([filename]);
     if (!error) {
       supaDeleted = true;
     } else {

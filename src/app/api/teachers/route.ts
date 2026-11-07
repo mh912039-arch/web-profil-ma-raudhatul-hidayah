@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase, supabaseAdmin } from '@/lib/supabaseClient';
 import { requireAuth } from '@/lib/auth';
 import { deleteStorageFile } from '@/lib/storageHelper';
 
@@ -144,14 +144,14 @@ async function readTeachersUnified(): Promise<TeacherItem[]> {
 async function writeTeachersUnified(list: TeacherItem[]): Promise<void> {
   // 1. Simpan ke Supabase SYS_TCH agar persisten 100% di Vercel
   try {
-    const { data: updated, error } = await supabase
+    const { data: updated, error } = await supabaseAdmin
       .from('teachers_staff')
       .update({ education: JSON.stringify(list) })
       .eq('code', 'SYS_TCH')
       .select('id');
 
     if (error || !updated || updated.length === 0) {
-      await supabase.from('teachers_staff').insert({
+      await supabaseAdmin.from('teachers_staff').insert({
         name: 'System Teachers Store',
         code: 'SYS_TCH',
         category_label: 'Sistem',
@@ -355,9 +355,9 @@ export async function DELETE(request: Request) {
     try {
       const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(id));
       if (isUuid) {
-        await supabase.from('teachers_staff').delete().eq('id', id);
+        await supabaseAdmin.from('teachers_staff').delete().eq('id', id);
       } else if (!isNaN(Number(id))) {
-        await supabase.from('teachers_staff').delete().eq('order_no', Number(id));
+        await supabaseAdmin.from('teachers_staff').delete().eq('order_no', Number(id));
       }
     } catch (err) {}
 

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase, supabaseAdmin } from '@/lib/supabaseClient';
 import { requireAuth } from '@/lib/auth';
 
 const dataFilePath = path.join(process.cwd(), 'src', 'data', 'ppdbData.json');
@@ -105,7 +105,7 @@ export async function POST(request: Request) {
 
     // 1. Sync to Supabase ppdb_settings first (primary persistent store)
     try {
-      await supabase
+      await supabaseAdmin
         .from('ppdb_settings')
         .upsert({
           id: 1,

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/auth';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase, supabaseAdmin } from '@/lib/supabaseClient';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -66,14 +66,14 @@ async function getClasses(): Promise<ClassRombel[]> {
 
 async function saveClasses(list: ClassRombel[]): Promise<void> {
   try {
-    const { data: updated, error } = await supabase
+    const { data: updated, error } = await supabaseAdmin
       .from('teachers_staff')
       .update({ education: JSON.stringify(list) })
       .eq('code', 'SYS_CLS')
       .select('id');
 
     if (error || !updated || updated.length === 0) {
-      await supabase.from('teachers_staff').insert({
+      await supabaseAdmin.from('teachers_staff').insert({
         name: 'System Classes Store',
         code: 'SYS_CLS',
         category_label: 'Sistem',

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase, supabaseAdmin } from '@/lib/supabaseClient';
 import { deleteStorageFile } from '@/lib/storageHelper';
 import { requireAuth } from '@/lib/auth';
 import { checkEndpointRateLimit } from '@/lib/rateLimiter';
@@ -174,7 +174,7 @@ export async function POST(request: Request) {
     let storageTarget = 'local';
 
     try {
-      const { data: supaData, error: supaErr } = await supabase.storage
+      const { data: supaData, error: supaErr } = await supabaseAdmin.storage
         .from('articles')
         .upload(filename, buffer, {
           contentType: mimeType,
@@ -183,7 +183,7 @@ export async function POST(request: Request) {
         });
 
       if (!supaErr && supaData) {
-        const { data: publicUrlData } = supabase.storage
+        const { data: publicUrlData } = supabaseAdmin.storage
           .from('articles')
           .getPublicUrl(filename);
 

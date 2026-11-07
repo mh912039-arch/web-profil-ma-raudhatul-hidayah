@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase, supabaseAdmin } from '@/lib/supabaseClient';
 import { requireAuth } from '@/lib/auth';
 import { checkEndpointRateLimit } from '@/lib/rateLimiter';
 import { sanitizeText, sanitizeEmail, sanitizePhone } from '@/lib/sanitizer';
@@ -240,7 +240,7 @@ export async function PATCH(request: Request) {
 
     // 1. Update in Supabase
     try {
-      await supabase.from('contact_messages').update({ status }).eq('id', id);
+      await supabaseAdmin.from('contact_messages').update({ status }).eq('id', id);
     } catch (err) {}
 
     // 2. Update in local file
@@ -277,7 +277,7 @@ export async function DELETE(request: Request) {
 
     // 1. Delete in Supabase
     try {
-      await supabase.from('contact_messages').delete().eq('id', id);
+      await supabaseAdmin.from('contact_messages').delete().eq('id', id);
     } catch (err) {}
 
     // 2. Delete in local file

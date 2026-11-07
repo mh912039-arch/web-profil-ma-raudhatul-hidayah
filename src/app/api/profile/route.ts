@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase, supabaseAdmin } from '@/lib/supabaseClient';
 import { requireAuth } from '@/lib/auth';
 
 const dataFilePath = path.join(process.cwd(), 'src', 'data', 'homeProfileData.json');
@@ -168,7 +168,7 @@ export async function POST(request: Request) {
       const home = updatedData.homepage || {};
       const vis = updatedData.visionMission || {};
 
-      await supabase.from('school_profile').upsert({
+      await supabaseAdmin.from('school_profile').upsert({
         id: 1,
         name: prof.name || home.heroTitle,
         formal_name: prof.formalName,
@@ -191,14 +191,14 @@ export async function POST(request: Request) {
       if (updatedData.homepage) {
         try {
           const homeJson = JSON.stringify(updatedData.homepage);
-          const { data: updatedHome } = await supabase
+          const { data: updatedHome } = await supabaseAdmin
             .from('teachers_staff')
             .update({ education: homeJson, updated_at: new Date().toISOString() })
             .eq('code', 'SYS_HOME')
             .select('id');
 
           if (!updatedHome || updatedHome.length === 0) {
-            await supabase.from('teachers_staff').insert({
+            await supabaseAdmin.from('teachers_staff').insert({
               name: 'System Homepage Store',
               code: 'SYS_HOME',
               category_label: 'Sistem',
@@ -223,14 +223,14 @@ export async function POST(request: Request) {
           facilities: updatedData.facilities,
         };
         const profJson = JSON.stringify(profPayload);
-        const { data: updatedProf } = await supabase
+        const { data: updatedProf } = await supabaseAdmin
           .from('teachers_staff')
           .update({ education: profJson, updated_at: new Date().toISOString() })
           .eq('code', 'SYS_PROF')
           .select('id');
 
         if (!updatedProf || updatedProf.length === 0) {
-          await supabase.from('teachers_staff').insert({
+          await supabaseAdmin.from('teachers_staff').insert({
             name: 'System Profile Store',
             code: 'SYS_PROF',
             category_label: 'Sistem',
@@ -255,7 +255,7 @@ export async function POST(request: Request) {
           if (!isNaN(numTeachers)) statsUpdate.stats_certified_teachers = numTeachers;
 
           if (Object.keys(statsUpdate).length > 0) {
-            await supabase.from('school_profile').update(statsUpdate).eq('id', 1);
+            await supabaseAdmin.from('school_profile').update(statsUpdate).eq('id', 1);
           }
         } catch (e) {}
       }
@@ -266,7 +266,7 @@ export async function POST(request: Request) {
           const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(fac.id));
           if (isUuid) {
             try {
-              await supabase.from('facilities').update({
+              await supabaseAdmin.from('facilities').update({
                 name: fac.title,
                 category: fac.subtitle || 'Akademik',
                 description: fac.desc,
