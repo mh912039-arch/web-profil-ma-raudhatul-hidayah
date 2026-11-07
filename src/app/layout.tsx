@@ -27,15 +27,15 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://ma-raudlatul-hidayah.vercel.app'),
-  title: 'MA Raudlatul Hidayah — Membentuk Generasi Berkarakter, Cerdas & Berintegritas',
-  description: 'Portal Resmi MA Raudlatul Hidayah (Madrasah Aliyah). NPSN: 69941777, Mauk Tangerang Banten. Berlandaskan adab, Kurikulum Merdeka, dan keunggulan akademik.',
-  keywords: 'MA Raudlatul Hidayah, MA Raudlatul Hidayah, MA Raudlatul Hidayah, Madrasah Aliyah Raudlatul Hidayah, Profil Madrasah Mauk, Tangerang Banten, Kurikulum Merdeka, NPSN 69941777',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://mas-raudlatul-hidayah.vercel.app'),
+  title: 'MAS Raudlatul Hidayah — Membentuk Generasi Berkarakter, Cerdas & Berintegritas',
+  description: 'Portal Resmi MAS Raudlatul Hidayah (Madrasah Aliyah Swasta). NPSN: 69941777, Mauk Tangerang Banten. Berlandaskan adab, Kurikulum Merdeka, dan keunggulan akademik.',
+  keywords: 'MAS Raudlatul Hidayah, MAS Raudlatul Hidayah, Madrasah Aliyah Swasta Raudlatul Hidayah, Profil Madrasah Mauk, Tangerang Banten, Kurikulum Merdeka, NPSN 69941777',
   openGraph: {
-    title: 'MA Raudlatul Hidayah — Madrasah Aliyah Unggulan Mauk Tangerang',
-    description: 'Portal Resmi MA Raudlatul Hidayah (Madrasah Aliyah). NPSN: 69941777, Mauk Tangerang Banten. Berlandaskan adab, Kurikulum Merdeka, dan keunggulan akademik.',
-    url: 'https://ma-raudlatul-hidayah.vercel.app',
-    siteName: 'MA Raudlatul Hidayah',
+    title: 'MAS Raudlatul Hidayah — Madrasah Aliyah Swasta Unggulan Mauk Tangerang',
+    description: 'Portal Resmi MAS Raudlatul Hidayah (Madrasah Aliyah Swasta). NPSN: 69941777, Mauk Tangerang Banten. Berlandaskan adab, Kurikulum Merdeka, dan keunggulan akademik.',
+    url: 'https://mas-raudlatul-hidayah.vercel.app',
+    siteName: 'MAS Raudlatul Hidayah',
     locale: 'id_ID',
     type: 'website',
     images: [
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
         url: '/halaman-sekolah.jpeg',
         width: 1200,
         height: 630,
-        alt: 'Kampus MA Raudlatul Hidayah Mauk',
+        alt: 'Kampus MAS Raudlatul Hidayah Mauk',
       },
     ],
   },
@@ -79,7 +79,7 @@ const schoolJsonLd = {
     'MA Raudlatul Hidayah',
     'MA Raudlatul Hidayah Mauk',
   ],
-  url: 'https://ma-raudlatul-hidayah.vercel.app',
+  url: 'https://mas-raudlatul-hidayah.vercel.app',
   logo: 'https://ma-raudlatul-hidayah.vercel.app/school-logo.png',
   image: 'https://ma-raudlatul-hidayah.vercel.app/halaman-sekolah.jpeg',
   telephone: '+628176614723',

@@ -497,7 +497,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
   const handleDeleteUser = async (user: UserAccount) => {
     if (
       user.id === 'usr-1' ||
-      user.email?.toLowerCase() === 'admin@raudhatulhidayah.sch.id' ||
+      (user.email && ['admin@raudhatulhidayah.sch.id', 'admin@raudlatulhidayah.sch.id'].includes(user.email.toLowerCase())) ||
       user.username?.toLowerCase() === 'developer'
     ) {
       showNotification('error', 'Akun Utama Developer tidak dapat dihapus demi keamanan sistem.');

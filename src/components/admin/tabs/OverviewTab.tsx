@@ -172,7 +172,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
       <VisitorAnalyticsSection />
 
       {/* 4. Integrasi & Status Supabase Cloud (Hanya tampil untuk akun Developer: admin@raudhatulhidayah.sch.id) */}
-      {currentUserEmail === 'admin@raudhatulhidayah.sch.id' ? (
+      {Boolean(currentUserEmail && ['admin@raudhatulhidayah.sch.id', 'admin@raudlatulhidayah.sch.id'].includes(currentUserEmail)) ? (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-8 bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs space-y-4">
             <div className="flex items-center justify-between">

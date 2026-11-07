@@ -389,7 +389,7 @@ export default function KontakPage() {
               {/* Google Maps Embed Container (8 cols) */}
               <div className="lg:col-span-8 overflow-hidden rounded-xl shadow-sm bg-surface-container-highest border border-surface-container relative">
                 <iframe
-                  title="Peta Lokasi MA Raudlatul Hidayah Tanjung Anom Mauk"
+                  title="Peta Lokasi MAS Raudlatul Hidayah Tanjung Anom Mauk"
                   src={profileInfo.mapsEmbedUrl}
                   width="100%"
                   height="420"

@@ -226,7 +226,7 @@ export async function DELETE(request: Request) {
     const targetUser = users.find((u) => u.id === id);
     if (
       targetUser &&
-      (targetUser.email?.toLowerCase() === 'admin@raudhatulhidayah.sch.id' ||
+      ((targetUser.email && ['admin@raudhatulhidayah.sch.id', 'admin@raudlatulhidayah.sch.id'].includes(targetUser.email.toLowerCase())) ||
         targetUser.username?.toLowerCase() === 'developer' ||
         targetUser.id === 'usr-1')
     ) {

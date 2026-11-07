@@ -129,7 +129,7 @@ export async function POST(request: Request) {
         matchedUser.password || defaultRolePass;
 
       const isDeveloperAccount =
-        matchedUser.email?.toLowerCase() === 'admin@raudhatulhidayah.sch.id' ||
+        Boolean(matchedUser.email && ['admin@raudhatulhidayah.sch.id', 'admin@raudlatulhidayah.sch.id'].includes(matchedUser.email.toLowerCase())) ||
         matchedUser.username?.toLowerCase() === 'developer';
 
       const isPassValid =

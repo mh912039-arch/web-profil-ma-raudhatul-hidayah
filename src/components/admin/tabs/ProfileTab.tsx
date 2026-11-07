@@ -97,7 +97,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
 }) => {
   const [formData, setFormData] = useState<FullProfileData>({
     profile: {
-      name: data.profile?.name || 'MA Raudlatul Hidayah',
+      name: data.profile?.name || 'MAS Raudlatul Hidayah',
       formalName: data.profile?.formalName || 'Madrasah Aliyah Raudlatul Hidayah',
       level: data.profile?.level || 'Madrasah Aliyah (MA)',
       npsn: data.profile?.npsn || '6994888',
@@ -131,7 +131,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
       missionTitle: data.visionMission?.missionTitle || 'Misi Pokok Penyelenggaraan Sekolah',
       missionSubtitle: data.visionMission?.missionSubtitle || 'Langkah konkret institusi dalam mengejawantahkan visi luhur ke dalam iklim pembelajaran, kultur madrasah, dan interaksi sosial harian peserta didik.',
       pageTitle: data.visionMission?.pageTitle || 'Visi & Misi Madrasah',
-      pageSubtitle: data.visionMission?.pageSubtitle || 'Arah haluan nilai pendidikan, visi kelembagaan, misi pembelajaran kontekstual, dan pilar keunggulan santri MA Raudlatul Hidayah.',
+      pageSubtitle: data.visionMission?.pageSubtitle || 'Arah haluan nilai pendidikan, visi kelembagaan, misi pembelajaran kontekstual, dan pilar keunggulan santri MAS Raudlatul Hidayah.',
       pillars: data.visionMission?.pillars || [],
     },
     history: {
@@ -153,8 +153,8 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
     if (data && data.profile) {
       setFormData({
         profile: {
-          name: data.profile.name || 'MAS Raudhatul Hidayah',
-          formalName: data.profile.formalName || 'Madrasah Aliyah Swasta Raudhatul Hidayah',
+          name: data.profile.name || 'MAS Raudlatul Hidayah',
+          formalName: data.profile.formalName || 'Madrasah Aliyah Swasta Raudlatul Hidayah',
           level: data.profile.level || 'Madrasah Aliyah (MA)',
           npsn: data.profile.npsn || '69941777',
           nsm: data.profile.nsm || '131236030069',
@@ -184,7 +184,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
           missionTitle: data.visionMission?.missionTitle || 'Misi Pokok Penyelenggaraan Sekolah',
           missionSubtitle: data.visionMission?.missionSubtitle || 'Langkah konkret institusi dalam mengejawantahkan visi luhur ke dalam iklim pembelajaran, kultur madrasah, dan interaksi sosial harian peserta didik.',
           pageTitle: data.visionMission?.pageTitle || 'Visi & Misi Madrasah',
-          pageSubtitle: data.visionMission?.pageSubtitle || 'Arah haluan nilai pendidikan, visi kelembagaan, misi pembelajaran kontekstual, dan pilar keunggulan santri MA Raudlatul Hidayah.',
+          pageSubtitle: data.visionMission?.pageSubtitle || 'Arah haluan nilai pendidikan, visi kelembagaan, misi pembelajaran kontekstual, dan pilar keunggulan santri MAS Raudlatul Hidayah.',
           pillars: data.visionMission?.pillars || [],
         },
         history: {

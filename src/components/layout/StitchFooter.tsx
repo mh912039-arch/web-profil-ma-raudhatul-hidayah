@@ -35,9 +35,9 @@ interface FooterProfile {
 }
 
 const defaultProfile: FooterProfile = {
-  name: 'MA Raudlatul Hidayah',
-  formalName: 'Madrasah Aliyah Raudlatul Hidayah',
-  level: 'Madrasah Aliyah (MA)',
+  name: 'MAS Raudlatul Hidayah',
+  formalName: 'Madrasah Aliyah Swasta Raudlatul Hidayah',
+  level: 'Madrasah Aliyah Swasta (MAS)',
   npsn: '6994888',
   nsm: '131236030045',
   accreditation: 'C',
@@ -97,7 +97,7 @@ export function StitchFooter() {
               <div className="relative w-12 h-12 shrink-0 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 p-1.5 flex items-center justify-center transition-transform duration-200 hover:scale-105 shadow-sm">
                 <Image
                   src="/school-logo.png"
-                  alt="Logo MA Raudlatul Hidayah"
+                  alt="Logo MAS Raudlatul Hidayah"
                   width={42}
                   height={42}
                   className="object-contain drop-shadow-sm"
@@ -305,7 +305,7 @@ export function StitchFooter() {
 
         {/* Bottom Bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 font-sans text-[12.5px] text-white/70">
-          <p>© 2026 MA Raudlatul Hidayah. Seluruh Hak Cipta Dilindungi.</p>
+          <p>© 2026 MAS Raudlatul Hidayah. Seluruh Hak Cipta Dilindungi.</p>
           <div className="flex flex-wrap items-center gap-4 sm:gap-6">
             <Link
               href="/admin"
