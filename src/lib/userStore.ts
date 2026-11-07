@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { supabase } from './supabaseClient';
+import { supabaseAdmin } from './supabaseClient';
 
 export interface UserAccountItem {
   id: string;
@@ -58,7 +58,7 @@ export async function readUsers(): Promise<UserAccountItem[]> {
 
   // Sinkronisasi data overrides dari Supabase (persisten di Vercel)
   try {
-    const { data: supaAuth } = await supabase
+    const { data: supaAuth } = await supabaseAdmin
       .from('teachers_staff')
       .select('education')
       .eq('code', 'SYS_AUTH')
@@ -111,14 +111,14 @@ export async function writeUsers(data: UserAccountItem[]): Promise<void> {
         note: u.note,
       };
     }
-    const { data: updated, error: supaErr } = await supabase
+    const { data: updated, error: supaErr } = await supabaseAdmin
       .from('teachers_staff')
       .update({ education: JSON.stringify(overrides) })
       .eq('code', 'SYS_AUTH')
       .select('id');
 
     if (supaErr || !updated || updated.length === 0) {
-      await supabase.from('teachers_staff').insert({
+      await supabaseAdmin.from('teachers_staff').insert({
         name: 'Sistem Autentikasi Pengguna',
         code: 'SYS_AUTH',
         category_label: 'Sistem',
@@ -149,7 +149,7 @@ export async function readSessions(): Promise<UserSessionItem[]> {
   }
 
   try {
-    const { data: supaSess } = await supabase
+    const { data: supaSess } = await supabaseAdmin
       .from('teachers_staff')
       .select('education')
       .eq('code', 'SYS_SESS')
@@ -173,14 +173,14 @@ export async function writeSessions(data: UserSessionItem[]): Promise<void> {
 
   // 1. Simpan ke Supabase agar persisten di Vercel serverless
   try {
-    const { data: updated, error: supaErr } = await supabase
+    const { data: updated, error: supaErr } = await supabaseAdmin
       .from('teachers_staff')
       .update({ education: JSON.stringify(limited) })
       .eq('code', 'SYS_SESS')
       .select('id');
 
     if (supaErr || !updated || updated.length === 0) {
-      await supabase.from('teachers_staff').insert({
+      await supabaseAdmin.from('teachers_staff').insert({
         name: 'Sistem Sesi Pengguna',
         code: 'SYS_SESS',
         category_label: 'Sistem',
