@@ -5,6 +5,7 @@ import { supabaseServer } from '@/lib/supabaseServer';
 import { requireAuth } from '@/lib/auth';
 import { deleteStorageFile } from '@/lib/storageHelper';
 import { checkEndpointRateLimit } from '@/lib/rateLimiter';
+import { sanitizeText, sanitizePhone } from '@/lib/sanitizer';
 
 const dataFilePath = path.join(process.cwd(), 'src', 'data', 'ppdbRegistrationsData.json');
 
@@ -194,18 +195,18 @@ export async function POST(request: Request) {
 
     const insertPayload = {
       registration_number: regNumber,
-      full_name: body.full_name.trim(),
-      nisn: body.nisn && String(body.nisn).trim() ? String(body.nisn).trim() : null,
+      full_name: sanitizeText(body.full_name, 100),
+      nisn: body.nisn && String(body.nisn).trim() ? sanitizeText(body.nisn, 20) : null,
       gender: body.gender === 'P' ? 'P' : 'L',
-      birth_place: (body.birth_place || 'Tangerang').trim(),
+      birth_place: sanitizeText(body.birth_place || 'Tangerang', 80),
       birth_date: birthDate,
-      previous_school: body.previous_school && String(body.previous_school).trim() ? String(body.previous_school).trim() : null,
-      parent_name: body.parent_name.trim(),
-      parent_whatsapp: body.parent_whatsapp.trim(),
-      home_address: body.home_address && String(body.home_address).trim() ? String(body.home_address).trim() : null,
+      previous_school: body.previous_school && String(body.previous_school).trim() ? sanitizeText(body.previous_school, 120) : null,
+      parent_name: sanitizeText(body.parent_name, 100),
+      parent_whatsapp: sanitizePhone(body.parent_whatsapp),
+      home_address: body.home_address && String(body.home_address).trim() ? sanitizeText(body.home_address, 300) : null,
       status: body.status || 'submitted',
       documents: docObj,
-      admin_notes: body.admin_notes && String(body.admin_notes).trim() ? String(body.admin_notes).trim() : null,
+      admin_notes: body.admin_notes && String(body.admin_notes).trim() ? sanitizeText(body.admin_notes, 500) : null,
     };
 
     let savedItem: PpdbApplicantItem;

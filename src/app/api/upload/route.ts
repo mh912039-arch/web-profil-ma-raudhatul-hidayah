@@ -9,6 +9,49 @@ import { checkEndpointRateLimit } from '@/lib/rateLimiter';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
+/**
+ * Verifikasi Magic Bytes (File Signature) untuk mencegah eksekusi skrip terselubung (Anti-WebShell / Anti-RCE)
+ */
+function verifyFileSignature(buf: Buffer): { mime: string; ext: string } | null {
+  if (!buf || buf.length < 4) return null;
+
+  // JPEG: FF D8 FF
+  if (buf[0] === 0xff && buf[1] === 0xd8 && buf[2] === 0xff) {
+    return { mime: 'image/jpeg', ext: '.jpg' };
+  }
+
+  // PNG: 89 50 4E 47 0D 0A 1A 0A
+  if (
+    buf.length >= 8 &&
+    buf[0] === 0x89 &&
+    buf[1] === 0x50 &&
+    buf[2] === 0x4e &&
+    buf[3] === 0x47 &&
+    buf[4] === 0x0d &&
+    buf[5] === 0x0a &&
+    buf[6] === 0x1a &&
+    buf[7] === 0x0a
+  ) {
+    return { mime: 'image/png', ext: '.png' };
+  }
+
+  // WebP: RIFF .... WEBP
+  if (
+    buf.length >= 12 &&
+    buf.subarray(0, 4).toString('ascii') === 'RIFF' &&
+    buf.subarray(8, 12).toString('ascii') === 'WEBP'
+  ) {
+    return { mime: 'image/webp', ext: '.webp' };
+  }
+
+  // PDF: %PDF
+  if (buf.subarray(0, 4).toString('ascii') === '%PDF') {
+    return { mime: 'application/pdf', ext: '.pdf' };
+  }
+
+  return null;
+}
+
 export async function POST(request: Request) {
   try {
     // 0. Proteksi Batas Frekuensi Unggah Berkas (Anti Storage Flood / DoS)
@@ -53,11 +96,6 @@ export async function POST(request: Request) {
       buffer = Buffer.from(bytes);
 
       const originalName = file.name || 'document.jpg';
-      const ext = path.extname(originalName).toLowerCase() || '.jpg';
-      const cleanExt = ['.jpg', '.jpeg', '.png', '.webp', '.pdf'].includes(ext) ? ext : '.jpg';
-      const prefix = cleanExt === '.pdf' ? 'dokumen' : 'img';
-      filename = `${prefix}-${Date.now()}-${Math.random().toString(36).substring(2, 8)}${cleanExt}`;
-      mimeType = file.type || (cleanExt === '.pdf' ? 'application/pdf' : cleanExt === '.png' ? 'image/png' : cleanExt === '.webp' ? 'image/webp' : 'image/jpeg');
 
       // Check minSize if requested (e.g. 100 KB requirement for official PPDB documents)
       const minSizeParam = formData.get('minSize');
@@ -77,7 +115,7 @@ export async function POST(request: Request) {
     } else if (contentType.includes('application/json')) {
       // 2. Handle JSON Base64 payload
       const body = await request.json();
-      const { base64, ext = 'jpg' } = body;
+      const { base64 } = body;
 
       if (!base64 || typeof base64 !== 'string') {
         return NextResponse.json({ success: false, message: 'Payload base64 tidak valid' }, { status: 400 });
@@ -85,17 +123,30 @@ export async function POST(request: Request) {
 
       const cleanBase64 = base64.replace(/^data:image\/\w+;base64,/, '');
       buffer = Buffer.from(cleanBase64, 'base64');
-
-      const cleanExt = ext.startsWith('.') ? ext : `.${ext}`;
-      filename = `img-${Date.now()}-${Math.random().toString(36).substring(2, 8)}${cleanExt}`;
-      mimeType = cleanExt === '.png' ? 'image/png' : cleanExt === '.webp' ? 'image/webp' : 'image/jpeg';
     } else {
       return NextResponse.json({ success: false, message: 'Content-Type tidak didukung' }, { status: 400 });
     }
 
-    if (!buffer) {
+    if (!buffer || buffer.length === 0) {
       return NextResponse.json({ success: false, message: 'Gagal memproses berkas gambar' }, { status: 400 });
     }
+
+    // Verifikasi Magic Bytes (File Signature): Tolak file palsu atau executable tersembunyi
+    const detectedType = verifyFileSignature(buffer);
+    if (!detectedType) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Format berkas tidak diizinkan. Sistem hanya menerima file gambar asli (JPG, PNG, WebP) atau dokumen PDF.',
+        },
+        { status: 400 }
+      );
+    }
+
+    const cleanExt = detectedType.ext;
+    mimeType = detectedType.mime;
+    const prefix = cleanExt === '.pdf' ? 'dokumen' : 'img';
+    filename = `${prefix}-${Date.now()}-${Math.random().toString(36).substring(2, 8)}${cleanExt}`;
 
     // Batasan keamanan ketat: maksimal 3 MB untuk mencegah pemborosan storage gratisan
     const MAX_UPLOAD_BYTES = 3 * 1024 * 1024;

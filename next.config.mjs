@@ -78,6 +78,23 @@ const nextConfig = {
         // Hanya terapkan pada rute dokumen / halaman (tidak mengganggu static assets _next/static)
         source: '/((?!_next/static|_next/image|favicon.ico).*)',
         headers: [
+          // 0. Content Security Policy (CSP) Menyeluruh - Mencegah XSS & Script Injection
+          {
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://cdn.jsdelivr.net",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+              "img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com https://picsum.photos https://api.dicebear.com https://*.google.com https://*.googleapis.com https://*.gstatic.com",
+              "font-src 'self' data: https://fonts.gstatic.com",
+              "connect-src 'self' https://*.supabase.co https://api.dicebear.com https://vitals.vercel-insights.com",
+              "frame-src 'self' https://www.google.com https://maps.google.com https://*.google.com",
+              "frame-ancestors 'none'",
+              "object-src 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
+            ].join('; '),
+          },
           // 1. HTTP Strict Transport Security (HSTS) - Standar Maksimal A+ / Sucuri Minimal Risk
           {
             key: 'Strict-Transport-Security',
@@ -108,7 +125,12 @@ const nextConfig = {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=(), browsing-topics=(), payment=(), usb=()',
           },
-          // 7. Kontrol Prefetch DNS Aman
+          // 7. Kontrol Kebijakan Cross-Domain Dokumen
+          {
+            key: 'X-Permitted-Cross-Domain-Policies',
+            value: 'none',
+          },
+          // 8. Kontrol Prefetch DNS Aman
           {
             key: 'X-DNS-Prefetch-Control',
             value: 'on',

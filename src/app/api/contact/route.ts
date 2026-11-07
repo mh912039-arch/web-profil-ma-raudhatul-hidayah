@@ -4,6 +4,7 @@ import path from 'path';
 import { supabase } from '@/lib/supabaseClient';
 import { requireAuth } from '@/lib/auth';
 import { checkEndpointRateLimit } from '@/lib/rateLimiter';
+import { sanitizeText, sanitizeEmail, sanitizePhone } from '@/lib/sanitizer';
 
 const dataFilePath = path.join(process.cwd(), 'src', 'data', 'messagesData.json');
 
@@ -118,9 +119,9 @@ export async function POST(request: Request) {
       );
     }
 
-    const cleanName = body.name.trim().slice(0, 100);
-    const cleanMessage = body.message.trim().slice(0, 2000);
-    const cleanSubject = typeof body.subject === 'string' ? body.subject.trim().slice(0, 150) : 'Pertanyaan Pengunjung';
+    const cleanName = sanitizeText(body.name, 100);
+    const cleanMessage = sanitizeText(body.message, 2000);
+    const cleanSubject = sanitizeText(body.subject || 'Pertanyaan Pengunjung', 150);
 
     if (cleanName.length < 2 || cleanMessage.length < 5) {
       return NextResponse.json(
@@ -129,9 +130,9 @@ export async function POST(request: Request) {
       );
     }
 
-    const contactStr = (typeof body.contact === 'string' ? body.contact : '').trim().slice(0, 100);
-    const email = (typeof body.email === 'string' ? body.email.trim() : (contactStr.includes('@') ? contactStr : '')).slice(0, 100);
-    const phone = (typeof body.phone === 'string' ? body.phone.trim() : (!contactStr.includes('@') ? contactStr : '')).slice(0, 30);
+    const contactStr = sanitizeText(body.contact || '', 100);
+    const email = sanitizeEmail(body.email || (contactStr.includes('@') ? contactStr : ''));
+    const phone = sanitizePhone(body.phone || (!contactStr.includes('@') ? contactStr : ''));
 
     let assignedId = `msg-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
 

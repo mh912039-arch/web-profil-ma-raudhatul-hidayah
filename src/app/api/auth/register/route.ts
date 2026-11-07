@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { readUsers, writeUsers, UserAccountItem } from '@/lib/userStore';
 import { hashPassword } from '@/lib/auth';
 import { checkEndpointRateLimit } from '@/lib/rateLimiter';
+import { sanitizeText, sanitizeEmail } from '@/lib/sanitizer';
 
 export async function POST(request: Request) {
   try {
@@ -60,7 +61,16 @@ export async function POST(request: Request) {
       );
     }
 
-    const cleanEmail = email.trim().toLowerCase();
+    const cleanEmail = sanitizeEmail(email);
+    const cleanName = sanitizeText(name, 100);
+
+    if (!cleanEmail) {
+      return NextResponse.json(
+        { success: false, message: 'Format alamat email tidak valid.' },
+        { status: 400 }
+      );
+    }
+
     const users = await readUsers();
 
     // Periksa apakah email atau username sudah terdaftar (Pesan dinetralisasi demi mencegah User Enumeration)
@@ -87,7 +97,7 @@ export async function POST(request: Request) {
 
     const newUser: UserAccountItem = {
       id: `usr-${Date.now()}`,
-      name: name.trim(),
+      name: cleanName,
       email: cleanEmail,
       username: cleanEmail.split('@')[0],
       password: hashPassword(password.trim()), // Sandi selalu di-hash kriptografis dengan AUTH_SECRET
@@ -100,8 +110,8 @@ export async function POST(request: Request) {
       last_device_type: 'desktop',
       last_ip: clientIp,
       is_online: false,
-      nip_nisn: nip_nisn ? String(nip_nisn).trim() : '-',
-      note: note ? String(note).trim() : '-',
+      nip_nisn: nip_nisn ? sanitizeText(nip_nisn, 30) : '-',
+      note: note ? sanitizeText(note, 200) : '-',
     };
 
     users.unshift(newUser);
