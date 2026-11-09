@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/auth';
-import { supabase, supabaseAdmin } from '@/lib/supabaseClient';
+import { supabaseAdmin } from '@/lib/supabaseClient';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -45,7 +45,7 @@ const defaultClasses: ClassRombel[] = [
 
 async function getClasses(): Promise<ClassRombel[]> {
   try {
-    const { data: supaData } = await supabase
+    const { data: supaData } = await supabaseAdmin
       .from('teachers_staff')
       .select('education')
       .eq('code', 'SYS_CLS')

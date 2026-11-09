@@ -206,9 +206,9 @@ export default function AdminDashboardPage() {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [usersCount, setUsersCount] = useState<number>(8);
   const [homepageData, setHomepageData] = useState<HomepageConfig>({
-    heroTitle: 'MA Raudlatul Hidayah',
+    heroTitle: 'MAS Raudlatul Hidayah',
     heroTagline: 'Membentuk Generasi Berkarakter, Beradab, dan Unggul Bernalar',
-    heroBadge: 'Portal Resmi MA Raudlatul Hidayah',
+    heroBadge: 'Portal Resmi MAS Raudlatul Hidayah',
     heroBackground: '/foto-semua.jpeg',
     heroBackgrounds: [
       '/foto-semua.jpeg',
@@ -216,7 +216,7 @@ export default function AdminDashboardPage() {
       '/paskibra.jpeg',
     ],
     schoolLogo: '/school-logo.png',
-    marqueeText1: 'PPDB (Penerimaan Peserta Didik Baru) MA Raudlatul Hidayah Tahun Ajaran 2027/2028 Telah Dibuka!',
+    marqueeText1: 'PPDB (Penerimaan Peserta Didik Baru) MAS Raudlatul Hidayah Tahun Ajaran 2027/2028 Telah Dibuka!',
     marqueeCta1: 'DAFTAR SEKARANG!',
     marqueeLink1: '/kontak',
     marqueeText2: 'Kuota Pendaftaran Terbatas • Pembinaan Berbasis Karakter & Kurikulum Merdeka • Mauk Tangerang',
@@ -226,9 +226,9 @@ export default function AdminDashboardPage() {
     sambutanSubtitle: 'Membina Integritas & Mutu Akademik',
     sambutanBadge: 'Pimpinan Satuan Pendidikan',
     headmasterName: 'A. Khutbi. AR, S.Pd',
-    headmasterRole: 'Kepala Madrasah MA Raudlatul Hidayah',
+    headmasterRole: 'Kepala Madrasah MAS Raudlatul Hidayah',
     headmasterPhoto: '/kepala-madrasah.jpg',
-    sambutanText1: 'Bismillah walhamdulillah. Assalamu’alaikum Warahmatullahi Wabarakatuh. Selamat datang di portal resmi MA Raudlatul Hidayah jenjang Madrasah Aliyah (MA). Kami meyakini bahwa pendidikan sejati tidak hanya mengasah kecerdasan kognitif, tetapi juga merawat adab, keteguhan akidah, serta budi pekerti luhur sejak usia transisi remaja.',
+    sambutanText1: 'Bismillah walhamdulillah. Assalamu’alaikum Warahmatullahi Wabarakatuh. Selamat datang di portal resmi MAS Raudlatul Hidayah jenjang Madrasah Aliyah Swasta (MAS). Kami meyakini bahwa pendidikan sejati tidak hanya mengasah kecerdasan kognitif, tetapi juga merawat adab, keteguhan akidah, serta budi pekerti luhur sejak usia transisi remaja.',
     sambutanText2: 'Melalui integrasi Kurikulum Merdeka yang kontekstual dan kultur pembiasaan Islami, kami berikhtiar membimbing seluruh santri agar aktif bernalar, mencintai ilmu pengetahuan, dan terlatih hidup berdisiplin dalam lingkungan yang aman, ramah anak, serta penuh kehangatan persaudaraan.',
     ctaText: 'Pelajari Profil & Budaya Sekolah',
     ctaLink: '/profil/visi-misi',
@@ -244,9 +244,9 @@ export default function AdminDashboardPage() {
 
   const [fullProfileData, setFullProfileData] = useState<FullProfileData>({
     profile: {
-      name: 'MA Raudlatul Hidayah',
-      formalName: 'Madrasah Aliyah Raudlatul Hidayah',
-      level: 'Madrasah Aliyah (MA)',
+      name: 'MAS Raudlatul Hidayah',
+      formalName: 'Madrasah Aliyah Swasta Raudlatul Hidayah',
+      level: 'Madrasah Aliyah Swasta (MAS)',
       npsn: '6994888',
       nsm: '131236030045',
       accreditation: 'C',

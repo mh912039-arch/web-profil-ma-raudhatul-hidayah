@@ -27,7 +27,7 @@ export async function GET() {
 
   // 1. Read from Supabase school_profile (primary database)
   try {
-    const { data: supaProfile, error } = await supabase
+    const { data: supaProfile, error } = await supabaseAdmin
       .from('school_profile')
       .select('*')
       .eq('id', 1)
@@ -65,7 +65,7 @@ export async function GET() {
 
   // 2. Read persistent homepage configuration from SYS_HOME
   try {
-    const { data: sysHome } = await supabase
+    const { data: sysHome } = await supabaseAdmin
       .from('teachers_staff')
       .select('education')
       .eq('code', 'SYS_HOME')
@@ -83,7 +83,7 @@ export async function GET() {
 
   // 3. Read persistent extended profile data from SYS_PROF (vision-mission, history, facilities)
   try {
-    const { data: sysProf } = await supabase
+    const { data: sysProf } = await supabaseAdmin
       .from('teachers_staff')
       .select('education')
       .eq('code', 'SYS_PROF')
@@ -106,7 +106,7 @@ export async function GET() {
 
   // 4. Try reading facilities table from Supabase if present
   try {
-    const { data: supaFacilities, error: facErr } = await supabase
+    const { data: supaFacilities, error: facErr } = await supabaseAdmin
       .from('facilities')
       .select('*')
       .order('order_index', { ascending: true });
@@ -138,94 +138,107 @@ export async function POST(request: Request) {
   try {
     const incoming = await request.json();
 
-    // Read current data
-    let currentData: any = {};
+    // 1. Fetch current persisted state from Supabase to prevent regression
+    let currentHome: any = {};
+    try {
+      const { data: rowHome } = await supabaseAdmin
+        .from('teachers_staff')
+        .select('education')
+        .eq('code', 'SYS_HOME')
+        .maybeSingle();
+      if (rowHome?.education) currentHome = JSON.parse(rowHome.education);
+    } catch {}
+
+    let currentProf: any = {};
+    try {
+      const { data: rowProf } = await supabaseAdmin
+        .from('teachers_staff')
+        .select('education')
+        .eq('code', 'SYS_PROF')
+        .maybeSingle();
+      if (rowProf?.education) currentProf = JSON.parse(rowProf.education);
+    } catch {}
+
+    // Read local fallback file
+    let currentFileData: any = {};
     try {
       const fileContent = await fs.readFile(dataFilePath, 'utf-8');
-      currentData = JSON.parse(fileContent);
+      currentFileData = JSON.parse(fileContent);
     } catch (err) {}
 
-    // Merge incoming changes
+    const mergedHome = incoming.homepage
+      ? { ...(currentHome.heroTitle ? currentHome : currentFileData.homepage || {}), ...incoming.homepage }
+      : (currentHome.heroTitle ? currentHome : currentFileData.homepage || {});
+
+    const mergedProfile = incoming.profile
+      ? { ...(currentProf.profile || currentFileData.profile || {}), ...incoming.profile }
+      : (currentProf.profile || currentFileData.profile || {});
+
+    const mergedVision = incoming.visionMission
+      ? { ...(currentProf.visionMission || currentFileData.visionMission || {}), ...incoming.visionMission }
+      : (currentProf.visionMission || currentFileData.visionMission || {});
+
+    const mergedHistory = incoming.history
+      ? { ...(currentProf.history || currentFileData.history || {}), ...incoming.history }
+      : (currentProf.history || currentFileData.history || {});
+
+    const mergedFacilities = incoming.facilities !== undefined
+      ? incoming.facilities
+      : (currentProf.facilities || currentFileData.facilities || []);
+
     const updatedData = {
-      ...currentData,
-      ...(incoming.homepage ? { homepage: { ...currentData.homepage, ...incoming.homepage } } : {}),
-      ...(incoming.profile ? { profile: { ...currentData.profile, ...incoming.profile } } : {}),
-      ...(incoming.visionMission ? { visionMission: { ...currentData.visionMission, ...incoming.visionMission } } : {}),
-      ...(incoming.history ? { history: { ...currentData.history, ...incoming.history } } : {}),
-      ...(incoming.facilities ? { facilities: incoming.facilities } : {}),
+      homepage: mergedHome,
+      profile: mergedProfile,
+      visionMission: mergedVision,
+      history: mergedHistory,
+      facilities: mergedFacilities,
     };
 
-    // Save locally (safe on Vercel)
+    // Best-effort local file write
     try {
       await fs.writeFile(dataFilePath, JSON.stringify(updatedData, null, 2), 'utf-8');
-    } catch (fsErr) {
-      // Safely ignore EROFS in serverless environments
+    } catch (fsErr) {}
+
+    // 2. Primary Persistent Store: Save homepage config into Supabase teachers_staff (SYS_HOME)
+    if (incoming.homepage) {
+      try {
+        const homeJson = JSON.stringify(mergedHome);
+        const { data: updatedHome } = await supabaseAdmin
+          .from('teachers_staff')
+          .update({ education: homeJson, is_active: true, updated_at: new Date().toISOString() })
+          .eq('code', 'SYS_HOME')
+          .select('id');
+
+        if (!updatedHome || updatedHome.length === 0) {
+          await supabaseAdmin.from('teachers_staff').insert({
+            name: 'System Homepage Store',
+            code: 'SYS_HOME',
+            category_label: 'Sistem',
+            subject_name: 'Homepage',
+            education: homeJson,
+            order_no: 9995,
+            role: 'system',
+            is_active: true,
+          });
+        }
+      } catch (e) {
+        console.warn('Notice: SYS_HOME sync:', e);
+      }
     }
 
-    // Also attempt to sync relevant profile fields to Supabase
-    try {
-      const prof = updatedData.profile || {};
-      const home = updatedData.homepage || {};
-      const vis = updatedData.visionMission || {};
-
-      await supabaseAdmin.from('school_profile').upsert({
-        id: 1,
-        name: prof.name || home.heroTitle,
-        formal_name: prof.formalName,
-        npsn: prof.npsn,
-        nsm: prof.nsm,
-        accreditation: prof.accreditation,
-        founded_year: prof.foundedYear,
-        address: prof.address,
-        district: prof.district,
-        regency: prof.regency,
-        phone: prof.phone,
-        whatsapp: prof.whatsapp,
-        email: prof.email,
-        vision: vis.vision,
-        missions: Array.isArray(vis.missions) ? vis.missions : undefined,
-        logo_url: home.schoolLogo,
-      });
-
-      // 1. Primary Persistent Store: Save homepage config into Supabase teachers_staff (SYS_HOME)
-      if (updatedData.homepage) {
-        try {
-          const homeJson = JSON.stringify(updatedData.homepage);
-          const { data: updatedHome } = await supabaseAdmin
-            .from('teachers_staff')
-            .update({ education: homeJson, updated_at: new Date().toISOString() })
-            .eq('code', 'SYS_HOME')
-            .select('id');
-
-          if (!updatedHome || updatedHome.length === 0) {
-            await supabaseAdmin.from('teachers_staff').insert({
-              name: 'System Homepage Store',
-              code: 'SYS_HOME',
-              category_label: 'Sistem',
-              subject_name: 'Homepage',
-              education: homeJson,
-              order_no: 9995,
-              role: 'system',
-              is_active: false,
-            });
-          }
-        } catch (e) {
-          console.warn('Notice: SYS_HOME sync:', e);
-        }
-      }
-
-      // 2. Primary Persistent Store: Save extended profile into Supabase teachers_staff (SYS_PROF)
+    // 3. Primary Persistent Store: Save extended profile into Supabase teachers_staff (SYS_PROF)
+    if (incoming.profile || incoming.visionMission || incoming.history || incoming.facilities !== undefined) {
       try {
         const profPayload = {
-          profile: updatedData.profile,
-          visionMission: updatedData.visionMission,
-          history: updatedData.history,
-          facilities: updatedData.facilities,
+          profile: mergedProfile,
+          visionMission: mergedVision,
+          history: mergedHistory,
+          facilities: mergedFacilities,
         };
         const profJson = JSON.stringify(profPayload);
         const { data: updatedProf } = await supabaseAdmin
           .from('teachers_staff')
-          .update({ education: profJson, updated_at: new Date().toISOString() })
+          .update({ education: profJson, is_active: true, updated_at: new Date().toISOString() })
           .eq('code', 'SYS_PROF')
           .select('id');
 
@@ -238,46 +251,61 @@ export async function POST(request: Request) {
             education: profJson,
             order_no: 9994,
             role: 'system',
-            is_active: false,
+            is_active: true,
           });
         }
       } catch (e) {
         console.warn('Notice: SYS_PROF sync:', e);
       }
+    }
 
-      // 3. Update school_profile stats if numbers are valid
-      if (updatedData.homepage) {
-        try {
-          const numStudents = parseInt(home.stat1Value);
-          const numTeachers = parseInt(home.stat2Value);
-          const statsUpdate: any = {};
-          if (!isNaN(numStudents)) statsUpdate.stats_active_students = numStudents;
-          if (!isNaN(numTeachers)) statsUpdate.stats_certified_teachers = numTeachers;
+    // 4. Update school_profile table
+    try {
+      const profUpdate: any = { id: 1 };
+      if (mergedProfile.name) profUpdate.name = mergedProfile.name;
+      else if (mergedHome.heroTitle) profUpdate.name = mergedHome.heroTitle;
+      if (mergedProfile.formalName) profUpdate.formal_name = mergedProfile.formalName;
+      if (mergedProfile.npsn) profUpdate.npsn = mergedProfile.npsn;
+      if (mergedProfile.nsm) profUpdate.nsm = mergedProfile.nsm;
+      if (mergedProfile.accreditation) profUpdate.accreditation = mergedProfile.accreditation;
+      if (mergedProfile.foundedYear) profUpdate.founded_year = mergedProfile.foundedYear;
+      if (mergedProfile.address) profUpdate.address = mergedProfile.address;
+      if (mergedProfile.district) profUpdate.district = mergedProfile.district;
+      if (mergedProfile.regency) profUpdate.regency = mergedProfile.regency;
+      if (mergedProfile.phone) profUpdate.phone = mergedProfile.phone;
+      if (mergedProfile.whatsapp) profUpdate.whatsapp = mergedProfile.whatsapp;
+      if (mergedProfile.email) profUpdate.email = mergedProfile.email;
+      if (mergedVision.vision) profUpdate.vision = mergedVision.vision;
+      if (Array.isArray(mergedVision.missions)) profUpdate.missions = mergedVision.missions;
+      if (mergedHome.schoolLogo) profUpdate.logo_url = mergedHome.schoolLogo;
 
-          if (Object.keys(statsUpdate).length > 0) {
-            await supabaseAdmin.from('school_profile').update(statsUpdate).eq('id', 1);
-          }
-        } catch (e) {}
+      if (incoming.homepage) {
+        const numStudents = parseInt(mergedHome.stat1Value);
+        const numTeachers = parseInt(mergedHome.stat2Value);
+        if (!isNaN(numStudents)) profUpdate.stats_active_students = numStudents;
+        if (!isNaN(numTeachers)) profUpdate.stats_certified_teachers = numTeachers;
       }
 
-      // 4. Sync facilities if present
-      if (Array.isArray(updatedData.facilities)) {
-        for (const fac of updatedData.facilities) {
-          const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(fac.id));
-          if (isUuid) {
-            try {
-              await supabaseAdmin.from('facilities').update({
-                name: fac.title,
-                category: fac.subtitle || 'Akademik',
-                description: fac.desc,
-                image_url: fac.image,
-              }).eq('id', fac.id);
-            } catch (e) {}
-          }
+      await supabaseAdmin.from('school_profile').upsert(profUpdate);
+    } catch (spErr) {
+      console.warn('Notice: school_profile upsert:', spErr);
+    }
+
+    // 5. Sync facilities if present
+    if (Array.isArray(incoming.facilities)) {
+      for (const fac of incoming.facilities) {
+        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(fac.id));
+        if (isUuid) {
+          try {
+            await supabaseAdmin.from('facilities').update({
+              name: fac.title,
+              category: fac.badge || fac.subtitle,
+              description: fac.desc,
+              image_url: fac.image,
+            }).eq('id', fac.id);
+          } catch (_) {}
         }
       }
-    } catch (supaErr) {
-      console.warn('Notice: Supabase school_profile sync:', supaErr);
     }
 
     return NextResponse.json({

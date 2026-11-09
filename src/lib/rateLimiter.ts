@@ -1,4 +1,4 @@
-import { supabase } from './supabaseClient';
+import { supabaseAdmin } from './supabaseClient';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -42,7 +42,7 @@ async function syncFromStorage(): Promise<void> {
   }
 
   try {
-    const { data: row } = await supabase
+    const { data: row } = await supabaseAdmin
       .from('teachers_staff')
       .select('education')
       .eq('code', 'SYS_RATE_LIMIT')
@@ -95,14 +95,14 @@ async function syncToStorage(): Promise<void> {
 
   // 1. Simpan ke Supabase
   try {
-    const { data: updated, error: supaErr } = await supabase
+    const { data: updated, error: supaErr } = await supabaseAdmin
       .from('teachers_staff')
       .update({ education: JSON.stringify(activeEntries) })
       .eq('code', 'SYS_RATE_LIMIT')
       .select('id');
 
     if (supaErr || !updated || updated.length === 0) {
-      await supabase.from('teachers_staff').insert({
+      await supabaseAdmin.from('teachers_staff').insert({
         name: 'Sistem Proteksi Rate Limit',
         code: 'SYS_RATE_LIMIT',
         category_label: 'Sistem',

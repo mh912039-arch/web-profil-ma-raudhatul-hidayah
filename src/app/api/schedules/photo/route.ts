@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/auth';
-import { supabase, supabaseAdmin } from '@/lib/supabaseClient';
+import { supabaseAdmin } from '@/lib/supabaseClient';
 import { deleteStorageFile } from '@/lib/storageHelper';
 
 export const dynamic = 'force-dynamic';
@@ -14,7 +14,7 @@ const noCacheHeaders = {
 
 export async function GET() {
   try {
-    const { data: row } = await supabase
+    const { data: row } = await supabaseAdmin
       .from('teachers_staff')
       .select('education, updated_at')
       .eq('code', 'SYS_SCHIMG')
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const photoUrl = body.photo_url;
-    const caption = body.caption || 'Jadwal Pelajaran Resmi MA Raudlatul Hidayah';
+    const caption = body.caption || 'Jadwal Pelajaran Resmi MAS Raudlatul Hidayah';
 
     if (!photoUrl) {
       return NextResponse.json({ success: false, message: 'URL foto jadwal diperlukan.' }, { status: 400, headers: noCacheHeaders });
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
 
     // 1. Ambil foto lama jika ada untuk dibersihkan dari Supabase Storage (Garbage Collection)
     try {
-      const { data: oldRow } = await supabase
+      const { data: oldRow } = await supabaseAdmin
         .from('teachers_staff')
         .select('education')
         .eq('code', 'SYS_SCHIMG')
@@ -115,7 +115,7 @@ export async function DELETE() {
   try {
     // 1. Ambil foto yang sedang aktif untuk dihapus dari Storage
     try {
-      const { data: oldRow } = await supabase
+      const { data: oldRow } = await supabaseAdmin
         .from('teachers_staff')
         .select('education')
         .eq('code', 'SYS_SCHIMG')

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
-import { supabase, supabaseAdmin } from '@/lib/supabaseClient';
+import { supabaseAdmin } from '@/lib/supabaseClient';
 import { requireAuth } from '@/lib/auth';
 import { checkEndpointRateLimit } from '@/lib/rateLimiter';
 import { sanitizeText, sanitizeEmail, sanitizePhone } from '@/lib/sanitizer';
@@ -43,7 +43,7 @@ export async function GET() {
 
   // 2. Fetch from Supabase
   try {
-    const { data: supaMessages, error: supaErr } = await supabase
+    const { data: supaMessages, error: supaErr } = await supabaseAdmin
       .from('contact_messages')
       .select('*')
       .order('created_at', { ascending: false });
@@ -162,7 +162,7 @@ export async function POST(request: Request) {
 
     // 1. Primary: Insert into Supabase contact_messages
     try {
-      const { data: supaInserted, error: supaErr } = await supabase
+      const { data: supaInserted, error: supaErr } = await supabaseAdmin
         .from('contact_messages')
         .insert({
           name: cleanName,

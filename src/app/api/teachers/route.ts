@@ -54,7 +54,7 @@ function detectJenjang(classLevel: string, code: string): 'sd' | 'smp' | 'sma' {
 async function readTeachersUnified(): Promise<TeacherItem[]> {
   // 1. Cek penyimpanan persisten terpadu di Supabase (SYS_TCH)
   try {
-    const { data: sysTch } = await supabase
+    const { data: sysTch } = await supabaseAdmin
       .from('teachers_staff')
       .select('education')
       .eq('code', 'SYS_TCH')
@@ -81,7 +81,7 @@ async function readTeachersUnified(): Promise<TeacherItem[]> {
   }
 
   try {
-    const { data: supaTeachers, error } = await supabase
+    const { data: supaTeachers, error } = await supabaseAdmin
       .from('teachers_staff')
       .select('*')
       .order('order_no', { ascending: true });
@@ -229,7 +229,7 @@ export async function POST(request: Request) {
     try {
       const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(body.id));
       if (isUuid) {
-        const { data: updatedData } = await supabase
+        const { data: updatedData } = await supabaseAdmin
           .from('teachers_staff')
           .update({
             order_no: newOrUpdated.order_no,
@@ -251,7 +251,7 @@ export async function POST(request: Request) {
           newOrUpdated.id = updatedData.id;
         }
       } else {
-        const { data: existing } = await supabase
+        const { data: existing } = await supabaseAdmin
           .from('teachers_staff')
           .select('id')
           .or(`code.eq.${newOrUpdated.code.slice(0, 10)},order_no.eq.${newOrUpdated.order_no}`)
@@ -260,7 +260,7 @@ export async function POST(request: Request) {
         if (existing && existing.length > 0) {
           const matchedId = existing[0].id;
           newOrUpdated.id = matchedId;
-          await supabase
+          await supabaseAdmin
             .from('teachers_staff')
             .update({
               order_no: newOrUpdated.order_no,
@@ -277,7 +277,7 @@ export async function POST(request: Request) {
             })
             .eq('id', matchedId);
         } else {
-          const { data: inserted } = await supabase
+          const { data: inserted } = await supabaseAdmin
             .from('teachers_staff')
             .insert({
               order_no: newOrUpdated.order_no,

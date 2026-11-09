@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
-import { supabase, supabaseAdmin } from '@/lib/supabaseClient';
+import { supabaseAdmin } from '@/lib/supabaseClient';
 import { requireAuth } from '@/lib/auth';
 
 const dataFilePath = path.join(process.cwd(), 'src', 'data', 'ppdbData.json');
@@ -16,11 +16,11 @@ const noCacheHeaders = {
 };
 
 const defaultData = {
-  category: "MA RAUDLATUL HIDAYAH",
+  category: "MAS RAUDLATUL HIDAYAH",
   title: "Membentuk Generasi Berkarakter, Cerdas & Berakhlak Mulia",
   academicYear: "2027/2028",
   badgeText: "TELAH DIBUKA!",
-  description: "MA Raudlatul Hidayah hadir sebagai kawah candradimuka yang mendampingi setiap murid untuk bertumbuh menjadi generasi yang tangguh, unggul, dan berkarakter islami. Melalui pembelajaran kontekstual berbasis Kurikulum Merdeka yang bermakna serta pembiasaan adab luhur kepesantrenan, santri didorong untuk menemukan potensi, mengembangkan bakat, dan meraih prestasi terbaiknya.",
+  description: "MAS Raudlatul Hidayah hadir sebagai kawah candradimuka yang mendampingi setiap murid untuk bertumbuh menjadi generasi yang tangguh, unggul, dan berkarakter islami. Melalui pembelajaran kontekstual berbasis Kurikulum Merdeka yang bermakna serta pembiasaan adab luhur kepesantrenan, santri didorong untuk menemukan potensi, mengembangkan bakat, dan meraih prestasi terbaiknya.",
   features: [
     "Kurikulum Merdeka Terpadu (Fase E & F)",
     "Pembentukan Karakter & Adab Islami",
@@ -31,7 +31,7 @@ const defaultData = {
   ],
   contactWa: "628176614723",
   contactPhone: "0817-6614-723",
-  registrationLink: "https://wa.me/628176614723?text=Halo%20Panitia%20PPDB%20MA%20Raudlatul%20Hidayah,%20saya%20ingin%20mendaftar%20dan%20konsultasi%20PPDB%202027/2028",
+  registrationLink: "https://wa.me/628176614723?text=Halo%20Panitia%20PPDB%20MAS%20Raudlatul%20Hidayah,%20saya%20ingin%20mendaftar%20dan%20konsultasi%20PPDB%202027/2028",
   brochureLink: "/kontak",
   posterUrl: "https://zzgobrlhnnqvspuwugkz.supabase.co/storage/v1/object/public/articles/img-1793069689752-1bguos.jpeg",
   isRegistrationOpen: true
@@ -40,7 +40,7 @@ const defaultData = {
 export async function GET() {
   try {
     // 1. Try reading from Supabase
-    const { data: supaData, error: supaError } = await supabase
+    const { data: supaData, error: supaError } = await supabaseAdmin
       .from('ppdb_settings')
       .select('*')
       .eq('id', 1)

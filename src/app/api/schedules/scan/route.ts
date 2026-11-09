@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/auth';
 import { parseScheduleFromText } from '@/lib/scheduleParser';
-import { supabase } from '@/lib/supabaseClient';
+import { supabaseAdmin } from '@/lib/supabaseClient';
 import { applyBatchSchedules } from '@/lib/scheduleStore';
 
 export const dynamic = 'force-dynamic';
@@ -29,7 +29,7 @@ export async function POST(req: Request) {
     // Ambil daftar guru dari database untuk pencocokan akurat
     let teachers: { name: string; subject_name?: string }[] = [];
     try {
-      const { data: dbTeachers } = await supabase
+      const { data: dbTeachers } = await supabaseAdmin
         .from('teachers_staff')
         .select('name, subject_name')
         .not('code', 'in', '("SYS_SCH","SYS_TCH","SYS_CAL","SYS_CLS","SYS_AUTH","SYS_SESS","SYS_SCHIMG","SYS_HOME","SYS_PROF")')
