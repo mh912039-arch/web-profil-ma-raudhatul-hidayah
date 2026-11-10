@@ -74,28 +74,56 @@ export function verifySessionToken(token: string): SessionData | null {
 }
 
 /**
- * Dapatkan session pengguna dari server cookies
+ * Dapatkan session pengguna dari server cookies atau request headers
  */
-export async function getServerSession(): Promise<SessionData | null> {
+export async function getServerSession(request?: Request): Promise<SessionData | null> {
+  // 1. Coba baca dari cookies() next/headers
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get(COOKIE_NAME)?.value;
-    if (!token) return null;
-    return verifySessionToken(token);
+    if (token) {
+      const session = verifySessionToken(token);
+      if (session) return session;
+    }
   } catch {
-    return null;
+    // next/headers cookies() dapat throw jika dipanggil di luar konteks request tertentu
   }
+
+  // 2. Fallback baca langsung dari request headers jika objek request disertakan
+  if (request) {
+    try {
+      const cookieHeader = request.headers.get('cookie');
+      if (cookieHeader) {
+        const match = cookieHeader.match(new RegExp(`(?:^|;\\s*)${COOKIE_NAME}=([^;]+)`));
+        if (match && match[1]) {
+          const session = verifySessionToken(decodeURIComponent(match[1]));
+          if (session) return session;
+        }
+      }
+
+      const authHeader = request.headers.get('authorization');
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        const bearerToken = authHeader.substring(7).trim();
+        const session = verifySessionToken(bearerToken);
+        if (session) return session;
+      }
+    } catch {
+      // Abaikan jika parsing gagal
+    }
+  }
+
+  return null;
 }
 
 /**
  * Guard untuk API route: pastikan request memiliki autentikasi valid dan peran (role) yang diizinkan
  */
-export async function requireAuth(allowedRoles?: UserRole[]): Promise<{
+export async function requireAuth(allowedRoles?: UserRole[], request?: Request): Promise<{
   authorized: boolean;
   session: SessionData | null;
   response?: NextResponse;
 }> {
-  const session = await getServerSession();
+  const session = await getServerSession(request);
 
   if (!session) {
     return {

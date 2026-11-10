@@ -85,13 +85,16 @@ export const ppdbRegistrationSchema = z.object({
     .trim()
     .min(3, 'Nama orang tua/wali minimal 3 karakter.')
     .max(100, 'Nama orang tua/wali maksimal 100 karakter.'),
-  parent_whatsapp: z
-    .string('Nomor WhatsApp orang tua/wali wajib diisi.')
-    .trim()
-    .regex(
-      /^(\+62|62|08)[0-9]{8,13}$/,
-      'Nomor WhatsApp tidak valid. Gunakan format Indonesia yang aktif (contoh: 08123456789 atau +628123456789).'
-    ),
+  parent_whatsapp: z.preprocess(
+    (val) => (typeof val === 'string' ? val.replace(/[\s\-]/g, '') : val),
+    z
+      .string('Nomor WhatsApp orang tua/wali wajib diisi.')
+      .trim()
+      .regex(
+        /^(\+62|62|08)[0-9]{8,14}$/,
+        'Nomor WhatsApp tidak valid. Gunakan format Indonesia yang aktif (contoh: 08123456789 atau +628123456789).'
+      )
+  ),
   home_address: z
     .string()
     .trim()

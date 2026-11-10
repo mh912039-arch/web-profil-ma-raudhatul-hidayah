@@ -216,7 +216,7 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
     birth_date: '2011-05-10',
     previous_school: 'MTs / SMP Asal',
     parent_name: '',
-    parent_whatsapp: '628',
+    parent_whatsapp: '',
     home_address: '',
     status: 'submitted',
     registration_path: 'domisili',
@@ -241,7 +241,7 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
       birth_date: '2011-05-10',
       previous_school: '',
       parent_name: '',
-      parent_whatsapp: '628',
+      parent_whatsapp: '',
       home_address: '',
       status: 'submitted',
       registration_path: 'domisili',
@@ -295,12 +295,16 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (modalMode === 'edit' && onUpdateApplicant) {
-      await onUpdateApplicant(formData);
-    } else {
-      await onSaveApplicant(formData);
+    try {
+      if (modalMode === 'edit' && onUpdateApplicant) {
+        await onUpdateApplicant(formData);
+      } else {
+        await onSaveApplicant(formData);
+      }
+      setIsModalOpen(false);
+    } catch {
+      // Pertahankan modal tetap terbuka jika terjadi kesalahan agar data input tidak hilang
     }
-    setIsModalOpen(false);
   };
 
   // Open WhatsApp notification dialog

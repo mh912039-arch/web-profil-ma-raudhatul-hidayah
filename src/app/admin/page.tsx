@@ -771,24 +771,31 @@ export default function AdminDashboardPage() {
   };
 
   // Handler: Save PPDB Applicant (Create)
+  // Handler: Save PPDB Applicant (New Manual Registration)
   const handleSaveApplicant = async (app: PpdbApplicant) => {
     setIsSaving(true);
     try {
       const res = await fetch('/api/registrations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
         body: JSON.stringify(app),
       });
-      const resJson = await res.json();
-      if (res.ok && resJson.success) {
+      const resJson = await res.json().catch(() => null);
+      if (res.ok && resJson?.success) {
         const saved = resJson.applicant || app;
         setApplicants((prev) => [saved, ...prev]);
         showToast('success', `Calon santri ${app.full_name} berhasil didaftarkan (No: ${saved.registration_number}).`);
       } else {
-        showToast('error', resJson.message || 'Gagal menyimpan data pendaftar.');
+        const errMsg = resJson?.message || 'Gagal menyimpan data pendaftar.';
+        showToast('error', errMsg);
+        throw new Error(errMsg);
       }
-    } catch (err) {
-      showToast('error', 'Gagal menyimpan data pendaftar.');
+    } catch (err: any) {
+      if (!err?.message) {
+        showToast('error', 'Gagal menyimpan data pendaftar.');
+      }
+      throw err;
     } finally {
       setIsSaving(false);
     }
@@ -801,10 +808,11 @@ export default function AdminDashboardPage() {
       const res = await fetch('/api/registrations', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
         body: JSON.stringify(app),
       });
-      const resJson = await res.json();
-      if (res.ok && resJson.success) {
+      const resJson = await res.json().catch(() => null);
+      if (res.ok && resJson?.success) {
         const updated = resJson.applicant || app;
         setApplicants((prev) =>
           prev.map((a) =>
@@ -815,10 +823,15 @@ export default function AdminDashboardPage() {
         );
         showToast('success', `Data calon santri "${app.full_name}" berhasil diperbarui.`);
       } else {
-        showToast('error', resJson.message || 'Gagal memperbarui data pendaftar.');
+        const errMsg = resJson?.message || 'Gagal memperbarui data pendaftar.';
+        showToast('error', errMsg);
+        throw new Error(errMsg);
       }
-    } catch (err) {
-      showToast('error', 'Gagal memperbarui data pendaftar.');
+    } catch (err: any) {
+      if (!err?.message) {
+        showToast('error', 'Gagal memperbarui data pendaftar.');
+      }
+      throw err;
     } finally {
       setIsSaving(false);
     }
@@ -827,7 +840,10 @@ export default function AdminDashboardPage() {
   // Handler: Delete PPDB Applicant (Delete)
   const handleDeleteApplicant = async (id: string) => {
     try {
-      const res = await fetch(`/api/registrations?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+      const res = await fetch(`/api/registrations?id=${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+        credentials: 'same-origin',
+      });
       const resJson = await res.json().catch(() => null);
       if (res.ok && (resJson?.success ?? true)) {
         setApplicants((prev) => prev.filter((a) => a.id !== id && a.registration_number !== id));
@@ -846,6 +862,7 @@ export default function AdminDashboardPage() {
       const res = await fetch('/api/registrations', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
         body: JSON.stringify({ id, status: newStatus }),
       });
       if (res.ok) {

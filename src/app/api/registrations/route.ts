@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
 import { supabaseServer } from '@/lib/supabaseServer';
-import { requireAuth } from '@/lib/auth';
+import { requireAuth, getServerSession } from '@/lib/auth';
 import { deleteStorageFile } from '@/lib/storageHelper';
 import { checkEndpointRateLimit } from '@/lib/rateLimiter';
 import { sanitizeText, sanitizePhone } from '@/lib/sanitizer';
@@ -77,9 +77,9 @@ function unpackApplicant(row: any): PpdbApplicantItem {
   };
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   // Keamanan Endpoint: Kunci ketat data privat calon santri hanya untuk Administrator
-  const auth = await requireAuth(['admin']);
+  const auth = await requireAuth(['admin'], request);
   if (!auth.authorized) {
     return auth.response!;
   }
@@ -120,24 +120,31 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    // 0. Proteksi Batas Frekuensi Pendaftaran PPDB (Anti Spam Flooding)
+    // 0. Cek Sesi Autentikasi: Jika request dikirim oleh Administrator di panel admin,
+    // maka bypass batas frekuensi (rate limit) dan verifikasi Cloudflare Turnstile CAPTCHA.
+    const session = await getServerSession(request);
+    const isAdmin = session?.role === 'admin';
+
     const cfIp = request.headers.get('cf-connecting-ip');
     const forwarded = request.headers.get('x-forwarded-for');
     const realIp = request.headers.get('x-real-ip');
     const clientIp = cfIp || forwarded?.split(',')[0].trim() || realIp || '127.0.0.1';
 
-    const rateCheck = checkEndpointRateLimit(clientIp, 'ppdb_reg', 10, 30 * 60);
-    if (!rateCheck.allowed) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: `Terlalu banyak formulir pendaftaran yang dikirim dari jaringan ini. Silakan coba kembali dalam ${Math.ceil(rateCheck.retryAfterSeconds / 60)} menit.`,
-        },
-        {
-          status: 429,
-          headers: { ...noCacheHeaders, 'Retry-After': String(rateCheck.retryAfterSeconds) },
-        }
-      );
+    // Rate limiter hanya untuk pengunjung publik
+    if (!isAdmin) {
+      const rateCheck = checkEndpointRateLimit(clientIp, 'ppdb_reg', 10, 30 * 60);
+      if (!rateCheck.allowed) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: `Terlalu banyak formulir pendaftaran yang dikirim dari jaringan ini. Silakan coba kembali dalam ${Math.ceil(rateCheck.retryAfterSeconds / 60)} menit.`,
+          },
+          {
+            status: 429,
+            headers: { ...noCacheHeaders, 'Retry-After': String(rateCheck.retryAfterSeconds) },
+          }
+        );
+      }
     }
 
     const body = await request.json().catch(() => null);
@@ -165,8 +172,8 @@ export async function POST(request: Request) {
 
     const validData = validation.data;
 
-    // Anti-Bot Honeypot Protection: buang bot secara diam-diam
-    if (validData.hp_website || validData.bot_field || validData.website) {
+    // Anti-Bot Honeypot Protection: buang bot secara diam-diam (hanya jika bukan admin)
+    if (!isAdmin && (validData.hp_website || validData.bot_field || validData.website)) {
       return NextResponse.json(
         {
           success: true,
@@ -177,15 +184,18 @@ export async function POST(request: Request) {
     }
 
     // 2. Proteksi Cloudflare Turnstile Smart CAPTCHA
-    const turnstileResult = await verifyTurnstileToken(validData.turnstileToken, clientIp);
-    if (!turnstileResult.success) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: turnstileResult.message || 'Verifikasi keamanan (CAPTCHA) gagal. Silakan verifikasi ulang.',
-        },
-        { status: 403, headers: noCacheHeaders }
-      );
+    // Hanya diwajibkan untuk pengunjung umum / pendaftaran publik di portal
+    if (!isAdmin) {
+      const turnstileResult = await verifyTurnstileToken(validData.turnstileToken, clientIp);
+      if (!turnstileResult.success) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: turnstileResult.message || 'Verifikasi keamanan (CAPTCHA) gagal. Silakan verifikasi ulang.',
+          },
+          { status: 403, headers: noCacheHeaders }
+        );
+      }
     }
 
     // Determine registration number
@@ -206,9 +216,22 @@ export async function POST(request: Request) {
     }
 
     const academicYear = '2027';
-    const regNumber =
+    let regNumber =
       (body as any).registration_number ||
       `RH-${academicYear}-${String(existingCount + 1).padStart(3, '0')}`;
+
+    // Periksa keunikan nomor registrasi jika sudah dipakai sebelumnya di database
+    try {
+      const { data: existingReg } = await supabaseServer
+        .from('ppdb_registrations')
+        .select('id')
+        .eq('registration_number', regNumber)
+        .maybeSingle();
+
+      if (existingReg) {
+        regNumber = `RH-${academicYear}-${String(existingCount + 1).padStart(3, '0')}-${String(Date.now()).slice(-3)}`;
+      }
+    } catch (_) {}
 
     const regPath = validData.registration_path || 'domisili';
     const docObj = {
@@ -273,7 +296,7 @@ export async function POST(request: Request) {
 
 export async function PATCH(request: Request) {
   // Hanya Administrator yang dapat memverifikasi status atau mengubah data pendaftaran
-  const auth = await requireAuth(['admin']);
+  const auth = await requireAuth(['admin'], request);
   if (!auth.authorized) {
     return auth.response!;
   }
@@ -396,7 +419,7 @@ export async function PATCH(request: Request) {
 
 export async function DELETE(request: Request) {
   // Hanya Administrator yang berhak menghapus data pendaftar
-  const auth = await requireAuth(['admin']);
+  const auth = await requireAuth(['admin'], request);
   if (!auth.authorized) {
     return auth.response!;
   }
