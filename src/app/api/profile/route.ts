@@ -83,11 +83,14 @@ export async function GET() {
 
   // 3. Read persistent extended profile data from SYS_PROF (vision-mission, history, facilities)
   try {
-    const { data: sysProf } = await supabaseAdmin
+    const { data: profRows } = await supabaseAdmin
       .from('teachers_staff')
       .select('education')
       .eq('code', 'SYS_PROF')
-      .maybeSingle();
+      .order('updated_at', { ascending: false })
+      .limit(1);
+
+    const sysProf = profRows && profRows.length > 0 ? profRows[0] : null;
 
     if (sysProf?.education) {
       const parsedProf = JSON.parse(sysProf.education);
@@ -95,7 +98,7 @@ export async function GET() {
         if (parsedProf.profile) data.profile = { ...(data.profile || {}), ...parsedProf.profile };
         if (parsedProf.visionMission) data.visionMission = { ...(data.visionMission || {}), ...parsedProf.visionMission };
         if (parsedProf.history) data.history = { ...(data.history || {}), ...parsedProf.history };
-        if (Array.isArray(parsedProf.facilities) && parsedProf.facilities.length > 0) {
+        if (Array.isArray(parsedProf.facilities)) {
           data.facilities = parsedProf.facilities;
         }
       }
@@ -112,14 +115,24 @@ export async function GET() {
       .order('order_index', { ascending: true });
 
     if (!facErr && supaFacilities && supaFacilities.length > 0) {
-      data.facilities = supaFacilities.map((f: any) => ({
-        id: f.id,
-        title: f.name,
-        subtitle: f.category || 'Akademik',
-        desc: f.description || '',
-        image: f.image_url || '/kelas.jpeg',
-        badge: f.category || 'Fasilitas Unggulan',
-      }));
+      const profFacMap = new Map<string, any>();
+      if (Array.isArray(data.facilities)) {
+        for (const pf of data.facilities) {
+          profFacMap.set(String(pf.id), pf);
+        }
+      }
+
+      data.facilities = supaFacilities.map((f: any) => {
+        const matched = profFacMap.get(String(f.id));
+        return {
+          id: f.id,
+          title: f.name || matched?.title || 'Fasilitas Madrasah',
+          subtitle: matched?.subtitle || f.category || 'Sarana Madrasah',
+          desc: f.description !== undefined ? f.description : (matched?.desc || ''),
+          image: f.image_url || matched?.image || '/kelas.jpeg',
+          badge: matched?.badge || f.category || 'Fasilitas Unggulan',
+        };
+      });
     }
   } catch (err) {
     // Non-blocking
@@ -141,21 +154,25 @@ export async function POST(request: Request) {
     // 1. Fetch current persisted state from Supabase to prevent regression
     let currentHome: any = {};
     try {
-      const { data: rowHome } = await supabaseAdmin
+      const { data: homeRows } = await supabaseAdmin
         .from('teachers_staff')
         .select('education')
         .eq('code', 'SYS_HOME')
-        .maybeSingle();
+        .order('updated_at', { ascending: false })
+        .limit(1);
+      const rowHome = homeRows && homeRows.length > 0 ? homeRows[0] : null;
       if (rowHome?.education) currentHome = JSON.parse(rowHome.education);
     } catch {}
 
     let currentProf: any = {};
     try {
-      const { data: rowProf } = await supabaseAdmin
+      const { data: profRows } = await supabaseAdmin
         .from('teachers_staff')
         .select('education')
         .eq('code', 'SYS_PROF')
-        .maybeSingle();
+        .order('updated_at', { ascending: false })
+        .limit(1);
+      const rowProf = profRows && profRows.length > 0 ? profRows[0] : null;
       if (rowProf?.education) currentProf = JSON.parse(rowProf.education);
     } catch {}
 
@@ -179,12 +196,76 @@ export async function POST(request: Request) {
       : (currentProf.visionMission || currentFileData.visionMission || {});
 
     const mergedHistory = incoming.history
-      ? { ...(currentProf.history || currentFileData.history || {}), ...incoming.history }
+      ? {
+          title: incoming.history.title ?? currentProf.history?.title ?? currentFileData.history?.title ?? '',
+          subtitle: incoming.history.subtitle ?? currentProf.history?.subtitle ?? currentFileData.history?.subtitle ?? '',
+          lead: incoming.history.lead ?? currentProf.history?.lead ?? currentFileData.history?.lead ?? '',
+          milestones: Array.isArray(incoming.history.milestones)
+            ? incoming.history.milestones
+            : (currentProf.history?.milestones || currentFileData.history?.milestones || []),
+        }
       : (currentProf.history || currentFileData.history || {});
 
-    const mergedFacilities = incoming.facilities !== undefined
+    // Sync facilities with database table first to ensure newly added items get permanent UUIDs
+    let mergedFacilities = incoming.facilities !== undefined
       ? incoming.facilities
       : (currentProf.facilities || currentFileData.facilities || []);
+
+    if (Array.isArray(incoming.facilities)) {
+      try {
+        const { data: currentDbFacs } = await supabaseAdmin
+          .from('facilities')
+          .select('id');
+        const dbIds = (currentDbFacs || []).map((r: any) => String(r.id));
+        const incomingIds = incoming.facilities.map((f: any) => String(f.id));
+
+        // Delete facilities removed by user
+        const toDelete = dbIds.filter((id) => !incomingIds.includes(id));
+        if (toDelete.length > 0) {
+          await supabaseAdmin.from('facilities').delete().in('id', toDelete);
+        }
+
+        const syncedList: any[] = [];
+        for (let idx = 0; idx < incoming.facilities.length; idx++) {
+          const fac = { ...incoming.facilities[idx] };
+          const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(fac.id));
+
+          if (isUuid && dbIds.includes(String(fac.id))) {
+            // Update existing facility
+            await supabaseAdmin.from('facilities').update({
+              name: fac.title || 'Fasilitas Madrasah',
+              category: fac.badge || fac.subtitle || 'Fasilitas Madrasah',
+              description: fac.desc || '',
+              image_url: fac.image || '/kelas.jpeg',
+              order_index: idx + 1,
+              is_active: true,
+              updated_at: new Date().toISOString(),
+            }).eq('id', fac.id);
+
+            syncedList.push(fac);
+          } else {
+            // Insert newly added facility
+            const { data: inserted, error: insErr } = await supabaseAdmin.from('facilities').insert({
+              name: fac.title || 'Fasilitas Baru',
+              category: fac.badge || fac.subtitle || 'Sarana Akademik',
+              description: fac.desc || '',
+              image_url: fac.image || '/kelas.jpeg',
+              order_index: idx + 1,
+              is_active: true,
+            }).select('id').single();
+
+            if (!insErr && inserted?.id) {
+              fac.id = inserted.id;
+            }
+            syncedList.push(fac);
+          }
+        }
+
+        mergedFacilities = syncedList;
+      } catch (facSyncErr) {
+        console.warn('Notice: facilities table sync:', facSyncErr);
+      }
+    }
 
     const updatedData = {
       homepage: mergedHome,
@@ -289,23 +370,6 @@ export async function POST(request: Request) {
       await supabaseAdmin.from('school_profile').upsert(profUpdate);
     } catch (spErr) {
       console.warn('Notice: school_profile upsert:', spErr);
-    }
-
-    // 5. Sync facilities if present
-    if (Array.isArray(incoming.facilities)) {
-      for (const fac of incoming.facilities) {
-        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(fac.id));
-        if (isUuid) {
-          try {
-            await supabaseAdmin.from('facilities').update({
-              name: fac.title,
-              category: fac.badge || fac.subtitle,
-              description: fac.desc,
-              image_url: fac.image,
-            }).eq('id', fac.id);
-          } catch (_) {}
-        }
-      }
     }
 
     return NextResponse.json({

@@ -282,7 +282,18 @@ export default function AdminDashboardPage() {
       title: 'Dedikasi Membangun Generasi di Mauk',
       subtitle: 'Tonggak Sejarah',
       lead: 'Bermula dari kepedulian tulus para tokoh masyarakat terhadap masa depan pendidikan generasi muda di pesisir utara Kabupaten Tangerang...',
-      milestones: [],
+      milestones: [
+        {
+          title: 'Awal Mula Pendidikan Dasar (MIS Raudlatul Hidayah 01)',
+          badge: 'Pondasi Awal',
+          desc: "Perjalanan dimulai dengan pendirian MIS Raudlatul Hidayah 01 di Kampung Tanjung Anom, Kecamatan Mauk, guna memberikan pondasi akhlak yang kokoh, adab pergaulan, serta kemampuan baca tulis Al-Qur'an bagi putra-putri daerah sekitar.",
+        },
+        {
+          title: 'Pendirian Resmi MA Raudlatul Hidayah',
+          badge: '17 September 2015',
+          desc: 'Guna menampung antusiasme para santri untuk melanjutkan pendidikan menengah yang kokoh dalam syariat dan adaptif dalam sains, MA Raudlatul Hidayah resmi berdiri pada 17 September 2015 dengan izin operasional lengkap Kementerian Agama dan NPSN 69941777.',
+        },
+      ],
     },
     facilities: [],
   });
@@ -346,8 +357,16 @@ export default function AdminDashboardPage() {
           setFullProfileData((prev) => ({
             profile: { ...prev.profile, ...profJson.profile },
             visionMission: { ...prev.visionMission, ...(profJson.visionMission || {}) },
-            history: { ...prev.history, ...(profJson.history || {}) },
-            facilities: profJson.facilities || prev.facilities,
+            history: profJson.history
+              ? {
+                  ...prev.history,
+                  ...profJson.history,
+                  milestones: Array.isArray(profJson.history.milestones)
+                    ? profJson.history.milestones
+                    : prev.history.milestones,
+                }
+              : prev.history,
+            facilities: Array.isArray(profJson.facilities) ? profJson.facilities : prev.facilities,
           }));
         }
       }
@@ -678,7 +697,8 @@ export default function AdminDashboardPage() {
       });
       const resJson = await res.json();
       if (res.ok && resJson.success) {
-        setFullProfileData(data);
+        const saved = resJson.data || data;
+        setFullProfileData(saved);
         showToast('success', 'Seluruh data profil madrasah berhasil disimpan & diterapkan!');
       } else {
         showToast('error', resJson.message || 'Gagal menyimpan data profil.');

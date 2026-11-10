@@ -36,7 +36,7 @@ export default function SejarahPage() {
             title: data.history.title || prev.title,
             subtitle: data.history.subtitle || prev.subtitle,
             lead: data.history.lead || prev.lead,
-            milestones: data.history.milestones && data.history.milestones.length > 0
+            milestones: Array.isArray(data.history.milestones)
               ? data.history.milestones
               : prev.milestones,
           }));
@@ -55,6 +55,11 @@ export default function SejarahPage() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
               <div className="lg:col-span-7 flex flex-col gap-5">
                 <div>
+                  {history.subtitle && (
+                    <span className="inline-block px-3 py-1 mb-2.5 rounded-full text-[12px] font-bold bg-primary/10 text-primary tracking-wide">
+                      {history.subtitle}
+                    </span>
+                  )}
                   <h2 className="font-display text-[26px] sm:text-[34px] font-bold text-primary tracking-tight">
                     {history.title}
                   </h2>

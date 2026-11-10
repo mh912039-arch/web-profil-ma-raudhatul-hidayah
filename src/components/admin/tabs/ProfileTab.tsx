@@ -401,8 +401,10 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
               ? 'Pengaturan Halaman Kontak (/kontak)'
               : activeSubTab === 'visi'
               ? 'Visi & Misi Madrasah (/profil/visi-misi)'
+              : activeSubTab === 'sejarah'
+              ? 'Sejarah Madrasah (/profil/sejarah)'
               : activeSubTab === 'fasilitas'
-              ? 'Fasilitas Madrasah'
+              ? 'Fasilitas Madrasah (/profil/fasilitas)'
               : 'Identitas & Profil Web'}
           </h3>
           <p className="text-[13px] text-slate-500">
@@ -410,8 +412,10 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
               ? 'Sesuaikan judul, kontak telepon/WA/email resmi, jam kerja TU, dan peta lokasi Google Maps'
               : activeSubTab === 'visi'
               ? 'Sesuaikan teks visi utama, judul misi pokok, subtitle pengantar, dan butir misi madrasah'
+              : activeSubTab === 'sejarah'
+              ? 'Sesuaikan judul besar, narasi pengantar, dan tonggak sejarah perkembangan madrasah'
               : activeSubTab === 'fasilitas'
-              ? 'Sarana, gedung, laboratorium, dan fasilitas madrasah'
+              ? 'Sarana prasarana, laboratorium, ruang kelas, dan fasilitas unggulan madrasah'
               : 'NPSN, NSM, visi misi kelembagaan, alamat resmi, dan profil madrasah'}
           </p>
         </div>
@@ -429,6 +433,8 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
               ? 'Simpan Halaman Kontak'
               : activeSubTab === 'visi'
               ? 'Simpan Visi & Misi'
+              : activeSubTab === 'sejarah'
+              ? 'Simpan Sejarah Madrasah'
               : activeSubTab === 'fasilitas'
               ? 'Simpan Fasilitas Madrasah'
               : 'Simpan Profil Web'}
@@ -1091,21 +1097,32 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
             </div>
 
             <div className="space-y-4">
-              {formData.history.milestones.map((m, idx) => (
-                <div key={idx} className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3 relative">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-[12px] font-bold text-slate-700">Tahap #{idx + 1}</span>
-                    {formData.history.milestones.length > 1 && (
+              {formData.history.milestones.length === 0 ? (
+                <div className="p-8 text-center rounded-xl border border-dashed border-slate-200 bg-slate-50/50">
+                  <p className="text-[13px] text-slate-500 mb-3">Belum ada tonggak sejarah yang ditambahkan.</p>
+                  <button
+                    type="button"
+                    onClick={handleAddMilestone}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-[12px] font-bold transition-colors"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Tambah Tonggak Sejarah Pertama</span>
+                  </button>
+                </div>
+              ) : (
+                formData.history.milestones.map((m, idx) => (
+                  <div key={idx} className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3 relative">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[12px] font-bold text-slate-700">Tahap #{idx + 1}</span>
                       <button
                         type="button"
                         onClick={() => handleRemoveMilestone(idx)}
-                        className="text-rose-500 hover:text-rose-700 text-[12px] font-semibold flex items-center gap-1"
+                        className="text-rose-500 hover:text-rose-700 text-[12px] font-semibold flex items-center gap-1 transition-colors"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                         <span>Hapus</span>
                       </button>
-                    )}
-                  </div>
+                    </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div className="sm:col-span-2 flex flex-col gap-1">
@@ -1141,7 +1158,8 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
                     />
                   </div>
                 </div>
-              ))}
+              ))
+            )}
             </div>
           </div>
         </div>
@@ -1274,6 +1292,8 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
               ? 'Menyimpan...'
               : activeSubTab === 'fasilitas'
               ? 'Simpan Fasilitas Madrasah'
+              : activeSubTab === 'sejarah'
+              ? 'Simpan Sejarah Madrasah'
               : activeSubTab === 'kontak'
               ? 'Simpan Halaman Kontak'
               : activeSubTab === 'visi'
