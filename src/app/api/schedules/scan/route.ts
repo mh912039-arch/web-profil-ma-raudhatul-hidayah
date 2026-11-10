@@ -54,16 +54,6 @@ export async function POST(req: Request) {
           replaceRombel: finalRombel,
         });
 
-        // Bersihkan foto temporer pemindaian dari storage agar tidak menumpuk
-        if (imageUrl) {
-          try {
-            const { deleteStorageFile } = await import('@/lib/storageHelper');
-            await deleteStorageFile(imageUrl);
-          } catch (delErr) {
-            console.warn('Notice: Temp scan image cleanup skipped:', delErr);
-          }
-        }
-
         return NextResponse.json(
           {
             success: true,

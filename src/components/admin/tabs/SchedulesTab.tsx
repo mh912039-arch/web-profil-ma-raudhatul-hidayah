@@ -517,6 +517,28 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
       const uploadData = await uploadRes.json();
       const photoUrl = uploadData.url;
 
+      // 2. Simpan sebagai Foto Dokumen Jadwal Resmi Satuan Pendidikan ke database persisten
+      try {
+        const photoRes = await fetch('/api/schedules/photo', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            photo_url: photoUrl,
+            caption: `Jadwal Pelajaran Resmi ${selectedRombel}`,
+          }),
+        });
+        if (photoRes.ok) {
+          const photoJson = await photoRes.json();
+          setSchedulePhoto(photoJson.data || {
+            photo_url: photoUrl,
+            caption: `Jadwal Pelajaran Resmi ${selectedRombel}`,
+            updated_at: new Date().toISOString(),
+          });
+        }
+      } catch (savePhotoErr) {
+        console.warn('Notice: Save schedule photo:', savePhotoErr);
+      }
+
       setScanProgress(35);
       setScanStatusText('Membaca citra & mengenali teks jadwal...');
 
@@ -595,22 +617,23 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
       else if (finalRombel.startsWith('SMP')) setSelectedLevel('smp');
       else if (finalRombel.startsWith('SMA')) setSelectedLevel('sma');
 
-      // Otomatis hilangkan banner foto dan tutup kotak pilihan agar tampilan langsung bersih tanpa menumpuk
-      setSchedulePhoto(null);
+      // Tutup kotak pilihan dan muat ulang banner foto jadwal resmi
       setShowUploadBox(false);
+      await fetchSchedulePhoto();
 
       // Refresh data
       await fetchSchedules();
 
       const count = scanData.schedules?.length || scanData.count || 0;
       if (count === 0) {
-        alert(
-          `Sistem tidak dapat mendeteksi baris jadwal yang valid dari berkas yang diunggah untuk ${finalRombel}.\n\n` +
-          'Pastikan foto dokumen jadwal jelas, tidak miring/buram, dan teks tabel terbaca. Anda juga dapat menggunakan tombol "Tambah Sesi Manual" untuk memasukkan jadwal secara langsung.'
-        );
+        setScanNotification({
+          message: `Foto dokumen jadwal resmi ${finalRombel} berhasil disimpan dan aktif di banner. Sistem tidak mendeteksi baris teks tabel otomatis, Anda dapat melengkapi sesi via "Tambah Sesi Manual".`,
+          count: 0,
+          rombel: finalRombel,
+        });
       } else {
         setScanNotification({
-          message: `Jadwal resmi untuk ${finalRombel} berhasil diperbarui dari foto (${count} sesi pelajaran aktif).`,
+          message: `Foto dokumen jadwal resmi disimpan & jadwal digital ${finalRombel} berhasil diperbarui (${count} sesi pelajaran aktif).`,
           count,
           rombel: finalRombel,
         });

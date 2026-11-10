@@ -58,11 +58,14 @@ export async function readUsers(): Promise<UserAccountItem[]> {
 
   // Sinkronisasi data overrides dari Supabase (persisten di Vercel)
   try {
-    const { data: supaAuth } = await supabaseAdmin
+    const { data: supaRows } = await supabaseAdmin
       .from('teachers_staff')
       .select('education')
       .eq('code', 'SYS_AUTH')
-      .maybeSingle();
+      .order('updated_at', { ascending: false })
+      .limit(1);
+
+    const supaAuth = supaRows && supaRows.length > 0 ? supaRows[0] : null;
 
     if (supaAuth && supaAuth.education) {
       const overrides: Record<string, Partial<UserAccountItem>> = JSON.parse(supaAuth.education);
@@ -113,7 +116,11 @@ export async function writeUsers(data: UserAccountItem[]): Promise<void> {
     }
     const { data: updated, error: supaErr } = await supabaseAdmin
       .from('teachers_staff')
-      .update({ education: JSON.stringify(overrides) })
+      .update({
+        education: JSON.stringify(overrides),
+        is_active: true,
+        updated_at: new Date().toISOString(),
+      })
       .eq('code', 'SYS_AUTH')
       .select('id');
 
@@ -125,6 +132,8 @@ export async function writeUsers(data: UserAccountItem[]): Promise<void> {
         subject_name: 'Security Auth',
         education: JSON.stringify(overrides),
         order_no: 9999,
+        role: 'system',
+        is_active: true,
       });
     }
   } catch (err) {
@@ -149,11 +158,14 @@ export async function readSessions(): Promise<UserSessionItem[]> {
   }
 
   try {
-    const { data: supaSess } = await supabaseAdmin
+    const { data: supaRows } = await supabaseAdmin
       .from('teachers_staff')
       .select('education')
       .eq('code', 'SYS_SESS')
-      .maybeSingle();
+      .order('updated_at', { ascending: false })
+      .limit(1);
+
+    const supaSess = supaRows && supaRows.length > 0 ? supaRows[0] : null;
 
     if (supaSess && supaSess.education) {
       const parsed = JSON.parse(supaSess.education);
@@ -175,7 +187,11 @@ export async function writeSessions(data: UserSessionItem[]): Promise<void> {
   try {
     const { data: updated, error: supaErr } = await supabaseAdmin
       .from('teachers_staff')
-      .update({ education: JSON.stringify(limited) })
+      .update({
+        education: JSON.stringify(limited),
+        is_active: true,
+        updated_at: new Date().toISOString(),
+      })
       .eq('code', 'SYS_SESS')
       .select('id');
 
@@ -187,6 +203,8 @@ export async function writeSessions(data: UserSessionItem[]): Promise<void> {
         subject_name: 'Security Sessions',
         education: JSON.stringify(limited),
         order_no: 9998,
+        role: 'system',
+        is_active: true,
       });
     }
   } catch (err) {
