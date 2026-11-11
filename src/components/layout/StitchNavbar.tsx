@@ -5,26 +5,22 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import {
-  Menu,
-  X,
-  ChevronRight,
   ChevronDown,
+  ChevronRight,
   Clock,
   Phone,
   Mail,
   Instagram,
-  LogIn,
 } from 'lucide-react';
 import { fetchPublicProfile } from '@/lib/publicProfileClient';
+import { MobileBottomBar } from './MobileBottomBar';
 
 export function StitchNavbar() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isProfilOpen, setIsProfilOpen] = useState(false);
-  const [mobileProfilOpen, setMobileProfilOpen] = useState(true);
   const [isAkademikOpen, setIsAkademikOpen] = useState(false);
-  const [mobileAkademikOpen, setMobileAkademikOpen] = useState(true);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -137,10 +133,11 @@ export function StitchNavbar() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 pointer-events-none transition-all duration-300">
-      {/* Topbar: SMP Xaverius 2 inspired Deep Navy (#1E3A8A) with Amber Gold (#F59E0B) highlights */}
+    <>
+      <header className="fixed top-0 left-0 right-0 z-40 pointer-events-none transition-all duration-300">
+      {/* Topbar: SMP Xaverius 2 inspired Deep Navy (#1E3A8A) with Amber Gold (#F59E0B) highlights (Khusus Desktop & Tablet) */}
       <div
-        className={`w-full pointer-events-auto bg-[#1e3a8a] text-slate-100 text-[11.5px] border-b border-amber-500/40 shrink-0 flex items-center transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        className={`w-full pointer-events-auto bg-[#1e3a8a] text-slate-100 text-[11.5px] border-b border-amber-500/40 shrink-0 hidden md:flex items-center transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
           scrolled
             ? 'max-h-0 opacity-0 -translate-y-3 pointer-events-none overflow-hidden h-0 py-0 border-transparent'
             : 'max-h-12 opacity-100 translate-y-0 h-8 min-h-[32px]'
@@ -244,9 +241,7 @@ export function StitchNavbar() {
       <div
         className={`pointer-events-auto transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
           scrolled
-            ? `max-w-6xl w-[calc(100%-1.25rem)] sm:w-[calc(100%-2.5rem)] lg:w-[calc(100%-4rem)] mx-auto mt-2 sm:mt-2.5 px-3.5 sm:px-5 py-2 sm:py-2.5 ${
-                mobileMenuOpen ? 'rounded-3xl' : 'rounded-full'
-              } bg-[#0b1329]/92 backdrop-blur-xl border border-white/20 shadow-[0_16px_40px_rgba(15,23,42,0.45)] ring-1 ring-amber-400/25`
+            ? 'max-w-6xl w-[calc(100%-1.25rem)] sm:w-[calc(100%-2.5rem)] lg:w-[calc(100%-4rem)] mx-auto mt-2 sm:mt-2.5 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full bg-[#0b1329]/92 backdrop-blur-xl border border-white/20 shadow-[0_16px_40px_rgba(15,23,42,0.45)] ring-1 ring-amber-400/25'
             : 'w-full bg-[#1e3a8a] border-b-[3px] border-[#facc15] py-3.5 shadow-[0_4px_20px_rgba(15,23,42,0.25)]'
         }`}
       >
@@ -446,189 +441,24 @@ export function StitchNavbar() {
               <span>Daftar PPDB</span>
             </button>
 
-            {/* Mobile Hamburger Toggle */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-xl bg-white/10 text-white hover:bg-white/20 active:scale-[0.95] transition-all border border-white/20 shadow-xs"
-              aria-label="Buka Menu Navigasi"
+            {/* Mobile Quick Action Pill */}
+            <a
+              href={`https://wa.me/${navProfile.whatsapp || '628176614723'}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="lg:hidden inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 border border-emerald-400/30 text-[11.5px] font-bold active:scale-95 transition-all shadow-xs"
+              title="Chat WhatsApp Resmi"
             >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
+              <Phone className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+              <span>Kontak WA</span>
+            </a>
           </div>
         </div>
-
-        {/* Mobile Animated Dropdown */}
-        {mobileMenuOpen && (
-          <div
-            className={`lg:hidden shadow-2xl flex flex-col gap-1.5 animate-in fade-in slide-in-from-top-3 duration-200 max-h-[calc(100vh-100px)] overflow-y-auto text-white ${
-              scrolled
-                ? 'mt-3 pt-3 pb-2 px-2 border-t border-white/15 bg-transparent'
-                : 'border-t border-white/15 mt-2.5 px-4 py-5 bg-[#1e3a8a]'
-            }`}
-          >
-            {navLinks.map((link) => {
-              if (link.label === 'Profil') {
-                const active = isActive('/profil');
-                return (
-                  <div key={link.label} className="flex flex-col">
-                    <button
-                      type="button"
-                      onClick={() => setMobileProfilOpen((prev) => !prev)}
-                      className={`flex items-center justify-between px-4 py-3 rounded-xl text-[14px] font-medium transition-colors ${
-                        active
-                          ? 'bg-[#facc15] text-slate-950 font-bold border-l-4 border-amber-300'
-                          : 'text-white/90 hover:bg-white/10 hover:text-white'
-                      }`}
-                    >
-                      <span>{link.label}</span>
-                      <ChevronDown
-                        className={`w-4 h-4 transition-transform duration-200 ${
-                          mobileProfilOpen ? 'rotate-180' : ''
-                        }`}
-                      />
-                    </button>
-                    {mobileProfilOpen && (
-                      <div className="pl-3 pr-2 py-2 flex flex-col gap-1 bg-white/5 rounded-xl mt-1.5 border border-white/10 animate-in fade-in duration-150">
-                        {profilSublinks.map((sub) => (
-                          <Link
-                            key={sub.label}
-                            href={sub.href}
-                            onClick={() => handleNavClick(sub.href)}
-                            className="px-3.5 py-2.5 rounded-lg text-[13.5px] font-medium text-white/80 hover:text-[#facc15] hover:bg-white/10 transition-colors"
-                          >
-                            <span>{sub.label}</span>
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                );
-              }
-
-              if (link.label === 'Akademik') {
-                const active = isActive('/akademik');
-                return (
-                  <div key={link.label} className="flex flex-col">
-                    <button
-                      type="button"
-                      onClick={() => setMobileAkademikOpen((prev) => !prev)}
-                      className={`flex items-center justify-between px-4 py-3 rounded-xl text-[14px] font-medium transition-colors ${
-                        active
-                          ? 'bg-[#facc15] text-slate-950 font-bold border-l-4 border-amber-300'
-                          : 'text-white/90 hover:bg-white/10 hover:text-white'
-                      }`}
-                    >
-                      <span>{link.label}</span>
-                      <ChevronDown
-                        className={`w-4 h-4 transition-transform duration-200 ${
-                          mobileAkademikOpen ? 'rotate-180' : ''
-                        }`}
-                      />
-                    </button>
-                    {mobileAkademikOpen && (
-                      <div className="pl-3 pr-2 py-2 flex flex-col gap-1 bg-white/5 rounded-xl mt-1.5 border border-white/10 animate-in fade-in duration-150">
-                        {akademikSublinks.map((sub) => (
-                          <Link
-                            key={sub.label}
-                            href={sub.href}
-                            onClick={() => handleNavClick(sub.href)}
-                            className="px-3.5 py-2.5 rounded-lg text-[13.5px] font-medium text-white/80 hover:text-[#facc15] hover:bg-white/10 transition-colors"
-                          >
-                            <span>{sub.label}</span>
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                );
-              }
-
-              const active = isActive(link.href);
-              return (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center justify-between px-4 py-3 rounded-xl text-[14px] font-medium transition-colors ${
-                    active
-                      ? 'bg-[#facc15] text-slate-950 font-bold border-l-4 border-amber-300'
-                      : 'text-white/90 hover:bg-white/10 hover:text-white'
-                  }`}
-                >
-                  <span>{link.label}</span>
-                  <ChevronRight
-                    className={`w-4 h-4 ${
-                      active ? 'text-slate-950' : 'text-white/50'
-                    }`}
-                  />
-                </Link>
-              );
-            })}
-
-            <div className="pt-3 mt-2 border-t border-white/15 flex flex-col gap-2.5">
-              <div className="flex items-center justify-between px-3 py-2 bg-white/5 rounded-xl border border-white/10">
-                <span className="text-[12px] font-semibold text-white/80">Media Sosial Sekolah:</span>
-                <div className="flex items-center gap-2">
-                  <a
-                    href="https://www.instagram.com/ma_raudlatulhidayah/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    title="Instagram Resmi"
-                    aria-label="Instagram"
-                    className="p-1.5 rounded-lg bg-white/10 text-white hover:text-pink-300 hover:bg-white/20 border border-white/15 shadow-2xs transition-colors flex items-center justify-center"
-                  >
-                    <Instagram className="w-4 h-4" />
-                  </a>
-                  <a
-                    href="https://www.tiktok.com/@ma_raudlatulhidayah"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    title="TikTok Resmi"
-                    aria-label="TikTok"
-                    className="p-1.5 rounded-lg bg-white/10 text-white hover:text-cyan-300 hover:bg-white/20 border border-white/15 shadow-2xs transition-colors flex items-center justify-center"
-                  >
-                    <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                      <path d="M19.589 6.686a4.793 4.793 0 0 1-3.77-4.245V2h-3.445v13.672a2.896 2.896 0 0 1-5.201 1.743l-.068-.1a2.89 2.89 0 0 1 2.373-4.537c.314 0 .618.05.903.144V9.414a6.334 6.334 0 0 0-.903-.065A6.334 6.334 0 0 0 3.144 15.68a6.334 6.334 0 0 0 6.334 6.334 6.334 6.334 0 0 0 6.334-6.334V8.583a8.17 8.17 0 0 0 4.777 1.549V6.686h-1Z" />
-                    </svg>
-                  </a>
-                  <a
-                    href="https://wa.me/628176614723"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    title="WhatsApp Resmi"
-                    aria-label="WhatsApp"
-                    className="p-1.5 rounded-lg bg-white/10 text-white hover:text-emerald-300 hover:bg-white/20 border border-white/15 shadow-2xs transition-colors flex items-center justify-center"
-                  >
-                    <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                      <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.969.54 1.777.784 2.791.784 3.181 0 5.767-2.587 5.768-5.766.001-3.181-2.585-5.77-5.768-5.77zm3.377 8.215c-.145.408-.838.777-1.157.828-.319.052-.734.075-2.383-.605-1.986-.818-3.256-2.839-3.355-2.971-.099-.133-.805-1.072-.805-2.046 0-.974.509-1.453.69-1.649.182-.196.398-.245.53-.245s.266.005.383.011c.124.006.29-.047.453.346.166.399.566 1.383.616 1.483.05.1.083.217.017.35-.067.133-.1.217-.199.333-.1.117-.209.261-.299.35-.1.1-.205.209-.089.408.117.2 0.518.855 1.11 1.382.763.679 1.405.889 1.605.989.2.1.317.083.433-.05.117-.133.5-.583.633-.783.133-.2.267-.167.45-.1.183.067 1.166.55 1.366.65.2.1.333.15.383.233.05.083.05.483-.095.891z"/>
-                      <path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.98-1.393A9.953 9.953 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18.2a8.167 8.167 0 0 1-4.223-1.167l-.303-.18-3.132.875.836-3.05-.198-.315A8.166 8.166 0 0 1 3.8 12c0-4.522 3.678-8.2 8.2-8.2s8.2 3.678 8.2 8.2-3.678 8.2-8.2 8.2z" />
-                    </svg>
-                  </a>
-                </div>
-              </div>
-
-              <Link
-                href="/admin"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-900 text-white font-semibold text-[13.5px] border border-white/10 active:scale-[0.98] transition-transform shadow-xs"
-              >
-                <LogIn className="w-4 h-4 text-amber-300" />
-                <span>Portal Masuk (Admin, Guru, Siswa)</span>
-              </Link>
-
-              <Link
-                href="/kontak"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#facc15] hover:bg-[#eab308] text-slate-950 font-bold text-[13.5px] border-b-2 border-amber-600 active:scale-[0.98] transition-transform shadow-sm"
-              >
-                <span>Hubungi Sekretariat Sekolah</span>
-              </Link>
-            </div>
-          </div>
-        )}
       </div>
     </header>
-  );
+
+    {/* Mobile Bottom Tab Bar Component */}
+    <MobileBottomBar />
+  </>
+);
 }
