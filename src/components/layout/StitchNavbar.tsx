@@ -216,23 +216,6 @@ export function StitchNavbar() {
                 </svg>
               </a>
             </div>
-
-            {/* Subtle Divider */}
-            <span className="w-px h-3.5 bg-blue-400/40" aria-hidden="true" />
-
-            <button
-              type="button"
-              onClick={() => {
-                if (pathname === '/') {
-                  window.dispatchEvent(new CustomEvent('open-ppdb-registration'));
-                } else {
-                  window.location.href = '/?ppdb=open#ppdb';
-                }
-              }}
-              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-500 hover:bg-amber-400 text-blue-950 font-bold text-[11px] uppercase tracking-wider transition-all shadow-xs active:scale-95 cursor-pointer"
-            >
-              <span>PPDB 2027/2028</span>
-            </button>
           </div>
         </div>
       </div>
