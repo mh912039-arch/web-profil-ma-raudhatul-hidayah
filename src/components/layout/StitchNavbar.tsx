@@ -137,11 +137,13 @@ export function StitchNavbar() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50">
+    <header className="fixed top-0 left-0 right-0 z-50 pointer-events-none transition-all duration-300">
       {/* Topbar: SMP Xaverius 2 inspired Deep Navy (#1E3A8A) with Amber Gold (#F59E0B) highlights */}
       <div
-        className={`w-full bg-[#1e3a8a] text-slate-100 text-[11.5px] border-b border-amber-500/40 min-h-[32px] h-8 shrink-0 flex items-center transition-[opacity,transform] duration-200 ${
-          scrolled ? 'hidden' : 'opacity-100'
+        className={`w-full pointer-events-auto bg-[#1e3a8a] text-slate-100 text-[11.5px] border-b border-amber-500/40 shrink-0 flex items-center transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          scrolled
+            ? 'max-h-0 opacity-0 -translate-y-3 pointer-events-none overflow-hidden h-0 py-0 border-transparent'
+            : 'max-h-12 opacity-100 translate-y-0 h-8 min-h-[32px]'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between w-full h-full min-h-[32px]">
@@ -238,38 +240,62 @@ export function StitchNavbar() {
         </div>
       </div>
 
+      {/* Main Navbar Container: Dynamic Adaptive Pill (Full-width at top, Floating Pill on scroll) */}
       <div
-        className={`w-full transition-colors duration-200 border-b-[3px] border-[#facc15] bg-[#1e3a8a] ${
+        className={`pointer-events-auto transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
           scrolled
-            ? 'shadow-[0_8px_30px_rgba(15,23,42,0.35)] py-2.5'
-            : 'shadow-[0_4px_20px_rgba(15,23,42,0.25)] py-3.5'
+            ? `max-w-6xl w-[calc(100%-1.25rem)] sm:w-[calc(100%-2.5rem)] lg:w-[calc(100%-4rem)] mx-auto mt-2 sm:mt-2.5 px-3.5 sm:px-5 py-2 sm:py-2.5 ${
+                mobileMenuOpen ? 'rounded-3xl' : 'rounded-full'
+              } bg-[#0b1329]/92 backdrop-blur-xl border border-white/20 shadow-[0_16px_40px_rgba(15,23,42,0.45)] ring-1 ring-amber-400/25`
+            : 'w-full bg-[#1e3a8a] border-b-[3px] border-[#facc15] py-3.5 shadow-[0_4px_20px_rgba(15,23,42,0.25)]'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
+        <div
+          className={`flex items-center justify-between gap-3 sm:gap-4 transition-all duration-300 ${
+            scrolled ? 'w-full' : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'
+          }`}
+        >
           {/* Logo & Emblem Brand Identity */}
           <Link
             href="/"
-            className="flex items-center gap-3.5 group shrink-0 transition-transform duration-200 active:scale-[0.98]"
+            className="flex items-center gap-2.5 sm:gap-3 group shrink-0 transition-transform duration-200 active:scale-[0.98]"
           >
-            <div className="relative w-10 h-10 shrink-0 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 p-1 flex items-center justify-center transition-transform duration-200 group-hover:scale-105 shadow-sm">
+            <div
+              className={`relative shrink-0 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 p-1 flex items-center justify-center transition-all duration-300 group-hover:scale-105 shadow-sm ${
+                scrolled ? 'w-8 h-8 sm:w-9 sm:h-9' : 'w-10 h-10'
+              }`}
+            >
               <Image
                 src="/school-logo.png"
                 alt="Emblem MAS Raudlatul Hidayah"
-                width={36}
-                height={36}
-                className="object-contain drop-shadow-sm"
+                width={scrolled ? 28 : 36}
+                height={scrolled ? 28 : 36}
+                className="object-contain drop-shadow-sm transition-all duration-300"
               />
             </div>
             <div className="flex flex-col">
-              <span className="font-serif text-[17px] sm:text-[19px] font-bold text-white tracking-wide leading-tight group-hover:text-[#facc15] transition-colors">
+              <span
+                className={`font-serif font-bold text-white tracking-wide leading-tight group-hover:text-[#facc15] transition-all duration-300 ${
+                  scrolled ? 'text-[15px] sm:text-[17px]' : 'text-[17px] sm:text-[19px]'
+                }`}
+              >
                 MAS Raudlatul Hidayah
               </span>
+              {!scrolled && (
+                <span className="text-[10.5px] font-sans font-medium text-amber-300/90 tracking-wider uppercase hidden sm:block">
+                  Mauk · Kab. Tangerang
+                </span>
+              )}
             </div>
           </Link>
 
-          {/* Desktop Nav Links (Deep Navy & Amber Gold theme with Frosted Glassmorphism) */}
+          {/* Desktop Nav Links */}
           <nav
-            className="hidden lg:flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-md"
+            className={`hidden lg:flex items-center gap-1 transition-all duration-300 ${
+              scrolled
+                ? 'px-2 py-1 rounded-full bg-white/5 border border-white/10 shadow-xs'
+                : 'px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-md'
+            }`}
           >
             {navLinks.map((link) => {
               if (link.label === 'Profil') {
@@ -305,7 +331,9 @@ export function StitchNavbar() {
                     {isProfilOpen && (
                       <div className="absolute top-full left-0 pt-2 z-50 min-w-[250px] animate-in fade-in zoom-in-95 duration-150 origin-top-left">
                         <div
-                          className="rounded-2xl border-2 border-[#facc15]/80 shadow-[0_16px_48px_rgba(15,23,42,0.45)] p-2 flex flex-col gap-1 ring-1 ring-[#facc15]/30 bg-[#1e3a8a]"
+                          className={`rounded-2xl border-2 border-[#facc15]/80 shadow-[0_16px_48px_rgba(15,23,42,0.45)] p-2 flex flex-col gap-1 ring-1 ring-[#facc15]/30 ${
+                            scrolled ? 'bg-[#0b1329]/95 backdrop-blur-xl' : 'bg-[#1e3a8a]'
+                          }`}
                         >
                           {profilSublinks.map((sub) => (
                             <Link
@@ -358,7 +386,9 @@ export function StitchNavbar() {
                     {isAkademikOpen && (
                       <div className="absolute top-full left-0 pt-2 z-50 min-w-[250px] animate-in fade-in zoom-in-95 duration-150 origin-top-left">
                         <div
-                          className="rounded-2xl border-2 border-[#facc15]/80 shadow-[0_16px_48px_rgba(15,23,42,0.45)] p-2 flex flex-col gap-1 ring-1 ring-[#facc15]/30 bg-[#1e3a8a]"
+                          className={`rounded-2xl border-2 border-[#facc15]/80 shadow-[0_16px_48px_rgba(15,23,42,0.45)] p-2 flex flex-col gap-1 ring-1 ring-[#facc15]/30 ${
+                            scrolled ? 'bg-[#0b1329]/95 backdrop-blur-xl' : 'bg-[#1e3a8a]'
+                          }`}
                         >
                           {akademikSublinks.map((sub) => (
                             <Link
@@ -396,7 +426,39 @@ export function StitchNavbar() {
           </nav>
 
           {/* Right Action & Mobile Toggle */}
-          <div className="flex items-center gap-2.5 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+            {/* Desktop PPDB Button */}
+            <button
+              type="button"
+              onClick={() => {
+                if (pathname === '/') {
+                  window.dispatchEvent(new CustomEvent('open-ppdb-registration'));
+                } else {
+                  window.location.href = '/?ppdb=open#ppdb';
+                }
+              }}
+              className={`hidden md:inline-flex items-center gap-1.5 font-bold transition-all shadow-xs active:scale-95 cursor-pointer whitespace-nowrap ${
+                scrolled
+                  ? 'px-3.5 py-1.5 rounded-full bg-amber-400 hover:bg-amber-300 text-slate-950 text-[12px] shadow-amber-500/20'
+                  : 'px-4 py-1.5 rounded-full bg-amber-500 hover:bg-amber-400 text-blue-950 text-[12.5px] uppercase tracking-wider'
+              }`}
+            >
+              <span>Daftar PPDB</span>
+            </button>
+
+            {/* Desktop Masuk Portal Button */}
+            <Link
+              href="/masuk"
+              className={`hidden sm:inline-flex items-center gap-1.5 font-semibold text-white/90 hover:text-white transition-all active:scale-95 whitespace-nowrap ${
+                scrolled
+                  ? 'px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-[12px]'
+                  : 'px-3.5 py-1.5 rounded-full bg-slate-900/60 hover:bg-slate-900 text-[12.5px] border border-white/10'
+              }`}
+            >
+              <LogIn className="w-3.5 h-3.5 text-amber-300" />
+              <span>Portal</span>
+            </Link>
+
             {/* Mobile Hamburger Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -411,7 +473,11 @@ export function StitchNavbar() {
         {/* Mobile Animated Dropdown */}
         {mobileMenuOpen && (
           <div
-            className="lg:hidden border-t border-white/15 mt-2.5 px-4 py-5 shadow-2xl flex flex-col gap-1.5 animate-in fade-in slide-in-from-top-3 duration-200 max-h-[calc(100vh-80px)] overflow-y-auto bg-[#1e3a8a] text-white"
+            className={`lg:hidden shadow-2xl flex flex-col gap-1.5 animate-in fade-in slide-in-from-top-3 duration-200 max-h-[calc(100vh-100px)] overflow-y-auto text-white ${
+              scrolled
+                ? 'mt-3 pt-3 pb-2 px-2 border-t border-white/15 bg-transparent'
+                : 'border-t border-white/15 mt-2.5 px-4 py-5 bg-[#1e3a8a]'
+            }`}
           >
             {navLinks.map((link) => {
               if (link.label === 'Profil') {
