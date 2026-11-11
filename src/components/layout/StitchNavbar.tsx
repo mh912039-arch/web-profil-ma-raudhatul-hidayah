@@ -446,19 +446,6 @@ export function StitchNavbar() {
               <span>Daftar PPDB</span>
             </button>
 
-            {/* Desktop Masuk Portal Button */}
-            <Link
-              href="/masuk"
-              className={`hidden sm:inline-flex items-center gap-1.5 font-semibold text-white/90 hover:text-white transition-all active:scale-95 whitespace-nowrap ${
-                scrolled
-                  ? 'px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-[12px]'
-                  : 'px-3.5 py-1.5 rounded-full bg-slate-900/60 hover:bg-slate-900 text-[12.5px] border border-white/10'
-              }`}
-            >
-              <LogIn className="w-3.5 h-3.5 text-amber-300" />
-              <span>Portal</span>
-            </Link>
-
             {/* Mobile Hamburger Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
