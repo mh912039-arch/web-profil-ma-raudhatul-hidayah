@@ -56,61 +56,65 @@ export default function EkstrakurikulerPage() {
               </Link>
             </div>
 
-            {/* Extracurricular Cards Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Extracurricular Editorial Showcase */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12 sm:gap-y-14">
               {ekskulList.map((ekskul) => (
-                <div
+                <article
                   key={ekskul.id}
-                  className="group bg-white rounded-2xl overflow-hidden shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col border border-slate-200/90 hover:-translate-y-1"
+                  className="flex flex-col cursor-default"
                 >
-                  <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-100">
+                  {/* Photo Frame (Clean Editorial, No Hover Zoom) */}
+                  <div className="relative aspect-[16/10] w-full rounded-2xl overflow-hidden bg-slate-100 border border-slate-200/80 shadow-xs">
                     <Image
                       src={ekskul.image || '/hero/slide-1.jpg'}
                       alt={ekskul.name}
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px"
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="object-cover"
                       unoptimized={Boolean(ekskul.image && (ekskul.image.startsWith('data:') || ekskul.image.startsWith('/uploads')))}
                     />
-                    <div className="absolute top-3 left-3 bg-blue-900/85 backdrop-blur-xs text-white px-3 py-1 rounded-full text-[11px] font-semibold border border-white/20">
-                      {ekskul.badge}
-                    </div>
                   </div>
 
-                  <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between gap-4">
+                  {/* Content Flow */}
+                  <div className="pt-4 flex-1 flex flex-col justify-between">
                     <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-[11.5px] text-amber-700 font-bold uppercase tracking-wider">
+                      {/* Metadata Row: Level & Schedule */}
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-[11px] font-bold text-amber-800 uppercase tracking-wider">
                           {ekskul.level || 'Tingkat MA'}
                         </span>
-                        <span className="flex items-center text-slate-500 text-[12px] gap-1.5 font-sans">
-                          <Calendar className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                        <span className="text-slate-300">•</span>
+                        <span className="inline-flex items-center gap-1.5 text-slate-500 font-sans text-[12px]">
+                          <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                           <span>{ekskul.schedule}</span>
                         </span>
                       </div>
 
-                      <h3 className="font-serif text-[18px] sm:text-[19px] font-bold text-slate-900 mb-2 group-hover:text-blue-700 transition-colors">
+                      {/* Title: Solid Serif Typography (No Link Hover) */}
+                      <h2 className="font-serif text-[20px] sm:text-[22px] font-bold text-slate-900 tracking-tight leading-snug mb-2.5">
                         {ekskul.name}
-                      </h3>
+                      </h2>
 
-                      <p className="font-sans text-[13px] sm:text-[13.5px] text-slate-600 leading-relaxed">
+                      {/* Description */}
+                      <p className="font-sans text-[13.5px] sm:text-[14px] text-slate-600 leading-relaxed mb-5">
                         {ekskul.desc}
                       </p>
                     </div>
 
-                    <div className="pt-3 bg-slate-50 rounded-xl p-3 flex items-center justify-between border border-slate-200/70">
-                      <div className="flex items-center gap-2">
-                        <User className="w-4 h-4 text-blue-600 shrink-0" />
-                        <span className="font-sans text-[12.5px] font-semibold text-slate-800">
+                    {/* Pembina Credit Line (Integrated Editorial Info) */}
+                    <div className="pt-3 border-t border-slate-200/80 flex items-center justify-between text-[12.5px]">
+                      <div className="flex items-center gap-2 text-slate-800">
+                        <User className="w-4 h-4 text-slate-400 shrink-0" />
+                        <span className="font-semibold text-slate-900">
                           {ekskul.coach}
                         </span>
                       </div>
-                      <span className="font-sans text-[11px] font-medium text-slate-500">
-                        {ekskul.role}
+                      <span className="font-sans text-[11.5px] text-slate-500">
+                        {ekskul.role || 'Pembina'}
                       </span>
                     </div>
                   </div>
-                </div>
+                </article>
               ))}
             </div>
           </div>
