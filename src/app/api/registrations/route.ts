@@ -505,22 +505,33 @@ export async function DELETE(request: Request) {
       );
     }
 
-    if (!id) {
+    const reg = searchParams.get('reg') || searchParams.get('registration_number');
+
+    if (!id && !reg) {
       return NextResponse.json(
-        { success: false, message: 'ID diperlukan' },
+        { success: false, message: 'ID atau Nomor Registrasi diperlukan' },
         { status: 400, headers: noCacheHeaders }
       );
     }
 
-    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(id));
+    const isUuid = id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(id));
 
     // 1. Fetch document URLs to clean up uploaded files in Supabase storage
     try {
-      const query = isUuid
-        ? supabaseServer.from('ppdb_registrations').select('documents').eq('id', id).single()
-        : supabaseServer.from('ppdb_registrations').select('documents').eq('registration_number', id).single();
+      let itemData: any = null;
+      if (isUuid) {
+        const res = await supabaseServer.from('ppdb_registrations').select('documents').eq('id', id).maybeSingle();
+        itemData = res.data;
+      }
+      if (!itemData && reg) {
+        const res = await supabaseServer.from('ppdb_registrations').select('documents').eq('registration_number', reg).maybeSingle();
+        itemData = res.data;
+      }
+      if (!itemData && id) {
+        const res = await supabaseServer.from('ppdb_registrations').select('documents').eq('registration_number', id).maybeSingle();
+        itemData = res.data;
+      }
 
-      const { data: itemData } = await query;
       if (itemData?.documents && typeof itemData.documents === 'object') {
         const docs = itemData.documents as Record<string, string>;
         if (docs.kk_url) await deleteStorageFile(docs.kk_url);
@@ -533,32 +544,24 @@ export async function DELETE(request: Request) {
 
     // 2. Delete from Supabase
     if (isUuid) {
-      const { error: delErr } = await supabaseServer
-        .from('ppdb_registrations')
-        .delete()
-        .eq('id', id);
-
-      if (delErr) {
-        console.error('Supabase delete applicant error:', delErr);
-        throw new Error(delErr.message);
-      }
-    } else {
-      const { error: delErr } = await supabaseServer
-        .from('ppdb_registrations')
-        .delete()
-        .eq('registration_number', id);
-
-      if (delErr) {
-        console.error('Supabase delete applicant error:', delErr);
-        throw new Error(delErr.message);
-      }
+      await supabaseServer.from('ppdb_registrations').delete().eq('id', id);
+    }
+    if (reg) {
+      await supabaseServer.from('ppdb_registrations').delete().eq('registration_number', reg);
+    }
+    if (id && !isUuid) {
+      await supabaseServer.from('ppdb_registrations').delete().eq('registration_number', id);
     }
 
     // 3. Best-effort delete from local file
     try {
       const fileContent = await fs.readFile(dataFilePath, 'utf-8');
       let list: PpdbApplicantItem[] = JSON.parse(fileContent);
-      list = list.filter((a) => String(a.id) !== String(id) && a.registration_number !== id);
+      list = list.filter((a) => {
+        if (id && (String(a.id) === String(id) || a.registration_number === id)) return false;
+        if (reg && a.registration_number === reg) return false;
+        return true;
+      });
       await fs.writeFile(dataFilePath, JSON.stringify(list, null, 2), 'utf-8');
     } catch (_) {}
 

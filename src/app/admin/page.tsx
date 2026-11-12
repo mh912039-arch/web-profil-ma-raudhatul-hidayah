@@ -892,15 +892,26 @@ export default function AdminDashboardPage() {
   };
 
   // Handler: Delete PPDB Applicant (Delete)
-  const handleDeleteApplicant = async (id: string) => {
+  const handleDeleteApplicant = async (id: string, registrationNumber?: string) => {
     try {
-      const res = await fetch(`/api/registrations?id=${encodeURIComponent(id)}`, {
+      const params = new URLSearchParams();
+      if (id) params.set('id', id);
+      if (registrationNumber) params.set('reg', registrationNumber);
+
+      const res = await fetch(`/api/registrations?${params.toString()}`, {
         method: 'DELETE',
         credentials: 'same-origin',
       });
       const resJson = await res.json().catch(() => null);
       if (res.ok && (resJson?.success ?? true)) {
-        setApplicants((prev) => prev.filter((a) => a.id !== id && a.registration_number !== id));
+        setApplicants((prev) =>
+          prev.filter((a) => {
+            if (id && a.id === id) return false;
+            if (id && a.registration_number === id) return false;
+            if (registrationNumber && a.registration_number === registrationNumber) return false;
+            return true;
+          })
+        );
         showToast('success', 'Data pendaftar berhasil dihapus dari sistem.');
       } else {
         showToast('error', resJson?.message || 'Gagal menghapus data pendaftar.');

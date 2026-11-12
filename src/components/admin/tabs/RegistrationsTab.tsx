@@ -61,7 +61,7 @@ interface RegistrationsTabProps {
   onSaveApplicant: (applicant: PpdbApplicant) => Promise<void>;
   onUpdateApplicant?: (applicant: PpdbApplicant) => Promise<void>;
   onUpdateStatus: (id: string, newStatus: PpdbApplicant['status']) => Promise<void>;
-  onDeleteApplicant?: (id: string) => Promise<void>;
+  onDeleteApplicant?: (id: string, registrationNumber?: string) => Promise<void>;
   onDeleteAllApplicants?: () => Promise<void>;
   isSaving: boolean;
 }
@@ -282,9 +282,15 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
     if (!deleteTarget || !onDeleteApplicant) return;
     setIsDeleting(true);
     try {
-      const targetId = deleteTarget.id || deleteTarget.registration_number;
-      await onDeleteApplicant(targetId);
-      if (detailApplicant && (detailApplicant.id === targetId || detailApplicant.registration_number === targetId)) {
+      const targetId = deleteTarget.id || '';
+      const regNum = deleteTarget.registration_number || '';
+      await onDeleteApplicant(targetId, regNum);
+      if (
+        detailApplicant &&
+        (detailApplicant.id === targetId ||
+          detailApplicant.registration_number === regNum ||
+          detailApplicant.registration_number === targetId)
+      ) {
         setDetailApplicant(null);
       }
       setDeleteTarget(null);
