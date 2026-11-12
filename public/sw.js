@@ -1,5 +1,5 @@
 // Service Worker untuk Portal MA Raudlatul Hidayah (PWA)
-const CACHE_NAME = 'mrh-portal-cache-v3';
+const CACHE_NAME = 'mrh-portal-cache-v4';
 
 // Daftar aset inti yang dapat dicache awal
 const PRECACHE_ASSETS = [
@@ -95,8 +95,8 @@ self.addEventListener('push', (event) => {
   let data = {
     title: 'Portal MAS Raudlatul Hidayah',
     body: 'Ada pembaruan informasi akademik terbaru.',
-    icon: '/school-logo.png',
-    badge: '/school-logo.png',
+    icon: '/icon-192.png',
+    badge: '/icon-192.png',
     url: '/admin',
   };
 
@@ -113,9 +113,11 @@ self.addEventListener('push', (event) => {
 
   const notificationOptions = {
     body: data.body,
-    icon: data.icon || '/school-logo.png',
-    badge: data.badge || '/school-logo.png',
-    vibrate: [150, 80, 150],
+    icon: data.icon || '/icon-192.png',
+    badge: data.badge || '/icon-192.png',
+    vibrate: [200, 100, 200],
+    tag: data.tag || `mrh-push-${Date.now()}`,
+    renotify: true,
     data: data.data || { url: data.url || '/admin' },
     actions: [
       { action: 'open_url', title: 'Buka Portal' },

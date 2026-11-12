@@ -5,7 +5,8 @@ import { broadcastPushNotification } from '@/lib/webPush';
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
-  const auth = await requireAuth(['admin']);
+  // Izinkan seluruh civitas terotentikasi (admin, guru, siswa) melakukan uji notifikasi atau broadcast
+  const auth = await requireAuth(['admin', 'guru', 'siswa'], request);
   if (!auth.authorized) {
     return auth.response!;
   }
@@ -15,7 +16,7 @@ export async function POST(request: Request) {
 
     if (!title || !body) {
       return NextResponse.json(
-        { success: false, message: 'Title and body are required' },
+        { success: false, message: 'Judul dan isi pesan notifikasi wajib diisi.' },
         { status: 400 }
       );
     }
@@ -33,8 +34,9 @@ export async function POST(request: Request) {
       result,
     });
   } catch (err: any) {
+    console.error('Error broadcasting push notification:', err);
     return NextResponse.json(
-      { success: false, message: err?.message || 'Error broadcasting push notification' },
+      { success: false, message: err?.message || 'Gagal mengirim sinyal push notification ke server FCM.' },
       { status: 500 }
     );
   }

@@ -216,6 +216,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
 
       const res = await fetch('/api/push/broadcast', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           title: 'Uji Push Notification MAS RH',
@@ -225,22 +226,23 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
         }),
       });
 
-      const json = await res.json();
+      const json = await res.json().catch(() => ({}));
       if (res.ok && json.success) {
         const count = json.result?.sent ?? 0;
         setPushStatusMessage(
           count > 0
-            ? `Notifikasi terkirim ke ${count} perangkat ponsel.`
-            : 'Sinyal terkirim. Pastikan izin notifikasi aktif di browser HP.'
+            ? `Notifikasi terkirim ke ${count} perangkat ponsel!`
+            : 'Sinyal terkirim ke server push.'
         );
       } else {
-        setPushStatusMessage(json.message || 'Gagal mengirim sinyal notifikasi.');
+        const errorText = json.error || json.message || `Gagal mengirim sinyal (Kode: ${res.status})`;
+        setPushStatusMessage(errorText);
       }
     } catch (err: any) {
       setPushStatusMessage(err?.message || 'Gagal melakukan tes notifikasi.');
     } finally {
       setIsTestingPush(false);
-      setTimeout(() => setPushStatusMessage(null), 4000);
+      setTimeout(() => setPushStatusMessage(null), 5000);
     }
   };
 
