@@ -561,39 +561,39 @@ export default function GuruTendikPage() {
           onClick={() => setSelectedTeacher(null)}
         >
           <div
-            className="relative bg-white rounded-2xl max-w-4xl w-full p-5 sm:p-8 shadow-2xl border border-slate-200 my-auto max-h-[92vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-200"
+            className="relative bg-white rounded-2xl max-w-2xl w-full p-5 sm:p-6 shadow-2xl border border-slate-200 my-auto max-h-[92vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Tombol Tutup X */}
             <button
               type="button"
               onClick={() => setSelectedTeacher(null)}
-              className="absolute top-4 right-4 p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer z-10"
+              className="absolute top-3.5 right-3.5 p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer z-10"
               title="Tutup (Esc)"
             >
               <X className="w-5 h-5" />
             </button>
 
-            {/* Layout 2 Kolom: Foto di Kiri, Rincian Tabel di Kanan (Sesuai Screenshot 1 & 2) */}
-            <div className="flex flex-col md:flex-row gap-6 sm:gap-8 items-start pt-2">
+            {/* Layout 2 Kolom: Foto di Kiri, Rincian Tabel di Kanan */}
+            <div className="flex flex-col md:flex-row gap-5 sm:gap-6 items-center">
               {/* Kolom Kiri: Foto Pendidik */}
-              <div className="w-full md:w-5/12 aspect-[3/4] md:aspect-auto md:h-[460px] relative rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shadow-xs shrink-0">
+              <div className="w-full md:w-[230px] aspect-[3/4] relative rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shadow-xs shrink-0">
                 <Image
                   src={selectedTeacher.image}
                   alt={selectedTeacher.name}
                   fill
                   className="object-cover object-top"
-                  sizes="(max-width: 768px) 100vw, 420px"
+                  sizes="(max-width: 768px) 100vw, 240px"
                   priority
                 />
               </div>
 
               {/* Kolom Kanan: Rincian Profil Pendidik */}
-              <div className="flex-1 w-full flex flex-col divide-y divide-slate-200/80 font-sans text-[13.5px] sm:text-[14.5px]">
+              <div className="flex-1 w-full flex flex-col divide-y divide-slate-200/80 font-sans text-[13px] sm:text-[14px]">
                 {/* 1. Nama */}
                 <div className="py-2.5 sm:py-3 flex items-start">
-                  <span className="w-36 sm:w-44 font-bold text-slate-900 shrink-0">Nama</span>
-                  <span className="w-6 text-center text-slate-700 font-bold shrink-0">:</span>
+                  <span className="w-32 sm:w-36 font-bold text-slate-900 shrink-0">Nama</span>
+                  <span className="w-5 text-center text-slate-700 font-bold shrink-0">:</span>
                   <span className="text-slate-800 font-bold flex-1 break-words">
                     {selectedTeacher.name}
                   </span>
@@ -601,8 +601,8 @@ export default function GuruTendikPage() {
 
                 {/* 2. Status (Jabatan) */}
                 <div className="py-2.5 sm:py-3 flex items-start">
-                  <span className="w-36 sm:w-44 font-bold text-slate-900 shrink-0">Status (Jabatan)</span>
-                  <span className="w-6 text-center text-slate-700 font-bold shrink-0">:</span>
+                  <span className="w-32 sm:w-36 font-bold text-slate-900 shrink-0">Status (Jabatan)</span>
+                  <span className="w-5 text-center text-slate-700 font-bold shrink-0">:</span>
                   <span className="text-slate-700 flex-1 break-words">
                     {selectedTeacher.position || selectedTeacher.status || 'Guru'}
                   </span>
@@ -610,8 +610,8 @@ export default function GuruTendikPage() {
 
                 {/* 3. Pendidikan */}
                 <div className="py-2.5 sm:py-3 flex items-start">
-                  <span className="w-36 sm:w-44 font-bold text-slate-900 shrink-0">Pendidikan</span>
-                  <span className="w-6 text-center text-slate-700 font-bold shrink-0">:</span>
+                  <span className="w-32 sm:w-36 font-bold text-slate-900 shrink-0">Pendidikan</span>
+                  <span className="w-5 text-center text-slate-700 font-bold shrink-0">:</span>
                   <span className="text-slate-700 flex-1 break-words">
                     {selectedTeacher.education || 'S1'}
                   </span>
@@ -619,8 +619,8 @@ export default function GuruTendikPage() {
 
                 {/* 4. Mata Pelajaran */}
                 <div className="py-2.5 sm:py-3 flex items-start">
-                  <span className="w-36 sm:w-44 font-bold text-slate-900 shrink-0">Mata Pelajaran</span>
-                  <span className="w-6 text-center text-slate-700 font-bold shrink-0">:</span>
+                  <span className="w-32 sm:w-36 font-bold text-slate-900 shrink-0">Mata Pelajaran</span>
+                  <span className="w-5 text-center text-slate-700 font-bold shrink-0">:</span>
                   <span className="text-slate-700 flex-1 break-words">
                     {selectedTeacher.subject_name || '-'}
                   </span>
@@ -628,8 +628,8 @@ export default function GuruTendikPage() {
 
                 {/* 5. Tahun Sertifikasi */}
                 <div className="py-2.5 sm:py-3 flex items-start">
-                  <span className="w-36 sm:w-44 font-bold text-slate-900 shrink-0">Tahun Sertifikasi</span>
-                  <span className="w-6 text-center text-slate-700 font-bold shrink-0">:</span>
+                  <span className="w-32 sm:w-36 font-bold text-slate-900 shrink-0">Tahun Sertifikasi</span>
+                  <span className="w-5 text-center text-slate-700 font-bold shrink-0">:</span>
                   <span className="text-slate-700 flex-1 break-words">
                     {selectedTeacher.certification_year && selectedTeacher.certification_year !== '0000'
                       ? selectedTeacher.certification_year
@@ -639,8 +639,8 @@ export default function GuruTendikPage() {
 
                 {/* 6. Pangkat Golongan */}
                 <div className="py-2.5 sm:py-3 flex items-start">
-                  <span className="w-36 sm:w-44 font-bold text-slate-900 shrink-0">Pangkat Golongan</span>
-                  <span className="w-6 text-center text-slate-700 font-bold shrink-0">:</span>
+                  <span className="w-32 sm:w-36 font-bold text-slate-900 shrink-0">Pangkat Golongan</span>
+                  <span className="w-5 text-center text-slate-700 font-bold shrink-0">:</span>
                   <span className="text-slate-700 flex-1 break-words">
                     {selectedTeacher.rank_group || '-'}
                   </span>
