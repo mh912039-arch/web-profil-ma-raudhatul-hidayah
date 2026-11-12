@@ -180,7 +180,7 @@ export function StitchNavbar() {
               <span className="font-extrabold text-[14.5px] text-slate-900 tracking-tight leading-tight uppercase font-sans">
                 MAS Raudlatul Hidayah
               </span>
-              <span className="text-[10px] font-bold text-emerald-800 tracking-wider uppercase leading-snug">
+              <span className="text-[10px] font-bold text-[#1e3a8a] tracking-wider uppercase leading-snug">
                 Mauk · Kab. Tangerang
               </span>
             </div>
@@ -223,7 +223,7 @@ export function StitchNavbar() {
                 <span className="font-extrabold text-[14.5px] text-slate-900 tracking-tight leading-tight uppercase font-sans">
                   MAS Raudlatul Hidayah
                 </span>
-                <span className="text-[10px] font-bold text-emerald-800 tracking-wider uppercase leading-snug">
+                <span className="text-[10px] font-bold text-[#1e3a8a] tracking-wider uppercase leading-snug">
                   Mauk · Kab. Tangerang
                 </span>
               </div>
@@ -247,11 +247,11 @@ export function StitchNavbar() {
               onClick={handleNavClick}
               className={`w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl transition-all ${
                 pathname === '/'
-                  ? 'bg-[#ecfdf5] text-[#065f46] font-bold border border-emerald-200/70 shadow-2xs'
+                  ? 'bg-blue-50 text-[#1e3a8a] font-bold border border-blue-200/80 shadow-2xs'
                   : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900 font-semibold'
               }`}
             >
-              <Home className={`w-5 h-5 shrink-0 ${pathname === '/' ? 'text-[#065f46]' : 'text-slate-400'}`} />
+              <Home className={`w-5 h-5 shrink-0 ${pathname === '/' ? 'text-[#1e3a8a]' : 'text-slate-400'}`} />
               <span className="text-[14.5px]">Beranda</span>
             </Link>
 
@@ -272,18 +272,22 @@ export function StitchNavbar() {
                 </div>
                 <ChevronDown
                   className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${
-                    mobileProfilOpen ? 'rotate-180 text-emerald-800' : ''
+                    mobileProfilOpen ? 'rotate-180 text-[#1e3a8a]' : ''
                   }`}
                 />
               </button>
               {mobileProfilOpen && (
-                <div className="pl-12 pr-3 py-1 flex flex-col gap-1 border-l-2 border-emerald-200 ml-6 my-1 animate-in fade-in duration-150">
+                <div className="pl-12 pr-3 py-1 flex flex-col gap-1 border-l-2 border-blue-200 ml-6 my-1 animate-in fade-in duration-150">
                   {profilSublinks.map((sub) => (
                     <Link
                       key={sub.label}
                       href={sub.href}
                       onClick={handleNavClick}
-                      className="py-2.5 px-3 rounded-xl text-[13.5px] font-medium text-slate-600 hover:text-emerald-800 hover:bg-emerald-50/60 transition-colors"
+                      className={`py-2.5 px-3 rounded-xl text-[13.5px] font-medium transition-colors ${
+                        pathname === sub.href
+                          ? 'text-[#1e3a8a] font-bold bg-blue-50/80'
+                          : 'text-slate-600 hover:text-[#1e3a8a] hover:bg-blue-50/50'
+                      }`}
                     >
                       <span>{sub.label}</span>
                     </Link>
@@ -298,11 +302,11 @@ export function StitchNavbar() {
               onClick={handleNavClick}
               className={`w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl transition-all ${
                 pathname === '/profil/fasilitas'
-                  ? 'bg-[#ecfdf5] text-[#065f46] font-bold border border-emerald-200/70 shadow-2xs'
+                  ? 'bg-blue-50 text-[#1e3a8a] font-bold border border-blue-200/80 shadow-2xs'
                   : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900 font-semibold'
               }`}
             >
-              <Building2 className={`w-5 h-5 shrink-0 ${pathname === '/profil/fasilitas' ? 'text-[#065f46]' : 'text-slate-400'}`} />
+              <Building2 className={`w-5 h-5 shrink-0 ${pathname === '/profil/fasilitas' ? 'text-[#1e3a8a]' : 'text-slate-400'}`} />
               <span className="text-[14.5px]">Fasilitas</span>
             </Link>
 
@@ -323,18 +327,22 @@ export function StitchNavbar() {
                 </div>
                 <ChevronDown
                   className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${
-                    mobileAkademikOpen ? 'rotate-180 text-emerald-800' : ''
+                    mobileAkademikOpen ? 'rotate-180 text-[#1e3a8a]' : ''
                   }`}
                 />
               </button>
               {mobileAkademikOpen && (
-                <div className="pl-12 pr-3 py-1 flex flex-col gap-1 border-l-2 border-emerald-200 ml-6 my-1 animate-in fade-in duration-150">
+                <div className="pl-12 pr-3 py-1 flex flex-col gap-1 border-l-2 border-blue-200 ml-6 my-1 animate-in fade-in duration-150">
                   {akademikSublinks.map((sub) => (
                     <Link
                       key={sub.label}
                       href={sub.href}
                       onClick={handleNavClick}
-                      className="py-2.5 px-3 rounded-xl text-[13.5px] font-medium text-slate-600 hover:text-emerald-800 hover:bg-emerald-50/60 transition-colors"
+                      className={`py-2.5 px-3 rounded-xl text-[13.5px] font-medium transition-colors ${
+                        pathname === sub.href
+                          ? 'text-[#1e3a8a] font-bold bg-blue-50/80'
+                          : 'text-slate-600 hover:text-[#1e3a8a] hover:bg-blue-50/50'
+                      }`}
                     >
                       <span>{sub.label}</span>
                     </Link>
@@ -349,11 +357,11 @@ export function StitchNavbar() {
               onClick={handleNavClick}
               className={`w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl transition-all ${
                 isActive('/warta')
-                  ? 'bg-[#ecfdf5] text-[#065f46] font-bold border border-emerald-200/70 shadow-2xs'
+                  ? 'bg-blue-50 text-[#1e3a8a] font-bold border border-blue-200/80 shadow-2xs'
                   : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900 font-semibold'
               }`}
             >
-              <Newspaper className={`w-5 h-5 shrink-0 ${isActive('/warta') ? 'text-[#065f46]' : 'text-slate-400'}`} />
+              <Newspaper className={`w-5 h-5 shrink-0 ${isActive('/warta') ? 'text-[#1e3a8a]' : 'text-slate-400'}`} />
               <span className="text-[14.5px]">Berita</span>
             </Link>
 
@@ -363,11 +371,11 @@ export function StitchNavbar() {
               onClick={handleNavClick}
               className={`w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl transition-all ${
                 pathname === '/kontak'
-                  ? 'bg-[#ecfdf5] text-[#065f46] font-bold border border-emerald-200/70 shadow-2xs'
+                  ? 'bg-blue-50 text-[#1e3a8a] font-bold border border-blue-200/80 shadow-2xs'
                   : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900 font-semibold'
               }`}
             >
-              <Phone className={`w-5 h-5 shrink-0 ${pathname === '/kontak' ? 'text-[#065f46]' : 'text-slate-400'}`} />
+              <Phone className={`w-5 h-5 shrink-0 ${pathname === '/kontak' ? 'text-[#1e3a8a]' : 'text-slate-400'}`} />
               <span className="text-[14.5px]">Kontak</span>
             </Link>
           </div>
@@ -378,7 +386,7 @@ export function StitchNavbar() {
               <Link
                 href="/masuk"
                 onClick={handleNavClick}
-                className="inline-flex items-center gap-2 text-slate-800 font-bold text-[13px] hover:text-emerald-800 transition-colors"
+                className="inline-flex items-center gap-2 text-slate-800 font-bold text-[13px] hover:text-[#1e3a8a] transition-colors"
               >
                 <LogIn className="w-4 h-4 text-slate-600 shrink-0" />
                 <span>Portal Akademik (Admin)</span>
@@ -386,7 +394,7 @@ export function StitchNavbar() {
               <Link
                 href="/kontak"
                 onClick={handleNavClick}
-                className="inline-flex items-center gap-1.5 text-emerald-800 font-bold text-[13px] hover:underline transition-colors"
+                className="inline-flex items-center gap-1.5 text-[#1e3a8a] font-bold text-[13px] hover:underline transition-colors"
               >
                 <span>Hubungi Sekolah</span>
                 <ArrowRight className="w-4 h-4" />
@@ -519,7 +527,7 @@ export function StitchNavbar() {
                   rel="noopener noreferrer"
                   title="WhatsApp Resmi MAS Raudlatul Hidayah"
                   aria-label="Buka Chat WhatsApp"
-                  className="w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 text-slate-100 hover:text-emerald-300 border border-white/15 transition-all duration-150 active:scale-95 flex items-center justify-center"
+                  className="w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 text-slate-100 hover:text-amber-300 border border-white/15 transition-all duration-150 active:scale-95 flex items-center justify-center"
                 >
                   <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
                     <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.969.54 1.777.784 2.791.784 3.181 0 5.767-2.587 5.768-5.766.001-3.181-2.585-5.77-5.768-5.77zm3.377 8.215c-.145.408-.838.777-1.157.828-.319.052-.734.075-2.383-.605-1.986-.818-3.256-2.839-3.355-2.971-.099-.133-.805-1.072-.805-2.046 0-.974.509-1.453.69-1.649.182-.196.398-.245.53-.245s.266.005.383.011c.124.006.29-.047.453.346.166.399.566 1.383.616 1.483.05.1.083.217.017.35-.067.133-.1.217-.199.333-.1.117-.209.261-.299.35-.1.1-.205.209-.089.408.117.2 0.518.855 1.11 1.382.763.679 1.405.889 1.605.989.2.1.317.083.433-.05.117-.133.5-.583.633-.783.133-.2.267-.167.45-.1.183.067 1.166.55 1.366.65.2.1.333.15.383.233.05.083.05.483-.095.891z"/>
@@ -595,7 +603,7 @@ export function StitchNavbar() {
                 <span
                   className={`font-serif font-bold tracking-wide leading-tight transition-all duration-300 ${
                     scrolled
-                      ? 'text-[17px] text-slate-900 group-hover:text-emerald-800'
+                      ? 'text-[17px] text-slate-900 group-hover:text-[#1e3a8a]'
                       : 'text-[19px] text-white group-hover:text-[#facc15]'
                   }`}
                 >
@@ -672,7 +680,11 @@ export function StitchNavbar() {
                                 onClick={() => handleNavClick()}
                                 className={`px-3.5 py-2 rounded-xl text-[13.5px] font-semibold transition-all duration-150 flex items-center justify-between group/link ${
                                   scrolled
-                                    ? 'text-slate-700 hover:text-emerald-800 hover:bg-slate-50 active:bg-slate-100'
+                                    ? pathname === sub.href
+                                      ? 'text-[#1e3a8a] bg-blue-50/80 font-bold'
+                                      : 'text-slate-700 hover:text-[#1e3a8a] hover:bg-blue-50/60 active:bg-blue-100'
+                                    : pathname === sub.href
+                                    ? 'text-[#facc15] bg-white/15 font-bold'
                                     : 'text-white/90 hover:text-[#facc15] hover:bg-white/10 active:bg-white/15'
                                 }`}
                               >
@@ -680,7 +692,11 @@ export function StitchNavbar() {
                                 <ChevronRight
                                   className={`w-3.5 h-3.5 transition-colors ${
                                     scrolled
-                                      ? 'text-slate-400 group-hover/link:text-emerald-700'
+                                      ? pathname === sub.href
+                                        ? 'text-[#1e3a8a]'
+                                        : 'text-slate-400 group-hover/link:text-[#1e3a8a]'
+                                      : pathname === sub.href
+                                      ? 'text-[#facc15]'
                                       : 'text-white/40 group-hover/link:text-[#facc15]'
                                   }`}
                                 />
@@ -747,7 +763,11 @@ export function StitchNavbar() {
                                 onClick={() => handleNavClick()}
                                 className={`px-3 py-2 rounded-xl text-[13.5px] font-semibold transition-all duration-150 flex items-center justify-between group/link ${
                                   scrolled
-                                    ? 'text-slate-700 hover:text-emerald-800 hover:bg-slate-50 active:bg-slate-100'
+                                    ? pathname === sub.href
+                                      ? 'text-[#1e3a8a] bg-blue-50/80 font-bold'
+                                      : 'text-slate-700 hover:text-[#1e3a8a] hover:bg-blue-50/60 active:bg-blue-100'
+                                    : pathname === sub.href
+                                    ? 'text-[#facc15] bg-white/15 font-bold'
                                     : 'text-white/90 hover:text-[#facc15] hover:bg-white/10 active:bg-white/15'
                                 }`}
                               >
@@ -755,7 +775,11 @@ export function StitchNavbar() {
                                 <ChevronRight
                                   className={`w-3.5 h-3.5 transition-colors ${
                                     scrolled
-                                      ? 'text-slate-400 group-hover/link:text-emerald-700'
+                                      ? pathname === sub.href
+                                        ? 'text-[#1e3a8a]'
+                                        : 'text-slate-400 group-hover/link:text-[#1e3a8a]'
+                                      : pathname === sub.href
+                                      ? 'text-[#facc15]'
                                       : 'text-white/40 group-hover/link:text-[#facc15]'
                                   }`}
                                 />
