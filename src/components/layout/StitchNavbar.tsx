@@ -555,25 +555,6 @@ export function StitchNavbar() {
               </div>
             </div>
 
-            {/* Kanan: Badge Identitas Lembaga & PPDB */}
-            <div className="flex items-center gap-3">
-              <span className="text-[11px] text-slate-200/90 font-medium hidden sm:inline">
-                NPSN: 69941777 · Mauk, Kab. Tangerang
-              </span>
-              <button
-                type="button"
-                onClick={() => {
-                  if (pathname === '/') {
-                    window.dispatchEvent(new CustomEvent('open-ppdb-registration'));
-                  } else {
-                    window.location.href = '/?ppdb=open#ppdb';
-                  }
-                }}
-                className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-500 hover:bg-amber-400 text-blue-950 font-bold text-[11px] uppercase tracking-wider transition-all shadow-xs active:scale-95 cursor-pointer"
-              >
-                <span>PPDB 2027/2028</span>
-              </button>
-            </div>
           </div>
         </div>
 
