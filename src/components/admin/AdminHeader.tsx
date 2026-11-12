@@ -4,9 +4,11 @@ import React from 'react';
 import Image from 'next/image';
 import { LogOut } from 'lucide-react';
 import { AdminTab } from './AdminSidebar';
+import { NotificationCenter } from './NotificationCenter';
 
 interface AdminHeaderProps {
   activeTab: AdminTab;
+  setActiveTab?: (tab: AdminTab) => void;
   setIsOpenMobile?: (open: boolean) => void;
   onRefresh: () => void;
   isRefreshing: boolean;
@@ -100,6 +102,7 @@ const tabTitles: Record<AdminTab, { title: string; subtitle: string }> = {
 
 export const AdminHeader: React.FC<AdminHeaderProps> = ({
   activeTab,
+  setActiveTab,
   setIsOpenMobile,
   onRefresh,
   isRefreshing,
@@ -140,8 +143,12 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
           </div>
         </div>
 
-        {/* Right: Actions (Mobile logout only; Desktop actions are already available in the sidebar) */}
+        {/* Right: Actions (Notification Bell + Logout) */}
         <div className="flex items-center gap-1.5 shrink-0">
+          <NotificationCenter
+            onSelectCalendarTab={setActiveTab ? () => setActiveTab('calendar') : undefined}
+          />
+
           {onLogout && (
             <button
               type="button"

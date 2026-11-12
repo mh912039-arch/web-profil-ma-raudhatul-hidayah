@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { requireAuth } from '@/lib/auth';
 import { supabaseServer } from '@/lib/supabaseServer';
+import { broadcastPushNotification } from '@/lib/webPush';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -129,6 +130,18 @@ export async function POST(req: Request) {
 
     events.unshift(newEvent);
     await saveEvents(events);
+
+    // Kirim notifikasi push ke seluruh perangkat mobile PWA yang terdaftar
+    broadcastPushNotification({
+      title: `Kalender Akademik: ${newEvent.title}`,
+      body: `Jadwal: ${newEvent.date_range} (${newEvent.semester}). Buka aplikasi untuk melihat rincian agenda.`,
+      url: '/admin',
+      data: {
+        eventId: newEvent.id,
+        category: newEvent.category,
+        type: 'calendar_event',
+      },
+    }).catch((err) => console.warn('Background push broadcast notice:', err));
 
     return NextResponse.json({ success: true, item: newEvent }, { headers: noCacheHeaders });
   } catch (err: unknown) {

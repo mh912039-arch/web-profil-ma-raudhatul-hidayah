@@ -1004,6 +1004,7 @@ export default function AdminDashboardPage() {
         {/* Sticky Header */}
         <AdminHeader
           activeTab={effectiveActiveTab}
+          setActiveTab={setActiveTab}
           setIsOpenMobile={setIsOpenMobile}
           onRefresh={loadData}
           isRefreshing={isRefreshing}

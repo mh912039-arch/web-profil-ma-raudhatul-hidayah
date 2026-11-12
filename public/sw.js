@@ -87,3 +87,62 @@ self.addEventListener('fetch', (event) => {
   // Default passthrough fetch
   event.respondWith(fetch(request));
 });
+
+// ============================================================================
+// WEB PUSH NOTIFICATION HANDLERS (MAS RH Mobile PWA)
+// ============================================================================
+self.addEventListener('push', (event) => {
+  let data = {
+    title: 'Portal MAS Raudlatul Hidayah',
+    body: 'Ada pembaruan informasi akademik terbaru.',
+    icon: '/school-logo.png',
+    badge: '/school-logo.png',
+    url: '/admin',
+  };
+
+  try {
+    if (event.data) {
+      const parsed = event.data.json();
+      data = { ...data, ...parsed };
+    }
+  } catch (err) {
+    if (event.data) {
+      data.body = event.data.text();
+    }
+  }
+
+  const notificationOptions = {
+    body: data.body,
+    icon: data.icon || '/school-logo.png',
+    badge: data.badge || '/school-logo.png',
+    vibrate: [150, 80, 150],
+    data: data.data || { url: data.url || '/admin' },
+    actions: [
+      { action: 'open_url', title: 'Buka Portal' },
+    ],
+  };
+
+  event.waitUntil(self.registration.showNotification(data.title, notificationOptions));
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+
+  const targetUrl = event.notification.data?.url || '/admin';
+
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
+      // Jika sudah ada window/tab yang terbuka, fokuskan
+      for (let client of windowClients) {
+        if (client.url.includes('/admin') && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      // Jika belum ada, buka window/app baru
+      if (clients.openWindow) {
+        return clients.openWindow(targetUrl);
+      }
+    })
+  );
+});
+
