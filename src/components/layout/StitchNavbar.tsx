@@ -492,9 +492,9 @@ export function StitchNavbar() {
           }`}
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between w-full h-full min-h-[32px]">
-            {/* Kiri: Kanal Resmi + Icon Medsos Sesuai Contoh SS 2 */}
+            {/* Kiri: Kanal Resmi + Icon Medsos Sesuai Identitas MAS */}
             <div className="flex items-center gap-2.5">
-              <span className="font-semibold text-emerald-300 text-[11.5px] tracking-wide">
+              <span className="font-bold text-[#facc15] text-[11.5px] tracking-wide">
                 Kanal Resmi:
               </span>
               <div className="flex items-center gap-1.5">
