@@ -685,17 +685,6 @@ export default function GuruTendikPage() {
                     </div>
                   </div>
                 )}
-
-                {/* Footer action */}
-                <div className="pt-4 flex items-center justify-end">
-                  <button
-                    type="button"
-                    onClick={() => setSelectedTeacher(null)}
-                    className="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs transition-all cursor-pointer"
-                  >
-                    Tutup Profil
-                  </button>
-                </div>
               </div>
             </div>
           </div>
