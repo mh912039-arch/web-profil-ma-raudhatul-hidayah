@@ -260,24 +260,8 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
           1. TAMPILAN MOBILE (< 768px / Layar Ponsel & PWA)
           Konsep: Clean Academic Portal (Tema Terang Resmi MAS Raudlatul Hidayah)
       ========================================================================= */}
-      <div className="flex md:hidden min-h-[100dvh] bg-[#f8fafc] text-slate-800 flex-col justify-between items-center px-4 py-5 font-sans selection:bg-[#1e3a8a] selection:text-white relative">
+      <div className="flex md:hidden min-h-[100dvh] bg-[#f8fafc] text-slate-800 flex-col justify-between items-center px-4 py-6 font-sans selection:bg-[#1e3a8a] selection:text-white relative">
         <div className="w-full max-w-[420px] min-h-[100dvh] flex flex-col justify-between mx-auto">
-          {/* Top Navbar Mobile: Tombol Kembali & Lencana Keamanan */}
-          <header className="pt-1 pb-3 flex items-center justify-between select-none shrink-0">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white hover:bg-slate-100 border border-slate-200/90 text-slate-700 text-xs font-semibold shadow-2xs active:scale-95 transition-all"
-            >
-              <ArrowLeft className="w-3.5 h-3.5 text-slate-500" />
-              <span>Beranda</span>
-            </Link>
-
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 border border-blue-200/80 text-[10.5px] font-bold text-[#1e3a8a] tracking-wider uppercase">
-              <ShieldCheck className="w-3.5 h-3.5 text-[#1e3a8a]" />
-              <span>Portal Resmi</span>
-            </div>
-          </header>
-
           {/* Konten Utama Mobile */}
           <main className="my-auto py-2 w-full">
             {regSuccess ? (
