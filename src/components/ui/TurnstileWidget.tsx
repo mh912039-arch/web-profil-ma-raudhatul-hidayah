@@ -47,13 +47,41 @@ export const TurnstileWidget: React.FC<TurnstileWidgetProps> = ({
   const widgetIdRef = useRef<string | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const uniqueId = useId().replace(/:/g, '-');
 
   const siteKey =
     process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY ||
     '0x4AAAAAAF3MWNHEzNkdoekl';
 
+  // Lazy Initialization via IntersectionObserver:
+  // Hindari pembuatan token Turnstile yang sia-sia jika pengunjung hanya membuka halaman
+  // dan belum menggulir/mencapai area formulir. Ini menjaga rasio validasi Cloudflare tetap seimbang.
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (!('IntersectionObserver' in window)) {
+      setIsVisible(true);
+      return;
+    }
+    const target = containerRef.current;
+    if (!target) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '300px' }
+    );
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isVisible) return;
     let isMounted = true;
 
     const renderWidget = () => {
@@ -138,7 +166,7 @@ export const TurnstileWidget: React.FC<TurnstileWidgetProps> = ({
         } catch (_) {}
       }
     };
-  }, [siteKey, theme, action]);
+  }, [siteKey, theme, action, isVisible]);
 
   const handleManualRetry = () => {
     setHasError(false);
