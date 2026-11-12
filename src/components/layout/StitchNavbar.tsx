@@ -510,7 +510,7 @@ export function StitchNavbar() {
         <div
           className={`pointer-events-auto transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
             scrolled
-              ? 'max-w-6xl w-[calc(100%-4rem)] mx-auto mt-2.5 px-5 py-2.5 rounded-full bg-[#0b1329]/92 backdrop-blur-xl border border-white/20 shadow-[0_16px_40px_rgba(15,23,42,0.45)] ring-1 ring-amber-400/25'
+              ? 'max-w-6xl w-[calc(100%-4rem)] mx-auto mt-2.5 px-5 py-2.5 rounded-full bg-white/95 backdrop-blur-xl border border-slate-200/90 shadow-[0_16px_40px_rgba(15,23,42,0.12)] ring-1 ring-slate-900/5'
               : 'w-full bg-[#1e3a8a] border-b-[3px] border-[#facc15] py-3.5 shadow-[0_4px_20px_rgba(15,23,42,0.25)]'
           }`}
         >
@@ -525,8 +525,10 @@ export function StitchNavbar() {
               className="flex items-center gap-3 group shrink-0 transition-transform duration-200 active:scale-[0.98]"
             >
               <div
-                className={`relative shrink-0 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 p-1 flex items-center justify-center transition-all duration-300 group-hover:scale-105 shadow-sm ${
-                  scrolled ? 'w-9 h-9' : 'w-10 h-10'
+                className={`relative shrink-0 rounded-xl p-1 flex items-center justify-center transition-all duration-300 group-hover:scale-105 shadow-sm ${
+                  scrolled
+                    ? 'w-9 h-9 bg-slate-50 border border-slate-200/80'
+                    : 'w-10 h-10 bg-white/10 backdrop-blur-md border border-white/20'
                 }`}
               >
                 <Image
@@ -539,8 +541,10 @@ export function StitchNavbar() {
               </div>
               <div className="flex flex-col">
                 <span
-                  className={`font-serif font-bold text-white tracking-wide leading-tight group-hover:text-[#facc15] transition-all duration-300 ${
-                    scrolled ? 'text-[17px]' : 'text-[19px]'
+                  className={`font-serif font-bold tracking-wide leading-tight transition-all duration-300 ${
+                    scrolled
+                      ? 'text-[17px] text-slate-900 group-hover:text-emerald-800'
+                      : 'text-[19px] text-white group-hover:text-[#facc15]'
                   }`}
                 >
                   MAS Raudlatul Hidayah
@@ -557,7 +561,7 @@ export function StitchNavbar() {
             <nav
               className={`flex items-center gap-1 transition-all duration-300 ${
                 scrolled
-                  ? 'px-2 py-1 rounded-full bg-white/5 border border-white/10 shadow-xs'
+                  ? 'px-1.5 py-1 rounded-full bg-slate-100/90 border border-slate-200/70 shadow-2xs'
                   : 'px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-md'
               }`}
             >
@@ -578,6 +582,8 @@ export function StitchNavbar() {
                         className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full font-sans text-[13px] whitespace-nowrap transition-all duration-200 cursor-pointer ${
                           active || isProfilOpen
                             ? 'bg-[#facc15] text-slate-950 font-bold shadow-xs ring-2 ring-[#facc15]/50'
+                            : scrolled
+                            ? 'text-slate-700 hover:text-slate-950 hover:bg-white font-semibold'
                             : 'text-white/85 hover:text-white hover:bg-white/15 font-medium'
                         }`}
                         aria-expanded={isProfilOpen}
@@ -587,6 +593,12 @@ export function StitchNavbar() {
                         <ChevronDown
                           className={`w-3.5 h-3.5 transition-transform duration-200 ${
                             isProfilOpen ? 'rotate-180' : ''
+                          } ${
+                            active || isProfilOpen
+                              ? 'text-slate-950'
+                              : scrolled
+                              ? 'text-slate-500'
+                              : 'text-white/70'
                           }`}
                         />
                       </button>
@@ -595,8 +607,10 @@ export function StitchNavbar() {
                       {isProfilOpen && (
                         <div className="absolute top-full left-0 pt-2 z-50 min-w-[250px] animate-in fade-in zoom-in-95 duration-150 origin-top-left">
                           <div
-                            className={`rounded-2xl border-2 border-[#facc15]/80 shadow-[0_16px_48px_rgba(15,23,42,0.45)] p-2 flex flex-col gap-1 ring-1 ring-[#facc15]/30 ${
-                              scrolled ? 'bg-[#0b1329]/95 backdrop-blur-xl' : 'bg-[#1e3a8a]'
+                            className={`rounded-2xl shadow-[0_16px_48px_rgba(15,23,42,0.18)] p-2 flex flex-col gap-1 ring-1 ${
+                              scrolled
+                                ? 'bg-white border border-slate-200/90 ring-slate-900/5'
+                                : 'bg-[#1e3a8a] border-2 border-[#facc15]/80 ring-[#facc15]/30'
                             }`}
                           >
                             {profilSublinks.map((sub) => (
@@ -604,10 +618,20 @@ export function StitchNavbar() {
                                 key={sub.label}
                                 href={sub.href}
                                 onClick={() => handleNavClick()}
-                                className="px-3.5 py-2 rounded-xl text-[13.5px] font-semibold text-white/90 hover:text-[#facc15] hover:bg-white/10 active:bg-white/15 transition-all duration-150 flex items-center justify-between group/link"
+                                className={`px-3.5 py-2 rounded-xl text-[13.5px] font-semibold transition-all duration-150 flex items-center justify-between group/link ${
+                                  scrolled
+                                    ? 'text-slate-700 hover:text-emerald-800 hover:bg-slate-50 active:bg-slate-100'
+                                    : 'text-white/90 hover:text-[#facc15] hover:bg-white/10 active:bg-white/15'
+                                }`}
                               >
                                 <span className="leading-snug">{sub.label}</span>
-                                <ChevronRight className="w-3.5 h-3.5 text-white/40 group-hover/link:text-[#facc15] transition-colors" />
+                                <ChevronRight
+                                  className={`w-3.5 h-3.5 transition-colors ${
+                                    scrolled
+                                      ? 'text-slate-400 group-hover/link:text-emerald-700'
+                                      : 'text-white/40 group-hover/link:text-[#facc15]'
+                                  }`}
+                                />
                               </Link>
                             ))}
                           </div>
@@ -633,6 +657,8 @@ export function StitchNavbar() {
                         className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full font-sans text-[13px] whitespace-nowrap transition-all duration-200 cursor-pointer ${
                           active || isAkademikOpen
                             ? 'bg-[#facc15] text-slate-950 font-bold shadow-xs ring-2 ring-[#facc15]/50'
+                            : scrolled
+                            ? 'text-slate-700 hover:text-slate-950 hover:bg-white font-semibold'
                             : 'text-white/85 hover:text-white hover:bg-white/15 font-medium'
                         }`}
                         aria-expanded={isAkademikOpen}
@@ -642,6 +668,12 @@ export function StitchNavbar() {
                         <ChevronDown
                           className={`w-3.5 h-3.5 transition-transform duration-200 ${
                             isAkademikOpen ? 'rotate-180' : ''
+                          } ${
+                            active || isAkademikOpen
+                              ? 'text-slate-950'
+                              : scrolled
+                              ? 'text-slate-500'
+                              : 'text-white/70'
                           }`}
                         />
                       </button>
@@ -650,8 +682,10 @@ export function StitchNavbar() {
                       {isAkademikOpen && (
                         <div className="absolute top-full left-0 pt-2 z-50 min-w-[250px] animate-in fade-in zoom-in-95 duration-150 origin-top-left">
                           <div
-                            className={`rounded-2xl border-2 border-[#facc15]/80 shadow-[0_16px_48px_rgba(15,23,42,0.45)] p-2 flex flex-col gap-1 ring-1 ring-[#facc15]/30 ${
-                              scrolled ? 'bg-[#0b1329]/95 backdrop-blur-xl' : 'bg-[#1e3a8a]'
+                            className={`rounded-2xl shadow-[0_16px_48px_rgba(15,23,42,0.18)] p-2 flex flex-col gap-1 ring-1 ${
+                              scrolled
+                                ? 'bg-white border border-slate-200/90 ring-slate-900/5'
+                                : 'bg-[#1e3a8a] border-2 border-[#facc15]/80 ring-[#facc15]/30'
                             }`}
                           >
                             {akademikSublinks.map((sub) => (
@@ -659,10 +693,20 @@ export function StitchNavbar() {
                                 key={sub.label}
                                 href={sub.href}
                                 onClick={() => handleNavClick()}
-                                className="px-3 py-2 rounded-xl text-[13.5px] font-semibold text-white/90 hover:text-[#facc15] hover:bg-white/10 active:bg-white/15 transition-all duration-150 flex items-center justify-between group/link"
+                                className={`px-3 py-2 rounded-xl text-[13.5px] font-semibold transition-all duration-150 flex items-center justify-between group/link ${
+                                  scrolled
+                                    ? 'text-slate-700 hover:text-emerald-800 hover:bg-slate-50 active:bg-slate-100'
+                                    : 'text-white/90 hover:text-[#facc15] hover:bg-white/10 active:bg-white/15'
+                                }`}
                               >
                                 <span className="leading-snug">{sub.label}</span>
-                                <ChevronRight className="w-3.5 h-3.5 text-white/40 group-hover/link:text-[#facc15] transition-colors" />
+                                <ChevronRight
+                                  className={`w-3.5 h-3.5 transition-colors ${
+                                    scrolled
+                                      ? 'text-slate-400 group-hover/link:text-emerald-700'
+                                      : 'text-white/40 group-hover/link:text-[#facc15]'
+                                  }`}
+                                />
                               </Link>
                             ))}
                           </div>
@@ -680,6 +724,8 @@ export function StitchNavbar() {
                     className={`px-3.5 py-1.5 rounded-full font-sans text-[13px] whitespace-nowrap transition-all duration-200 ${
                       active
                         ? 'bg-[#facc15] text-slate-950 font-bold shadow-xs ring-2 ring-[#facc15]/50'
+                        : scrolled
+                        ? 'text-slate-700 hover:text-slate-950 hover:bg-white font-semibold'
                         : 'text-white/85 hover:text-white hover:bg-white/15 font-medium'
                     }`}
                   >
@@ -702,7 +748,7 @@ export function StitchNavbar() {
                 }}
                 className={`inline-flex items-center gap-1.5 font-bold transition-all shadow-xs active:scale-95 cursor-pointer whitespace-nowrap ${
                   scrolled
-                    ? 'px-3.5 py-1.5 rounded-full bg-amber-400 hover:bg-amber-300 text-slate-950 text-[12px] shadow-amber-500/20'
+                    ? 'px-4 py-1.5 rounded-full bg-[#facc15] hover:bg-amber-400 text-slate-950 text-[12.5px] shadow-sm border border-amber-300'
                     : 'px-4 py-1.5 rounded-full bg-amber-500 hover:bg-amber-400 text-blue-950 text-[12.5px] uppercase tracking-wider'
                 }`}
               >
