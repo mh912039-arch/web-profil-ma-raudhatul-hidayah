@@ -128,6 +128,8 @@ export async function broadcastPushNotification(payload: PushNotificationPayload
     body: payload.body,
     icon: payload.icon || '/school-logo.png',
     badge: payload.badge || '/badge-96.png',
+    silent: false,
+    vibrate: [250, 100, 250],
     data: {
       url: payload.url || '/admin',
       ...payload.data,
