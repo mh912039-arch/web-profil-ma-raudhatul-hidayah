@@ -136,3 +136,52 @@ export async function unsubscribeFromPushNotifications(): Promise<{
     return { success: false, message: err?.message || 'Gagal menonaktifkan notifikasi.' };
   }
 }
+
+/**
+ * Sinkronisasi otomatis token push subscription ke server (Supabase SYS_PUSH).
+ * Memastikan endpoint ponsel selalu terdaftar aktif di database jika izin 'granted'.
+ */
+export async function syncPushSubscription(): Promise<boolean> {
+  if (typeof window === 'undefined') return false;
+  if (!('serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window)) {
+    return false;
+  }
+  if (Notification.permission !== 'granted') {
+    return false;
+  }
+
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    let sub = await reg.pushManager.getSubscription();
+
+    // Jika belum ada subscription lokal padahal izin sudah diberikan, buat baru
+    if (!sub) {
+      const res = await fetch('/api/push/subscribe');
+      if (!res.ok) return false;
+      const { publicKey } = await res.json();
+      if (!publicKey) return false;
+
+      const convertedVapidKey = urlBase64ToUint8Array(publicKey);
+      sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: convertedVapidKey as unknown as BufferSource,
+      });
+    }
+
+    if (sub) {
+      const subJson = sub.toJSON();
+      const saveRes = await fetch('/api/push/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(subJson),
+      });
+      if (saveRes.ok) {
+        localStorage.setItem('mrh_push_subscribed', 'true');
+        return true;
+      }
+    }
+  } catch (err) {
+    console.warn('Auto-sync push subscription note:', err);
+  }
+  return false;
+}

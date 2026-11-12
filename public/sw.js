@@ -132,13 +132,16 @@ self.addEventListener('notificationclick', (event) => {
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
-      // Jika sudah ada window/tab yang terbuka, fokuskan
+      // Jika ada window/tab terbuka, arahkan ke target URL dan fokuskan
       for (let client of windowClients) {
-        if (client.url.includes('/admin') && 'focus' in client) {
+        if ('focus' in client) {
+          if ('navigate' in client && targetUrl) {
+            client.navigate(targetUrl);
+          }
           return client.focus();
         }
       }
-      // Jika belum ada, buka window/app baru
+      // Jika belum ada window yang terbuka, buka tab baru
       if (clients.openWindow) {
         return clients.openWindow(targetUrl);
       }

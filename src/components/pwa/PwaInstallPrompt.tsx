@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Smartphone, Download, Share, PlusSquare, X, CheckCircle2 } from 'lucide-react';
+import { syncPushSubscription } from '@/lib/pushClient';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -28,10 +29,15 @@ export function PwaInstallPrompt({
   const [installedSuccess, setInstalledSuccess] = useState(false);
 
   useEffect(() => {
-    // 1. Daftarkan Service Worker untuk PWA
+    // 1. Daftarkan Service Worker untuk PWA & sinkronkan push token otomatis
     if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
       navigator.serviceWorker
         .register('/sw.js')
+        .then(() => {
+          if ('Notification' in window && Notification.permission === 'granted') {
+            syncPushSubscription().catch(() => {});
+          }
+        })
         .catch((err) => console.warn('Service Worker registration note:', err));
     }
 

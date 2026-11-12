@@ -147,6 +147,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
         <div className="flex items-center gap-1.5 shrink-0">
           <NotificationCenter
             onSelectCalendarTab={setActiveTab ? () => setActiveTab('calendar') : undefined}
+            onSelectArticlesTab={setActiveTab ? () => setActiveTab('articles') : undefined}
           />
 
           {onLogout && (

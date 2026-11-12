@@ -4,6 +4,7 @@ import path from 'path';
 import { supabaseServer } from '@/lib/supabaseServer';
 import { requireAuth } from '@/lib/auth';
 import { deleteStorageFile } from '@/lib/storageHelper';
+import { broadcastPushNotification } from '@/lib/webPush';
 
 const dataFilePath = path.join(process.cwd(), 'src', 'data', 'articlesData.json');
 
@@ -253,6 +254,22 @@ export async function POST(request: Request) {
       await fs.writeFile(dataFilePath, JSON.stringify(articles, null, 2), 'utf-8');
     } catch (localWriteErr) {
       // Ignored safely in production serverless environments
+    }
+
+    // 4. Siarkan Push Notification ke seluruh perangkat HP terdaftar jika artikel dipublikasikan
+    if (isPublished) {
+      broadcastPushNotification({
+        title: `Warta Baru: ${title}`,
+        body: summary.length > 120 ? summary.slice(0, 117) + '...' : summary,
+        url: `/warta/${slug}`,
+        data: {
+          type: 'article',
+          slug,
+          category,
+        },
+      }).catch((pushErr) => {
+        console.warn('Failed to broadcast article push notification:', pushErr);
+      });
     }
 
     return NextResponse.json({ success: true, article: newArticle }, { headers: noCacheHeaders });

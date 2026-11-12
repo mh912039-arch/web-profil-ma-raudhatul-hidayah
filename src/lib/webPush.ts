@@ -33,14 +33,14 @@ export interface PushNotificationPayload {
 }
 
 /**
- * Mengambil daftar push subscription dari penyimpanan persisten Supabase (SYS_PUSH_SUBS)
+ * Mengambil daftar push subscription dari penyimpanan persisten Supabase (SYS_PUSH)
  */
 export async function getPushSubscriptions(): Promise<PushSubscriptionRecord[]> {
   try {
     const { data } = await supabaseAdmin
       .from('teachers_staff')
       .select('education')
-      .eq('code', 'SYS_PUSH_SUBS')
+      .eq('code', 'SYS_PUSH')
       .maybeSingle();
 
     if (data?.education) {
@@ -50,7 +50,7 @@ export async function getPushSubscriptions(): Promise<PushSubscriptionRecord[]> 
       }
     }
   } catch (err) {
-    console.warn('Failed to read SYS_PUSH_SUBS:', err);
+    console.warn('Failed to read SYS_PUSH:', err);
   }
   return [];
 }
@@ -76,13 +76,13 @@ export async function savePushSubscription(
     const { data, error } = await supabaseAdmin
       .from('teachers_staff')
       .update({ education: JSON.stringify(updated) })
-      .eq('code', 'SYS_PUSH_SUBS')
+      .eq('code', 'SYS_PUSH')
       .select('id');
 
     if (error || !data || data.length === 0) {
       await supabaseAdmin.from('teachers_staff').insert({
         name: 'System Push Subscriptions',
-        code: 'SYS_PUSH_SUBS',
+        code: 'SYS_PUSH',
         category_label: 'Sistem',
         subject_name: 'PushNotification',
         education: JSON.stringify(updated),
@@ -108,7 +108,7 @@ export async function removePushSubscription(endpoint: string): Promise<void> {
     await supabaseAdmin
       .from('teachers_staff')
       .update({ education: JSON.stringify(updated) })
-      .eq('code', 'SYS_PUSH_SUBS');
+      .eq('code', 'SYS_PUSH');
   } catch (err) {
     console.warn('Failed to remove expired subscription:', err);
   }
