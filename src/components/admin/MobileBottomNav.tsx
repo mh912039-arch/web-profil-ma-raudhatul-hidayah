@@ -126,7 +126,7 @@ export function MobileBottomNav({
       {
         id: 'overview',
         targetTab: 'overview',
-        label: 'Ikhtisar',
+        label: 'Beranda',
         icon: LayoutDashboard,
         matchTabs: ['overview', 'homepage', 'profile', 'contact'],
       },

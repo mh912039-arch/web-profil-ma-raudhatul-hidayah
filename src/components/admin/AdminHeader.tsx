@@ -2,12 +2,12 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { Menu, LogOut } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { AdminTab } from './AdminSidebar';
 
 interface AdminHeaderProps {
   activeTab: AdminTab;
-  setIsOpenMobile: (open: boolean) => void;
+  setIsOpenMobile?: (open: boolean) => void;
   onRefresh: () => void;
   isRefreshing: boolean;
   supabaseConnected: boolean;
@@ -112,18 +112,8 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
   return (
     <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3.5 transition-all">
       <div className="flex items-center justify-between gap-2.5 sm:gap-4">
-        {/* Left: Mobile Toggle & Brand Header */}
+        {/* Left: Brand Header & Title */}
         <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
-          <button
-            type="button"
-            onClick={() => setIsOpenMobile(true)}
-            className="p-2 rounded-xl text-slate-700 hover:text-slate-900 bg-slate-50 hover:bg-slate-100 border border-slate-200/60 lg:hidden transition-all active:scale-95 shrink-0 shadow-2xs cursor-pointer"
-            aria-label="Buka Menu Lengkap"
-            title="Menu Navigasi"
-          >
-            <Menu className="w-5 h-5 stroke-[2]" />
-          </button>
-
           <div className="w-8 h-8 rounded-xl bg-blue-50 border border-blue-200/80 flex items-center justify-center p-1 shrink-0 shadow-2xs">
             <Image
               src="/school-logo.png"
