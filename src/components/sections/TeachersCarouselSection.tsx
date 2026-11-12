@@ -362,7 +362,7 @@ export const TeachersCarouselSection: React.FC<TeachersCarouselSectionProps> = (
                 />
               </div>
 
-              {/* Kolom Kanan: Rincian Tabel 11 Atribut Resmi */}
+              {/* Kolom Kanan: Rincian Profil Pendidik */}
               <div className="flex-1 w-full flex flex-col divide-y divide-slate-200/80 font-sans text-[13.5px] sm:text-[14.5px]">
                 {/* 1. Nama */}
                 <div className="py-2.5 sm:py-3 flex items-start">
@@ -373,34 +373,16 @@ export const TeachersCarouselSection: React.FC<TeachersCarouselSectionProps> = (
                   </span>
                 </div>
 
-                {/* 2. Nip */}
+                {/* 2. Status (Jabatan) */}
                 <div className="py-2.5 sm:py-3 flex items-start">
-                  <span className="w-36 sm:w-44 font-bold text-slate-900 shrink-0">Nip</span>
-                  <span className="w-6 text-center text-slate-700 font-bold shrink-0">:</span>
-                  <span className="text-slate-700 font-mono flex-1 break-words">
-                    {selectedTeacher.nip || '-'}
-                  </span>
-                </div>
-
-                {/* 3. Tahun Sertifikasi */}
-                <div className="py-2.5 sm:py-3 flex items-start">
-                  <span className="w-36 sm:w-44 font-bold text-slate-900 shrink-0">Tahun Sertifikasi</span>
+                  <span className="w-36 sm:w-44 font-bold text-slate-900 shrink-0">Status (Jabatan)</span>
                   <span className="w-6 text-center text-slate-700 font-bold shrink-0">:</span>
                   <span className="text-slate-700 flex-1 break-words">
-                    {selectedTeacher.certification_year || '0000'}
+                    {selectedTeacher.position || selectedTeacher.status || 'Guru'}
                   </span>
                 </div>
 
-                {/* 4. Status */}
-                <div className="py-2.5 sm:py-3 flex items-start">
-                  <span className="w-36 sm:w-44 font-bold text-slate-900 shrink-0">Status</span>
-                  <span className="w-6 text-center text-slate-700 font-bold shrink-0">:</span>
-                  <span className="text-slate-700 flex-1 break-words">
-                    {selectedTeacher.status || 'Guru'}
-                  </span>
-                </div>
-
-                {/* 5. Pendidikan */}
+                {/* 3. Pendidikan */}
                 <div className="py-2.5 sm:py-3 flex items-start">
                   <span className="w-36 sm:w-44 font-bold text-slate-900 shrink-0">Pendidikan</span>
                   <span className="w-6 text-center text-slate-700 font-bold shrink-0">:</span>
@@ -409,57 +391,32 @@ export const TeachersCarouselSection: React.FC<TeachersCarouselSectionProps> = (
                   </span>
                 </div>
 
-                {/* 6. Mata Pelajaran */}
+                {/* 4. Mata Pelajaran */}
                 <div className="py-2.5 sm:py-3 flex items-start">
                   <span className="w-36 sm:w-44 font-bold text-slate-900 shrink-0">Mata Pelajaran</span>
                   <span className="w-6 text-center text-slate-700 font-bold shrink-0">:</span>
                   <span className="text-slate-700 flex-1 break-words">
-                    {selectedTeacher.subject_name}
+                    {selectedTeacher.subject_name || '-'}
                   </span>
                 </div>
 
-                {/* 7. Kelamin Jenis */}
+                {/* 5. Tahun Sertifikasi */}
                 <div className="py-2.5 sm:py-3 flex items-start">
-                  <span className="w-36 sm:w-44 font-bold text-slate-900 shrink-0">Kelamin Jenis</span>
+                  <span className="w-36 sm:w-44 font-bold text-slate-900 shrink-0">Tahun Sertifikasi</span>
                   <span className="w-6 text-center text-slate-700 font-bold shrink-0">:</span>
                   <span className="text-slate-700 flex-1 break-words">
-                    {selectedTeacher.gender || 'L'}
+                    {selectedTeacher.certification_year && selectedTeacher.certification_year !== '0000'
+                      ? selectedTeacher.certification_year
+                      : '-'}
                   </span>
                 </div>
 
-                {/* 8. Agama */}
-                <div className="py-2.5 sm:py-3 flex items-start">
-                  <span className="w-36 sm:w-44 font-bold text-slate-900 shrink-0">Agama</span>
-                  <span className="w-6 text-center text-slate-700 font-bold shrink-0">:</span>
-                  <span className="text-slate-700 flex-1 break-words">
-                    {selectedTeacher.religion || 'Islam'}
-                  </span>
-                </div>
-
-                {/* 9. Pangkat Golongan */}
+                {/* 6. Pangkat Golongan */}
                 <div className="py-2.5 sm:py-3 flex items-start">
                   <span className="w-36 sm:w-44 font-bold text-slate-900 shrink-0">Pangkat Golongan</span>
                   <span className="w-6 text-center text-slate-700 font-bold shrink-0">:</span>
                   <span className="text-slate-700 flex-1 break-words">
                     {selectedTeacher.rank_group || '-'}
-                  </span>
-                </div>
-
-                {/* 10. Tanggal Lahir */}
-                <div className="py-2.5 sm:py-3 flex items-start">
-                  <span className="w-36 sm:w-44 font-bold text-slate-900 shrink-0">Tanggal Lahir</span>
-                  <span className="w-6 text-center text-slate-700 font-bold shrink-0">:</span>
-                  <span className="text-slate-700 flex-1 break-words">
-                    {selectedTeacher.birth_date || '0000-00-00'}
-                  </span>
-                </div>
-
-                {/* 11. Jabatan */}
-                <div className="py-2.5 sm:py-3 flex items-start">
-                  <span className="w-36 sm:w-44 font-bold text-slate-900 shrink-0">Jabatan</span>
-                  <span className="w-6 text-center text-slate-700 font-bold shrink-0">:</span>
-                  <span className="text-slate-700 flex-1 break-words">
-                    {selectedTeacher.position || 'Guru Mata Pelajaran'}
                   </span>
                 </div>
 
