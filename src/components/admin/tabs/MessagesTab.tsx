@@ -331,7 +331,7 @@ export const MessagesTab: React.FC<MessagesTabProps> = ({
             <form onSubmit={handleCreateMessage} className="space-y-3.5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="flex flex-col gap-1">
-                  <label className="text-[12px] font-bold text-slate-700">Nama Pengirim / Tamu *</label>
+                  <label className="text-[12px] font-bold text-slate-700">Nama Pengirim / Tamu</label>
                   <input
                     type="text"
                     value={newMsgForm.name}
@@ -379,7 +379,7 @@ export const MessagesTab: React.FC<MessagesTabProps> = ({
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-[12px] font-bold text-slate-700">Isi Pesan / Aspirasi *</label>
+                <label className="text-[12px] font-bold text-slate-700">Isi Pesan / Aspirasi</label>
                 <textarea
                   rows={4}
                   value={newMsgForm.message}

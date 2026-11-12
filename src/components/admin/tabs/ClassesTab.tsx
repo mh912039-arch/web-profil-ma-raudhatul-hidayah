@@ -263,13 +263,32 @@ export const ClassesTab: React.FC<ClassesTabProps> = ({
       return;
     }
 
+    const derivedCode =
+      formData.code.trim() ||
+      formData.name.replace(/^(SD|SMP|SMA)\s*-\s*(Kelas\s*)?/i, '').trim() ||
+      formData.name;
+
+    const derivedLevel =
+      formData.level.trim() ||
+      (formData.jenjang === 'sd'
+        ? 'Jenjang SD (Fase A/B/C)'
+        : formData.jenjang === 'smp'
+        ? 'Jenjang SMP (Fase D)'
+        : 'Jenjang SMA (Fase E/F)');
+
+    const payload: ClassRombel = {
+      ...formData,
+      code: derivedCode,
+      level: derivedLevel,
+    };
+
     setIsSubmitting(true);
     try {
       if (modalMode === 'add') {
         const res = await fetch('/api/classes', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(payload),
         });
         const resJson = await res.json();
         if (res.ok && resJson.success) {
@@ -283,7 +302,7 @@ export const ClassesTab: React.FC<ClassesTabProps> = ({
         const res = await fetch('/api/classes', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(payload),
         });
         const resJson = await res.json();
         if (res.ok && resJson.success) {
@@ -579,46 +598,33 @@ export const ClassesTab: React.FC<ClassesTabProps> = ({
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4 overflow-y-auto pr-1 flex-1">
-              <div className="grid grid-cols-2 gap-3">
-                <div className="flex flex-col gap-1">
-                  <label className="text-[12px] font-bold text-slate-700">Jenjang Pendidikan</label>
-                  <select
-                    value={formData.jenjang}
-                    onChange={(e) => {
-                      const j = e.target.value as ClassJenjang;
-                      setFormData({
-                        ...formData,
-                        jenjang: j,
-                        level:
-                          j === 'sd'
-                            ? 'Jenjang SD (Fase A/B/C)'
-                            : j === 'smp'
-                            ? 'Jenjang SMP (Fase D)'
-                            : 'Jenjang SMA (Fase E/F)',
-                      });
-                    }}
-                    className="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
-                  >
-                    <option value="sd">SD (Madrasah Ibtidaiyah)</option>
-                    <option value="smp">SMP (Madrasah Tsanawiyah)</option>
-                    <option value="sma">SMA (Madrasah Aliyah)</option>
-                  </select>
-                </div>
-
-                <div className="flex flex-col gap-1">
-                  <label className="text-[12px] font-bold text-slate-700">Kode / Tingkat</label>
-                  <input
-                    type="text"
-                    value={formData.code}
-                    onChange={(e) => setFormData({ ...formData, code: e.target.value })}
-                    placeholder="Contoh: X, XI, VII, 1"
-                    className="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
-                  />
-                </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-[12px] font-bold text-slate-700">Jenjang Pendidikan</label>
+                <select
+                  value={formData.jenjang}
+                  onChange={(e) => {
+                    const j = e.target.value as ClassJenjang;
+                    setFormData({
+                      ...formData,
+                      jenjang: j,
+                      level:
+                        j === 'sd'
+                          ? 'Jenjang SD (Fase A/B/C)'
+                          : j === 'smp'
+                          ? 'Jenjang SMP (Fase D)'
+                          : 'Jenjang SMA (Fase E/F)',
+                    });
+                  }}
+                  className="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                >
+                  <option value="sd">SD (Madrasah Ibtidaiyah)</option>
+                  <option value="smp">SMP (Madrasah Tsanawiyah)</option>
+                  <option value="sma">SMA (Madrasah Aliyah)</option>
+                </select>
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-[12px] font-bold text-slate-700">Nama Ruang Kelas *</label>
+                <label className="text-[12px] font-bold text-slate-700">Nama Ruang Kelas</label>
                 <input
                   type="text"
                   value={formData.name}
@@ -630,18 +636,7 @@ export const ClassesTab: React.FC<ClassesTabProps> = ({
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-[12px] font-bold text-slate-700">Keterangan Level / Fase</label>
-                <input
-                  type="text"
-                  value={formData.level}
-                  onChange={(e) => setFormData({ ...formData, level: e.target.value })}
-                  placeholder="Contoh: Jenjang SMA (Kelas X · Fase E)"
-                  className="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
-                />
-              </div>
-
-              <div className="flex flex-col gap-1">
-                <label className="text-[12px] font-bold text-slate-700">Wali Kelas Resmi *</label>
+                <label className="text-[12px] font-bold text-slate-700">Wali Kelas Resmi</label>
                 <select
                   value={formData.homeroom_teacher}
                   onChange={(e) => setFormData({ ...formData, homeroom_teacher: e.target.value })}

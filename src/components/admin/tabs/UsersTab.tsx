@@ -2054,7 +2054,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
             <form onSubmit={handleCreateUser} className="p-5 sm:p-6 space-y-4">
               <div className="flex flex-col gap-1">
                 <label className="text-xs font-bold text-slate-800">
-                  Nama Lengkap &amp; Gelar <span className="text-rose-500">*</span>
+                  Nama Lengkap &amp; Gelar
                 </label>
                 <input
                   type="text"
@@ -2068,7 +2068,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
 
               <div className="flex flex-col gap-1">
                 <label className="text-xs font-bold text-slate-800">
-                  Email Akun Resmi <span className="text-rose-500">*</span>
+                  Email Akun Resmi
                 </label>
                 <input
                   type="email"
@@ -2129,7 +2129,6 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                   <label className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
                     <KeyRound className="w-3.5 h-3.5 text-blue-700" />
                     <span>Kata Sandi Akun</span>
-                    <span className="text-rose-500">*</span>
                   </label>
                   <button
                     type="button"

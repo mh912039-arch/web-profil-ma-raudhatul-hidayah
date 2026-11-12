@@ -266,7 +266,7 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
         <div className="flex items-center gap-1.5 flex-wrap">
           {[
             { id: 'all', label: 'Semua Agenda' },
-            { id: 'ujian', label: 'Ujian / Asesmen' },
+            { id: 'ujian', label: 'Ujian' },
             { id: 'kegiatan', label: 'Kegiatan Belajar' },
             { id: 'libur', label: 'Libur Semester' },
             { id: 'ppdb', label: 'Agenda PPDB' },
@@ -319,7 +319,7 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
             }[event.category] || 'bg-slate-50 text-slate-700 border-slate-200';
 
             const categoryLabels = {
-              ujian: 'Ujian / Asesmen',
+              ujian: 'Ujian',
               kegiatan: 'Kegiatan Belajar',
               libur: 'Libur Semester',
               ppdb: 'Agenda PPDB',
@@ -411,7 +411,7 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
               {/* Field 1: Judul Agenda */}
               <div className="space-y-1.5">
                 <label className="block font-bold text-slate-700">
-                  Judul Agenda Kegiatan <span className="text-rose-500">*</span>
+                  Judul Agenda Kegiatan
                 </label>
                 <input
                   type="text"
@@ -426,7 +426,7 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
               {/* Field 2: Rentang Tanggal / Waktu */}
               <div className="space-y-1.5">
                 <label className="block font-bold text-slate-700">
-                  Rentang Tanggal Pelaksanaan <span className="text-rose-500">*</span>
+                  Rentang Tanggal Pelaksanaan
                 </label>
                 <input
                   type="text"
@@ -465,8 +465,8 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
                     }
                     className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-blue-600 text-slate-800 bg-white"
                   >
-                    <option value="ujian">Ujian / Asesmen</option>
-                    <option value="kegiatan">Kegiatan Belajar / Matsama</option>
+                    <option value="ujian">Ujian</option>
+                    <option value="kegiatan">Kegiatan Belajar</option>
                     <option value="libur">Libur Semester</option>
                     <option value="ppdb">Agenda PPDB</option>
                   </select>
