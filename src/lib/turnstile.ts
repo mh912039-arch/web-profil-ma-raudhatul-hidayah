@@ -14,13 +14,31 @@ export interface TurnstileVerificationResult {
   errorCodes?: string[];
 }
 
+/**
+ * Kunci fallback resmi MAS Raudlatul Hidayah yang berpasangan dengan Site Key:
+ * NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY = '0x4AAAAAAF3MWNHEzNkdoekl'
+ */
+const DEFAULT_TURNSTILE_SECRET_KEY = '0x4AAAAAAF3MWFhDcP1uB5zA4gktcIPfD68';
+
+function isPublicIp(ip?: string | null): boolean {
+  if (!ip) return false;
+  const cleanIp = ip.trim().split(',')[0].trim();
+  if (!cleanIp) return false;
+  if (cleanIp === '127.0.0.1' || cleanIp === '::1' || cleanIp === 'localhost') return false;
+  if (cleanIp.startsWith('10.') || cleanIp.startsWith('192.168.')) return false;
+  if (/^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(cleanIp)) return false;
+  if (cleanIp.startsWith('169.254.')) return false;
+  return true;
+}
+
 export async function verifyTurnstileToken(
   token?: string | null,
   remoteIp?: string | null
 ): Promise<TurnstileVerificationResult> {
-  const secretKey = process.env.CLOUDFLARE_TURNSTILE_SECRET_KEY;
+  // Gunakan environment variable jika ada, atau fallback ke default widget secret key
+  const secretKey =
+    process.env.CLOUDFLARE_TURNSTILE_SECRET_KEY || DEFAULT_TURNSTILE_SECRET_KEY;
 
-  // Jika kunci rahasia belum dikonfigurasi di local dev dan bukan produksi, loloskan dengan peringatan
   if (!secretKey) {
     if (process.env.NODE_ENV !== 'production') {
       console.warn(
@@ -34,7 +52,7 @@ export async function verifyTurnstileToken(
     };
   }
 
-  // Token wajib ada jika secret key telah dikonfigurasi
+  // Token wajib ada
   if (!token || typeof token !== 'string' || token.trim() === '') {
     return {
       success: false,
@@ -46,8 +64,8 @@ export async function verifyTurnstileToken(
     const formData = new URLSearchParams();
     formData.append('secret', secretKey);
     formData.append('response', token.trim());
-    if (remoteIp) {
-      formData.append('remoteip', remoteIp);
+    if (isPublicIp(remoteIp)) {
+      formData.append('remoteip', remoteIp!.trim().split(',')[0].trim());
     }
 
     const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
