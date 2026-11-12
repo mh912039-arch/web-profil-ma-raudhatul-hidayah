@@ -258,50 +258,54 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
     <>
       {/* =========================================================================
           1. TAMPILAN MOBILE (< 768px / Layar Ponsel & PWA)
-          Desain Dark Native MAS RH Mobile (Sesuai Permintaan Mobile)
+          Konsep: Clean Academic Portal (Tema Terang Resmi MAS Raudlatul Hidayah)
       ========================================================================= */}
-      <div className="flex md:hidden min-h-[100dvh] bg-[#111214] text-white flex-col justify-between items-center px-5 py-6 font-sans selection:bg-blue-600 selection:text-white">
+      <div className="flex md:hidden min-h-[100dvh] bg-[#f8fafc] text-slate-800 flex-col justify-between items-center px-4 py-5 font-sans selection:bg-[#1e3a8a] selection:text-white relative">
         <div className="w-full max-w-[420px] min-h-[100dvh] flex flex-col justify-between mx-auto">
-          {/* Header Mobile: MAS RH mobile */}
-          <header className="pt-2 text-center select-none shrink-0">
-            <div className="inline-block">
-              <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white uppercase block leading-none">
-                MAS RH
-              </h2>
-              <span className="text-[11px] font-medium text-neutral-400 tracking-wider lowercase block text-right">
-                mobile
-              </span>
+          {/* Top Navbar Mobile: Tombol Kembali & Lencana Keamanan */}
+          <header className="pt-1 pb-3 flex items-center justify-between select-none shrink-0">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white hover:bg-slate-100 border border-slate-200/90 text-slate-700 text-xs font-semibold shadow-2xs active:scale-95 transition-all"
+            >
+              <ArrowLeft className="w-3.5 h-3.5 text-slate-500" />
+              <span>Beranda</span>
+            </Link>
+
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 border border-blue-200/80 text-[10.5px] font-bold text-[#1e3a8a] tracking-wider uppercase">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#1e3a8a]" />
+              <span>Portal Resmi</span>
             </div>
           </header>
 
           {/* Konten Utama Mobile */}
-          <main className="my-auto py-4 w-full">
+          <main className="my-auto py-2 w-full">
             {regSuccess ? (
-              <div className="text-center py-4 space-y-4 animate-in fade-in zoom-in-95 duration-200">
-                <div className="w-14 h-14 rounded-full bg-emerald-500/15 border border-emerald-500/40 flex items-center justify-center mx-auto text-emerald-400 shadow-2xs">
-                  <CheckCircle2 className="w-7 h-7" />
+              <div className="bg-white rounded-3xl border border-slate-200/90 shadow-[0_12px_36px_rgba(15,23,42,0.06)] p-6 text-center space-y-4 animate-in fade-in zoom-in-95 duration-200">
+                <div className="w-14 h-14 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center mx-auto text-emerald-600 shadow-2xs">
+                  <CheckCircle2 className="w-8 h-8" />
                 </div>
                 <div>
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30 mb-2">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-200 mb-2">
                     Menunggu Konfirmasi Admin
                   </span>
-                  <h1 className="text-2xl font-bold text-white tracking-tight">
+                  <h1 className="font-serif text-2xl font-bold text-slate-900 tracking-tight">
                     Pendaftaran Terkirim
                   </h1>
-                  <p className="text-xs text-neutral-400 mt-2 leading-relaxed">
+                  <p className="text-xs text-slate-600 mt-2 leading-relaxed">
                     Permohonan akun untuk{' '}
-                    <span className="font-bold text-white">{regSuccess.name}</span> sebagai{' '}
-                    <span className="font-bold text-sky-400">{regSuccess.roleLabel}</span> telah masuk ke antrean verifikasi.
+                    <span className="font-bold text-slate-900">{regSuccess.name}</span> sebagai{' '}
+                    <span className="font-bold text-[#1e3a8a]">{regSuccess.roleLabel}</span> telah masuk ke antrean verifikasi.
                   </p>
                 </div>
-                <div className="p-3.5 rounded-xl bg-neutral-900/80 border border-neutral-700/80 text-left text-xs space-y-2">
+                <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-left text-xs space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-neutral-400">Email:</span>
-                    <span className="font-mono font-bold text-white">{regSuccess.email}</span>
+                    <span className="text-slate-500">Email:</span>
+                    <span className="font-mono font-bold text-slate-900">{regSuccess.email}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-neutral-400">Status:</span>
-                    <span className="font-bold text-amber-300">Menunggu Persetujuan</span>
+                    <span className="text-slate-500">Status:</span>
+                    <span className="font-bold text-amber-700">Menunggu Persetujuan</span>
                   </div>
                 </div>
                 <button
@@ -311,191 +315,226 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
                     setRegSuccess(null);
                     setAuthMode('login');
                   }}
-                  className="w-full py-3.5 rounded-xl bg-white text-neutral-950 font-bold text-sm flex items-center justify-center gap-2 hover:bg-neutral-100 active:scale-[0.98] transition-all cursor-pointer shadow-md"
+                  className="w-full py-3.5 rounded-2xl bg-[#1e3a8a] text-white font-bold text-sm flex items-center justify-center gap-2 hover:bg-blue-900 active:scale-[0.98] transition-all cursor-pointer shadow-md shadow-blue-900/10"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   <span>Kembali ke Halaman Login</span>
                 </button>
               </div>
             ) : authMode === 'login' ? (
-              <div className="animate-in fade-in duration-200">
-                <div className="mb-6 text-left">
-                  <h1 className="text-[26px] font-bold text-white tracking-tight leading-tight">
-                    Selamat Datang<br />
-                    Login ke Akun Anda
+              <div className="space-y-4 animate-in fade-in duration-200">
+                {/* Header Identitas Madrasah di Atas Kartu */}
+                <div className="text-center mb-1">
+                  <div className="w-16 h-16 rounded-2xl bg-white p-2 border border-slate-200/90 shadow-xs flex items-center justify-center mx-auto mb-2.5">
+                    <Image
+                      src="/school-logo.png"
+                      alt="Logo MAS Raudlatul Hidayah"
+                      width={52}
+                      height={52}
+                      className="w-full h-full object-contain"
+                      priority
+                    />
+                  </div>
+                  <h1 className="font-serif text-[19px] font-bold text-slate-900 tracking-tight uppercase leading-snug">
+                    MAS RAUDLATUL HIDAYAH
                   </h1>
-                  <p className="text-[13px] text-neutral-400 mt-2 leading-relaxed">
-                    Login untuk memulai perjalanan anda di Madrasah Aliyah Raudlatul Hidayah
-                  </p>
-                </div>
-
-                {lockoutSeconds > 0 ? (
-                  <div className="mb-4 p-3.5 rounded-xl bg-amber-950/40 border border-amber-500/40 text-amber-200 text-xs flex flex-col gap-2 animate-in fade-in duration-200">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2 font-bold text-amber-300">
-                        <ShieldAlert className="w-4 h-4 shrink-0" />
-                        <span>Akses Dibatasi Sementara</span>
-                      </div>
-                      <div className="flex items-center gap-1.5 font-mono font-bold text-[12px] bg-amber-500/20 px-2 py-0.5 rounded border border-amber-500/30">
-                        <Clock className="w-3.5 h-3.5" />
-                        <span>{formatCountdown(lockoutSeconds)}</span>
-                      </div>
-                    </div>
-                    <p className="text-[11.5px] text-neutral-300 leading-relaxed">
-                      Percobaan salah tercapai. Formulir ditangguhkan sementara demi keamanan data madrasah.
-                    </p>
-                  </div>
-                ) : errorMessage ? (
-                  <div className="mb-4 p-3.5 rounded-xl bg-rose-950/40 border border-rose-500/40 text-rose-200 text-xs flex items-start gap-2.5 animate-in fade-in duration-150">
-                    <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
-                    <div className="flex-1">
-                      <p className="leading-relaxed">{errorMessage}</p>
-                      {warningAttempts && warningAttempts <= 2 && (
-                        <p className="mt-1 text-[11px] font-semibold text-amber-300">
-                          Kesempatan tersisa {warningAttempts} kali sebelum terkunci sementara.
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                ) : null}
-
-                {timeoutNotice && (
-                  <div className="mb-4 p-3.5 rounded-xl bg-amber-950/40 border border-amber-500/40 text-amber-200 text-xs flex items-start gap-2.5 animate-in fade-in duration-150">
-                    <Clock className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                    <div className="flex-1">
-                      <p className="leading-relaxed font-medium">{timeoutNotice}</p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setTimeoutNotice(null)}
-                      className="text-amber-400/80 hover:text-amber-200 p-0.5 cursor-pointer"
-                      aria-label="Tutup pemberitahuan"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                )}
-
-                <form onSubmit={handleLoginSubmit} className="space-y-3.5">
-                  <div className="relative">
-                    <input
-                      type="text"
-                      value={identifier}
-                      onChange={(e) => setIdentifier(e.target.value)}
-                      disabled={lockoutSeconds > 0}
-                      placeholder="Username"
-                      aria-label="Username"
-                      className="w-full px-4 py-3.5 rounded-xl border border-neutral-600/90 bg-neutral-900/40 text-white text-[15px] placeholder:text-neutral-400 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-150 disabled:opacity-50"
-                      required
-                    />
-                  </div>
-
-                  <div className="relative">
-                    <input
-                      type={showPassword ? 'text' : 'password'}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      disabled={lockoutSeconds > 0}
-                      placeholder="Password"
-                      aria-label="Password"
-                      className="w-full px-4 py-3.5 pr-12 rounded-xl border border-neutral-600/90 bg-neutral-900/40 text-white text-[15px] placeholder:text-neutral-400 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-150 font-mono disabled:opacity-50"
-                      required
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      disabled={lockoutSeconds > 0}
-                      aria-label={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
-                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white transition-colors p-1 cursor-pointer disabled:opacity-40"
-                    >
-                      {showPassword ? (
-                        <EyeOff className="w-5 h-5 stroke-[1.8]" />
-                      ) : (
-                        <Eye className="w-5 h-5 stroke-[1.8]" />
-                      )}
-                    </button>
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={isSubmitting || lockoutSeconds > 0}
-                    className={`w-full py-3.5 rounded-xl font-semibold text-[15px] transition-all duration-150 active:scale-[0.98] select-none flex items-center justify-center gap-2 cursor-pointer ${
-                      isFormFilled && !isSubmitting && lockoutSeconds === 0
-                        ? 'bg-white text-neutral-950 shadow-md hover:bg-neutral-100'
-                        : 'bg-[#c5c5c8] text-neutral-600 hover:bg-[#d0d0d4]'
-                    } disabled:cursor-not-allowed`}
-                  >
-                    {lockoutSeconds > 0 ? (
-                      <>
-                        <Lock className="w-4 h-4 text-neutral-600" />
-                        <span>Terkunci ({formatCountdown(lockoutSeconds)})</span>
-                      </>
-                    ) : isSubmitting ? (
-                      <>
-                        <RefreshCw className="w-4 h-4 animate-spin text-neutral-950" />
-                        <span>Memverifikasi...</span>
-                      </>
-                    ) : (
-                      <span>Login</span>
-                    )}
-                  </button>
-                </form>
-
-                <div className="mt-3.5 flex items-start gap-2 text-[11.5px] text-neutral-400 leading-relaxed">
-                  <Info className="w-4 h-4 text-neutral-400 shrink-0 mt-0.5 stroke-[1.8]" />
-                  <span>
-                    Gunakan username dan password yang sama dengan akun Web Portal MAS RH.
+                  <span className="text-[10px] font-bold text-[#1e3a8a] tracking-widest uppercase block mt-0.5">
+                    Portal Akademik & Administrasi
                   </span>
                 </div>
 
-                <div className="mt-6 text-center pt-2">
-                  <p className="text-[12px] text-neutral-400">
-                    Belum memiliki akun dewan guru atau santri?{' '}
+                {/* Kartu Formulir Masuk */}
+                <div className="bg-white rounded-3xl border border-slate-200/90 shadow-[0_12px_36px_rgba(15,23,42,0.06)] p-5 sm:p-6">
+                  <div className="mb-5 text-left border-b border-slate-100 pb-3">
+                    <h2 className="text-[17px] font-bold text-slate-900 tracking-tight">
+                      Masuk ke Akun Anda
+                    </h2>
+                    <p className="text-[12px] text-slate-500 mt-1 leading-relaxed">
+                      Silakan masukkan kredensial resmi untuk mengakses sistem.
+                    </p>
+                  </div>
+
+                  {lockoutSeconds > 0 ? (
+                    <div className="mb-4 p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex flex-col gap-2 animate-in fade-in duration-200">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 font-bold text-amber-900">
+                          <ShieldAlert className="w-4 h-4 shrink-0 text-amber-700" />
+                          <span>Akses Dibatasi Sementara</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 font-mono font-bold text-[12px] bg-amber-200/60 text-amber-950 px-2 py-0.5 rounded-md border border-amber-300">
+                          <Clock className="w-3.5 h-3.5 text-amber-800" />
+                          <span>{formatCountdown(lockoutSeconds)}</span>
+                        </div>
+                      </div>
+                      <p className="text-[11.5px] text-amber-800 leading-relaxed">
+                        Percobaan salah tercapai. Formulir ditangguhkan sementara demi keamanan data madrasah.
+                      </p>
+                    </div>
+                  ) : errorMessage ? (
+                    <div className="mb-4 p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-2.5 animate-in fade-in duration-150">
+                      <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                      <div className="flex-1">
+                        <p className="leading-relaxed font-medium">{errorMessage}</p>
+                        {warningAttempts && warningAttempts <= 2 && (
+                          <p className="mt-1 text-[11px] font-bold text-rose-700">
+                            Kesempatan tersisa {warningAttempts} kali sebelum terkunci sementara.
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {timeoutNotice && (
+                    <div className="mb-4 p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-start gap-2.5 animate-in fade-in duration-150">
+                      <Clock className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+                      <div className="flex-1">
+                        <p className="leading-relaxed font-medium">{timeoutNotice}</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setTimeoutNotice(null)}
+                        className="text-amber-700/80 hover:text-amber-950 p-0.5 cursor-pointer"
+                        aria-label="Tutup pemberitahuan"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  )}
+
+                  <form onSubmit={handleLoginSubmit} className="space-y-3.5">
+                    {/* Input Username */}
+                    <div className="relative">
+                      <div className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                        <User className="w-4 h-4 stroke-[1.8]" />
+                      </div>
+                      <input
+                        type="text"
+                        value={identifier}
+                        onChange={(e) => setIdentifier(e.target.value)}
+                        disabled={lockoutSeconds > 0}
+                        placeholder="Username atau Email"
+                        aria-label="Username atau Email"
+                        className="w-full pl-10 pr-4 py-3.5 rounded-2xl border border-slate-200 bg-slate-50/50 text-slate-900 text-[14px] placeholder:text-slate-400 focus:outline-none focus:border-[#1e3a8a] focus:bg-white focus:ring-4 focus:ring-blue-100/60 transition-all duration-150 disabled:opacity-50"
+                        required
+                      />
+                    </div>
+
+                    {/* Input Password */}
+                    <div className="relative">
+                      <div className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                        <Lock className="w-4 h-4 stroke-[1.8]" />
+                      </div>
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        disabled={lockoutSeconds > 0}
+                        placeholder="Kata Sandi"
+                        aria-label="Kata Sandi"
+                        className="w-full pl-10 pr-11 py-3.5 rounded-2xl border border-slate-200 bg-slate-50/50 text-slate-900 text-[14px] placeholder:text-slate-400 focus:outline-none focus:border-[#1e3a8a] focus:bg-white focus:ring-4 focus:ring-blue-100/60 transition-all duration-150 font-mono disabled:opacity-50"
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        disabled={lockoutSeconds > 0}
+                        aria-label={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition-colors p-1 cursor-pointer disabled:opacity-40"
+                      >
+                        {showPassword ? (
+                          <EyeOff className="w-4 h-4 stroke-[1.8]" />
+                        ) : (
+                          <Eye className="w-4 h-4 stroke-[1.8]" />
+                        )}
+                      </button>
+                    </div>
+
+                    {/* Tombol Masuk */}
                     <button
-                      type="button"
-                      onClick={() => {
-                        setErrorMessage('');
-                        setRegErrorMessage('');
-                        setAuthMode('register');
-                      }}
-                      className="text-sky-400 hover:text-sky-300 font-semibold underline underline-offset-2 transition-colors cursor-pointer"
+                      type="submit"
+                      disabled={isSubmitting || lockoutSeconds > 0}
+                      className={`w-full py-3.5 rounded-2xl font-bold text-[14px] transition-all duration-150 active:scale-[0.98] select-none flex items-center justify-center gap-2 cursor-pointer ${
+                        isFormFilled && !isSubmitting && lockoutSeconds === 0
+                          ? 'bg-[#1e3a8a] hover:bg-blue-900 text-white shadow-md shadow-blue-950/10'
+                          : 'bg-slate-200 text-slate-500 hover:bg-slate-300'
+                      } disabled:cursor-not-allowed`}
                     >
-                      Daftar Akun Baru
+                      {lockoutSeconds > 0 ? (
+                        <>
+                          <Lock className="w-4 h-4 text-slate-500" />
+                          <span>Terkunci ({formatCountdown(lockoutSeconds)})</span>
+                        </>
+                      ) : isSubmitting ? (
+                        <>
+                          <RefreshCw className="w-4 h-4 animate-spin text-white" />
+                          <span>Memverifikasi...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>Masuk ke Portal</span>
+                          <ArrowRight className="w-4 h-4" />
+                        </>
+                      )}
                     </button>
-                  </p>
+                  </form>
+
+                  <div className="mt-4 p-3 rounded-2xl bg-blue-50/70 border border-blue-100 flex items-start gap-2.5 text-[11.5px] text-blue-950/90 leading-relaxed">
+                    <Info className="w-4 h-4 text-[#1e3a8a] shrink-0 mt-0.5 stroke-[1.8]" />
+                    <span>
+                      Gunakan username dan password yang sama dengan akun Web Portal MAS RH.
+                    </span>
+                  </div>
+
+                  <div className="mt-5 text-center pt-1 border-t border-slate-100">
+                    <p className="text-[12px] text-slate-600">
+                      Belum memiliki akun dewan guru atau santri?{' '}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setErrorMessage('');
+                          setRegErrorMessage('');
+                          setAuthMode('register');
+                        }}
+                        className="text-[#1e3a8a] hover:text-blue-900 font-bold underline underline-offset-2 transition-colors cursor-pointer"
+                      >
+                        Daftar Akun Baru
+                      </button>
+                    </p>
+                  </div>
                 </div>
               </div>
             ) : (
-              <div className="animate-in fade-in duration-200">
-                <div className="mb-5 text-left">
-                  <span className="text-[10.5px] font-bold uppercase tracking-wider text-sky-400 bg-sky-950/60 border border-sky-500/30 px-2.5 py-0.5 rounded-full inline-block mb-1.5">
+              /* Formulir Registrasi Mobile (Clean Academic Style) */
+              <div className="bg-white rounded-3xl border border-slate-200/90 shadow-[0_12px_36px_rgba(15,23,42,0.06)] p-5 sm:p-6 space-y-4 animate-in fade-in duration-200">
+                <div className="text-left border-b border-slate-100 pb-3">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#1e3a8a] bg-blue-50 border border-blue-200/60 px-2.5 py-0.5 rounded-full inline-block mb-1.5">
                     Registrasi Akun Baru
                   </span>
-                  <h1 className="text-2xl font-bold text-white tracking-tight">
-                    Daftar Akses Portal
-                  </h1>
-                  <p className="text-xs text-neutral-400 mt-1 leading-relaxed">
-                    Khusus Dewan Guru dan Santri/Siswa. Akun akan ditinjau langsung oleh Administrator Madrasah.
+                  <h2 className="text-[18px] font-bold text-slate-900 tracking-tight">
+                    Pengajuan Akses Portal
+                  </h2>
+                  <p className="text-[12px] text-slate-500 mt-0.5 leading-relaxed">
+                    Khusus Dewan Guru dan Santri. Akun akan ditinjau langsung oleh Admin Madrasah.
                   </p>
                 </div>
 
                 {regErrorMessage && (
-                  <div className="mb-4 p-3 rounded-xl bg-rose-950/40 border border-rose-500/40 text-rose-200 text-xs flex items-start gap-2 animate-in fade-in duration-150">
-                    <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
-                    <span className="leading-relaxed">{regErrorMessage}</span>
+                  <div className="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-2 animate-in fade-in duration-150">
+                    <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                    <span className="leading-relaxed font-medium">{regErrorMessage}</span>
                   </div>
                 )}
 
                 <form onSubmit={handleRegisterSubmit} className="space-y-3">
                   <div>
-                    <div className="grid grid-cols-2 gap-2 p-1 bg-neutral-900/80 border border-neutral-700/80 rounded-xl">
+                    <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 border border-slate-200/80 rounded-2xl">
                       <button
                         type="button"
                         onClick={() => setRegRole('guru')}
-                        className={`py-2 px-3 rounded-lg font-bold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                        className={`py-2 px-3 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                           regRole === 'guru'
-                            ? 'bg-white text-neutral-950 shadow-xs'
-                            : 'text-neutral-400 hover:text-white'
+                            ? 'bg-white text-[#1e3a8a] shadow-xs'
+                            : 'text-slate-600 hover:text-slate-900'
                         }`}
                       >
                         <UserCheck className="w-3.5 h-3.5" />
@@ -504,10 +543,10 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
                       <button
                         type="button"
                         onClick={() => setRegRole('siswa')}
-                        className={`py-2 px-3 rounded-lg font-bold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                        className={`py-2 px-3 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                           regRole === 'siswa'
-                            ? 'bg-white text-neutral-950 shadow-xs'
-                            : 'text-neutral-400 hover:text-white'
+                            ? 'bg-white text-[#1e3a8a] shadow-xs'
+                            : 'text-slate-600 hover:text-slate-900'
                         }`}
                       >
                         <GraduationCap className="w-3.5 h-3.5" />
@@ -527,7 +566,7 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
                           ? 'Nama Lengkap & Gelar (Cth: Jakaria, S.Pd.I)'
                           : 'Nama Lengkap Santri / Siswa'
                       }
-                      className="w-full px-3.5 py-3 rounded-xl border border-neutral-600/90 bg-neutral-900/40 text-white text-xs placeholder:text-neutral-500 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all"
+                      className="w-full px-3.5 py-3 rounded-2xl border border-slate-200 bg-slate-50/50 text-slate-900 text-xs placeholder:text-slate-400 focus:outline-none focus:border-[#1e3a8a] focus:bg-white focus:ring-4 focus:ring-blue-100/60 transition-all"
                     />
                   </div>
 
@@ -537,14 +576,14 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
                       value={regNipNisn}
                       onChange={(e) => setRegNipNisn(e.target.value)}
                       placeholder={regRole === 'guru' ? 'NIP / NUPTK' : 'NISN / NISM'}
-                      className="w-full px-3 py-3 rounded-xl border border-neutral-600/90 bg-neutral-900/40 text-white text-xs placeholder:text-neutral-500 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all font-mono"
+                      className="w-full px-3 py-3 rounded-2xl border border-slate-200 bg-slate-50/50 text-slate-900 text-xs placeholder:text-slate-400 focus:outline-none focus:border-[#1e3a8a] focus:bg-white focus:ring-4 focus:ring-blue-100/60 transition-all font-mono"
                     />
                     <input
                       type="text"
                       value={regNote}
                       onChange={(e) => setRegNote(e.target.value)}
                       placeholder={regRole === 'guru' ? 'Mata Pelajaran' : 'Kelas (Cth: X)'}
-                      className="w-full px-3 py-3 rounded-xl border border-neutral-600/90 bg-neutral-900/40 text-white text-xs placeholder:text-neutral-500 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all"
+                      className="w-full px-3 py-3 rounded-2xl border border-slate-200 bg-slate-50/50 text-slate-900 text-xs placeholder:text-slate-400 focus:outline-none focus:border-[#1e3a8a] focus:bg-white focus:ring-4 focus:ring-blue-100/60 transition-all"
                     />
                   </div>
 
@@ -555,7 +594,7 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
                       value={regEmail}
                       onChange={(e) => setRegEmail(e.target.value)}
                       placeholder="Email aktif (untuk akses login)"
-                      className="w-full px-3.5 py-3 rounded-xl border border-neutral-600/90 bg-neutral-900/40 text-white text-xs placeholder:text-neutral-500 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all font-mono"
+                      className="w-full px-3.5 py-3 rounded-2xl border border-slate-200 bg-slate-50/50 text-slate-900 text-xs placeholder:text-slate-400 focus:outline-none focus:border-[#1e3a8a] focus:bg-white focus:ring-4 focus:ring-blue-100/60 transition-all font-mono"
                     />
                   </div>
 
@@ -567,12 +606,12 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
                         value={regPassword}
                         onChange={(e) => setRegPassword(e.target.value)}
                         placeholder="Sandi (Min. 4)"
-                        className="w-full pl-3 pr-8 py-3 rounded-xl border border-neutral-600/90 bg-neutral-900/40 text-white text-xs placeholder:text-neutral-500 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all font-mono"
+                        className="w-full pl-3 pr-8 py-3 rounded-2xl border border-slate-200 bg-slate-50/50 text-slate-900 text-xs placeholder:text-slate-400 focus:outline-none focus:border-[#1e3a8a] focus:bg-white focus:ring-4 focus:ring-blue-100/60 transition-all font-mono"
                       />
                       <button
                         type="button"
                         onClick={() => setShowRegPassword(!showRegPassword)}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white p-1"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1"
                       >
                         {showRegPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                       </button>
@@ -584,12 +623,12 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
                       value={regConfirmPassword}
                       onChange={(e) => setRegConfirmPassword(e.target.value)}
                       placeholder="Ulangi sandi"
-                      className="w-full px-3 py-3 rounded-xl border border-neutral-600/90 bg-neutral-900/40 text-white text-xs placeholder:text-neutral-500 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all font-mono"
+                      className="w-full px-3 py-3 rounded-2xl border border-slate-200 bg-slate-50/50 text-slate-900 text-xs placeholder:text-slate-400 focus:outline-none focus:border-[#1e3a8a] focus:bg-white focus:ring-4 focus:ring-blue-100/60 transition-all font-mono"
                     />
                   </div>
 
-                  <div className="p-3 rounded-xl bg-blue-950/40 border border-blue-500/30 text-[11px] text-blue-200 flex items-start gap-2 leading-relaxed">
-                    <ShieldCheck className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
+                  <div className="p-3 rounded-2xl bg-blue-50/70 border border-blue-100 text-[11px] text-blue-950 flex items-start gap-2 leading-relaxed">
+                    <ShieldCheck className="w-4 h-4 text-[#1e3a8a] shrink-0 mt-0.5" />
                     <span>
                       Akun yang diajukan akan berstatus <strong>Menunggu Persetujuan</strong> oleh Administrator sebelum aktif.
                     </span>
@@ -598,11 +637,11 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
                   <button
                     type="submit"
                     disabled={isRegSubmitting}
-                    className="w-full py-3.5 rounded-xl bg-white hover:bg-neutral-100 active:scale-[0.98] text-neutral-950 font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all duration-150 disabled:opacity-60 cursor-pointer"
+                    className="w-full py-3.5 rounded-2xl bg-[#1e3a8a] hover:bg-blue-900 active:scale-[0.98] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-blue-900/10 transition-all duration-150 disabled:opacity-60 cursor-pointer"
                   >
                     {isRegSubmitting ? (
                       <>
-                        <RefreshCw className="w-4 h-4 animate-spin text-neutral-950" />
+                        <RefreshCw className="w-4 h-4 animate-spin text-white" />
                         <span>Mengirim Permohonan...</span>
                       </>
                     ) : (
@@ -620,7 +659,7 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
                         setRegErrorMessage('');
                         setAuthMode('login');
                       }}
-                      className="text-xs font-semibold text-neutral-400 hover:text-white transition-colors inline-flex items-center gap-1.5 py-1 px-3 rounded-lg hover:bg-neutral-900 cursor-pointer"
+                      className="text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors inline-flex items-center gap-1.5 py-1.5 px-3 rounded-xl hover:bg-slate-100 cursor-pointer"
                     >
                       <ArrowLeft className="w-3.5 h-3.5" />
                       <span>Sudah punya akun? Kembali ke Halaman Login</span>
@@ -631,44 +670,21 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
             )}
           </main>
 
-          {/* Footer Mobile */}
-          <footer className="text-center pt-4 pb-2 shrink-0 select-none">
-            <p className="text-xs text-neutral-400">
-              Ingin mengenal madrasah MAS RH?{' '}
+          {/* Footer Mobile: Identitas Resmi Satuan Pendidikan */}
+          <footer className="text-center pt-3 pb-2 shrink-0 select-none">
+            <div className="flex flex-col items-center justify-center gap-1">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                Lembaga Pendidikan Islam MAS Raudlatul Hidayah
+              </span>
+              <span className="text-[9.5px] font-medium text-slate-400">
+                Kecamatan Mauk · Kabupaten Tangerang · Banten
+              </span>
               <Link
                 href="/"
-                className="text-sky-400 hover:text-sky-300 font-semibold hover:underline transition-colors"
+                className="text-[11px] font-bold text-[#1e3a8a] hover:underline mt-1 transition-colors"
               >
-                Jelajahi Madrasah
+                Jelajahi Profil Madrasah
               </Link>
-            </p>
-
-            <div className="mt-3.5 flex items-center justify-center gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-white p-0.5 flex items-center justify-center shrink-0 shadow-xs border border-neutral-300">
-                <Image
-                  src="/school-logo.png"
-                  alt="Logo MAS Raudlatul Hidayah"
-                  width={28}
-                  height={28}
-                  className="w-full h-full object-contain"
-                  priority
-                />
-              </div>
-
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-800 p-1 flex items-center justify-center shrink-0 border border-blue-400/30 shadow-xs text-white">
-                <div className="w-4 h-4 rounded-xs border-2 border-white/90 flex items-center justify-center text-[9px] font-black">
-                  RH
-                </div>
-              </div>
-
-              <div className="text-left leading-tight">
-                <div className="text-[9.5px] font-bold tracking-wider text-neutral-200 uppercase">
-                  LEMBAGA PENDIDIKAN ISLAM
-                </div>
-                <div className="text-[9.5px] font-semibold tracking-wider text-neutral-400 uppercase">
-                  MAS RAUDLATUL HIDAYAH
-                </div>
-              </div>
             </div>
           </footer>
         </div>
