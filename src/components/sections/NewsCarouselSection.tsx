@@ -160,102 +160,100 @@ export function NewsCarouselSection() {
   return (
     <section className="py-20 sm:py-28 bg-[#fbfbfa] relative border-b border-slate-200/80 overflow-hidden" id="agenda">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Section Header with Navigation Controls */}
-        <div className="mb-10 sm:mb-12 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-          <div>
-            <div className="mb-1.5">
-              <h2 className="font-serif text-[28px] sm:text-[38px] font-bold text-slate-900 tracking-tight leading-tight">
-                Berita &amp; Agenda
-              </h2>
-            </div>
-            <p className="font-sans text-[13.5px] text-slate-700 tracking-wide font-medium mt-1">
-              Pusat informasi, warta prestasi, dan kabar kegiatan terbaru seputar MA Raudlatul Hidayah
-            </p>
-          </div>
-
-          {/* Slider Prev & Next Buttons */}
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => scroll('left')}
-              disabled={!canScrollLeft}
-              className="p-2.5 rounded-full border border-slate-200 bg-white hover:bg-slate-50 disabled:opacity-30 disabled:hover:bg-white text-slate-700 hover:text-blue-700 transition-all shadow-2xs active:scale-95"
-              aria-label="Geser ke Berita Sebelumnya"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button
-              type="button"
-              onClick={() => scroll('right')}
-              disabled={!canScrollRight}
-              className="p-2.5 rounded-full border border-slate-200 bg-white hover:bg-slate-50 disabled:opacity-30 disabled:hover:bg-white text-slate-700 hover:text-blue-700 transition-all shadow-2xs active:scale-95"
-              aria-label="Geser ke Berita Berikutnya"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-          </div>
+        {/* Section Header Centered like Reference SS 2 */}
+        <div className="mb-10 sm:mb-12 text-center max-w-3xl mx-auto">
+          <h2 className="font-display text-[28px] sm:text-[38px] font-bold text-slate-900 tracking-tight leading-tight">
+            Berita &amp; Informasi
+          </h2>
+          <p className="font-sans text-[14px] sm:text-[16px] text-slate-600 font-normal mt-2.5 leading-relaxed">
+            Ikuti kabar perkembangan aktivitas terbaru dan prestasi madrasah kami
+          </p>
         </div>
 
-        {/* Slidable News Cards Track (Scrollable & Draggable like Reference Image 1) */}
-        <div
-          ref={scrollRef}
-          onScroll={checkScroll}
-          onMouseDown={handleMouseDown}
-          onMouseLeave={handleMouseLeave}
-          onMouseUp={handleMouseUp}
-          onMouseMove={handleMouseMove}
-          className={`flex gap-6 overflow-x-auto scrollbar-none scroll-smooth snap-x snap-mandatory py-4 px-1 cursor-grab active:cursor-grabbing select-none`}
-          style={{ WebkitOverflowScrolling: 'touch' }}
-        >
-          {items.map((item) => (
-            <div
-              key={item.id}
-              className="w-[300px] sm:w-[350px] lg:w-[370px] shrink-0 snap-start flex flex-col"
-            >
-              <Link
-                href={item.href}
-                onClick={(e) => {
-                  if (hasDragged) e.preventDefault();
-                }}
-                className="bg-white rounded-2xl border border-slate-200/90 shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] hover:-translate-y-1.5 transition-all duration-300 flex flex-col h-full overflow-hidden group"
+        {/* Slidable News Cards Track (Scrollable & Draggable like Reference Image) */}
+        <div className="relative group/carousel">
+          {/* Floating Slider Prev Button */}
+          <button
+            type="button"
+            onClick={() => scroll('left')}
+            disabled={!canScrollLeft}
+            className="absolute left-1 sm:left-2 top-1/2 -translate-y-1/2 z-20 p-2.5 sm:p-3 rounded-full border border-slate-200 bg-white/95 hover:bg-white text-slate-700 hover:text-blue-700 shadow-md transition-all active:scale-95 disabled:opacity-0 disabled:pointer-events-none hidden sm:flex items-center justify-center cursor-pointer"
+            aria-label="Geser ke Berita Sebelumnya"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+
+          <div
+            ref={scrollRef}
+            onScroll={checkScroll}
+            onMouseDown={handleMouseDown}
+            onMouseLeave={handleMouseLeave}
+            onMouseUp={handleMouseUp}
+            onMouseMove={handleMouseMove}
+            className={`flex gap-6 overflow-x-auto scrollbar-none scroll-smooth snap-x snap-mandatory py-4 px-1 cursor-grab active:cursor-grabbing select-none`}
+            style={{ WebkitOverflowScrolling: 'touch' }}
+          >
+            {items.map((item) => (
+              <div
+                key={item.id}
+                className="w-[300px] sm:w-[350px] lg:w-[370px] shrink-0 snap-start flex flex-col"
               >
-                {/* Photo Header (Aspect Ratio 16:10 with smooth zoom) */}
-                <div className="relative overflow-hidden bg-slate-100 aspect-[16/10] w-full shrink-0">
-                  <Image
-                    src={item.image}
-                    alt={item.title}
-                    fill
-                    sizes="(max-width: 640px) 300px, (max-width: 1024px) 350px, 370px"
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
-
-                {/* Card Body (Calendar Icon + Date, Bold Sans-serif Title, Excerpt - Exactly as Reference 1) */}
-                <div className="p-5 sm:p-6 flex flex-col flex-1 justify-between bg-white">
-                  <div>
-                    {/* Date with Calendar Icon */}
-                    <div className="flex items-center gap-2 text-slate-700 mb-2.5">
-                      <Calendar className="w-4 h-4 text-slate-700 shrink-0" />
-                      <span className="font-sans text-[12.5px] font-semibold text-slate-700 tracking-wide">
-                        {item.date}
-                      </span>
-                    </div>
-
-                    {/* Bold Sans-Serif Title (Matching Image 1) */}
-                    <h3 className="font-sans font-bold text-[16.5px] sm:text-[18px] text-slate-900 group-hover:text-blue-700 transition-colors line-clamp-3 leading-snug">
-                      {item.title}
-                    </h3>
-
-                    {/* Excerpt Snippet (Matching Image 1) */}
-                    <p className="font-sans text-[13px] sm:text-[13.5px] text-slate-700 leading-relaxed line-clamp-3 mt-2.5">
-                      {item.excerpt}
-                    </p>
+                <Link
+                  href={item.href}
+                  onClick={(e) => {
+                    if (hasDragged) e.preventDefault();
+                  }}
+                  className="bg-white rounded-2xl border border-slate-200/90 shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] hover:-translate-y-1.5 transition-all duration-300 flex flex-col h-full overflow-hidden group"
+                >
+                  {/* Photo Header (Aspect Ratio 16:10 with smooth zoom) */}
+                  <div className="relative overflow-hidden bg-slate-100 aspect-[16/10] w-full shrink-0">
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      fill
+                      sizes="(max-width: 640px) 300px, (max-width: 1024px) 350px, 370px"
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
-                </div>
-              </Link>
-            </div>
-          ))}
+
+                  {/* Card Body (Calendar Icon + Date, Bold Sans-serif Title, Excerpt - Exactly as Reference 1) */}
+                  <div className="p-5 sm:p-6 flex flex-col flex-1 justify-between bg-white">
+                    <div>
+                      {/* Date with Calendar Icon */}
+                      <div className="flex items-center gap-2 text-slate-700 mb-2.5">
+                        <Calendar className="w-4 h-4 text-slate-700 shrink-0" />
+                        <span className="font-sans text-[12.5px] font-semibold text-slate-700 tracking-wide">
+                          {item.date}
+                        </span>
+                      </div>
+
+                      {/* Bold Sans-Serif Title (Matching Image 1) */}
+                      <h3 className="font-sans font-bold text-[16.5px] sm:text-[18px] text-slate-900 group-hover:text-blue-700 transition-colors line-clamp-3 leading-snug">
+                        {item.title}
+                      </h3>
+
+                      {/* Excerpt Snippet (Matching Image 1) */}
+                      <p className="font-sans text-[13px] sm:text-[13.5px] text-slate-700 leading-relaxed line-clamp-3 mt-2.5">
+                        {item.excerpt}
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            ))}
+          </div>
+
+          {/* Floating Slider Next Button */}
+          <button
+            type="button"
+            onClick={() => scroll('right')}
+            disabled={!canScrollRight}
+            className="absolute right-1 sm:right-2 top-1/2 -translate-y-1/2 z-20 p-2.5 sm:p-3 rounded-full border border-slate-200 bg-white/95 hover:bg-white text-slate-700 hover:text-blue-700 shadow-md transition-all active:scale-95 disabled:opacity-0 disabled:pointer-events-none hidden sm:flex items-center justify-center cursor-pointer"
+            aria-label="Geser ke Berita Berikutnya"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
         </div>
 
         {/* Bottom Pill CTA Button: "Lihat Semua Berita ->" (Matching Image 1) */}
