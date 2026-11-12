@@ -13,7 +13,6 @@ import {
   Phone,
   Menu,
   X,
-  LogIn,
   ArrowRight,
   ChevronDown,
   ChevronRight,
@@ -380,109 +379,16 @@ export function StitchNavbar() {
             </Link>
           </div>
 
-          {/* Footer Drawer (Persis SS 1: Portal Akademik di kiri, Hubungi Sekolah di kanan, plus tombol PPDB & WA) */}
-          <div className="mt-auto border-t border-slate-100 p-4 space-y-3 bg-slate-50/60 shrink-0 font-sans">
-            <div className="flex items-center justify-between px-1">
-              <Link
-                href="/masuk"
-                onClick={handleNavClick}
-                className="inline-flex items-center gap-2 text-slate-800 font-bold text-[13px] hover:text-[#1e3a8a] transition-colors"
-              >
-                <LogIn className="w-4 h-4 text-slate-600 shrink-0" />
-                <span>Portal Akademik (Admin)</span>
-              </Link>
-              <Link
-                href="/kontak"
-                onClick={handleNavClick}
-                className="inline-flex items-center gap-1.5 text-[#1e3a8a] font-bold text-[13px] hover:underline transition-colors"
-              >
-                <span>Hubungi Sekolah</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-
-            {/* Kanal Resmi Medsos (Mobile Drawer Sesuai Contoh SS 2) */}
-            <div className="flex items-center justify-between px-3.5 py-2.5 bg-slate-100/90 rounded-2xl border border-slate-200/80">
-              <span className="text-[12.5px] font-bold text-slate-800 tracking-wide">
-                Kanal Resmi:
-              </span>
-              <div className="flex items-center gap-2">
-                {/* YouTube */}
-                <a
-                  href="https://www.youtube.com/@ma_raudlatulhidayah"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-8 h-8 rounded-full bg-white hover:bg-red-50 text-slate-700 hover:text-red-500 border border-slate-200 flex items-center justify-center transition-all shadow-2xs active:scale-95"
-                  aria-label="YouTube Resmi"
-                >
-                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.5 12 3.5 12 3.5s-7.505 0-9.377.55a3.016 3.016 0 0 0-2.122 2.136C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.55 9.376.55 9.376.55s7.505 0 9.377-.55a3.016 3.016 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                  </svg>
-                </a>
-                {/* WhatsApp */}
-                <a
-                  href={`https://wa.me/${navProfile.whatsapp || '628176614723'}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-8 h-8 rounded-full bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-600 border border-slate-200 flex items-center justify-center transition-all shadow-2xs active:scale-95"
-                  aria-label="WhatsApp Resmi"
-                >
-                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                    <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.969.54 1.777.784 2.791.784 3.181 0 5.767-2.587 5.768-5.766.001-3.181-2.585-5.77-5.768-5.77zm3.377 8.215c-.145.408-.838.777-1.157.828-.319.052-.734.075-2.383-.605-1.986-.818-3.256-2.839-3.355-2.971-.099-.133-.805-1.072-.805-2.046 0-.974.509-1.453.69-1.649.182-.196.398-.245.53-.245s.266.005.383.011c.124.006.29-.047.453.346.166.399.566 1.383.616 1.483.05.1.083.217.017.35-.067.133-.1.217-.199.333-.1.117-.209.261-.299.35-.1.1-.205.209-.089.408.117.2 0.518.855 1.11 1.382.763.679 1.405.889 1.605.989.2.1.317.083.433-.05.117-.133.5-.583.633-.783.133-.2.267-.167.45-.1.183.067 1.166.55 1.366.65.2.1.333.15.383.233.05.083.05.483-.095.891z"/>
-                    <path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.98-1.393A9.953 9.953 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18.2a8.167 8.167 0 0 1-4.223-1.167l-.303-.18-3.132.875.836-3.05-.198-.315A8.166 8.166 0 0 1 3.8 12c0-4.522 3.678-8.2 8.2-8.2s8.2 3.678 8.2 8.2-3.678 8.2-8.2 8.2z" />
-                  </svg>
-                </a>
-                {/* Instagram */}
-                <a
-                  href="https://www.instagram.com/ma_raudlatulhidayah/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-8 h-8 rounded-full bg-white hover:bg-pink-50 text-slate-700 hover:text-pink-600 border border-slate-200 flex items-center justify-center transition-all shadow-2xs active:scale-95"
-                  aria-label="Instagram Resmi"
-                >
-                  <Instagram className="w-4 h-4" />
-                </a>
-                {/* TikTok */}
-                <a
-                  href="https://www.tiktok.com/@ma_raudlatulhidayah"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-8 h-8 rounded-full bg-white hover:bg-slate-100 text-slate-700 hover:text-black border border-slate-200 flex items-center justify-center transition-all shadow-2xs active:scale-95"
-                  aria-label="TikTok Resmi"
-                >
-                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                    <path d="M19.589 6.686a4.793 4.793 0 0 1-3.77-4.245V2h-3.445v13.672a2.896 2.896 0 0 1-5.201 1.743l-.068-.1a2.89 2.89 0 0 1 2.373-4.537c.314 0 .618.05.903.144V9.414a6.334 6.334 0 0 0-.903-.065A6.334 6.334 0 0 0 3.144 15.68a6.334 6.334 0 0 0 6.334 6.334 6.334 6.334 0 0 0 6.334-6.334V8.583a8.17 8.17 0 0 0 4.777 1.549V6.686h-1Z" />
-                  </svg>
-                </a>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-2 pt-1">
-              <button
-                type="button"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  if (pathname === '/') {
-                    window.dispatchEvent(new CustomEvent('open-ppdb-registration'));
-                  } else {
-                    window.location.href = '/?ppdb=open#ppdb';
-                  }
-                }}
-                className="w-full py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-600 active:scale-[0.98] text-slate-950 font-bold text-[13.5px] flex items-center justify-center gap-2 shadow-2xs transition-all cursor-pointer"
-              >
-                <span>Daftar Calon Santri (PPDB Online)</span>
-              </button>
-
-              <a
-                href={`https://wa.me/${navProfile.whatsapp || '628176614723'}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full py-3 rounded-2xl bg-[#ea580c] hover:bg-[#c2410c] active:scale-[0.98] text-white font-bold text-[13.5px] flex items-center justify-center gap-2 shadow-2xs transition-all"
-              >
-                <Phone className="w-4 h-4" />
-                <span>Chat WhatsApp Resmi</span>
-              </a>
-            </div>
+          {/* Footer Drawer */}
+          <div className="mt-auto border-t border-slate-100 p-4 bg-slate-50/60 shrink-0 font-sans">
+            <Link
+              href="/kontak"
+              onClick={handleNavClick}
+              className="flex items-center justify-between px-2 py-1 text-[#1e3a8a] font-bold text-[13px] hover:underline transition-colors"
+            >
+              <span>Hubungi Sekolah</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
         </div>
       )}
