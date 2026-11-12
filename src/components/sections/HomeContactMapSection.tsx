@@ -132,10 +132,9 @@ export function HomeContactMapSection() {
             <div>
               {/* Header Bagian */}
               <div className="mb-8">
-                <h2 className="font-serif text-[30px] sm:text-[38px] font-bold text-slate-900 tracking-tight leading-tight">
+                <h2 className="font-serif text-[30px] sm:text-[38px] font-bold text-slate-900 tracking-tight leading-tight mb-2.5">
                   {profile.contactTitle}
                 </h2>
-                <div className="w-12 h-1 bg-amber-400 rounded-full mt-2 mb-3" />
                 <p className="font-sans text-[14.5px] sm:text-[15.5px] text-slate-600 leading-relaxed max-w-xl">
                   {profile.contactSubtitle}
                 </p>

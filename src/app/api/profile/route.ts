@@ -79,6 +79,9 @@ export async function GET() {
       if (data.homepage && (!data.homepage.ctaLink || data.homepage.ctaLink === '/profil/visi-misi')) {
         data.homepage.ctaLink = '/profil/sejarah';
       }
+      if (data.homepage && (!data.homepage.teachersSectionTitle || data.homepage.teachersSectionTitle === 'Guru')) {
+        data.homepage.teachersSectionTitle = 'Tenaga Pendidik';
+      }
     }
   } catch (err) {
     console.warn('Notice: SYS_HOME read:', err);
