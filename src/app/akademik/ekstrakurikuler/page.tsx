@@ -14,7 +14,6 @@ import { StitchFooter } from '@/components/layout/StitchFooter';
 import defaultEkskuls from '@/data/extracurricularsData.json';
 
 export default function EkstrakurikulerPage() {
-  const [activeFilter, setActiveFilter] = useState('all');
   const [ekskulList, setEkskulList] = useState(defaultEkskuls);
 
   useEffect(() => {
@@ -34,97 +33,32 @@ export default function EkstrakurikulerPage() {
     loadLiveEkskuls();
   }, []);
 
-  const filteredEkskul =
-    activeFilter === 'all'
-      ? ekskulList
-      : ekskulList.filter((item) => item.category === activeFilter);
-
   return (
     <div className="min-h-[100dvh] flex flex-col bg-background font-sans text-on-surface">
       <StitchNavbar />
 
       <main className="w-full pt-20 bg-background flex-grow">
-        <section className="w-full py-12 sm:py-20 bg-[#fbfbfa]">
+        <section className="w-full py-12 sm:py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Header Toolbar: Title & Statistics Counter */}
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-10 pb-8 border-b border-slate-200/80">
-              <div>
-                <h1 className="font-serif text-[28px] sm:text-[38px] font-bold text-slate-900 tracking-tight leading-tight">
-                  Ekstrakurikuler
-                </h1>
-                <p className="font-sans text-[14.5px] sm:text-[15.5px] text-slate-600 max-w-xl leading-relaxed">
-                  Wadah pembinaan karakter, kepemimpinan regu, kebugaran jasmani, kedisiplinan bela negara, dan kreativitas seni bagi seluruh santri MA Raudlatul Hidayah.
-                </p>
-                <div className="mt-4">
-                  <Link
-                    href="/akademik/foto-juara"
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl text-[12.5px] font-bold transition-all shadow-xs hover:shadow-md cursor-pointer group"
-                  >
-                    <Trophy className="w-4 h-4 text-slate-950" />
-                    <span>Lihat Galeri Prestasi Siswa</span>
-                    <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                  </Link>
-                </div>
-              </div>
+            {/* Header Toolbar: Title & Link to Prestasi */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10 pb-6 border-b border-slate-200/80">
+              <h1 className="font-serif text-[28px] sm:text-[38px] font-bold text-slate-900 tracking-tight leading-tight">
+                Ekstrakurikuler
+              </h1>
 
-              {/* Statistics Counter */}
-              <div className="flex items-center gap-5 sm:gap-6 bg-white p-3.5 sm:p-4 rounded-2xl shadow-2xs border border-slate-200/90 shrink-0">
-                <div className="flex flex-col">
-                  <span className="font-serif text-[24px] font-bold text-blue-700 leading-none mb-1">
-                    9
-                  </span>
-                  <span className="font-sans text-[11.5px] text-slate-500 font-medium">
-                    Cabang Aktif
-                  </span>
-                </div>
-                <div className="w-px h-8 bg-slate-200" />
-                <div className="flex flex-col">
-                  <span className="font-serif text-[24px] font-bold text-amber-600 leading-none mb-1">
-                    100%
-                  </span>
-                  <span className="font-sans text-[11.5px] text-slate-500 font-medium">
-                    Bimbingan Guru
-                  </span>
-                </div>
-                <div className="w-px h-8 bg-slate-200" />
-                <div className="flex flex-col">
-                  <span className="font-serif text-[24px] font-bold text-slate-900 leading-none mb-1">
-                    3
-                  </span>
-                  <span className="font-sans text-[11.5px] text-slate-500 font-medium">
-                    Fasilitas Olahraga
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Filter Tabs */}
-            <div className="flex flex-wrap items-center gap-2 mb-10">
-              {[
-                { id: 'all', label: 'Semua Ekstrakurikuler' },
-                { id: 'belanegara', label: 'Wajib & Bela Negara' },
-                { id: 'olahraga', label: 'Olahraga' },
-                { id: 'seni', label: 'Kesenian & Budaya' },
-                { id: 'literasi', label: 'Literasi & Jurnalistik' },
-              ].map((filterTab) => (
-                <button
-                  key={filterTab.id}
-                  onClick={() => setActiveFilter(filterTab.id)}
-                  type="button"
-                  className={`px-4 py-2 rounded-full text-[13px] font-medium transition-all duration-150 active:scale-95 ${
-                    activeFilter === filterTab.id
-                      ? 'bg-blue-700 text-white shadow-xs font-semibold ring-2 ring-amber-400/60'
-                      : 'bg-white text-slate-600 hover:text-slate-950 hover:bg-slate-100 border border-slate-200'
-                  }`}
-                >
-                  {filterTab.label}
-                </button>
-              ))}
+              <Link
+                href="/akademik/foto-juara"
+                className="inline-flex items-center gap-2 px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl text-[12.5px] font-bold transition-all shadow-xs hover:shadow-md cursor-pointer group shrink-0"
+              >
+                <Trophy className="w-4 h-4 text-slate-950" />
+                <span>Lihat Galeri Prestasi Siswa</span>
+                <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </Link>
             </div>
 
             {/* Extracurricular Cards Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredEkskul.map((ekskul) => (
+              {ekskulList.map((ekskul) => (
                 <div
                   key={ekskul.id}
                   className="group bg-white rounded-2xl overflow-hidden shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col border border-slate-200/90 hover:-translate-y-1"
