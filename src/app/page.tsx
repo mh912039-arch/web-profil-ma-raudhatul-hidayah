@@ -51,7 +51,7 @@ const defaultHomeConfig = {
   sambutanText1: 'Bismillah walhamdulillah. Assalamu’alaikum Warahmatullahi Wabarakatuh. Selamat datang di portal resmi MA Raudlatul Hidayah jenjang Madrasah Aliyah (MA). Kami meyakini bahwa pendidikan sejati tidak hanya mengasah kecerdasan kognitif, tetapi juga merawat adab, keteguhan akidah, serta budi pekerti luhur sejak usia transisi remaja.',
   sambutanText2: 'Melalui integrasi Kurikulum Merdeka yang kontekstual dan kultur pembiasaan Islami, kami berikhtiar membimbing seluruh santri agar aktif bernalar, mencintai ilmu pengetahuan, dan terlatih hidup berdisiplin dalam lingkungan yang aman, ramah anak, serta penuh kehangatan persaudaraan.',
   ctaText: 'Pelajari Profil & Budaya Sekolah',
-  ctaLink: '/profil/visi-misi',
+  ctaLink: '/profil/sejarah',
   stat1Value: '152',
   stat1Label: 'Santri Aktif MA',
   stat2Value: '22',
@@ -271,7 +271,7 @@ export default function HomePage() {
 
                 <div className="pt-2">
                   <Link
-                    href={home.ctaLink || '/profil/visi-misi'}
+                    href={home.ctaLink && home.ctaLink !== '/profil/visi-misi' ? home.ctaLink : '/profil/sejarah'}
                     className="inline-flex items-center gap-2.5 px-6 py-3 rounded-full bg-slate-900 hover:bg-blue-600 text-white text-[13px] font-bold uppercase tracking-wider transition-all duration-200 active:scale-[0.98] group shadow-sm"
                   >
                     <span>{home.ctaText || 'Pelajari Profil & Budaya Sekolah'}</span>

@@ -76,6 +76,9 @@ export async function GET() {
       if (parsedHome && typeof parsedHome === 'object') {
         data.homepage = { ...(data.homepage || {}), ...parsedHome };
       }
+      if (data.homepage && (!data.homepage.ctaLink || data.homepage.ctaLink === '/profil/visi-misi')) {
+        data.homepage.ctaLink = '/profil/sejarah';
+      }
     }
   } catch (err) {
     console.warn('Notice: SYS_HOME read:', err);
