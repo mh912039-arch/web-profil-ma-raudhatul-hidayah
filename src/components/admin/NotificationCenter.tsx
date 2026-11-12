@@ -40,7 +40,7 @@ interface NotificationCenterProps {
 const CATEGORY_STYLES: Record<string, { label: string; badge: string }> = {
   ujian: { label: 'Ujian', badge: 'bg-blue-50 text-blue-700 border-blue-200' },
   kegiatan: { label: 'Kegiatan Belajar', badge: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-  libur: { label: 'Libur Semester', badge: 'bg-rose-50 text-rose-700 border-rose-200' },
+  libur: { label: 'Libur Sekolah', badge: 'bg-rose-50 text-rose-700 border-rose-200' },
   ppdb: { label: 'Agenda PPDB', badge: 'bg-amber-50 text-amber-800 border-amber-200' },
 };
 

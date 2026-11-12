@@ -52,11 +52,11 @@ const defaultEvents: AcademicEvent[] = [
   },
   {
     id: 'ev-4',
-    title: 'Pembagian Rapor & Libur Semester Ganjil',
+    title: 'Pembagian Rapor & Libur Sekolah Ganjil',
     date_range: '19 Desember 2026 – 2 Januari 2027',
     semester: 'Semester Ganjil',
     category: 'libur',
-    description: 'Penyerahan laporan hasil belajar santri kepada wali murid dilanjutkan libur semester.',
+    description: 'Penyerahan laporan hasil belajar santri kepada wali murid dilanjutkan libur sekolah.',
   },
   {
     id: 'ev-5',
@@ -246,7 +246,7 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
           <p className="text-sm text-slate-600 mt-1">
             {readOnly
               ? 'Agenda penting tahun ajaran aktif dan jadwal kegiatan akademik madrasah.'
-              : 'Kelola agenda tahun ajaran aktif, jadwal ujian CBT/PAS, libur semester, dan agenda PPDB.'}
+              : 'Kelola agenda tahun ajaran aktif, jadwal ujian CBT/PAS, libur sekolah, dan agenda PPDB.'}
           </p>
         </div>
 
@@ -275,7 +275,7 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
             { id: 'all', label: 'Semua Agenda' },
             { id: 'ujian', label: 'Ujian' },
             { id: 'kegiatan', label: 'Kegiatan Belajar' },
-            { id: 'libur', label: 'Libur Semester' },
+            { id: 'libur', label: 'Libur Sekolah' },
             { id: 'ppdb', label: 'Agenda PPDB' },
           ].map((cat) => (
             <button
@@ -328,7 +328,7 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
             const categoryLabels = {
               ujian: 'Ujian',
               kegiatan: 'Kegiatan Belajar',
-              libur: 'Libur Semester',
+              libur: 'Libur Sekolah',
               ppdb: 'Agenda PPDB',
             }[event.category] || event.category;
 
@@ -474,7 +474,7 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
                   >
                     <option value="ujian">Ujian</option>
                     <option value="kegiatan">Kegiatan Belajar</option>
-                    <option value="libur">Libur Semester</option>
+                    <option value="libur">Libur Sekolah</option>
                     <option value="ppdb">Agenda PPDB</option>
                   </select>
                 </div>

@@ -36,7 +36,7 @@ const tabTitles: Record<AdminTab, { title: string; subtitle: string }> = {
   },
   calendar: {
     title: 'Kalender Akademik',
-    subtitle: 'Agenda tahun ajaran aktif, jadwal ujian CBT/PAS, libur semester, dan agenda PPDB',
+    subtitle: 'Agenda tahun ajaran aktif, jadwal ujian CBT/PAS, libur sekolah, dan agenda PPDB',
   },
   users: {
     title: 'Direktori Pengguna',
