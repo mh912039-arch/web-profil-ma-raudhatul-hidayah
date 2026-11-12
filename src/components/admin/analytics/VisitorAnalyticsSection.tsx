@@ -179,13 +179,25 @@ export const VisitorAnalyticsSection: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-2 self-start sm:self-auto">
+        <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+          {/* Reset Metrics button */}
+          <button
+            type="button"
+            onClick={() => setIsResetModalOpen(true)}
+            disabled={isLoading || isResetting}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 hover:text-rose-800 text-[12px] font-semibold border border-rose-200 transition-all active:scale-95 disabled:opacity-60 cursor-pointer"
+            title="Reset seluruh statistik kunjungan kembali menjadi 0"
+          >
+            <RotateCcw className={`w-3.5 h-3.5 text-rose-600 ${isResetting ? 'animate-spin' : ''}`} />
+            <span>{isResetting ? 'Mereset...' : 'Reset Metrik (0)'}</span>
+          </button>
+
           {/* Simulation button for testing */}
           <button
             type="button"
             onClick={handleSimulateVisit}
             disabled={isSimulating}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[12px] font-semibold border border-slate-300/80 transition-all active:scale-95 disabled:opacity-60"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[12px] font-semibold border border-slate-300/80 transition-all active:scale-95 disabled:opacity-60 cursor-pointer"
             title="Kirim 1 hit kunjungan uji coba untuk memverifikasi pergerakan grafik"
           >
             <Radio className={`w-3.5 h-3.5 text-blue-600 ${isSimulating ? 'animate-pulse' : ''}`} />
@@ -197,7 +209,7 @@ export const VisitorAnalyticsSection: React.FC = () => {
             type="button"
             onClick={fetchMetrics}
             disabled={isLoading}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-[12px] font-semibold border border-slate-200 shadow-2xs transition-all active:scale-95 disabled:opacity-60"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-[12px] font-semibold border border-slate-200 shadow-2xs transition-all active:scale-95 disabled:opacity-60 cursor-pointer"
           >
             <RefreshCw className={`w-3.5 h-3.5 text-slate-500 ${isLoading ? 'animate-spin' : ''}`} />
             <span>Segarkan</span>
@@ -433,6 +445,20 @@ export const VisitorAnalyticsSection: React.FC = () => {
         </div>
 
       </div>
+
+      {/* Modal Konfirmasi Reset Metrik */}
+      <ConfirmDeleteModal
+        isOpen={isResetModalOpen}
+        onClose={() => !isResetting && setIsResetModalOpen(false)}
+        onConfirm={handleResetMetrics}
+        title="Reset Statistik Kunjungan"
+        description="Apakah Anda yakin ingin mereset seluruh data metrik dan riwayat kunjungan website kembali menjadi 0? Tindakan ini akan mengosongkan total akumulasi, grafik distribusi, tren mingguan, dan riwayat hit halaman."
+        itemName="Seluruh Data Kunjungan Website"
+        itemType="Statistik Kunjungan"
+        confirmLabel="Ya, Reset Menjadi 0"
+        cancelLabel="Batal"
+        isLoading={isResetting}
+      />
     </div>
   );
 };
