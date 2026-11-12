@@ -20,6 +20,7 @@ import {
   Archive,
   RefreshCw,
 } from 'lucide-react';
+import { ConfirmDeleteModal } from '../ConfirmDeleteModal';
 
 export interface ContactMessage {
   id: string;
@@ -53,6 +54,8 @@ export const MessagesTab: React.FC<MessagesTabProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'unread' | 'read' | 'replied'>('all');
   const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<ContactMessage | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newMsgForm, setNewMsgForm] = useState({
     name: '',
@@ -119,6 +122,22 @@ export const MessagesTab: React.FC<MessagesTabProps> = ({
         setSelectedMessage({ ...selectedMessage, status: newStatus });
       }
     } catch {}
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
+    try {
+      await onDeleteMessage(deleteTarget.id);
+      if (selectedMessage?.id === deleteTarget.id) {
+        setSelectedMessage(null);
+      }
+      setDeleteTarget(null);
+    } catch (err) {
+      console.error('Failed to delete message:', err);
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const getStatusBadge = (status: ContactMessage['status']) => {
@@ -285,11 +304,9 @@ export const MessagesTab: React.FC<MessagesTabProps> = ({
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      if (confirm(`Hapus pesan dari "${msg.name}"?`)) {
-                        onDeleteMessage(msg.id);
-                      }
+                      setDeleteTarget(msg);
                     }}
-                    className="p-1 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                    className="p-1 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
                     title="Hapus pesan"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -488,14 +505,8 @@ export const MessagesTab: React.FC<MessagesTabProps> = ({
             <div className="flex items-center justify-between pt-4 border-t border-slate-100">
               <button
                 type="button"
-                onClick={() => {
-                  if (confirm(`Hapus pesan dari "${selectedMessage.name}"?`)) {
-                    const targetId = selectedMessage.id;
-                    setSelectedMessage(null);
-                    onDeleteMessage(targetId);
-                  }
-                }}
-                className="inline-flex items-center gap-1 px-3 py-2 rounded-xl text-rose-600 hover:bg-rose-50 text-xs font-bold transition-colors"
+                onClick={() => setDeleteTarget(selectedMessage)}
+                className="inline-flex items-center gap-1 px-3 py-2 rounded-xl text-rose-600 hover:bg-rose-50 text-xs font-bold transition-colors cursor-pointer"
               >
                 <Trash2 className="w-3.5 h-3.5" />
                 <span>Hapus Pesan</span>
@@ -529,6 +540,18 @@ export const MessagesTab: React.FC<MessagesTabProps> = ({
           </div>
         </div>
       )}
+
+      {/* Modal Konfirmasi Hapus Elegan (Bottom Sheet di HP, Modal di Desktop) */}
+      <ConfirmDeleteModal
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+        title="Hapus Pesan Aspirasi"
+        description="Apakah Anda yakin ingin menghapus pesan ini? Pesan buku tamu akan dihapus permanen dari sistem."
+        itemName={deleteTarget ? `Pesan dari "${deleteTarget.name}" (${deleteTarget.subject || 'Tanpa Subjek'})` : undefined}
+        itemType="Buku Tamu / Aspirasi"
+        isLoading={isDeleting}
+      />
     </div>
   );
 };

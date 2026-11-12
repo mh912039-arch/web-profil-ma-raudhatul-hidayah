@@ -18,6 +18,7 @@ import {
   ImageIcon,
   Loader2,
 } from 'lucide-react';
+import { ConfirmDeleteModal } from '../ConfirmDeleteModal';
 
 // Compresses an image File to strictly below 100KB using HTML5 Canvas
 async function compressImageUnder100KB(file: File): Promise<{ blob: Blob; base64: string; sizeKb: number }> {
@@ -132,6 +133,8 @@ export const ArticlesTab: React.FC<ArticlesTabProps> = ({
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingArticle, setEditingArticle] = useState<ArticleRecord | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<ArticleRecord | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [isCompressing, setIsCompressing] = useState(false);
   const [compressionStatus, setCompressionStatus] = useState<string | null>(null);
 
@@ -249,6 +252,20 @@ export const ArticlesTab: React.FC<ArticlesTabProps> = ({
     }));
   };
 
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
+    try {
+      await onDeleteArticle(deleteTarget.id || '', deleteTarget.slug || '');
+      setDeleteTarget(null);
+    } catch (err) {
+      console.error('Failed to delete article:', err);
+      alert('Gagal menghapus artikel berita.');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     await onSaveArticle(formData);
@@ -350,11 +367,7 @@ export const ArticlesTab: React.FC<ArticlesTabProps> = ({
                 </button>
                 <button
                   type="button"
-                  onClick={() => {
-                    if (confirm(`Hapus artikel "${art.title}"?`)) {
-                      onDeleteArticle(art.id || '', art.slug || '');
-                    }
-                  }}
+                  onClick={() => setDeleteTarget(art)}
                   className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
                   title="Hapus artikel"
                 >
@@ -568,6 +581,18 @@ export const ArticlesTab: React.FC<ArticlesTabProps> = ({
           </div>
         </div>
       )}
+
+      {/* Modal Konfirmasi Hapus Elegan (Bottom Sheet di HP, Modal di Desktop) */}
+      <ConfirmDeleteModal
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+        title="Hapus Berita / Warta"
+        description="Apakah Anda yakin ingin menghapus warta berita ini? Artikel akan dihapus permanen dari publikasi website madrasah."
+        itemName={deleteTarget?.title}
+        itemType="Warta Berita"
+        isLoading={isDeleting}
+      />
     </div>
   );
 };

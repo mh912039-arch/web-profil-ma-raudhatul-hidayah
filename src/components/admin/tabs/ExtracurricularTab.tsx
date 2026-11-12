@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { TeacherRecord } from './TeachersTab';
 import { ExtracurricularItem } from '@/app/api/extracurriculars/route';
+import { ConfirmDeleteModal } from '../ConfirmDeleteModal';
 
 interface ExtracurricularTabProps {
   teachers?: TeacherRecord[];
@@ -35,6 +36,8 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<ExtracurricularItem | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: number | string; name: string } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCompressing, setIsCompressing] = useState(false);
   const [compressionStatus, setCompressionStatus] = useState<string | null>(null);
@@ -118,27 +121,28 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id: number | string, name: string) => {
-    const isConfirmed = window.confirm(
-      `Apakah Anda yakin ingin menghapus ekstrakurikuler "${name}"? Tindakan ini akan menghapus data secara permanen dari database.`
-    );
-    if (!isConfirmed) return;
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
 
     try {
-      const res = await fetch(`/api/extracurriculars?id=${encodeURIComponent(String(id))}`, {
+      const res = await fetch(`/api/extracurriculars?id=${encodeURIComponent(String(deleteTarget.id))}`, {
         method: 'DELETE',
       });
       const resJson = await res.json().catch(() => null);
 
       if (res.ok && (resJson?.success ?? true)) {
-        setItems((prev) => prev.filter((i) => String(i.id) !== String(id)));
-        triggerToast('success', `Ekstrakurikuler "${name}" berhasil dihapus.`);
+        setItems((prev) => prev.filter((i) => String(i.id) !== String(deleteTarget.id)));
+        triggerToast('success', `Ekstrakurikuler "${deleteTarget.name}" berhasil dihapus.`);
+        setDeleteTarget(null);
       } else {
         triggerToast('error', resJson?.message || 'Gagal menghapus ekstrakurikuler.');
       }
     } catch (err) {
       console.error('Failed to delete extracurricular:', err);
       triggerToast('error', 'Gagal menghubungi server untuk menghapus.');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -443,7 +447,7 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
 
                     <button
                       type="button"
-                      onClick={() => handleDelete(ekskul.id, ekskul.name)}
+                      onClick={() => setDeleteTarget({ id: ekskul.id, name: ekskul.name })}
                       className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 text-xs font-semibold transition-colors cursor-pointer"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -696,6 +700,18 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
           </div>
         </div>
       )}
+
+      {/* Modal Konfirmasi Hapus Elegan (Bottom Sheet di HP, Modal di Desktop) */}
+      <ConfirmDeleteModal
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+        title="Hapus Ekstrakurikuler"
+        description="Apakah Anda yakin ingin menghapus kegiatan ekstrakurikuler ini? Seluruh data kegiatan dan pembina terkait akan dihapus dari portal."
+        itemName={deleteTarget?.name}
+        itemType="Ekstrakurikuler"
+        isLoading={isDeleting}
+      />
     </div>
   );
 };

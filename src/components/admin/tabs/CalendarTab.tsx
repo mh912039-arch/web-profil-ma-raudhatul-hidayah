@@ -14,6 +14,7 @@ import {
   Layers,
   FileText,
 } from 'lucide-react';
+import { ConfirmDeleteModal } from '../ConfirmDeleteModal';
 
 export interface AcademicEvent {
   id: string;
@@ -103,6 +104,8 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingEvent, setEditingEvent] = useState<AcademicEvent | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<AcademicEvent | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<Partial<AcademicEvent>>({
     title: '',
@@ -158,15 +161,17 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (readOnly) return;
-    const confirmDelete = window.confirm('Apakah Anda yakin ingin menghapus agenda akademik ini?');
-    if (!confirmDelete) return;
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget || readOnly) return;
+    setIsDeleting(true);
 
     try {
-      const res = await fetch(`/api/calendar?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+      const res = await fetch(`/api/calendar?id=${encodeURIComponent(deleteTarget.id)}`, {
+        method: 'DELETE',
+      });
       if (res.ok) {
-        setEvents((prev) => prev.filter((e) => e.id !== id));
+        setEvents((prev) => prev.filter((e) => e.id !== deleteTarget.id));
+        setDeleteTarget(null);
       } else {
         const errJson = await res.json().catch(() => null);
         alert(errJson?.error || 'Gagal menghapus agenda.');
@@ -174,6 +179,8 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
     } catch (err) {
       console.error('Failed to delete event:', err);
       alert('Terjadi kesalahan jaringan.');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -365,7 +372,7 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
                       </button>
                       <button
                         type="button"
-                        onClick={() => handleDelete(event.id)}
+                        onClick={() => setDeleteTarget(event)}
                         className="p-2 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
                         title="Hapus Agenda"
                       >
@@ -506,6 +513,18 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
           </div>
         </div>
       )}
+
+      {/* Modal Konfirmasi Hapus Elegan (Bottom Sheet di HP, Modal di Desktop) */}
+      <ConfirmDeleteModal
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+        title="Hapus Agenda Akademik"
+        description="Apakah Anda yakin ingin menghapus agenda kegiatan ini? Agenda akan dihapus permanen dari kalender akademik madrasah."
+        itemName={deleteTarget?.title}
+        itemType="Kalender Akademik"
+        isLoading={isDeleting}
+      />
     </div>
   );
 };

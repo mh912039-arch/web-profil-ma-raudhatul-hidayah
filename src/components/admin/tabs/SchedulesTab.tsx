@@ -32,6 +32,7 @@ import {
 } from 'lucide-react';
 import { TeacherRecord } from './TeachersTab';
 import { compressImageBelow100Kb } from '@/lib/imageCompression';
+import { ConfirmDeleteModal } from '../ConfirmDeleteModal';
 
 export interface ScheduleItem {
   id: string;
@@ -286,6 +287,12 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
     day: 'Senin',
     sessions: [],
   });
+  const [deleteTarget, setDeleteTarget] = useState<{
+    type: 'photo' | 'schedule';
+    id?: string;
+    name?: string;
+  } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Fetch Schedules
@@ -649,17 +656,35 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
     }
   };
 
-  // Delete schedule photo
-  const handleDeletePhoto = async () => {
-    if (!confirm('Apakah Anda yakin ingin menghapus foto dokumen jadwal ini?')) return;
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
     try {
-      const res = await fetch('/api/schedules/photo', { method: 'DELETE' });
-      if (res.ok) {
-        setSchedulePhoto(null);
+      if (deleteTarget.type === 'photo') {
+        const res = await fetch('/api/schedules/photo', { method: 'DELETE' });
+        if (res.ok) {
+          setSchedulePhoto(null);
+        }
+      } else if (deleteTarget.id) {
+        const res = await fetch(`/api/schedules?id=${deleteTarget.id}`, { method: 'DELETE' });
+        if (res.ok) {
+          setSchedules((prev) => prev.filter((s) => s.id !== deleteTarget.id));
+        }
       }
+      setDeleteTarget(null);
     } catch (err) {
-      console.error('Failed to delete photo:', err);
+      console.error('Failed to delete schedule item:', err);
+    } finally {
+      setIsDeleting(false);
     }
+  };
+
+  // Delete schedule photo
+  const handleDeletePhoto = () => {
+    setDeleteTarget({
+      type: 'photo',
+      name: 'Foto Dokumen Cetak Jadwal Pelajaran',
+    });
   };
 
   const isSameRombel = (a?: string, b?: string): boolean => {
@@ -726,15 +751,22 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Apakah Anda yakin ingin menghapus jadwal mata pelajaran ini?')) return;
-    try {
-      const res = await fetch(`/api/schedules?id=${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        setSchedules((prev) => prev.filter((s) => s.id !== id));
-      }
-    } catch (err) {
-      console.error('Failed to delete schedule:', err);
+  const handleDelete = (item: ScheduleItem | string) => {
+    if (typeof item === 'string') {
+      const found = schedules.find((s) => s.id === item);
+      setDeleteTarget({
+        type: 'schedule',
+        id: item,
+        name: found
+          ? `${found.subject_name} (${found.class_rombel} · Hari ${found.day})`
+          : 'Jadwal Mata Pelajaran',
+      });
+    } else {
+      setDeleteTarget({
+        type: 'schedule',
+        id: item.id,
+        name: `${item.subject_name} (${item.class_rombel} · Hari ${item.day})`,
+      });
     }
   };
 
@@ -2447,6 +2479,22 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
           </div>
         </div>
       )}
+
+      {/* Modal Konfirmasi Hapus Elegan (Bottom Sheet di HP, Modal di Desktop) */}
+      <ConfirmDeleteModal
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+        title={deleteTarget?.type === 'photo' ? 'Hapus Foto Dokumen Jadwal' : 'Hapus Sesi Jadwal Pelajaran'}
+        description={
+          deleteTarget?.type === 'photo'
+            ? 'Apakah Anda yakin ingin menghapus foto dokumen cetak jadwal ini? Pengguna tidak akan dapat melihat arsip foto jadwal hingga diunggah kembali.'
+            : 'Apakah Anda yakin ingin menghapus sesi pelajaran ini? Jam mengajar terkait akan ditarik dari daftar harian rombel.'
+        }
+        itemName={deleteTarget?.name}
+        itemType={deleteTarget?.type === 'photo' ? 'Dokumen Jadwal' : 'Jadwal Pelajaran'}
+        isLoading={isDeleting}
+      />
     </div>
   );
 };

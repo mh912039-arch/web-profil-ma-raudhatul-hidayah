@@ -17,6 +17,7 @@ import {
   Building,
 } from 'lucide-react';
 import { TeacherRecord } from './TeachersTab';
+import { ConfirmDeleteModal } from '../ConfirmDeleteModal';
 
 export type ClassJenjang = 'sd' | 'smp' | 'sma';
 
@@ -187,6 +188,8 @@ export const ClassesTab: React.FC<ClassesTabProps> = ({
   const [selectedJenjang, setSelectedJenjang] = useState<'all' | ClassJenjang>('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<'add' | 'edit'>('add');
+  const [deleteTarget, setDeleteTarget] = useState<ClassRombel | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [toastMessage, setToastMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
@@ -323,26 +326,26 @@ export const ClassesTab: React.FC<ClassesTabProps> = ({
   };
 
   // Delete
-  const handleDeleteClass = async (cls: ClassRombel) => {
-    if (readOnly) return;
-    const confirmDelete = window.confirm(
-      `Apakah Anda yakin ingin menghapus ruang kelas "${cls.name}"? Data jadwal dan santri terkait mungkin perlu disesuaikan.`
-    );
-    if (!confirmDelete) return;
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget || readOnly) return;
+    setIsDeleting(true);
 
     try {
-      const res = await fetch(`/api/classes?id=${encodeURIComponent(cls.id)}`, {
+      const res = await fetch(`/api/classes?id=${encodeURIComponent(deleteTarget.id)}`, {
         method: 'DELETE',
       });
       const resJson = await res.json();
       if (res.ok && resJson.success) {
-        setClassesList((prev) => prev.filter((c) => c.id !== cls.id));
-        showToast('success', `Ruang Kelas "${cls.name}" berhasil dihapus.`);
+        setClassesList((prev) => prev.filter((c) => c.id !== deleteTarget.id));
+        showToast('success', `Ruang Kelas "${deleteTarget.name}" berhasil dihapus.`);
+        setDeleteTarget(null);
       } else {
         showToast('error', resJson.message || 'Gagal menghapus ruang kelas.');
       }
     } catch {
       showToast('error', 'Gagal menghubungi server untuk menghapus ruang kelas.');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -540,7 +543,7 @@ export const ClassesTab: React.FC<ClassesTabProps> = ({
 
                         <button
                           type="button"
-                          onClick={() => handleDeleteClass(cls)}
+                          onClick={() => setDeleteTarget(cls)}
                           className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
                           title="Hapus Ruang Kelas"
                         >
@@ -708,6 +711,18 @@ export const ClassesTab: React.FC<ClassesTabProps> = ({
           </div>
         </div>
       )}
+
+      {/* Modal Konfirmasi Hapus Elegan (Bottom Sheet di HP, Modal di Desktop) */}
+      <ConfirmDeleteModal
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+        title="Hapus Ruang Kelas"
+        description="Apakah Anda yakin ingin menghapus ruang kelas ini? Data jadwal dan alokasi santri terkait ruang kelas ini akan dihapus."
+        itemName={deleteTarget?.name}
+        itemType="Ruang Kelas & Rombel"
+        isLoading={isDeleting}
+      />
     </div>
   );
 };

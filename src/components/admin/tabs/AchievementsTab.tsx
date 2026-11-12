@@ -16,6 +16,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { uploadImageWithAutoCompression } from '@/lib/imageCompression';
+import { ConfirmDeleteModal } from '../ConfirmDeleteModal';
 
 export interface ChampionshipPhoto {
   id?: string | number;
@@ -46,6 +47,8 @@ export const AchievementsTab: React.FC<AchievementsTabProps> = ({
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingPhoto, setEditingPhoto] = useState<ChampionshipPhoto | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{ photo: ChampionshipPhoto; idx: number } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadMessage, setUploadMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -124,6 +127,20 @@ export const AchievementsTab: React.FC<AchievementsTabProps> = ({
     e.preventDefault();
     await onSavePhoto(formData);
     setIsModalOpen(false);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
+    try {
+      await onDeletePhoto(deleteTarget.photo.id || deleteTarget.idx);
+      setDeleteTarget(null);
+    } catch (err) {
+      console.error('Failed to delete photo:', err);
+      alert('Gagal menghapus dokumentasi kejuaraan.');
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   return (
@@ -207,11 +224,7 @@ export const AchievementsTab: React.FC<AchievementsTabProps> = ({
                 </button>
                 <button
                   type="button"
-                  onClick={() => {
-                    if (confirm(`Hapus dokumentasi juara "${photo.title}"?`)) {
-                      onDeletePhoto(photo.id || idx);
-                    }
-                  }}
+                  onClick={() => setDeleteTarget({ photo, idx })}
                   className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
                   title="Hapus foto"
                 >
@@ -411,6 +424,18 @@ export const AchievementsTab: React.FC<AchievementsTabProps> = ({
           </div>
         </div>
       )}
+
+      {/* Modal Konfirmasi Hapus Elegan (Bottom Sheet di HP, Modal di Desktop) */}
+      <ConfirmDeleteModal
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+        title="Hapus Dokumentasi Juara"
+        description="Apakah Anda yakin ingin menghapus dokumentasi prestasi kejuaraan ini? Foto dan rincian juara akan dihapus dari etalase prestasi website."
+        itemName={deleteTarget?.photo.title}
+        itemType="Dokumentasi Prestasi"
+        isLoading={isDeleting}
+      />
     </div>
   );
 };

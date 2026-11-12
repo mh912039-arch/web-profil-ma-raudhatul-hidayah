@@ -28,6 +28,7 @@ import {
   Edit2,
   Trash2,
 } from 'lucide-react';
+import { ConfirmDeleteModal } from '../ConfirmDeleteModal';
 
 export interface PpdbApplicant {
   id?: string;
@@ -190,6 +191,8 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<'add' | 'edit'>('add');
   const [detailApplicant, setDetailApplicant] = useState<PpdbApplicant | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<PpdbApplicant | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // WhatsApp Notification Dialog State
   const [waModal, setWaModal] = useState<{
@@ -267,17 +270,25 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (app: PpdbApplicant) => {
-    if (!onDeleteApplicant) return;
-    const confirmDelete = window.confirm(
-      `Apakah Anda yakin ingin menghapus data calon santri "${app.full_name}" (No: ${app.registration_number})? Tindakan ini tidak dapat dibatalkan.`
-    );
-    if (!confirmDelete) return;
+  const handleDelete = (app: PpdbApplicant) => {
+    setDeleteTarget(app);
+  };
 
-    const targetId = app.id || app.registration_number;
-    await onDeleteApplicant(targetId);
-    if (detailApplicant && (detailApplicant.id === targetId || detailApplicant.registration_number === targetId)) {
-      setDetailApplicant(null);
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget || !onDeleteApplicant) return;
+    setIsDeleting(true);
+    try {
+      const targetId = deleteTarget.id || deleteTarget.registration_number;
+      await onDeleteApplicant(targetId);
+      if (detailApplicant && (detailApplicant.id === targetId || detailApplicant.registration_number === targetId)) {
+        setDetailApplicant(null);
+      }
+      setDeleteTarget(null);
+    } catch (err) {
+      console.error('Failed to delete applicant:', err);
+      alert('Gagal menghapus data calon santri.');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -1350,6 +1361,18 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
           </div>
         </div>
       )}
+
+      {/* Modal Konfirmasi Hapus Elegan (Bottom Sheet di HP, Modal di Desktop) */}
+      <ConfirmDeleteModal
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+        title="Hapus Data Calon Santri"
+        description="Apakah Anda yakin ingin menghapus data calon santri ini? Seluruh berkas pendaftaran dan riwayat seleksi santri akan dihapus dari sistem PPDB."
+        itemName={deleteTarget ? `${deleteTarget.full_name} (No: ${deleteTarget.registration_number})` : undefined}
+        itemType="Data PPDB Online"
+        isLoading={isDeleting}
+      />
     </div>
   );
 };

@@ -21,6 +21,7 @@ import {
   Instagram,
 } from 'lucide-react';
 import { uploadImageWithAutoCompression } from '@/lib/imageCompression';
+import { ConfirmDeleteModal } from '../ConfirmDeleteModal';
 
 export interface TeacherRecord {
   id?: string;
@@ -76,6 +77,8 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [editingTeacher, setEditingTeacher] = useState<TeacherRecord | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<TeacherRecord | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadMessage, setUploadMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -208,6 +211,20 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
       jenjang: finalJenjang,
     });
     setIsModalOpen(false);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
+    try {
+      await onDeleteTeacher(deleteTarget.id || deleteTarget.order_no);
+      setDeleteTarget(null);
+    } catch (err) {
+      console.error('Failed to delete teacher:', err);
+      alert('Gagal menghapus data guru.');
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   // Jenjang Class Presets
@@ -456,11 +473,7 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
                         </button>
                         <button
                           type="button"
-                          onClick={() => {
-                            if (confirm(`Yakin ingin menghapus guru ${t.name} (${t.subject_name})?`)) {
-                              onDeleteTeacher(t.id || t.order_no);
-                            }
-                          }}
+                          onClick={() => setDeleteTarget(t)}
                           className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
                           title="Hapus Guru"
                         >
@@ -563,11 +576,7 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
                   </button>
                   <button
                     type="button"
-                    onClick={() => {
-                      if (confirm(`Yakin ingin menghapus guru ${t.name} (${t.subject_name})?`)) {
-                        onDeleteTeacher(t.id || t.order_no);
-                      }
-                    }}
+                    onClick={() => setDeleteTarget(t)}
                     className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
                     title="Hapus Guru"
                   >
@@ -994,6 +1003,18 @@ export const TeachersTab: React.FC<TeachersTabProps> = ({
           </div>
         </div>
       )}
+
+      {/* Modal Konfirmasi Hapus Elegan (Bottom Sheet di HP, Modal di Desktop) */}
+      <ConfirmDeleteModal
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+        title="Hapus Data Guru / Pendidik"
+        description="Apakah Anda yakin ingin menghapus data pendidik ini? Seluruh riwayat mengajar dan data profil guru terkait akan dihapus dari sistem."
+        itemName={deleteTarget ? `${deleteTarget.name} (${deleteTarget.subject_name || 'Guru'})` : undefined}
+        itemType="Data Pendidik"
+        isLoading={isDeleting}
+      />
     </div>
   );
 };

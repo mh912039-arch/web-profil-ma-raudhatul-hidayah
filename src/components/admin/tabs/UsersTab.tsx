@@ -35,6 +35,7 @@ import {
   MapPin,
   Send,
 } from 'lucide-react';
+import { ConfirmDeleteModal } from '../ConfirmDeleteModal';
 
 export interface UserAccount {
   id: string;
@@ -173,6 +174,11 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
 
   // Modals & Password states
   const [editingUser, setEditingUser] = useState<UserAccount | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{
+    type: 'user' | 'rate-limits';
+    user?: UserAccount;
+  } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newUserForm, setNewUserForm] = useState({
     name: '',
@@ -329,24 +335,8 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
     }
   };
 
-  const handleClearAllRateLimits = async () => {
-    if (!confirm('Apakah Anda yakin ingin mereset seluruh pembatasan login dan membuka semua kunci?')) return;
-    try {
-      const res = await fetch('/api/auth/rate-limit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'clear_all' }),
-      });
-      const json = await res.json();
-      if (json.success) {
-        showNotification('success', json.message);
-        fetchRateLimits();
-      } else {
-        showNotification('error', json.message || 'Gagal mereset pembatasan.');
-      }
-    } catch {
-      showNotification('error', 'Terjadi kesalahan jaringan.');
-    }
+  const handleClearAllRateLimits = () => {
+    setDeleteTarget({ type: 'rate-limits' });
   };
 
   useEffect(() => {
@@ -494,7 +484,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
   };
 
   // Delete User Account
-  const handleDeleteUser = async (user: UserAccount) => {
+  const handleDeleteUser = (user: UserAccount) => {
     if (
       user.id === 'usr-1' ||
       (user.email && ['admin@raudhatulhidayah.sch.id', 'admin@raudlatulhidayah.sch.id'].includes(user.email.toLowerCase())) ||
@@ -504,21 +494,45 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
       return;
     }
 
-    if (!confirm(`Hapus akun "${user.name}" (${user.email}) secara permanen?`)) return;
+    setDeleteTarget({ type: 'user', user });
+  };
+
+  const handleConfirmAction = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
 
     try {
-      const res = await fetch(`/api/users?id=${encodeURIComponent(user.id)}`, {
-        method: 'DELETE',
-      });
-      const data = await res.json();
-      if (res.ok && data.success) {
-        setUsers((prev) => prev.filter((u) => u.id !== user.id));
-        showNotification('success', data.message);
-      } else {
-        showNotification('error', data.message || 'Gagal menghapus pengguna.');
+      if (deleteTarget.type === 'user' && deleteTarget.user) {
+        const u = deleteTarget.user;
+        const res = await fetch(`/api/users?id=${encodeURIComponent(u.id)}`, {
+          method: 'DELETE',
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          setUsers((prev) => prev.filter((item) => item.id !== u.id));
+          showNotification('success', data.message);
+        } else {
+          showNotification('error', data.message || 'Gagal menghapus pengguna.');
+        }
+      } else if (deleteTarget.type === 'rate-limits') {
+        const res = await fetch('/api/auth/rate-limit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'clear_all' }),
+        });
+        const json = await res.json();
+        if (json.success) {
+          showNotification('success', json.message);
+          fetchRateLimits();
+        } else {
+          showNotification('error', json.message || 'Gagal mereset pembatasan.');
+        }
       }
+      setDeleteTarget(null);
     } catch {
       showNotification('error', 'Terjadi kesalahan jaringan.');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -2197,6 +2211,29 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
           </div>
         </div>
       )}
+
+      {/* Modal Konfirmasi Hapus Elegan (Bottom Sheet di HP, Modal di Desktop) */}
+      <ConfirmDeleteModal
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmAction}
+        title={deleteTarget?.type === 'rate-limits' ? 'Buka Kunci Brute Force' : 'Hapus Akun Pengguna'}
+        description={
+          deleteTarget?.type === 'rate-limits'
+            ? 'Apakah Anda yakin ingin mereset seluruh pembatasan percobaan login dan membuka blokir IP / akun yang terkunci?'
+            : 'Apakah Anda yakin ingin menghapus akun ini secara permanen? Pengguna tidak akan dapat login lagi ke portal madrasah.'
+        }
+        itemName={
+          deleteTarget?.type === 'user' && deleteTarget.user
+            ? `${deleteTarget.user.name} (${deleteTarget.user.email})`
+            : deleteTarget?.type === 'rate-limits'
+            ? 'Seluruh IP & Kunci Pertahanan Login'
+            : undefined
+        }
+        itemType={deleteTarget?.type === 'rate-limits' ? 'Keamanan Portal' : 'Akun Pengguna'}
+        confirmLabel={deleteTarget?.type === 'rate-limits' ? 'Buka Semua Kunci' : 'Ya, Hapus Akun'}
+        isLoading={isDeleting}
+      />
     </div>
   );
 };
