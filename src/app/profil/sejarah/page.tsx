@@ -31,7 +31,7 @@ interface HistoryData {
 
 const defaultHistory: HistoryData = {
   title: 'Memperluas Akses Pendidikan Menengah di Wilayah Mauk',
-  subtitle: 'Sejarah & Perjalanan Madrasah',
+  subtitle: 'LATAR BELAKANG PENDIRIAN',
   lead: 'MAS Raudlatul Hidayah didirikan pada tahun 2015 sebagai bagian dari ikhtiar Kementerian Agama bersama masyarakat Desa Tanjung Anom untuk menghadirkan layanan pendidikan menengah Islam yang berkualitas dan terjangkau bagi warga di wilayah Kecamatan Mauk, Kabupaten Tangerang, Provinsi Banten.\n\nKondisi geografis pesisir utara Kabupaten Tangerang yang berkembang pesat membuat para lulusan madrasah tsanawiyah dan sekolah menengah pertama di sekitar Tanjung Anom dan jalur Tanjung Kait sebelumnya harus menempuh jarak cukup jauh menuju sekolah lanjutan. Dukungan masyarakat setempat bersama tokoh agama kemudian mewujudkan berdirinya satuan pendidikan ini di Jl. Raya Tanjung Kait.\n\nSejak masa awal operasionalnya, MAS Raudlatul Hidayah secara bertahap melengkapi sarana ruang belajar, ruang perpustakaan, laboratorium komputer, serta lapangan olahraga dan upacara. Dengan nomor pokok sekolah nasional (NPSN) 69941777 dan izin operasional resmi Kementerian Agama, madrasah ini terus menjalankan perannya mendampingi peserta didik di wilayah Tangerang Utara.',
   paragraphs: [
     'MAS Raudlatul Hidayah didirikan pada tahun 2015 sebagai bagian dari ikhtiar Kementerian Agama bersama masyarakat Desa Tanjung Anom untuk menghadirkan layanan pendidikan menengah Islam yang berkualitas dan terjangkau bagi warga di wilayah Kecamatan Mauk, Kabupaten Tangerang, Provinsi Banten.',
@@ -132,8 +132,8 @@ export default function SejarahPage() {
             {/* Kolom Kiri: Judul Besar Editorial & Paragraf Narasi */}
             <div className="lg:col-span-7 flex flex-col">
               {history.subtitle && (
-                <div className="mb-3">
-                  <span className="inline-block px-3.5 py-1 rounded-full text-[12px] font-bold bg-amber-100 text-amber-900 border border-amber-200/80 tracking-wide">
+                <div className="mb-3.5">
+                  <span className="font-sans font-bold text-[13px] sm:text-[14px] text-[#1e3a8a] tracking-[0.16em] uppercase">
                     {history.subtitle}
                   </span>
                 </div>
@@ -222,8 +222,8 @@ export default function SejarahPage() {
                   key={idx}
                   className="flex flex-col sm:flex-row items-start gap-3 sm:gap-8 py-6 sm:py-8 first:pt-2 last:pb-2"
                 >
-                  {/* Kolom Kiri: Tahun / Periode (Warna Hijau Gelap Sesuai Contoh Gambar 2 & 3) */}
-                  <div className="w-full sm:w-48 lg:w-56 shrink-0 font-bold text-[16px] sm:text-[17px] text-[#047857] tracking-tight leading-snug">
+                  {/* Kolom Kiri: Tahun / Periode (Warna Navy MAS Sesuai Web Profil MAS) */}
+                  <div className="w-full sm:w-48 lg:w-56 shrink-0 font-bold text-[16px] sm:text-[17px] text-[#1e3a8a] tracking-tight leading-snug">
                     {m.year || m.badge || 'Tahun'}
                   </div>
 

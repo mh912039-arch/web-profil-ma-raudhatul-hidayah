@@ -1132,12 +1132,12 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="flex flex-col gap-1.5">
-                <label className="text-[12.5px] font-bold text-slate-700">Subjudul Tag Pill</label>
+                <label className="text-[12.5px] font-bold text-slate-700">Subjudul Kategori (Contoh: LATAR BELAKANG PENDIRIAN)</label>
                 <input
                   type="text"
                   value={formData.history.subtitle || ''}
                   onChange={(e) => handleHistoryChange('subtitle', e.target.value)}
-                  placeholder="Sejarah & Perjalanan Madrasah"
+                  placeholder="LATAR BELAKANG PENDIRIAN"
                   className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[13px] font-medium"
                 />
               </div>
