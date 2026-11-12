@@ -24,24 +24,14 @@ export interface ContactMessage {
   created_at: string;
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   // Hanya Administrator yang berhak membaca pesan masuk dan kontak pengunjung
-  const auth = await requireAuth(['admin']);
+  const auth = await requireAuth(['admin'], request);
   if (!auth.authorized) {
     return auth.response!;
   }
 
-  let localMessages: ContactMessage[] = [];
-
-  // 1. Read local messages
-  try {
-    const fileContent = await fs.readFile(dataFilePath, 'utf-8');
-    localMessages = JSON.parse(fileContent);
-  } catch (err) {
-    console.warn('Could not read messagesData.json:', err);
-  }
-
-  // 2. Fetch from Supabase
+  // 1. Ambil dari Supabase sebagai sumber utama persistent store
   try {
     const { data: supaMessages, error: supaErr } = await supabaseAdmin
       .from('contact_messages')
@@ -60,23 +50,24 @@ export async function GET() {
         created_at: row.created_at || new Date().toISOString(),
       }));
 
-      // Index Supabase messages by ID and signature (name + message snippet) to prevent duplicate rows
-      const existingIds = new Set(supaMapped.map((m) => m.id));
-      const existingSigs = new Set(supaMapped.map((m) => `${m.name}|${(m.message || '').slice(0, 50)}`));
+      // Sinkronkan cache lokal dengan data resmi database Supabase
+      try {
+        await fs.writeFile(dataFilePath, JSON.stringify(supaMapped, null, 2), 'utf-8');
+      } catch (_) {}
 
-      const merged: ContactMessage[] = [...supaMapped];
-      for (const lm of localMessages) {
-        const sig = `${lm.name}|${(lm.message || '').slice(0, 50)}`;
-        if (!existingIds.has(lm.id) && !existingSigs.has(sig)) {
-          merged.push(lm);
-        }
-      }
-
-      merged.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-      return NextResponse.json(merged);
+      return NextResponse.json(supaMapped);
     }
   } catch (supaErr) {
     console.warn('Supabase fetch failed for contact messages:', supaErr);
+  }
+
+  // 2. Fallback baca pesan lokal jika Supabase tidak dapat dihubungi
+  let localMessages: ContactMessage[] = [];
+  try {
+    const fileContent = await fs.readFile(dataFilePath, 'utf-8');
+    localMessages = JSON.parse(fileContent);
+  } catch (err) {
+    console.warn('Could not read messagesData.json:', err);
   }
 
   return NextResponse.json(localMessages);
@@ -225,7 +216,7 @@ export async function POST(request: Request) {
 
 export async function PATCH(request: Request) {
   // Hanya Administrator yang dapat mengubah status pesan
-  const auth = await requireAuth(['admin']);
+  const auth = await requireAuth(['admin'], request);
   if (!auth.authorized) {
     return auth.response!;
   }
@@ -238,10 +229,13 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ success: false, message: 'ID diperlukan' }, { status: 400 });
     }
 
-    // 1. Update in Supabase
-    try {
-      await supabaseAdmin.from('contact_messages').update({ status }).eq('id', id);
-    } catch (err) {}
+    // 1. Update in Supabase (jika UUID)
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(id));
+    if (isUuid) {
+      try {
+        await supabaseAdmin.from('contact_messages').update({ status }).eq('id', id);
+      } catch (err) {}
+    }
 
     // 2. Update in local file
     try {
@@ -262,7 +256,7 @@ export async function PATCH(request: Request) {
 
 export async function DELETE(request: Request) {
   // Hanya Administrator yang berhak menghapus pesan masuk
-  const auth = await requireAuth(['admin']);
+  const auth = await requireAuth(['admin'], request);
   if (!auth.authorized) {
     return auth.response!;
   }
@@ -303,10 +297,13 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ success: false, message: 'ID diperlukan' }, { status: 400 });
     }
 
-    // 1. Delete in Supabase
-    try {
-      await supabaseAdmin.from('contact_messages').delete().eq('id', id);
-    } catch (err) {}
+    // 1. Delete in Supabase (hanya jika valid UUID untuk mencegah error type casting Postgres)
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(id));
+    if (isUuid) {
+      try {
+        await supabaseAdmin.from('contact_messages').delete().eq('id', id);
+      } catch (err) {}
+    }
 
     // 2. Delete in local file
     try {

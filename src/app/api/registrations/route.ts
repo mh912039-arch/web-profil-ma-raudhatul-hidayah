@@ -101,7 +101,7 @@ export async function GET(request: Request) {
       .select('*')
       .order('created_at', { ascending: false });
 
-    if (!error && supaData && supaData.length > 0) {
+    if (!error && supaData) {
       const supaMapped = supaData.map(unpackApplicant);
 
       // Best effort sync local cache

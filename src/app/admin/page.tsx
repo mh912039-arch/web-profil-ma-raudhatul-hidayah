@@ -750,9 +750,18 @@ export default function AdminDashboardPage() {
   // Handler: Delete Message
   const handleDeleteMessage = async (id: string) => {
     try {
-      await fetch(`/api/contact?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
-      setMessages((prev) => prev.filter((m) => m.id !== id));
-      showToast('success', 'Pesan kontak berhasil dihapus.');
+      const res = await fetch(`/api/contact?id=${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+        credentials: 'same-origin',
+      });
+      const resJson = await res.json().catch(() => null);
+      if (res.ok && (resJson?.success ?? true)) {
+        setMessages((prev) => prev.filter((m) => m.id !== id));
+        showToast('success', 'Pesan kontak berhasil dihapus.');
+      } else {
+        const errMsg = resJson?.message || 'Gagal menghapus pesan.';
+        showToast('error', errMsg);
+      }
     } catch (err) {
       showToast('error', 'Gagal menghapus pesan.');
     }
@@ -761,7 +770,10 @@ export default function AdminDashboardPage() {
   // Handler: Delete All Contact Messages
   const handleDeleteAllMessages = async () => {
     try {
-      const res = await fetch('/api/contact?all=true', { method: 'DELETE' });
+      const res = await fetch('/api/contact?all=true', {
+        method: 'DELETE',
+        credentials: 'same-origin',
+      });
       const resJson = await res.json().catch(() => null);
       if (res.ok && (resJson?.success ?? true)) {
         setMessages([]);
