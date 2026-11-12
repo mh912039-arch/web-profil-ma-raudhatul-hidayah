@@ -11,11 +11,11 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://mas-raudlatul-hidayah.vercel.app'),
-  title: 'MAS Raudlatul Hidayah — Membentuk Generasi Berkarakter, Cerdas & Berintegritas',
+  title: 'Mas Raudlatul Hidayah | Website Resmi Satuan Pendidikan Wilayah Mauk',
   description: 'Portal Resmi MAS Raudlatul Hidayah (Madrasah Aliyah Swasta). NPSN: 69941777, Mauk Tangerang Banten. Berlandaskan adab, Kurikulum Merdeka, dan keunggulan akademik.',
   keywords: 'MAS Raudlatul Hidayah, MAS Raudlatul Hidayah, Madrasah Aliyah Swasta Raudlatul Hidayah, Profil Madrasah Mauk, Tangerang Banten, Kurikulum Merdeka, NPSN 69941777',
   openGraph: {
-    title: 'MAS Raudlatul Hidayah — Madrasah Aliyah Swasta Unggulan Mauk Tangerang',
+    title: 'Mas Raudlatul Hidayah | Website Resmi Satuan Pendidikan Wilayah Mauk',
     description: 'Portal Resmi MAS Raudlatul Hidayah (Madrasah Aliyah Swasta). NPSN: 69941777, Mauk Tangerang Banten. Berlandaskan adab, Kurikulum Merdeka, dan keunggulan akademik.',
     url: 'https://mas-raudlatul-hidayah.vercel.app',
     siteName: 'MAS Raudlatul Hidayah',
