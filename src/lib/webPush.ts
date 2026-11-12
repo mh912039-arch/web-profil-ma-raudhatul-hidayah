@@ -126,8 +126,8 @@ export async function broadcastPushNotification(payload: PushNotificationPayload
   const notificationString = JSON.stringify({
     title: payload.title,
     body: payload.body,
-    icon: payload.icon || '/icon-192.png',
-    badge: payload.badge || '/icon-192.png',
+    icon: payload.icon || '/school-logo.png',
+    badge: payload.badge || '/badge-96.png',
     data: {
       url: payload.url || '/admin',
       ...payload.data,
