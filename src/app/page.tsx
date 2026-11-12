@@ -226,10 +226,10 @@ export default function HomePage() {
         {/* =========================================================
             2. ABOUT SECTION (Editorial Split Stage with Negative Space)
         ========================================================= */}
-        <section className="py-20 sm:py-32 bg-white relative border-b border-slate-200/70 overflow-hidden">
+        <section className="py-12 sm:py-16 lg:py-20 bg-white relative overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             {/* Top Grid: Foto Kepala Madrasah di Kiri, Sambutan di Kanan */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
               {/* Left Column: Headmaster Portrait & Name Plate Beneath Photo */}
               <div className="lg:col-span-5 flex flex-col items-center">
                 <div className="w-full max-w-md bg-white rounded-3xl p-3 sm:p-4 shadow-xl border border-slate-200/90 transition-all duration-300 hover:shadow-2xl">
@@ -257,26 +257,26 @@ export default function HomePage() {
               </div>
 
               {/* Right Column: Sambutan Kepala Madrasah Text */}
-              <div className="lg:col-span-7 flex flex-col gap-6 justify-center">
+              <div className="lg:col-span-7 flex flex-col gap-5 justify-center">
                 <div className="flex flex-col gap-2">
-                  <h2 className="font-serif text-[34px] sm:text-[46px] lg:text-[50px] font-bold text-slate-900 tracking-tight leading-[1.12]">
+                  <h2 className="font-serif text-[32px] sm:text-[42px] lg:text-[46px] font-bold text-slate-900 tracking-tight leading-[1.12]">
                     {home.sambutanHeading}
                   </h2>
                 </div>
 
-                <div className="font-sans text-[15px] sm:text-[16px] text-slate-700 flex flex-col gap-4 leading-relaxed max-w-xl">
+                <div className="font-sans text-[15px] sm:text-[16px] text-slate-700 flex flex-col gap-3.5 leading-relaxed max-w-xl">
                   <p>{home.sambutanText1}</p>
                   <p>{home.sambutanText2}</p>
                 </div>
               </div>
             </div>
 
-            {/* Bottom Section (Tangkapan Layar Kedua): Key Fact Metric Counters & CTA Button Rata Tengah */}
-            <div className="mt-14 sm:mt-16 pt-8 sm:pt-10 border-t border-slate-200/90 flex flex-col items-center text-center">
+            {/* Bottom Section: Key Fact Metric Counters & CTA Button Rata Tengah (Tanpa Garis & Spasi Padat) */}
+            <div className="mt-8 sm:mt-10 flex flex-col items-center text-center">
               {/* Key Fact Metric Counters */}
-              <div className="grid grid-cols-3 gap-6 sm:gap-12 md:gap-16 max-w-2xl w-full mx-auto text-center">
+              <div className="grid grid-cols-3 gap-4 sm:gap-10 max-w-xl w-full mx-auto text-center">
                 <div className="flex flex-col items-center">
-                  <span className="font-serif text-[32px] sm:text-[42px] font-bold text-slate-900 block leading-tight">
+                  <span className="font-serif text-[30px] sm:text-[38px] font-bold text-slate-900 block leading-tight">
                     <AnimatedCounter value={home.stat1Value} />
                   </span>
                   <span className="font-sans text-[12px] sm:text-[13px] text-slate-700 font-semibold mt-1">
@@ -284,7 +284,7 @@ export default function HomePage() {
                   </span>
                 </div>
                 <div className="flex flex-col items-center">
-                  <span className="font-serif text-[32px] sm:text-[42px] font-bold text-slate-900 block leading-tight">
+                  <span className="font-serif text-[30px] sm:text-[38px] font-bold text-slate-900 block leading-tight">
                     <AnimatedCounter value={home.stat2Value} />
                   </span>
                   <span className="font-sans text-[12px] sm:text-[13px] text-slate-700 font-semibold mt-1">
@@ -292,7 +292,7 @@ export default function HomePage() {
                   </span>
                 </div>
                 <div className="flex flex-col items-center">
-                  <span className="font-serif text-[32px] sm:text-[42px] font-bold text-amber-800 block leading-tight">
+                  <span className="font-serif text-[30px] sm:text-[38px] font-bold text-amber-800 block leading-tight">
                     <AnimatedCounter value={home.stat3Value} />
                   </span>
                   <span className="font-sans text-[12px] sm:text-[13px] text-slate-700 font-semibold mt-1">
@@ -302,10 +302,10 @@ export default function HomePage() {
               </div>
 
               {/* Centered CTA Button */}
-              <div className="mt-8 sm:mt-10 flex justify-center w-full">
+              <div className="mt-6 sm:mt-7 flex justify-center w-full">
                 <Link
                   href={home.ctaLink && home.ctaLink !== '/profil/visi-misi' ? home.ctaLink : '/profil/sejarah'}
-                  className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full bg-slate-900 hover:bg-[#1e3a8a] text-white text-[13px] font-bold uppercase tracking-wider transition-all duration-200 active:scale-[0.98] group shadow-sm"
+                  className="inline-flex items-center gap-2.5 px-7 py-3 rounded-full bg-slate-900 hover:bg-[#1e3a8a] text-white text-[13px] font-bold uppercase tracking-wider transition-all duration-200 active:scale-[0.98] group shadow-sm"
                 >
                   <span>{home.ctaText || 'Pelajari Profil & Budaya Sekolah'}</span>
                   <ArrowRight className="w-4 h-4 text-blue-300 group-hover:text-white group-hover:translate-x-1 transition-all" />

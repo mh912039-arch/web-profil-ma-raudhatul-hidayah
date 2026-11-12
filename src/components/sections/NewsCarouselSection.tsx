@@ -158,10 +158,10 @@ export function NewsCarouselSection() {
   };
 
   return (
-    <section className="py-20 sm:py-28 bg-white relative border-b border-slate-200/80 overflow-hidden" id="agenda">
+    <section className="py-12 sm:py-16 lg:py-20 bg-white relative overflow-hidden" id="agenda">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header Centered like Reference SS 2 */}
-        <div className="mb-10 sm:mb-12 text-center max-w-3xl mx-auto">
+        <div className="mb-8 sm:mb-10 text-center max-w-3xl mx-auto">
           <h2 className="font-display text-[28px] sm:text-[38px] font-bold text-slate-900 tracking-tight leading-tight">
             Berita &amp; Informasi
           </h2>

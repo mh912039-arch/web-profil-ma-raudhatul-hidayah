@@ -103,7 +103,7 @@ export function PpdbSection({ onOpenRegister }: PpdbSectionProps) {
   }, []);
 
   return (
-    <section className="py-20 sm:py-28 bg-white relative border-b border-slate-200/80 overflow-hidden" id="ppdb">
+    <section className="py-12 sm:py-16 lg:py-20 bg-white relative overflow-hidden" id="ppdb">
       {/* Decorative Warm Backlights */}
       <div className="absolute -left-32 top-1/4 w-96 h-96 rounded-full bg-amber-400/10 blur-3xl pointer-events-none" />
       <div className="absolute -right-32 bottom-1/4 w-96 h-96 rounded-full bg-[#1e3a8a]/10 blur-3xl pointer-events-none" />

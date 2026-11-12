@@ -188,10 +188,10 @@ export const TeachersCarouselSection: React.FC<TeachersCarouselSectionProps> = (
   if (teachers.length === 0) return null;
 
   return (
-    <section className="py-16 sm:py-24 bg-white border-b border-slate-200/80 relative overflow-hidden">
+    <section className="py-12 sm:py-16 lg:py-20 bg-white relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header: Tenaga Pendidik & Subtitle */}
-        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
+        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12">
           <h2 className="font-serif text-[32px] sm:text-[40px] font-bold text-slate-900 tracking-tight leading-tight">
             {title}
           </h2>
