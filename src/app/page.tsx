@@ -228,61 +228,10 @@ export default function HomePage() {
         ========================================================= */}
         <section className="py-20 sm:py-32 bg-[#f8fafc] relative border-b border-slate-200/70 overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            {/* Top Grid: Foto Kepala Madrasah di Kiri, Sambutan di Kanan */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-              {/* Left Column: Negative Space & Clean Typographic Hierarchy */}
-              <div className="lg:col-span-7 flex flex-col gap-6">
-                <div className="flex flex-col gap-2">
-                  <h2 className="font-serif text-[34px] sm:text-[46px] lg:text-[50px] font-bold text-slate-900 tracking-tight leading-[1.12]">
-                    {home.sambutanHeading}
-                  </h2>
-                </div>
-
-                <div className="font-sans text-[15px] sm:text-[16px] text-slate-700 flex flex-col gap-4 leading-relaxed max-w-xl">
-                  <p>{home.sambutanText1}</p>
-                  <p>{home.sambutanText2}</p>
-                </div>
-
-                {/* Key Fact Metric Counters with Scroll Counter-Up Waypoints */}
-                <div className="grid grid-cols-3 gap-6 pt-5 border-t border-slate-200 max-w-lg">
-                  <div>
-                    <span className="font-serif text-[30px] sm:text-[36px] font-bold text-slate-900 block leading-tight">
-                      <AnimatedCounter value={home.stat1Value} />
-                    </span>
-                    <span className="font-sans text-[12px] text-slate-700 font-semibold">
-                      {home.stat1Label}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="font-serif text-[30px] sm:text-[36px] font-bold text-slate-900 block leading-tight">
-                      <AnimatedCounter value={home.stat2Value} />
-                    </span>
-                    <span className="font-sans text-[12px] text-slate-700 font-semibold">
-                      {home.stat2Label}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="font-serif text-[30px] sm:text-[36px] font-bold text-amber-800 block leading-tight">
-                      <AnimatedCounter value={home.stat3Value} />
-                    </span>
-                    <span className="font-sans text-[12px] text-slate-700 font-semibold">
-                      {home.stat3Label}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="pt-2">
-                  <Link
-                    href={home.ctaLink && home.ctaLink !== '/profil/visi-misi' ? home.ctaLink : '/profil/sejarah'}
-                    className="inline-flex items-center gap-2.5 px-6 py-3 rounded-full bg-slate-900 hover:bg-blue-600 text-white text-[13px] font-bold uppercase tracking-wider transition-all duration-200 active:scale-[0.98] group shadow-sm"
-                  >
-                    <span>{home.ctaText || 'Pelajari Profil & Budaya Sekolah'}</span>
-                    <ArrowRight className="w-4 h-4 text-blue-300 group-hover:text-white group-hover:translate-x-1 transition-all" />
-                  </Link>
-                </div>
-              </div>
-
-              {/* Right Column: Headmaster Portrait & Name Plate Beneath Photo */}
-              <div className="lg:col-span-5 flex flex-col items-center sm:items-start lg:items-center">
+              {/* Left Column: Headmaster Portrait & Name Plate Beneath Photo */}
+              <div className="lg:col-span-5 flex flex-col items-center">
                 <div className="w-full max-w-md bg-white rounded-3xl p-3 sm:p-4 shadow-xl border border-slate-200/90 transition-all duration-300 hover:shadow-2xl">
                   {/* Photo Frame */}
                   <div className="relative rounded-2xl overflow-hidden aspect-[3/4] bg-slate-100 group">
@@ -305,6 +254,62 @@ export default function HomePage() {
                     </p>
                   </div>
                 </div>
+              </div>
+
+              {/* Right Column: Sambutan Kepala Madrasah Text */}
+              <div className="lg:col-span-7 flex flex-col gap-6 justify-center">
+                <div className="flex flex-col gap-2">
+                  <h2 className="font-serif text-[34px] sm:text-[46px] lg:text-[50px] font-bold text-slate-900 tracking-tight leading-[1.12]">
+                    {home.sambutanHeading}
+                  </h2>
+                </div>
+
+                <div className="font-sans text-[15px] sm:text-[16px] text-slate-700 flex flex-col gap-4 leading-relaxed max-w-xl">
+                  <p>{home.sambutanText1}</p>
+                  <p>{home.sambutanText2}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Section (Tangkapan Layar Kedua): Key Fact Metric Counters & CTA Button Rata Tengah */}
+            <div className="mt-14 sm:mt-16 pt-8 sm:pt-10 border-t border-slate-200/90 flex flex-col items-center text-center">
+              {/* Key Fact Metric Counters */}
+              <div className="grid grid-cols-3 gap-6 sm:gap-12 md:gap-16 max-w-2xl w-full mx-auto text-center">
+                <div className="flex flex-col items-center">
+                  <span className="font-serif text-[32px] sm:text-[42px] font-bold text-slate-900 block leading-tight">
+                    <AnimatedCounter value={home.stat1Value} />
+                  </span>
+                  <span className="font-sans text-[12px] sm:text-[13px] text-slate-700 font-semibold mt-1">
+                    {home.stat1Label}
+                  </span>
+                </div>
+                <div className="flex flex-col items-center">
+                  <span className="font-serif text-[32px] sm:text-[42px] font-bold text-slate-900 block leading-tight">
+                    <AnimatedCounter value={home.stat2Value} />
+                  </span>
+                  <span className="font-sans text-[12px] sm:text-[13px] text-slate-700 font-semibold mt-1">
+                    {home.stat2Label}
+                  </span>
+                </div>
+                <div className="flex flex-col items-center">
+                  <span className="font-serif text-[32px] sm:text-[42px] font-bold text-amber-800 block leading-tight">
+                    <AnimatedCounter value={home.stat3Value} />
+                  </span>
+                  <span className="font-sans text-[12px] sm:text-[13px] text-slate-700 font-semibold mt-1">
+                    {home.stat3Label}
+                  </span>
+                </div>
+              </div>
+
+              {/* Centered CTA Button */}
+              <div className="mt-8 sm:mt-10 flex justify-center w-full">
+                <Link
+                  href={home.ctaLink && home.ctaLink !== '/profil/visi-misi' ? home.ctaLink : '/profil/sejarah'}
+                  className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full bg-slate-900 hover:bg-[#1e3a8a] text-white text-[13px] font-bold uppercase tracking-wider transition-all duration-200 active:scale-[0.98] group shadow-sm"
+                >
+                  <span>{home.ctaText || 'Pelajari Profil & Budaya Sekolah'}</span>
+                  <ArrowRight className="w-4 h-4 text-blue-300 group-hover:text-white group-hover:translate-x-1 transition-all" />
+                </Link>
               </div>
             </div>
           </div>

@@ -7,11 +7,9 @@ import {
   Calendar,
   Newspaper,
   Smartphone,
-  ShieldCheck,
   X,
   ExternalLink,
   Loader2,
-  Send,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -55,12 +53,17 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
   const [loading, setLoading] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
-  // Push notification states
+  // Push notification states (persisten per browser HP untuk semua akun)
   const [pushSupported, setPushSupported] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [devicePushActive, setDevicePushActive] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    const isGranted = 'Notification' in window && Notification.permission === 'granted';
+    const isStored = localStorage.getItem('mrh_push_subscribed') === 'true';
+    return isGranted || isStored;
+  });
   const [isSubscribing, setIsSubscribing] = useState(false);
   const [pushStatusMessage, setPushStatusMessage] = useState<string | null>(null);
-  const [isTestingPush, setIsTestingPush] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -148,18 +151,38 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
     }
   };
 
-  // 3. Cek status Web Push & sinkronisasi otomatis token ponsel
+  // 3. Cek status Web Push & sinkronisasi otomatis token ponsel (berlaku untuk semua akun di browser/HP yang sama)
   const checkPushStateAndSync = async () => {
     const supported = await isPushNotificationSupported();
     setPushSupported(supported);
     if (supported) {
       const state = await getPushSubscriptionState();
-      setIsSubscribed(state.isSubscribed);
+      const isGranted =
+        typeof window !== 'undefined' &&
+        'Notification' in window &&
+        Notification.permission === 'granted';
+      const isStoredActive =
+        typeof window !== 'undefined' &&
+        localStorage.getItem('mrh_push_subscribed') === 'true';
+
+      const isDeviceActive = state.isSubscribed || isGranted || isStoredActive;
+      setIsSubscribed(isDeviceActive);
+      setDevicePushActive(isDeviceActive);
+
+      if (isDeviceActive && typeof window !== 'undefined') {
+        localStorage.setItem('mrh_push_subscribed', 'true');
+      }
 
       // Jika izin browser sudah diberikan, sinkronkan token subscription ke Supabase di latar belakang
-      if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+      if (isGranted) {
         syncPushSubscription().then((synced) => {
-          if (synced) setIsSubscribed(true);
+          if (synced) {
+            setIsSubscribed(true);
+            setDevicePushActive(true);
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('mrh_push_subscribed', 'true');
+            }
+          }
         });
       }
     }
@@ -183,10 +206,14 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
     setIsSubscribing(true);
     setPushStatusMessage(null);
     try {
-      if (isSubscribed) {
+      if (isSubscribed || devicePushActive) {
         const res = await unsubscribeFromPushNotifications();
         if (res.success) {
           setIsSubscribed(false);
+          setDevicePushActive(false);
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem('mrh_push_subscribed');
+          }
           setPushStatusMessage('Notifikasi layar HP dinonaktifkan.');
         } else {
           setPushStatusMessage(res.message);
@@ -195,6 +222,10 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
         const res = await subscribeToPushNotifications();
         if (res.success) {
           setIsSubscribed(true);
+          setDevicePushActive(true);
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('mrh_push_subscribed', 'true');
+          }
           setPushStatusMessage('Notifikasi layar HP berhasil diaktifkan.');
         } else {
           setPushStatusMessage(res.message);
@@ -203,46 +234,6 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
     } finally {
       setIsSubscribing(false);
       setTimeout(() => setPushStatusMessage(null), 3500);
-    }
-  };
-
-  // 5. Uji Kirim Notifikasi Push Langsung ke Layar Ponsel
-  const handleTestPushNotification = async () => {
-    setIsTestingPush(true);
-    setPushStatusMessage(null);
-    try {
-      // Pastikan token tersinkronisasi sebelum uji kirim
-      await syncPushSubscription();
-
-      const res = await fetch('/api/push/broadcast', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: 'Uji Push Notification MAS RH',
-          body: 'Notifikasi bilah status HP berhasil terhubung dan siap menerima warta serta agenda akademik.',
-          url: '/admin',
-          category: 'uji',
-        }),
-      });
-
-      const json = await res.json().catch(() => ({}));
-      if (res.ok && json.success) {
-        const count = json.result?.sent ?? 0;
-        setPushStatusMessage(
-          count > 0
-            ? `Notifikasi terkirim ke ${count} perangkat ponsel!`
-            : 'Sinyal terkirim ke server push.'
-        );
-      } else {
-        const errorText = json.error || json.message || `Gagal mengirim sinyal (Kode: ${res.status})`;
-        setPushStatusMessage(errorText);
-      }
-    } catch (err: any) {
-      setPushStatusMessage(err?.message || 'Gagal melakukan tes notifikasi.');
-    } finally {
-      setIsTestingPush(false);
-      setTimeout(() => setPushStatusMessage(null), 5000);
     }
   };
 
@@ -336,8 +327,26 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
                 </div>
               </div>
 
-              {/* Ajakan Aktifkan Notifikasi Layar HP (Otomatis hilang jika sudah diaktifkan) */}
-              {!isSubscribed && pushSupported && (
+              {/* Pesan Feedback Singkat (Muncul sesaat setelah pengguna klik Izinkan, lalu hilang otomatis) */}
+              {pushStatusMessage && (
+                <div className="px-4 py-2 bg-blue-50 border-b border-blue-100 text-[11px] font-semibold text-blue-900 flex items-center justify-between animate-in fade-in">
+                  <span>{pushStatusMessage}</span>
+                  <button
+                    type="button"
+                    onClick={() => setPushStatusMessage(null)}
+                    className="text-blue-500 hover:text-blue-800 p-0.5"
+                    aria-label="Tutup pesan"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              )}
+
+              {/* Ajakan Aktifkan Notifikasi Layar HP:
+                  HANYA muncul jika perangkat/HP ini BELUM PERNAH mengaktifkan notifikasi sama sekali.
+                  Begitu diaktifkan oleh salah satu akun (Admin/Guru/Siswa), ajakan ini HILANG SELAMANYA di HP ini
+                  dan TIDAK AKAN menampilkan bar status yang mengganggu. */}
+              {!devicePushActive && !isSubscribed && pushSupported && (
                 <div className="px-4 py-2.5 bg-slate-50 border-b border-slate-100 shrink-0">
                   <div className="flex items-center justify-between gap-2.5">
                     <div className="flex items-center gap-2 min-w-0">
@@ -349,7 +358,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
                           Aktifkan Notifikasi HP
                         </p>
                         <p className="text-[10px] text-slate-500 leading-tight truncate">
-                          Muncul di bilah status layar saat ada warta & agenda baru
+                          Muncul di bilah status layar saat ada warta &amp; agenda baru
                         </p>
                       </div>
                     </div>
@@ -366,52 +375,6 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
                       )}
                     </button>
                   </div>
-
-                  {pushStatusMessage && (
-                    <p className="text-[10.5px] font-semibold text-blue-700 mt-1.5 animate-in fade-in">
-                      {pushStatusMessage}
-                    </p>
-                  )}
-                </div>
-              )}
-
-              {/* Bar Status Ringkas saat Notifikasi HP Aktif (Dilengkapi tombol Uji Notif) */}
-              {isSubscribed && (
-                <div className="px-3.5 py-2 bg-slate-50 border-b border-slate-100 shrink-0 flex items-center justify-between gap-2 text-[11px]">
-                  <div className="flex items-center gap-1.5 text-emerald-800 font-semibold min-w-0">
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                    <span className="truncate">Notifikasi layar HP aktif</span>
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <button
-                      type="button"
-                      disabled={isTestingPush}
-                      onClick={handleTestPushNotification}
-                      className="px-2 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-[#1e3a8a] text-[10.5px] font-bold transition-colors flex items-center gap-1 cursor-pointer active:scale-95 border border-blue-200/60"
-                      title="Kirim pesan uji ke bilah status ponsel"
-                    >
-                      {isTestingPush ? (
-                        <Loader2 className="w-3 h-3 animate-spin" />
-                      ) : (
-                        <Send className="w-3 h-3" />
-                      )}
-                      <span>Uji Notif HP</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleTogglePush}
-                      className="text-[10.5px] font-semibold text-slate-400 hover:text-rose-600 transition-colors cursor-pointer"
-                    >
-                      Matikan
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* Pesan Feedback Uji / Toggle */}
-              {pushStatusMessage && isSubscribed && (
-                <div className="px-4 py-1.5 bg-blue-50/70 border-b border-blue-100 text-[10.5px] font-semibold text-blue-900 flex items-center gap-1.5 animate-in fade-in">
-                  <span>{pushStatusMessage}</span>
                 </div>
               )}
 
