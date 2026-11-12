@@ -761,8 +761,20 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
       m.desc ? `${m.title}: ${m.desc}` : m.title
     );
 
+    const splitHistoryParas =
+      typeof formData.history.lead === 'string'
+        ? formData.history.lead
+            .split(/\n\s*\n/)
+            .map((p) => p.trim())
+            .filter(Boolean)
+        : [];
+
     const payload: FullProfileData = {
       ...formData,
+      history: {
+        ...formData.history,
+        paragraphs: splitHistoryParas,
+      },
       visionMission: {
         ...formData.visionMission,
         missions: finalMissions.length > 0 ? finalMissions : formData.visionMission.missions,

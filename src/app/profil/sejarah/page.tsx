@@ -30,13 +30,11 @@ interface HistoryData {
 }
 
 const defaultHistory: HistoryData = {
-  title: 'Memperluas Akses Pendidikan Menengah di Wilayah Mauk',
-  subtitle: 'LATAR BELAKANG PENDIRIAN',
-  lead: 'MAS Raudlatul Hidayah didirikan pada tahun 2015 sebagai bagian dari ikhtiar Kementerian Agama bersama masyarakat Desa Tanjung Anom untuk menghadirkan layanan pendidikan menengah Islam yang berkualitas dan terjangkau bagi warga di wilayah Kecamatan Mauk, Kabupaten Tangerang, Provinsi Banten.\n\nKondisi geografis pesisir utara Kabupaten Tangerang yang berkembang pesat membuat para lulusan madrasah tsanawiyah dan sekolah menengah pertama di sekitar Tanjung Anom dan jalur Tanjung Kait sebelumnya harus menempuh jarak cukup jauh menuju sekolah lanjutan. Dukungan masyarakat setempat bersama tokoh agama kemudian mewujudkan berdirinya satuan pendidikan ini di Jl. Raya Tanjung Kait.\n\nSejak masa awal operasionalnya, MAS Raudlatul Hidayah secara bertahap melengkapi sarana ruang belajar, ruang perpustakaan, laboratorium komputer, serta lapangan olahraga dan upacara. Dengan nomor pokok sekolah nasional (NPSN) 69941777 dan izin operasional resmi Kementerian Agama, madrasah ini terus menjalankan perannya mendampingi peserta didik di wilayah Tangerang Utara.',
+  title: 'Dedikasi Membangun Generasi di Mauk',
+  subtitle: 'Tonggak Sejarah',
+  lead: 'Bermula dari kepedulian tulus para tokoh masyarakat terhadap masa depan pendidikan generasi muda di pesisir utara Kabupaten Tangerang, yayasan telah melangkah konsisten menghadirkan akses pendidikan Islam yang berkualitas, beradab, dan terjangkau.',
   paragraphs: [
-    'MAS Raudlatul Hidayah didirikan pada tahun 2015 sebagai bagian dari ikhtiar Kementerian Agama bersama masyarakat Desa Tanjung Anom untuk menghadirkan layanan pendidikan menengah Islam yang berkualitas dan terjangkau bagi warga di wilayah Kecamatan Mauk, Kabupaten Tangerang, Provinsi Banten.',
-    'Kondisi geografis pesisir utara Kabupaten Tangerang yang berkembang pesat membuat para lulusan madrasah tsanawiyah dan sekolah menengah pertama di sekitar Tanjung Anom dan jalur Tanjung Kait sebelumnya harus menempuh jarak cukup jauh menuju sekolah lanjutan. Dukungan masyarakat setempat bersama tokoh agama kemudian mewujudkan berdirinya satuan pendidikan ini di Jl. Raya Tanjung Kait.',
-    'Sejak masa awal operasionalnya, MAS Raudlatul Hidayah secara bertahap melengkapi sarana ruang belajar, ruang perpustakaan, laboratorium komputer, serta lapangan olahraga dan upacara. Dengan nomor pokok sekolah nasional (NPSN) 69941777 dan izin operasional resmi Kementerian Agama, madrasah ini terus menjalankan perannya mendampingi peserta didik di wilayah Tangerang Utara.',
+    'Bermula dari kepedulian tulus para tokoh masyarakat terhadap masa depan pendidikan generasi muda di pesisir utara Kabupaten Tangerang, yayasan telah melangkah konsisten menghadirkan akses pendidikan Islam yang berkualitas, beradab, dan terjangkau.',
   ],
   image: '/halaman-sekolah.jpeg',
   imageCaptionTitle: 'Lingkungan Gedung Utama MAS Raudlatul Hidayah',
@@ -81,20 +79,22 @@ export default function SejarahPage() {
       .then((data) => {
         if (data?.history) {
           const h = data.history;
+          const splitParas =
+            typeof h.lead === 'string' && h.lead.trim().length > 0
+              ? h.lead
+                  .split(/\n\s*\n/)
+                  .map((p: string) => p.trim())
+                  .filter(Boolean)
+              : Array.isArray(h.paragraphs) && h.paragraphs.length > 0
+              ? h.paragraphs
+              : [];
+
           setHistory((prev) => ({
             ...prev,
             title: typeof h.title === 'string' && h.title ? h.title : prev.title,
             subtitle: typeof h.subtitle === 'string' ? h.subtitle : prev.subtitle,
             lead: typeof h.lead === 'string' ? h.lead : prev.lead,
-            paragraphs:
-              Array.isArray(h.paragraphs) && h.paragraphs.length > 0
-                ? h.paragraphs
-                : h.lead
-                ? h.lead
-                    .split(/\n\s*\n/)
-                    .map((p: string) => p.trim())
-                    .filter(Boolean)
-                : prev.paragraphs,
+            paragraphs: splitParas.length > 0 ? splitParas : prev.paragraphs,
             image: h.image || prev.image,
             imageCaptionTitle: typeof h.imageCaptionTitle === 'string' ? h.imageCaptionTitle : prev.imageCaptionTitle,
             imageCaptionSubtitle:
@@ -116,17 +116,17 @@ export default function SejarahPage() {
 
   // Membagi paragraf secara otomatis jika data berasal dari teks tunggal 'lead'
   const renderedParagraphs = useMemo(() => {
-    if (Array.isArray(history.paragraphs) && history.paragraphs.length > 0) {
-      return history.paragraphs.filter((p) => typeof p === 'string' && p.trim().length > 0);
-    }
-    if (history.lead) {
+    if (typeof history.lead === 'string' && history.lead.trim().length > 0) {
       return history.lead
         .split(/\n\s*\n/)
         .map((p) => p.trim())
         .filter((p) => p.length > 0);
     }
+    if (Array.isArray(history.paragraphs) && history.paragraphs.length > 0) {
+      return history.paragraphs.filter((p) => typeof p === 'string' && p.trim().length > 0);
+    }
     return defaultHistory.paragraphs || [];
-  }, [history.paragraphs, history.lead]);
+  }, [history.lead, history.paragraphs]);
 
   return (
     <div className="min-h-[100dvh] flex flex-col bg-[#fbfbfa] font-sans text-slate-800">

@@ -103,7 +103,15 @@ export async function GET() {
       if (parsedProf && typeof parsedProf === 'object') {
         if (parsedProf.profile) data.profile = { ...(data.profile || {}), ...parsedProf.profile };
         if (parsedProf.visionMission) data.visionMission = { ...(data.visionMission || {}), ...parsedProf.visionMission };
-        if (parsedProf.history) data.history = { ...(data.history || {}), ...parsedProf.history };
+        if (parsedProf.history) {
+          data.history = { ...(data.history || {}), ...parsedProf.history };
+          if (typeof parsedProf.history.lead === 'string') {
+            data.history.paragraphs = parsedProf.history.lead
+              .split(/\n\s*\n/)
+              .map((p: string) => p.trim())
+              .filter(Boolean);
+          }
+        }
         if (Array.isArray(parsedProf.facilities)) {
           data.facilities = parsedProf.facilities;
         }
@@ -217,6 +225,11 @@ export async function POST(request: Request) {
       ? {
           ...(currentProf.history || currentFileData.history || {}),
           ...incoming.history,
+          paragraphs: typeof incoming.history.lead === 'string'
+            ? incoming.history.lead.split(/\n\s*\n/).map((p: string) => p.trim()).filter(Boolean)
+            : (Array.isArray(incoming.history.paragraphs)
+                ? incoming.history.paragraphs
+                : (currentProf.history?.paragraphs || currentFileData.history?.paragraphs || [])),
           milestones: Array.isArray(incoming.history.milestones)
             ? incoming.history.milestones
             : (currentProf.history?.milestones || currentFileData.history?.milestones || []),
