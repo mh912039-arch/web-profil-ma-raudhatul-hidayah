@@ -37,6 +37,7 @@ interface MessagesTabProps {
   messages: ContactMessage[];
   onMarkRead: (id: string) => Promise<void>;
   onDeleteMessage: (id: string) => Promise<void>;
+  onDeleteAllMessages?: () => Promise<void>;
   onSaveMessage?: (msg: Partial<ContactMessage>) => Promise<void>;
   onRefresh?: () => Promise<void>;
   isSaving: boolean;
@@ -46,6 +47,7 @@ export const MessagesTab: React.FC<MessagesTabProps> = ({
   messages,
   onMarkRead,
   onDeleteMessage,
+  onDeleteAllMessages,
   onSaveMessage,
   onRefresh,
   isSaving,
@@ -56,6 +58,8 @@ export const MessagesTab: React.FC<MessagesTabProps> = ({
   const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<ContactMessage | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isDeleteAllOpen, setIsDeleteAllOpen] = useState(false);
+  const [isDeletingAll, setIsDeletingAll] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newMsgForm, setNewMsgForm] = useState({
     name: '',
@@ -140,6 +144,20 @@ export const MessagesTab: React.FC<MessagesTabProps> = ({
     }
   };
 
+  const handleConfirmDeleteAll = async () => {
+    if (!onDeleteAllMessages) return;
+    setIsDeletingAll(true);
+    try {
+      await onDeleteAllMessages();
+      setSelectedMessage(null);
+      setIsDeleteAllOpen(false);
+    } catch (err) {
+      console.error('Failed to delete all messages:', err);
+    } finally {
+      setIsDeletingAll(false);
+    }
+  };
+
   const getStatusBadge = (status: ContactMessage['status']) => {
     switch (status) {
       case 'unread':
@@ -219,6 +237,17 @@ export const MessagesTab: React.FC<MessagesTabProps> = ({
             >
               <RefreshCw className={`w-3.5 h-3.5 text-slate-500 ${isRefreshingLocal ? 'animate-spin' : ''}`} />
               <span>{isRefreshingLocal ? 'Menyegarkan...' : 'Segarkan'}</span>
+            </button>
+          )}
+
+          {messages.length > 0 && onDeleteAllMessages && (
+            <button
+              type="button"
+              onClick={() => setIsDeleteAllOpen(true)}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200/80 text-xs font-bold transition-all active:scale-95 shadow-2xs"
+            >
+              <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+              <span>Hapus Semua</span>
             </button>
           )}
 
@@ -551,6 +580,19 @@ export const MessagesTab: React.FC<MessagesTabProps> = ({
         itemName={deleteTarget ? `Pesan dari "${deleteTarget.name}" (${deleteTarget.subject || 'Tanpa Subjek'})` : undefined}
         itemType="Buku Tamu / Aspirasi"
         isLoading={isDeleting}
+      />
+
+      {/* Modal Konfirmasi Hapus Semua Pesan Masuk */}
+      <ConfirmDeleteModal
+        isOpen={isDeleteAllOpen}
+        onClose={() => setIsDeleteAllOpen(false)}
+        onConfirm={handleConfirmDeleteAll}
+        title="Hapus Seluruh Pesan Masuk"
+        description="Apakah Anda yakin ingin menghapus seluruh pesan masuk dan buku tamu? Seluruh pesan yang tersimpan di database akan dihapus permanen dan tidak dapat dipulihkan."
+        itemName={`Semua ${messages.length} Pesan Masuk`}
+        itemType="Semua Data Pesan Masuk"
+        confirmLabel="Hapus Semua Sekarang"
+        isLoading={isDeletingAll}
       />
     </div>
   );

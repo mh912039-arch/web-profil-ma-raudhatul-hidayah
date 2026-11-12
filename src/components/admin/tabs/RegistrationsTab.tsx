@@ -62,6 +62,7 @@ interface RegistrationsTabProps {
   onUpdateApplicant?: (applicant: PpdbApplicant) => Promise<void>;
   onUpdateStatus: (id: string, newStatus: PpdbApplicant['status']) => Promise<void>;
   onDeleteApplicant?: (id: string) => Promise<void>;
+  onDeleteAllApplicants?: () => Promise<void>;
   isSaving: boolean;
 }
 
@@ -183,6 +184,7 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
   onUpdateApplicant,
   onUpdateStatus,
   onDeleteApplicant,
+  onDeleteAllApplicants,
   isSaving,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -193,6 +195,8 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
   const [detailApplicant, setDetailApplicant] = useState<PpdbApplicant | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<PpdbApplicant | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isDeleteAllOpen, setIsDeleteAllOpen] = useState(false);
+  const [isDeletingAll, setIsDeletingAll] = useState(false);
 
   // WhatsApp Notification Dialog State
   const [waModal, setWaModal] = useState<{
@@ -289,6 +293,21 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
       alert('Gagal menghapus data calon santri.');
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  const handleConfirmDeleteAll = async () => {
+    if (!onDeleteAllApplicants) return;
+    setIsDeletingAll(true);
+    try {
+      await onDeleteAllApplicants();
+      setDetailApplicant(null);
+      setIsDeleteAllOpen(false);
+    } catch (err) {
+      console.error('Failed to delete all applicants:', err);
+      alert('Gagal menghapus seluruh data pendaftar.');
+    } finally {
+      setIsDeletingAll(false);
     }
   };
 
@@ -427,14 +446,27 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={handleOpenAdd}
-          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-sans text-xs sm:text-[13px] font-bold transition-all shadow-xs active:scale-95 shrink-0 self-start sm:self-auto"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Input Pendaftar</span>
-        </button>
+        <div className="flex items-center gap-2 shrink-0 self-start sm:self-auto flex-wrap">
+          {applicants.length > 0 && onDeleteAllApplicants && (
+            <button
+              type="button"
+              onClick={() => setIsDeleteAllOpen(true)}
+              className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200/80 font-sans text-xs sm:text-[13px] font-bold transition-all shadow-2xs active:scale-95"
+            >
+              <Trash2 className="w-4 h-4 text-rose-600" />
+              <span>Hapus Semua</span>
+            </button>
+          )}
+
+          <button
+            type="button"
+            onClick={handleOpenAdd}
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-sans text-xs sm:text-[13px] font-bold transition-all shadow-xs active:scale-95 shrink-0"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Input Pendaftar</span>
+          </button>
+        </div>
       </div>
 
       {/* Filter & Search Bar */}
@@ -1372,6 +1404,19 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
         itemName={deleteTarget ? `${deleteTarget.full_name} (No: ${deleteTarget.registration_number})` : undefined}
         itemType="Data PPDB Online"
         isLoading={isDeleting}
+      />
+
+      {/* Modal Konfirmasi Hapus Seluruh Calon Santri & Berkas */}
+      <ConfirmDeleteModal
+        isOpen={isDeleteAllOpen}
+        onClose={() => setIsDeleteAllOpen(false)}
+        onConfirm={handleConfirmDeleteAll}
+        title="Hapus Seluruh Pendaftar & Berkas"
+        description="Apakah Anda yakin ingin menghapus seluruh pendaftar PPDB? Tindakan ini akan menghapus permanen seluruh data calon santri di database dan seluruh berkas fisik terunggah (KK, Akta, Ijazah, Afirmasi, Prestasi) dari server storage."
+        itemName={`Semua ${applicants.length} Calon Santri & Berkas Terunggah`}
+        itemType="Semua Data PPDB & Berkas Storage"
+        confirmLabel="Hapus Semua Permanen"
+        isLoading={isDeletingAll}
       />
     </div>
   );

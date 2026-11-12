@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { checkEndpointRateLimit } from '@/lib/rateLimiter';
+import { requireAuth } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -318,6 +319,37 @@ export async function POST(req: NextRequest) {
       } catch {}
     }
 
+    // Reset action support in POST
+    if (body.action === 'reset') {
+      const auth = await requireAuth(['admin'], req);
+      if (!auth.authorized) {
+        return (
+          auth.response ||
+          NextResponse.json(
+            { error: 'Akses ditolak: Hanya admin yang dapat mereset data statistik.' },
+            { status: 401 }
+          )
+        );
+      }
+
+      const emptyData: VisitorData = {
+        totalAccumulated: 0,
+        dailyRecords: {},
+        recentLogs: [],
+      };
+
+      await saveVisitorMetrics(emptyData);
+
+      return NextResponse.json(
+        {
+          success: true,
+          message: 'Statistik pengunjung berhasil direset menjadi 0.',
+          totalAccumulated: 0,
+        },
+        { headers: noCacheHeaders }
+      );
+    }
+
     const reqPath = body.path || '/';
     const referrer = body.referrer || '';
     const isSimulation = Boolean(body.isSimulation);
@@ -406,5 +438,46 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     console.error('Error tracking visitor:', err);
     return NextResponse.json({ success: false, error: 'Failed to record visit' }, { status: 500 });
+  }
+}
+
+// ====================================================================
+// DELETE /api/visitors -> Reset all visitor metrics to 0 (Admin only)
+// ====================================================================
+export async function DELETE(req: NextRequest) {
+  try {
+    const auth = await requireAuth(['admin'], req);
+    if (!auth.authorized) {
+      return (
+        auth.response ||
+        NextResponse.json(
+          { error: 'Akses ditolak: Hanya admin yang dapat mereset data statistik.' },
+          { status: 401 }
+        )
+      );
+    }
+
+    const emptyData: VisitorData = {
+      totalAccumulated: 0,
+      dailyRecords: {},
+      recentLogs: [],
+    };
+
+    await saveVisitorMetrics(emptyData);
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: 'Statistik pengunjung berhasil direset menjadi 0.',
+        totalAccumulated: 0,
+      },
+      { headers: noCacheHeaders }
+    );
+  } catch (err) {
+    console.error('Error resetting visitor metrics:', err);
+    return NextResponse.json(
+      { success: false, error: 'Gagal mereset data statistik pengunjung.' },
+      { status: 500 }
+    );
   }
 }

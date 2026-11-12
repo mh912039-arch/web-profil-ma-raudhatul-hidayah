@@ -270,6 +270,34 @@ export async function DELETE(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
+    const all = searchParams.get('all') === 'true';
+
+    // Opsi: Hapus Seluruh Pesan Masuk Sekaligus
+    if (all) {
+      // 1. Hapus seluruh data dari Supabase
+      try {
+        const { error: supaErr } = await supabaseAdmin
+          .from('contact_messages')
+          .delete()
+          .not('id', 'is', null);
+
+        if (supaErr) {
+          console.warn('Supabase delete all contact_messages notice:', supaErr);
+        }
+      } catch (err) {
+        console.warn('Supabase delete all contact_messages catch:', err);
+      }
+
+      // 2. Kosongkan cache file JSON lokal
+      try {
+        await fs.writeFile(dataFilePath, JSON.stringify([], null, 2), 'utf-8');
+      } catch (err) {}
+
+      return NextResponse.json({
+        success: true,
+        message: 'Seluruh pesan masuk berhasil dihapus dari database.',
+      });
+    }
 
     if (!id) {
       return NextResponse.json({ success: false, message: 'ID diperlukan' }, { status: 400 });
@@ -288,7 +316,7 @@ export async function DELETE(request: Request) {
       await fs.writeFile(dataFilePath, JSON.stringify(messages, null, 2), 'utf-8');
     } catch (err) {}
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, message: 'Pesan berhasil dihapus.' });
   } catch (error: any) {
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }

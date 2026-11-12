@@ -13,7 +13,9 @@ import {
   Compass,
   FileText,
   Radio,
+  RotateCcw,
 } from 'lucide-react';
+import { ConfirmDeleteModal } from '../ConfirmDeleteModal';
 
 interface DistributionItem {
   label: string;
@@ -54,6 +56,8 @@ export const VisitorAnalyticsSection: React.FC = () => {
   const [data, setData] = useState<VisitorMetricsData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSimulating, setIsSimulating] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
+  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
 
   const fetchMetrics = useCallback(async () => {
@@ -106,6 +110,32 @@ export const VisitorAnalyticsSection: React.FC = () => {
       setTimeout(() => setFeedback(null), 3500);
     } finally {
       setIsSimulating(false);
+    }
+  };
+
+  // Handler: Reset All Visitor Metrics to 0
+  const handleResetMetrics = async () => {
+    setIsResetting(true);
+    try {
+      const res = await fetch('/api/visitors', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const result = await res.json();
+      if (res.ok && result.success) {
+        setFeedback('Statistik pengunjung berhasil direset menjadi 0.');
+        setIsResetModalOpen(false);
+        await fetchMetrics();
+        setTimeout(() => setFeedback(null), 3500);
+      } else {
+        setFeedback(result.error || 'Gagal mereset statistik.');
+        setTimeout(() => setFeedback(null), 3500);
+      }
+    } catch {
+      setFeedback('Terjadi kesalahan koneksi saat mereset statistik.');
+      setTimeout(() => setFeedback(null), 3500);
+    } finally {
+      setIsResetting(false);
     }
   };
 

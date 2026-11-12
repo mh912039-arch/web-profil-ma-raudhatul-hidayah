@@ -758,6 +758,27 @@ export default function AdminDashboardPage() {
     }
   };
 
+  // Handler: Delete All Contact Messages
+  const handleDeleteAllMessages = async () => {
+    try {
+      const res = await fetch('/api/contact?all=true', { method: 'DELETE' });
+      const resJson = await res.json().catch(() => null);
+      if (res.ok && (resJson?.success ?? true)) {
+        setMessages([]);
+        showToast('success', 'Seluruh pesan masuk berhasil dihapus dari database.');
+      } else {
+        const errMsg = resJson?.message || 'Gagal menghapus seluruh pesan masuk.';
+        showToast('error', errMsg);
+        throw new Error(errMsg);
+      }
+    } catch (err: any) {
+      if (!err?.message) {
+        showToast('error', 'Gagal menghapus seluruh pesan masuk.');
+      }
+      throw err;
+    }
+  };
+
   // Handler: Save / Create Contact Message (Manual Entry)
   const handleSaveMessage = async (msg: Partial<ContactMessage>) => {
     setIsSaving(true);
@@ -874,6 +895,30 @@ export default function AdminDashboardPage() {
       }
     } catch (err) {
       showToast('error', 'Gagal menghapus data pendaftar.');
+    }
+  };
+
+  // Handler: Delete All PPDB Applicants & Document Files
+  const handleDeleteAllApplicants = async () => {
+    try {
+      const res = await fetch('/api/registrations?all=true', {
+        method: 'DELETE',
+        credentials: 'same-origin',
+      });
+      const resJson = await res.json().catch(() => null);
+      if (res.ok && (resJson?.success ?? true)) {
+        setApplicants([]);
+        showToast('success', 'Seluruh data pendaftar dan berkas berhasil dihapus.');
+      } else {
+        const errMsg = resJson?.message || 'Gagal menghapus seluruh data pendaftar.';
+        showToast('error', errMsg);
+        throw new Error(errMsg);
+      }
+    } catch (err: any) {
+      if (!err?.message) {
+        showToast('error', 'Gagal menghapus seluruh data pendaftar.');
+      }
+      throw err;
     }
   };
 
@@ -1152,6 +1197,7 @@ export default function AdminDashboardPage() {
               onUpdateApplicant={handleUpdateApplicant}
               onUpdateStatus={handleUpdateApplicantStatus}
               onDeleteApplicant={handleDeleteApplicant}
+              onDeleteAllApplicants={handleDeleteAllApplicants}
               isSaving={isSaving}
             />
           )}
@@ -1203,6 +1249,7 @@ export default function AdminDashboardPage() {
               messages={messages}
               onMarkRead={handleMarkMessageRead}
               onDeleteMessage={handleDeleteMessage}
+              onDeleteAllMessages={handleDeleteAllMessages}
               onSaveMessage={handleSaveMessage}
               onRefresh={loadData}
               isSaving={isSaving}

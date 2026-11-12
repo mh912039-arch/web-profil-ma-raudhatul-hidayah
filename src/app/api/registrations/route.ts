@@ -3,7 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { supabaseServer } from '@/lib/supabaseServer';
 import { requireAuth, getServerSession } from '@/lib/auth';
-import { deleteStorageFile } from '@/lib/storageHelper';
+import { deleteStorageFile, deleteMultipleStorageFiles } from '@/lib/storageHelper';
 import { checkEndpointRateLimit } from '@/lib/rateLimiter';
 import { sanitizeText, sanitizePhone } from '@/lib/sanitizer';
 import { ppdbRegistrationSchema } from '@/lib/schemas';
@@ -427,6 +427,83 @@ export async function DELETE(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
+    const all = searchParams.get('all') === 'true';
+
+    // Opsi: Hapus Seluruh Data Pendaftar Beserta Seluruh Berkas Dokumen Fisik
+    if (all) {
+      const docUrls: string[] = [];
+
+      // 1. Kumpulkan seluruh URL dokumen dari Supabase
+      try {
+        const { data: allRows } = await supabaseServer
+          .from('ppdb_registrations')
+          .select('documents');
+
+        if (allRows && Array.isArray(allRows)) {
+          for (const row of allRows) {
+            if (row.documents && typeof row.documents === 'object') {
+              const docs = row.documents as Record<string, string>;
+              if (docs.kk_url) docUrls.push(docs.kk_url);
+              if (docs.akta_url) docUrls.push(docs.akta_url);
+              if (docs.ijazah_url) docUrls.push(docs.ijazah_url);
+              if (docs.afirmasi_url) docUrls.push(docs.afirmasi_url);
+              if (docs.prestasi_url) docUrls.push(docs.prestasi_url);
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('Gagal membaca daftar dokumen dari Supabase sebelum batch delete:', err);
+      }
+
+      // 2. Kumpulkan juga URL dokumen dari file cadangan lokal
+      try {
+        const fileContent = await fs.readFile(dataFilePath, 'utf-8');
+        const list: PpdbApplicantItem[] = JSON.parse(fileContent);
+        for (const app of list) {
+          if (app.documents) {
+            if (app.documents.kk_url) docUrls.push(app.documents.kk_url);
+            if (app.documents.akta_url) docUrls.push(app.documents.akta_url);
+            if (app.documents.ijazah_url) docUrls.push(app.documents.ijazah_url);
+            if (app.documents.afirmasi_url) docUrls.push(app.documents.afirmasi_url);
+            if (app.documents.prestasi_url) docUrls.push(app.documents.prestasi_url);
+          }
+        }
+      } catch (_) {}
+
+      // 3. Hapus massal seluruh berkas dokumen dari Supabase Storage Bucket 'articles' dan /public/uploads/
+      if (docUrls.length > 0) {
+        await deleteMultipleStorageFiles(docUrls);
+      }
+
+      // 4. Hapus seluruh data baris dari database Supabase ppdb_registrations
+      try {
+        const { error: supaErr } = await supabaseServer
+          .from('ppdb_registrations')
+          .delete()
+          .not('id', 'is', null);
+
+        if (supaErr) {
+          console.error('Supabase delete all applicants error:', supaErr);
+          throw new Error(supaErr.message);
+        }
+      } catch (err: any) {
+        console.error('Failed to batch delete from Supabase ppdb_registrations:', err);
+        throw err;
+      }
+
+      // 5. Kosongkan cache file JSON lokal
+      try {
+        await fs.writeFile(dataFilePath, JSON.stringify([], null, 2), 'utf-8');
+      } catch (_) {}
+
+      return NextResponse.json(
+        {
+          success: true,
+          message: 'Seluruh data pendaftar dan berkas berhasil dihapus secara permanen.',
+        },
+        { headers: noCacheHeaders }
+      );
+    }
 
     if (!id) {
       return NextResponse.json(

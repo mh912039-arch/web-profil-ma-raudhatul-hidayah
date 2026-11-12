@@ -77,3 +77,45 @@ export async function deleteStorageFile(urlOrPath: string | null | undefined): P
 
   return supaDeleted || localDeleted;
 }
+
+/**
+ * Hapus beberapa berkas sekaligus dari Supabase Storage dan penyimpanan lokal.
+ * Sangat efisien untuk operasi batch 'Hapus Semua' tanpa melakukan request satu per satu.
+ */
+export async function deleteMultipleStorageFiles(urls: (string | null | undefined)[]): Promise<number> {
+  const fileSet = new Set<string>();
+  for (const u of urls) {
+    const raw = extractStorageFilename(u);
+    if (raw) {
+      const base = path.basename(raw);
+      if (base && base !== '.' && base !== '..') {
+        fileSet.add(base);
+      }
+    }
+  }
+
+  const filenames = Array.from(fileSet);
+  if (filenames.length === 0) return 0;
+
+  // 1. Hapus massal dari Supabase Storage Bucket 'articles'
+  try {
+    const { error } = await supabaseAdmin.storage.from('articles').remove(filenames);
+    if (error) {
+      console.warn('Pemberitahuan batch remove Supabase storage:', error.message);
+    }
+  } catch (err: any) {
+    console.warn('Pengecualian batch delete Supabase storage:', err?.message);
+  }
+
+  // 2. Hapus salinan lokal di public/uploads/ (jika ada)
+  for (const fn of filenames) {
+    try {
+      const localFilePath = path.join(process.cwd(), 'public', 'uploads', fn);
+      await fs.unlink(localFilePath);
+    } catch {
+      // Normal jika berkas tidak berada di disk lokal
+    }
+  }
+
+  return filenames.length;
+}
