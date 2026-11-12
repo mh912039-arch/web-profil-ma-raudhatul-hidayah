@@ -41,6 +41,95 @@ export interface ProfileMilestone {
   desc: string;
 }
 
+export interface VisionIndicator {
+  number: string;
+  title: string;
+  desc: string;
+}
+
+export interface StructuredMission {
+  number: string;
+  title: string;
+  desc: string;
+}
+
+export interface SchoolGoal {
+  number: string;
+  text: string;
+}
+
+export const defaultVisionBadge = 'RUMUSAN VISI SATUAN PENDIDIKAN';
+export const defaultVision =
+  'Terwujudnya insan pembelajar yang berakhlak mulia, unggul dalam prestasi, terampil dalam teknologi, dan peduli kelestarian lingkungan hidup.';
+
+export const defaultVisionIndicators: VisionIndicator[] = [
+  {
+    number: '01',
+    title: 'Berakhlak Mulia',
+    desc: 'Pembiasaan ibadah, kejujuran, sopan santun, dan sikap saling menghormati dalam keseharian di sekolah.',
+  },
+  {
+    number: '02',
+    title: 'Unggul dalam Prestasi',
+    desc: 'Peningkatan capaian belajar akademik serta partisipasi aktif dalam kompetisi olahraga, sains, dan seni.',
+  },
+  {
+    number: '03',
+    title: 'Terampil dalam Teknologi',
+    desc: 'Penguasaan perangkat komputer dasar dan pemanfaatan media digital untuk mendukung pembelajaran.',
+  },
+  {
+    number: '04',
+    title: 'Peduli Lingkungan Hidup',
+    desc: 'Penataan lingkungan sekolah yang bersih, hijau, sehat, dan bebas dari perundungan.',
+  },
+];
+
+export const defaultMissionTitle = 'Misi Satuan Pendidikan';
+export const defaultMissionSubtitle =
+  'Langkah penyelenggaraan pendidikan untuk mewujudkan visi sekolah.';
+
+export const defaultStructuredMissions: StructuredMission[] = [
+  {
+    number: '01',
+    title: 'Pembinaan Keimanan & Budi Pekerti',
+    desc: 'Menanamkan keimanan, ketakwaan, dan akhlak mulia melalui pembiasaan ibadah rutin serta keteladanan sikap warga sekolah.',
+  },
+  {
+    number: '02',
+    title: 'Pelaksanaan Pembelajaran Kurikulum Merdeka',
+    desc: 'Menyelenggarakan kegiatan belajar mengajar yang aktif, terstruktur, dan memperhatikan perkembangan kompetensi setiap peserta didik.',
+  },
+  {
+    number: '03',
+    title: 'Pengembangan Minat & Bakat Siswa',
+    desc: 'Memfasilitasi latihan rutin ekstrakurikuler kepanduan Pramuka, olahraga, kesenian tradisional, dan kegiatan kesiswaan.',
+  },
+];
+
+export const defaultGoalsTitle = 'Tujuan Sekolah';
+export const defaultGoalsSubtitle =
+  'Capaian nyata yang ditargetkan dalam penyelenggaraan kurikulum.';
+
+export const defaultGoals: SchoolGoal[] = [
+  {
+    number: '01',
+    text: 'Meningkatnya disiplin kehadiran, ketertiban belajar, dan perilaku santun peserta didik di dalam maupun di luar lingkungan sekolah.',
+  },
+  {
+    number: '02',
+    text: 'Tercapainya ketuntasan belajar seluruh mata pelajaran sesuai standar kompetensi lulusan jenjang Sekolah Menengah Pertama.',
+  },
+  {
+    number: '03',
+    text: 'Terlaksananya Asesmen Nasional Berbasis Komputer (ANBK) dan pembelajaran berbasis TIK secara mandiri di laboratorium sekolah.',
+  },
+  {
+    number: '04',
+    text: 'Terwujudnya prestasi siswa pada ajang perlombaan tingkat Kecamatan Cibeber maupun tingkat Kabupaten Lebak.',
+  },
+];
+
 export interface FullProfileData {
   profile: {
     name: string;
@@ -70,9 +159,15 @@ export interface FullProfileData {
   };
   visionMission: {
     vision: string;
+    visionBadge?: string;
+    visionIndicators?: VisionIndicator[];
     missions: string[];
     missionTitle?: string;
     missionSubtitle?: string;
+    structuredMissions?: StructuredMission[];
+    goalsTitle?: string;
+    goalsSubtitle?: string;
+    goals?: SchoolGoal[];
     pageTitle?: string;
     pageSubtitle?: string;
     pillars?: { title: string; desc: string; icon: string }[];
@@ -137,15 +232,29 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
       navGuideParking: data.profile?.navGuideParking || 'Halaman sekolah menyediakan area parkir yang tertib untuk motor maupun mobil wali murid.',
     },
     visionMission: {
-      vision: data.visionMission?.vision || 'Terwujudnya generasi santri yang beriman dan bertakwa, berakhlak mulia, unggul dalam prestasi akademik dan non-akademik, serta berwawasan lingkungan dan keislaman yang moderat.',
-      missions: data.visionMission?.missions || [
-        'Menyelenggarakan proses pembelajaran integratif antara Kurikulum Nasional dan kurikulum kepesantrenan.',
-        'Mengembangkan budaya riset ilmiah, penalaran kritis, dan literasi digital yang berlandaskan etika Islam.',
-      ],
-      missionTitle: data.visionMission?.missionTitle || 'Misi Pokok Penyelenggaraan Sekolah',
-      missionSubtitle: data.visionMission?.missionSubtitle || 'Langkah konkret institusi dalam mengejawantahkan visi luhur ke dalam iklim pembelajaran, kultur madrasah, dan interaksi sosial harian peserta didik.',
+      vision: data.visionMission?.vision || defaultVision,
+      visionBadge: data.visionMission?.visionBadge || defaultVisionBadge,
+      visionIndicators:
+        Array.isArray(data.visionMission?.visionIndicators) && data.visionMission.visionIndicators.length > 0
+          ? data.visionMission.visionIndicators
+          : defaultVisionIndicators,
+      missions: data.visionMission?.missions || [],
+      missionTitle: data.visionMission?.missionTitle || defaultMissionTitle,
+      missionSubtitle: data.visionMission?.missionSubtitle || defaultMissionSubtitle,
+      structuredMissions:
+        Array.isArray(data.visionMission?.structuredMissions) && data.visionMission.structuredMissions.length > 0
+          ? data.visionMission.structuredMissions
+          : defaultStructuredMissions,
+      goalsTitle: data.visionMission?.goalsTitle || defaultGoalsTitle,
+      goalsSubtitle: data.visionMission?.goalsSubtitle || defaultGoalsSubtitle,
+      goals:
+        Array.isArray(data.visionMission?.goals) && data.visionMission.goals.length > 0
+          ? data.visionMission.goals
+          : defaultGoals,
       pageTitle: data.visionMission?.pageTitle || 'Visi & Misi Madrasah',
-      pageSubtitle: data.visionMission?.pageSubtitle || 'Arah haluan nilai pendidikan, visi kelembagaan, misi pembelajaran kontekstual, dan pilar keunggulan santri MAS Raudlatul Hidayah.',
+      pageSubtitle:
+        data.visionMission?.pageSubtitle ||
+        'Arah haluan nilai pendidikan, visi kelembagaan, misi pembelajaran kontekstual, dan pilar keunggulan santri MAS Raudlatul Hidayah.',
       pillars: data.visionMission?.pillars || [],
     },
     history: {
@@ -203,12 +312,29 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
           navGuideParking: data.profile.navGuideParking || 'Halaman sekolah menyediakan area parkir yang tertib untuk motor maupun mobil wali murid.',
         },
         visionMission: {
-          vision: data.visionMission?.vision || '',
+          vision: data.visionMission?.vision || defaultVision,
+          visionBadge: data.visionMission?.visionBadge || defaultVisionBadge,
+          visionIndicators:
+            Array.isArray(data.visionMission?.visionIndicators) && data.visionMission.visionIndicators.length > 0
+              ? data.visionMission.visionIndicators
+              : defaultVisionIndicators,
           missions: data.visionMission?.missions || [],
-          missionTitle: data.visionMission?.missionTitle || 'Misi Pokok Penyelenggaraan Sekolah',
-          missionSubtitle: data.visionMission?.missionSubtitle || 'Langkah konkret institusi dalam mengejawantahkan visi luhur ke dalam iklim pembelajaran, kultur madrasah, dan interaksi sosial harian peserta didik.',
+          missionTitle: data.visionMission?.missionTitle || defaultMissionTitle,
+          missionSubtitle: data.visionMission?.missionSubtitle || defaultMissionSubtitle,
+          structuredMissions:
+            Array.isArray(data.visionMission?.structuredMissions) && data.visionMission.structuredMissions.length > 0
+              ? data.visionMission.structuredMissions
+              : defaultStructuredMissions,
+          goalsTitle: data.visionMission?.goalsTitle || defaultGoalsTitle,
+          goalsSubtitle: data.visionMission?.goalsSubtitle || defaultGoalsSubtitle,
+          goals:
+            Array.isArray(data.visionMission?.goals) && data.visionMission.goals.length > 0
+              ? data.visionMission.goals
+              : defaultGoals,
           pageTitle: data.visionMission?.pageTitle || 'Visi & Misi Madrasah',
-          pageSubtitle: data.visionMission?.pageSubtitle || 'Arah haluan nilai pendidikan, visi kelembagaan, misi pembelajaran kontekstual, dan pilar keunggulan santri MAS Raudlatul Hidayah.',
+          pageSubtitle:
+            data.visionMission?.pageSubtitle ||
+            'Arah haluan nilai pendidikan, visi kelembagaan, misi pembelajaran kontekstual, dan pilar keunggulan santri MAS Raudlatul Hidayah.',
           pillars: data.visionMission?.pillars || [],
         },
         history: {
@@ -319,6 +445,167 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
         missions: prev.visionMission.missions.filter((_, i) => i !== index),
       },
     }));
+  };
+
+  // Vision Indicator handlers
+  const handleVisionIndicatorChange = (
+    index: number,
+    field: keyof VisionIndicator,
+    val: string
+  ) => {
+    setFormData((prev) => {
+      const currentList =
+        prev.visionMission.visionIndicators && prev.visionMission.visionIndicators.length > 0
+          ? [...prev.visionMission.visionIndicators]
+          : [...defaultVisionIndicators];
+      currentList[index] = { ...currentList[index], [field]: val };
+      return {
+        ...prev,
+        visionMission: {
+          ...prev.visionMission,
+          visionIndicators: currentList,
+        },
+      };
+    });
+  };
+
+  const handleAddVisionIndicator = () => {
+    setFormData((prev) => {
+      const currentList =
+        prev.visionMission.visionIndicators && prev.visionMission.visionIndicators.length > 0
+          ? [...prev.visionMission.visionIndicators]
+          : [...defaultVisionIndicators];
+      const nextNum = String(currentList.length + 1).padStart(2, '0');
+      return {
+        ...prev,
+        visionMission: {
+          ...prev.visionMission,
+          visionIndicators: [...currentList, { number: nextNum, title: '', desc: '' }],
+        },
+      };
+    });
+  };
+
+  const handleRemoveVisionIndicator = (index: number) => {
+    setFormData((prev) => {
+      const currentList =
+        prev.visionMission.visionIndicators && prev.visionMission.visionIndicators.length > 0
+          ? [...prev.visionMission.visionIndicators]
+          : [...defaultVisionIndicators];
+      return {
+        ...prev,
+        visionMission: {
+          ...prev.visionMission,
+          visionIndicators: currentList.filter((_, i) => i !== index),
+        },
+      };
+    });
+  };
+
+  // Structured Mission handlers
+  const handleStructuredMissionChange = (
+    index: number,
+    field: keyof StructuredMission,
+    val: string
+  ) => {
+    setFormData((prev) => {
+      const currentList =
+        prev.visionMission.structuredMissions && prev.visionMission.structuredMissions.length > 0
+          ? [...prev.visionMission.structuredMissions]
+          : [...defaultStructuredMissions];
+      currentList[index] = { ...currentList[index], [field]: val };
+      return {
+        ...prev,
+        visionMission: {
+          ...prev.visionMission,
+          structuredMissions: currentList,
+        },
+      };
+    });
+  };
+
+  const handleAddStructuredMission = () => {
+    setFormData((prev) => {
+      const currentList =
+        prev.visionMission.structuredMissions && prev.visionMission.structuredMissions.length > 0
+          ? [...prev.visionMission.structuredMissions]
+          : [...defaultStructuredMissions];
+      const nextNum = String(currentList.length + 1).padStart(2, '0');
+      return {
+        ...prev,
+        visionMission: {
+          ...prev.visionMission,
+          structuredMissions: [...currentList, { number: nextNum, title: '', desc: '' }],
+        },
+      };
+    });
+  };
+
+  const handleRemoveStructuredMission = (index: number) => {
+    setFormData((prev) => {
+      const currentList =
+        prev.visionMission.structuredMissions && prev.visionMission.structuredMissions.length > 0
+          ? [...prev.visionMission.structuredMissions]
+          : [...defaultStructuredMissions];
+      return {
+        ...prev,
+        visionMission: {
+          ...prev.visionMission,
+          structuredMissions: currentList.filter((_, i) => i !== index),
+        },
+      };
+    });
+  };
+
+  // Goal handlers
+  const handleGoalChange = (index: number, field: keyof SchoolGoal, val: string) => {
+    setFormData((prev) => {
+      const currentList =
+        prev.visionMission.goals && prev.visionMission.goals.length > 0
+          ? [...prev.visionMission.goals]
+          : [...defaultGoals];
+      currentList[index] = { ...currentList[index], [field]: val };
+      return {
+        ...prev,
+        visionMission: {
+          ...prev.visionMission,
+          goals: currentList,
+        },
+      };
+    });
+  };
+
+  const handleAddGoal = () => {
+    setFormData((prev) => {
+      const currentList =
+        prev.visionMission.goals && prev.visionMission.goals.length > 0
+          ? [...prev.visionMission.goals]
+          : [...defaultGoals];
+      const nextNum = `${String(currentList.length + 1).padStart(2, '0')}.`;
+      return {
+        ...prev,
+        visionMission: {
+          ...prev.visionMission,
+          goals: [...currentList, { number: nextNum, text: '' }],
+        },
+      };
+    });
+  };
+
+  const handleRemoveGoal = (index: number) => {
+    setFormData((prev) => {
+      const currentList =
+        prev.visionMission.goals && prev.visionMission.goals.length > 0
+          ? [...prev.visionMission.goals]
+          : [...defaultGoals];
+      return {
+        ...prev,
+        visionMission: {
+          ...prev.visionMission,
+          goals: currentList.filter((_, i) => i !== index),
+        },
+      };
+    });
   };
 
   // History text change
@@ -465,7 +752,23 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onSaveFullProfile(formData);
+    const curStructured =
+      formData.visionMission.structuredMissions && formData.visionMission.structuredMissions.length > 0
+        ? formData.visionMission.structuredMissions
+        : defaultStructuredMissions;
+
+    const finalMissions = curStructured.map((m) =>
+      m.desc ? `${m.title}: ${m.desc}` : m.title
+    );
+
+    const payload: FullProfileData = {
+      ...formData,
+      visionMission: {
+        ...formData.visionMission,
+        missions: finalMissions.length > 0 ? finalMissions : formData.visionMission.missions,
+      },
+    };
+    await onSaveFullProfile(payload);
   };
 
   return (
@@ -1014,104 +1317,346 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
         </div>
       )}
 
-      {/* SUB-TAB 2: VISI & MISI */}
+      {/* SUB-TAB 2: VISI, MISI & TUJUAN */}
       {activeSubTab === 'visi' && (
-        <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs space-y-6">
-          <h4 className="font-serif text-[16px] font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
-            <Compass className="w-5 h-5 text-indigo-600" />
-            <span>Visi &amp; Misi Madrasah (/profil/visi-misi)</span>
-          </h4>
+        <div className="space-y-6">
+          {/* BAGIAN 1: RUMUSAN VISI & 4 INDIKATOR (SESUAI SS 2) */}
+          <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs space-y-6">
+            <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
+              <h4 className="font-serif text-[16px] font-bold text-slate-900 flex items-center gap-2">
+                <Compass className="w-5 h-5 text-emerald-700" />
+                <span>1. Rumusan Visi &amp; Indikator Capaian (Sesuai Tampilan Atas)</span>
+              </h4>
+              <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                Bento Grid
+              </span>
+            </div>
 
-          {/* Visi */}
-          <div className="flex flex-col gap-2">
-            <label className="text-[13px] font-bold text-slate-800">Teks Visi Utama</label>
-            <textarea
-              rows={3}
-              value={formData.visionMission.vision}
-              onChange={handleVisionChange}
-              className="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 text-[14px] font-medium text-slate-900 leading-relaxed focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
-              required
-            />
-          </div>
-
-          {/* Pengaturan Judul & Deskripsi Pengantar Bagian Misi */}
-          <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200/90 space-y-4">
-            <h5 className="font-serif text-[15px] font-bold text-slate-900 border-b border-slate-200 pb-2.5 flex items-center gap-2">
-              <Compass className="w-4 h-4 text-blue-600" />
-              <span>Pengaturan Judul &amp; Subtitle Bagian Misi</span>
-            </h5>
-
+            {/* Label / Badge Visi */}
             <div className="flex flex-col gap-1.5">
               <label className="text-[12.5px] font-bold text-slate-700">
-                Judul Bagian Misi
+                Label / Badge Visi (Atas)
               </label>
               <input
                 type="text"
-                name="missionTitle"
-                value={formData.visionMission.missionTitle || ''}
+                name="visionBadge"
+                value={formData.visionMission.visionBadge || defaultVisionBadge}
                 onChange={handleVisionMissionFieldChange}
-                placeholder="Misi Pokok Penyelenggaraan Sekolah"
-                className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-[14px] font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                placeholder="RUMUSAN VISI SATUAN PENDIDIKAN"
+                className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[13.5px] font-bold text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
+              />
+            </div>
+
+            {/* Teks Visi Utama */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[12.5px] font-bold text-slate-800">
+                Teks Rumusan Visi Utama (Ditampilkan Besar dengan Tanda Petik)
+              </label>
+              <textarea
+                rows={3}
+                value={formData.visionMission.vision}
+                onChange={handleVisionChange}
+                className="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 text-[14px] font-serif font-bold text-slate-900 leading-relaxed focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
                 required
               />
             </div>
 
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[12.5px] font-bold text-slate-700">
-                Deskripsi / Subtitle Pengantar Misi
-              </label>
-              <textarea
-                rows={2}
-                name="missionSubtitle"
-                value={formData.visionMission.missionSubtitle || ''}
-                onChange={handleVisionMissionFieldChange}
-                placeholder="Langkah konkret institusi dalam mengejawantahkan visi luhur ke dalam iklim pembelajaran, kultur madrasah, dan interaksi sosial harian peserta didik."
-                className="w-full p-3.5 rounded-xl bg-white border border-slate-200 text-[13.5px] text-slate-800 leading-relaxed focus:outline-none focus:ring-2 focus:ring-blue-500/30"
-                required
-              />
+            {/* Indikator Visi (4 Kolom Bento) */}
+            <div className="space-y-3 pt-2">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h5 className="text-[13px] font-bold text-slate-800">
+                    Indikator Ketercapaian Visi (Kolom Bawah Visi)
+                  </h5>
+                  <p className="text-[12px] text-slate-500">
+                    Pilar indikator turunan visi yang tampil rapi dalam grid 4 kolom.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleAddVisionIndicator}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-[12px] font-bold transition-colors"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Tambah Indikator</span>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                {(formData.visionMission.visionIndicators || defaultVisionIndicators).map((ind, idx) => (
+                  <div
+                    key={idx}
+                    className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2.5 relative group"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                          Nomor:
+                        </span>
+                        <input
+                          type="text"
+                          value={ind.number || String(idx + 1).padStart(2, '0')}
+                          onChange={(e) => handleVisionIndicatorChange(idx, 'number', e.target.value)}
+                          className="w-14 px-2 py-1 rounded-lg bg-white border border-slate-200 text-[12px] font-bold text-slate-800 text-center"
+                          placeholder="01"
+                        />
+                      </div>
+                      {(formData.visionMission.visionIndicators || defaultVisionIndicators).length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveVisionIndicator(idx)}
+                          className="p-1.5 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors"
+                          title="Hapus indikator"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[11.5px] font-bold text-slate-700">Judul Indikator</label>
+                      <input
+                        type="text"
+                        value={ind.title}
+                        onChange={(e) => handleVisionIndicatorChange(idx, 'title', e.target.value)}
+                        placeholder="Contoh: Berakhlak Mulia"
+                        className="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-[13px] font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
+                        required
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[11.5px] font-bold text-slate-700">Uraian / Deskripsi</label>
+                      <textarea
+                        rows={2}
+                        value={ind.desc}
+                        onChange={(e) => handleVisionIndicatorChange(idx, 'desc', e.target.value)}
+                        placeholder="Penjelasan ringkas indikator..."
+                        className="w-full p-2.5 rounded-lg bg-white border border-slate-200 text-[12.5px] text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 leading-relaxed"
+                        required
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* Misi */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <label className="text-[13px] font-bold text-slate-800">Butir-Butir Misi Madrasah</label>
-              <button
-                type="button"
-                onClick={handleAddMission}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[12px] font-bold transition-colors"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>Tambah Butir Misi</span>
-              </button>
-            </div>
+          {/* BAGIAN 2 & 3: MISI & TUJUAN (DUA KOLOM BERDAMPINGAN SESUAI SS 1) */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+            {/* BAGIAN 2: MISI SATUAN PENDIDIKAN */}
+            <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs space-y-5">
+              <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
+                <h4 className="font-serif text-[16px] font-bold text-slate-900 flex items-center gap-2">
+                  <BookOpen className="w-5 h-5 text-blue-700" />
+                  <span>2. Misi Satuan Pendidikan (Kolom Kiri)</span>
+                </h4>
+                <span className="text-[11px] font-bold text-blue-800 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-200">
+                  Misi
+                </span>
+              </div>
 
-            <div className="space-y-2.5">
-              {formData.visionMission.missions.map((mission, idx) => (
-                <div key={idx} className="flex items-center gap-2">
-                  <span className="w-7 h-7 rounded-lg bg-slate-100 text-slate-700 font-bold text-[12px] flex items-center justify-center shrink-0">
-                    {idx + 1}
-                  </span>
+              <div className="space-y-3">
+                <div className="flex flex-col gap-1">
+                  <label className="text-[12px] font-bold text-slate-700">Judul Kolom Misi</label>
                   <input
                     type="text"
-                    value={mission}
-                    onChange={(e) => handleMissionChange(idx, e.target.value)}
-                    placeholder="Tuliskan misi madrasah..."
-                    className="flex-grow px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[13px]"
+                    name="missionTitle"
+                    value={formData.visionMission.missionTitle || defaultMissionTitle}
+                    onChange={handleVisionMissionFieldChange}
+                    placeholder="Misi Satuan Pendidikan"
+                    className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[13.5px] font-bold text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
                     required
                   />
-                  {formData.visionMission.missions.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveMission(idx)}
-                      className="p-2 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors shrink-0"
-                      title="Hapus butir misi"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  )}
                 </div>
-              ))}
+
+                <div className="flex flex-col gap-1">
+                  <label className="text-[12px] font-bold text-slate-700">Subtitle / Pengantar Misi</label>
+                  <textarea
+                    rows={2}
+                    name="missionSubtitle"
+                    value={formData.visionMission.missionSubtitle || defaultMissionSubtitle}
+                    onChange={handleVisionMissionFieldChange}
+                    placeholder="Langkah penyelenggaraan pendidikan untuk mewujudkan visi sekolah."
+                    className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[13px] text-slate-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Butir-butir Misi Berstruktur */}
+              <div className="space-y-3 pt-2 border-t border-slate-100">
+                <div className="flex items-center justify-between">
+                  <label className="text-[13px] font-bold text-slate-800">
+                    Butir-Butir Misi (Judul &amp; Uraian)
+                  </label>
+                  <button
+                    type="button"
+                    onClick={handleAddStructuredMission}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 text-[12px] font-bold transition-colors"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Tambah Misi</span>
+                  </button>
+                </div>
+
+                <div className="space-y-3">
+                  {(formData.visionMission.structuredMissions || defaultStructuredMissions).map((m, idx) => (
+                    <div
+                      key={idx}
+                      className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2 relative"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[11px] font-bold text-slate-500 uppercase">Nomor:</span>
+                          <input
+                            type="text"
+                            value={m.number || String(idx + 1).padStart(2, '0')}
+                            onChange={(e) => handleStructuredMissionChange(idx, 'number', e.target.value)}
+                            className="w-14 px-2 py-1 rounded-lg bg-white border border-slate-200 text-[12px] font-bold text-slate-800 text-center"
+                            placeholder="01"
+                          />
+                        </div>
+                        {(formData.visionMission.structuredMissions || defaultStructuredMissions).length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveStructuredMission(idx)}
+                            className="p-1.5 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors"
+                            title="Hapus butir misi"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
+
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[11.5px] font-bold text-slate-700">Judul Singkat Misi</label>
+                        <input
+                          type="text"
+                          value={m.title}
+                          onChange={(e) => handleStructuredMissionChange(idx, 'title', e.target.value)}
+                          placeholder="Contoh: Pembinaan Keimanan & Budi Pekerti"
+                          className="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-[13px] font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                          required
+                        />
+                      </div>
+
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[11.5px] font-bold text-slate-700">Uraian / Deskripsi Misi</label>
+                        <textarea
+                          rows={2}
+                          value={m.desc}
+                          onChange={(e) => handleStructuredMissionChange(idx, 'desc', e.target.value)}
+                          placeholder="Uraian langkah misi..."
+                          className="w-full p-2.5 rounded-lg bg-white border border-slate-200 text-[12.5px] text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/30 leading-relaxed"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* BAGIAN 3: TUJUAN SEKOLAH */}
+            <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs space-y-5">
+              <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
+                <h4 className="font-serif text-[16px] font-bold text-slate-900 flex items-center gap-2">
+                  <Compass className="w-5 h-5 text-amber-600" />
+                  <span>3. Tujuan Sekolah (Kolom Kanan)</span>
+                </h4>
+                <span className="text-[11px] font-bold text-amber-800 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200">
+                  Tujuan
+                </span>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex flex-col gap-1">
+                  <label className="text-[12px] font-bold text-slate-700">Judul Kolom Tujuan</label>
+                  <input
+                    type="text"
+                    name="goalsTitle"
+                    value={formData.visionMission.goalsTitle || defaultGoalsTitle}
+                    onChange={handleVisionMissionFieldChange}
+                    placeholder="Tujuan Sekolah"
+                    className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[13.5px] font-bold text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/30"
+                    required
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label className="text-[12px] font-bold text-slate-700">Subtitle / Pengantar Tujuan</label>
+                  <textarea
+                    rows={2}
+                    name="goalsSubtitle"
+                    value={formData.visionMission.goalsSubtitle || defaultGoalsSubtitle}
+                    onChange={handleVisionMissionFieldChange}
+                    placeholder="Capaian nyata yang ditargetkan dalam penyelenggaraan kurikulum."
+                    className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[13px] text-slate-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/30"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Butir-butir Tujuan */}
+              <div className="space-y-3 pt-2 border-t border-slate-100">
+                <div className="flex items-center justify-between">
+                  <label className="text-[13px] font-bold text-slate-800">
+                    Daftar Butir Capaian Tujuan
+                  </label>
+                  <button
+                    type="button"
+                    onClick={handleAddGoal}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-[12px] font-bold transition-colors"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Tambah Butir Tujuan</span>
+                  </button>
+                </div>
+
+                <div className="space-y-3">
+                  {(formData.visionMission.goals || defaultGoals).map((g, idx) => (
+                    <div
+                      key={idx}
+                      className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2 relative"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[11px] font-bold text-slate-500 uppercase">Nomor:</span>
+                          <input
+                            type="text"
+                            value={g.number || `${String(idx + 1).padStart(2, '0')}.`}
+                            onChange={(e) => handleGoalChange(idx, 'number', e.target.value)}
+                            className="w-14 px-2 py-1 rounded-lg bg-white border border-slate-200 text-[12px] font-bold text-slate-800 text-center"
+                            placeholder="01."
+                          />
+                        </div>
+                        {(formData.visionMission.goals || defaultGoals).length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveGoal(idx)}
+                            className="p-1.5 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors"
+                            title="Hapus butir tujuan"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
+
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[11.5px] font-bold text-slate-700">Teks Capaian Tujuan</label>
+                        <textarea
+                          rows={2}
+                          value={g.text}
+                          onChange={(e) => handleGoalChange(idx, 'text', e.target.value)}
+                          placeholder="Tuliskan butir target tujuan kurikulum..."
+                          className="w-full p-2.5 rounded-lg bg-white border border-slate-200 text-[12.5px] text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/30 leading-relaxed"
+                          required
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>

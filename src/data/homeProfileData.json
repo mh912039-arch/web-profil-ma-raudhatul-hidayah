@@ -62,36 +62,72 @@
   "visionMission": {
     "pageTitle": "Visi & Misi Madrasah",
     "pageSubtitle": "Arah haluan nilai pendidikan, visi kelembagaan, misi pembelajaran kontekstual, dan pilar keunggulan santri MA Raudlatul Hidayah.",
-    "missionTitle": "Misi Pokok Penyelenggaraan Sekolah",
-    "missionSubtitle": "Langkah konkret institusi dalam mengejawantahkan visi luhur ke dalam iklim pembelajaran, kultur madrasah, dan interaksi sosial harian peserta didik.",
-    "vision": "Terwujudnya generasi yang beriman dan bertakwa, berakhlak mulia, unggul dalam prestasi akademik dan non-akademik, serta berwawasan lingkungan dan keislaman yang moderat.",
-    "missions": [
-      "Menyelenggarakan proses pembelajaran integratif antara Kurikulum Nasional dan kurikulum kepesantrenan berhaluan Ahlussunnah wal Jama’ah.",
-      "Mengembangkan budaya riset ilmiah, penalaran kritis, dan literasi digital yang berlandaskan etika Islam.",
-      "Membina program pembiasaan ibadah harian, Tahfidzul Quran bersanad, dan kajian kitab turots (kuning).",
-      "Menumbuhkan jiwa kepemimpinan mandiri, kewirausahaan, dan kepedulian lingkungan hidup.",
-      "Membangun tata kelola madrasah yang akuntabel, transparan, dan berbasis teknologi informasi modern."
+    "visionBadge": "RUMUSAN VISI SATUAN PENDIDIKAN",
+    "vision": "Terwujudnya insan pembelajar yang berakhlak mulia, unggul dalam prestasi, terampil dalam teknologi, dan peduli kelestarian lingkungan hidup.",
+    "visionIndicators": [
+      {
+        "number": "01",
+        "title": "Berakhlak Mulia",
+        "desc": "Pembiasaan ibadah, kejujuran, sopan santun, dan sikap saling menghormati dalam keseharian di sekolah."
+      },
+      {
+        "number": "02",
+        "title": "Unggul dalam Prestasi",
+        "desc": "Peningkatan capaian belajar akademik serta partisipasi aktif dalam kompetisi olahraga, sains, dan seni."
+      },
+      {
+        "number": "03",
+        "title": "Terampil dalam Teknologi",
+        "desc": "Penguasaan perangkat komputer dasar dan pemanfaatan media digital untuk mendukung pembelajaran."
+      },
+      {
+        "number": "04",
+        "title": "Peduli Lingkungan Hidup",
+        "desc": "Penataan lingkungan sekolah yang bersih, hijau, sehat, dan bebas dari perundungan."
+      }
     ],
-    "pillars": [
+    "missionTitle": "Misi Satuan Pendidikan",
+    "missionSubtitle": "Langkah penyelenggaraan pendidikan untuk mewujudkan visi sekolah.",
+    "structuredMissions": [
       {
-        "title": "Berakhlak",
-        "desc": "Berbudi luhur & adab santun harian",
-        "icon": "favorite"
+        "number": "01",
+        "title": "Pembinaan Keimanan & Budi Pekerti",
+        "desc": "Menanamkan keimanan, ketakwaan, dan akhlak mulia melalui pembiasaan ibadah rutin serta keteladanan sikap warga sekolah."
       },
       {
-        "title": "Berprestasi",
-        "desc": "Unggul akademik & non-akademik",
-        "icon": "workspace_premium"
+        "number": "02",
+        "title": "Pelaksanaan Pembelajaran Kurikulum Merdeka",
+        "desc": "Menyelenggarakan kegiatan belajar mengajar yang aktif, terstruktur, dan memperhatikan perkembangan kompetensi setiap peserta didik."
       },
       {
-        "title": "Mandiri",
-        "desc": "Tangguh & berdaya saing personal",
-        "icon": "psychology"
+        "number": "03",
+        "title": "Pengembangan Minat & Bakat Siswa",
+        "desc": "Memfasilitasi latihan rutin ekstrakurikuler kepanduan Pramuka, olahraga, kesenian tradisional, dan kegiatan kesiswaan."
+      }
+    ],
+    "missions": [
+      "Pembinaan Keimanan & Budi Pekerti: Menanamkan keimanan, ketakwaan, dan akhlak mulia melalui pembiasaan ibadah rutin serta keteladanan sikap warga sekolah.",
+      "Pelaksanaan Pembelajaran Kurikulum Merdeka: Menyelenggarakan kegiatan belajar mengajar yang aktif, terstruktur, dan memperhatikan perkembangan kompetensi setiap peserta didik.",
+      "Pengembangan Minat & Bakat Siswa: Memfasilitasi latihan rutin ekstrakurikuler kepanduan Pramuka, olahraga, kesenian tradisional, dan kegiatan kesiswaan."
+    ],
+    "goalsTitle": "Tujuan Sekolah",
+    "goalsSubtitle": "Capaian nyata yang ditargetkan dalam penyelenggaraan kurikulum.",
+    "goals": [
+      {
+        "number": "01",
+        "text": "Meningkatnya disiplin kehadiran, ketertiban belajar, dan perilaku santun peserta didik di dalam maupun di luar lingkungan sekolah."
       },
       {
-        "title": "Berwawasan",
-        "desc": "Peduli kelestarian lingkungan hidup",
-        "icon": "eco"
+        "number": "02",
+        "text": "Tercapainya ketuntasan belajar seluruh mata pelajaran sesuai standar kompetensi lulusan jenjang Sekolah Menengah Pertama."
+      },
+      {
+        "number": "03",
+        "text": "Terlaksananya Asesmen Nasional Berbasis Komputer (ANBK) dan pembelajaran berbasis TIK secara mandiri di laboratorium sekolah."
+      },
+      {
+        "number": "04",
+        "text": "Terwujudnya prestasi siswa pada ajang perlombaan tingkat Kecamatan Cibeber maupun tingkat Kabupaten Lebak."
       }
     ]
   },

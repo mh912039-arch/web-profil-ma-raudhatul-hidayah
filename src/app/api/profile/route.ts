@@ -195,7 +195,19 @@ export async function POST(request: Request) {
       : (currentProf.profile || currentFileData.profile || {});
 
     const mergedVision = incoming.visionMission
-      ? { ...(currentProf.visionMission || currentFileData.visionMission || {}), ...incoming.visionMission }
+      ? {
+          ...(currentProf.visionMission || currentFileData.visionMission || {}),
+          ...incoming.visionMission,
+          visionIndicators: Array.isArray(incoming.visionMission.visionIndicators)
+            ? incoming.visionMission.visionIndicators
+            : (currentProf.visionMission?.visionIndicators || currentFileData.visionMission?.visionIndicators || []),
+          structuredMissions: Array.isArray(incoming.visionMission.structuredMissions)
+            ? incoming.visionMission.structuredMissions
+            : (currentProf.visionMission?.structuredMissions || currentFileData.visionMission?.structuredMissions || []),
+          goals: Array.isArray(incoming.visionMission.goals)
+            ? incoming.visionMission.goals
+            : (currentProf.visionMission?.goals || currentFileData.visionMission?.goals || []),
+        }
       : (currentProf.visionMission || currentFileData.visionMission || {});
 
     const mergedHistory = incoming.history

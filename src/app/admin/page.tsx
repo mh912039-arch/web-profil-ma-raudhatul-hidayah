@@ -266,17 +266,16 @@ export default function AdminDashboardPage() {
     },
     visionMission: {
       vision:
-        'Terwujudnya generasi santri yang beriman dan bertakwa, berakhlak mulia, unggul dalam prestasi akademik dan non-akademik, serta berwawasan lingkungan dan keislaman yang moderat.',
-      missionTitle: 'Misi Pokok Penyelenggaraan Sekolah',
-      missionSubtitle:
-        'Langkah konkret institusi dalam mengejawantahkan visi luhur ke dalam iklim pembelajaran, kultur madrasah, dan interaksi sosial harian peserta didik.',
+        'Terwujudnya insan pembelajar yang berakhlak mulia, unggul dalam prestasi, terampil dalam teknologi, dan peduli kelestarian lingkungan hidup.',
+      visionBadge: 'RUMUSAN VISI SATUAN PENDIDIKAN',
+      missionTitle: 'Misi Satuan Pendidikan',
+      missionSubtitle: 'Langkah penyelenggaraan pendidikan untuk mewujudkan visi sekolah.',
+      goalsTitle: 'Tujuan Sekolah',
+      goalsSubtitle: 'Capaian nyata yang ditargetkan dalam penyelenggaraan kurikulum.',
       pageTitle: 'Visi & Misi Madrasah',
       pageSubtitle:
         'Arah haluan nilai pendidikan, visi kelembagaan, misi pembelajaran kontekstual, dan pilar keunggulan santri MA Raudlatul Hidayah.',
-      missions: [
-        'Menyelenggarakan proses pembelajaran integratif antara Kurikulum Nasional dan kurikulum kepesantrenan berhaluan Ahlussunnah wal Jama’ah.',
-        'Mengembangkan budaya riset ilmiah, penalaran kritis, dan literasi digital yang berlandaskan etika Islam.',
-      ],
+      missions: [],
       pillars: [],
     },
     history: {
