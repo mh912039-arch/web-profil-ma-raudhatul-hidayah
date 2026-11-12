@@ -23,6 +23,7 @@ import { TeachersCarouselSection } from '@/components/sections/TeachersCarouselS
 import { HomeContactMapSection } from '@/components/sections/HomeContactMapSection';
 import { VisitorMetricsSection } from '@/components/sections/VisitorMetricsSection';
 import { PpdbRegistrationModal } from '@/components/modals/PpdbRegistrationModal';
+import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 import { fetchPublicProfile } from '@/lib/publicProfileClient';
 
 const defaultHomeConfig = {
@@ -54,9 +55,9 @@ const defaultHomeConfig = {
   ctaLink: '/profil/sejarah',
   stat1Value: '152',
   stat1Label: 'Santri Aktif MA',
-  stat2Value: '22',
+  stat2Value: '47',
   stat2Label: 'Guru & Staf',
-  stat3Value: '35+',
+  stat3Value: '10',
   stat3Label: 'Prestasi',
   teachersSectionTitle: 'Guru',
   teachersSectionSubtitle: 'Menyambut Anda ke Dunia Pembelajaran yang Dipandu Guru-guru Terbaik',
@@ -241,11 +242,11 @@ export default function HomePage() {
                   <p>{home.sambutanText2}</p>
                 </div>
 
-                {/* Key Fact Metric Counters */}
+                {/* Key Fact Metric Counters with Scroll Counter-Up Waypoints */}
                 <div className="grid grid-cols-3 gap-6 pt-5 border-t border-slate-200 max-w-lg">
                   <div>
                     <span className="font-serif text-[30px] sm:text-[36px] font-bold text-slate-900 block leading-tight">
-                      {home.stat1Value}
+                      <AnimatedCounter value={home.stat1Value} />
                     </span>
                     <span className="font-sans text-[12px] text-slate-700 font-semibold">
                       {home.stat1Label}
@@ -253,7 +254,7 @@ export default function HomePage() {
                   </div>
                   <div>
                     <span className="font-serif text-[30px] sm:text-[36px] font-bold text-slate-900 block leading-tight">
-                      {home.stat2Value}
+                      <AnimatedCounter value={home.stat2Value} />
                     </span>
                     <span className="font-sans text-[12px] text-slate-700 font-semibold">
                       {home.stat2Label}
@@ -261,7 +262,7 @@ export default function HomePage() {
                   </div>
                   <div>
                     <span className="font-serif text-[30px] sm:text-[36px] font-bold text-amber-800 block leading-tight">
-                      {home.stat3Value}
+                      <AnimatedCounter value={home.stat3Value} />
                     </span>
                     <span className="font-sans text-[12px] text-slate-700 font-semibold">
                       {home.stat3Label}
