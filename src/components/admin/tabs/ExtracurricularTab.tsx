@@ -92,7 +92,7 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
     setFormData({
       name: '',
       category: 'belanegara',
-      badge: 'Bela Negara & Kedisiplinan',
+      badge: '',
       level: 'Tingkat MA',
       schedule: 'Jumat 14.00 WIB',
       coach: teachers[0]?.name || 'Pembina Madrasah',
@@ -393,9 +393,11 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
                       (ekskul.image.startsWith('data:') || ekskul.image.startsWith('/uploads'))
                   )}
                 />
-                <div className="absolute top-3 left-3 bg-[#1e3a8a]/90 backdrop-blur-xs text-white px-3 py-1 rounded-full text-[11px] font-semibold border border-white/20 shadow-xs">
-                  {ekskul.badge}
-                </div>
+                {ekskul.badge ? (
+                  <div className="absolute top-3 left-3 bg-[#1e3a8a]/90 backdrop-blur-xs text-white px-3 py-1 rounded-full text-[11px] font-semibold border border-white/20 shadow-xs">
+                    {ekskul.badge}
+                  </div>
+                ) : null}
               </div>
 
               {/* Body Content */}
@@ -498,34 +500,6 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
                   className="px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#1e3a8a] font-semibold"
                   required
                 />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs font-semibold text-slate-700">Kategori</label>
-                  <select
-                    value={formData.category || 'belanegara'}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    className="px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#1e3a8a]"
-                  >
-                    <option value="belanegara">Wajib & Bela Negara</option>
-                    <option value="olahraga">Olahraga & Kebugaran</option>
-                    <option value="seni">Kesenian & Budaya</option>
-                    <option value="literasi">Literasi & Bahasa</option>
-                  </select>
-                </div>
-
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs font-semibold text-slate-700">Badge Label</label>
-                  <input
-                    type="text"
-                    value={formData.badge || ''}
-                    onChange={(e) => setFormData({ ...formData, badge: e.target.value })}
-                    placeholder="Gugus Depan MA, Kemanusiaan..."
-                    className="px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#1e3a8a]"
-                    required
-                  />
-                </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
