@@ -20,6 +20,7 @@ import { StitchFooter } from '@/components/layout/StitchFooter';
 import { PpdbSection } from '@/components/sections/PpdbSection';
 import { NewsCarouselSection } from '@/components/sections/NewsCarouselSection';
 import { TeachersCarouselSection } from '@/components/sections/TeachersCarouselSection';
+import { HomeContactMapSection } from '@/components/sections/HomeContactMapSection';
 import { VisitorMetricsSection } from '@/components/sections/VisitorMetricsSection';
 import { PpdbRegistrationModal } from '@/components/modals/PpdbRegistrationModal';
 import { fetchPublicProfile } from '@/lib/publicProfileClient';
@@ -325,6 +326,11 @@ export default function HomePage() {
           title={home.teachersSectionTitle}
           subtitle={home.teachersSectionSubtitle}
         />
+
+        {/* =========================================================
+            3.8 CONTACT & GOOGLE MAPS SECTION (Hubungi Layanan Kami & Peta Lokasi)
+        ========================================================= */}
+        <HomeContactMapSection />
 
         {/* =========================================================
             4. VISITOR METRICS & DISTRIBUTION GRAPH (Live Data Showcase)
