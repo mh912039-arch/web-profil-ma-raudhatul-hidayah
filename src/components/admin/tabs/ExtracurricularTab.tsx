@@ -56,11 +56,11 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
   const [formData, setFormData] = useState<Partial<ExtracurricularItem>>({
     name: '',
     category: 'belanegara',
-    badge: 'Gugus Depan MA',
+    badge: '',
     level: 'Tingkat MA',
-    schedule: 'Jumat 14.00 WIB',
-    coach: teachers[0]?.name || 'A. Khutbi. AR, S.Pd',
-    role: 'Kamabigus & Pembina',
+    schedule: '',
+    coach: '',
+    role: '',
     image: '/foto-juara-pramuka.jpeg',
     desc: '',
   });
@@ -94,9 +94,9 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
       category: 'belanegara',
       badge: '',
       level: 'Tingkat MA',
-      schedule: 'Jumat 14.00 WIB',
-      coach: teachers[0]?.name || 'Pembina Madrasah',
-      role: 'Pembina Resmi',
+      schedule: '',
+      coach: '',
+      role: '',
       image: '/hero/slide-1.jpg',
       desc: '',
     });
@@ -534,29 +534,23 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
                   </label>
                   <input
                     type="text"
-                    list="teachers-datalist"
                     value={formData.coach || ''}
                     onChange={(e) => setFormData({ ...formData, coach: e.target.value })}
-                    placeholder="Pilih atau ketik nama pembina..."
+                    placeholder="Ketik nama pembina / pelatih..."
                     className="px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#1e3a8a]"
                     required
                   />
-                  <datalist id="teachers-datalist">
-                    {teachers.map((t) => (
-                      <option key={t.order_no} value={t.name} />
-                    ))}
-                  </datalist>
                 </div>
 
                 <div className="flex flex-col gap-1">
                   <label className="text-xs font-semibold text-slate-700">
-                    Peran / Jabatan Pembina
+                    Jabatan
                   </label>
                   <input
                     type="text"
                     value={formData.role || ''}
                     onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                    placeholder="Kamabigus & Pembina, Instruktur..."
+                    placeholder="Contoh: Pembina, Pelatih, Instruktur..."
                     className="px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#1e3a8a]"
                     required
                   />

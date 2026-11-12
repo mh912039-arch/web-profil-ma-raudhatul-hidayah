@@ -5,8 +5,6 @@ import Image from 'next/image';
 import {
   Check,
   CheckCircle2,
-  ArrowRight,
-  PhoneCall,
   ZoomIn,
   X,
   Download,
@@ -177,33 +175,6 @@ export function PpdbSection({ onOpenRegister }: PpdbSectionProps) {
                 : null}
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex flex-wrap items-center gap-3.5 pt-3">
-              <button
-                type="button"
-                onClick={() => {
-                  if (onOpenRegister) {
-                    onOpenRegister();
-                  } else {
-                    window.dispatchEvent(new CustomEvent('open-ppdb-registration'));
-                  }
-                }}
-                className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-[#1e3a8a] hover:bg-[#172554] text-white font-sans text-[13.5px] font-bold uppercase tracking-wider transition-all duration-200 shadow-md hover:shadow-lg active:scale-[0.98]"
-              >
-                <span>Daftar PPDB Online Sekarang</span>
-                <ArrowRight className="w-4 h-4 text-amber-300" />
-              </button>
-
-              <a
-                href={`https://wa.me/${data.contactWa}?text=Halo%20Panitia%20PPDB%20MA%20Raudlatul%20Hidayah,%20mohon%20informasi%20syarat%20dan%20alur%20pendaftaran.`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-3.5 rounded-full bg-white hover:bg-slate-50 text-slate-800 font-sans text-[13.5px] font-semibold border border-slate-300 transition-colors active:scale-[0.98] shadow-2xs"
-              >
-                <PhoneCall className="w-4 h-4 text-emerald-600" />
-                <span>Konsultasi Panitia PPDB</span>
-              </a>
-            </div>
           </div>
         </div>
       </div>
