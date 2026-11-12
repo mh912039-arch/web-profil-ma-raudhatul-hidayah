@@ -212,9 +212,11 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
           pillars: data.visionMission?.pillars || [],
         },
         history: {
-          title: data.history?.title || '',
-          subtitle: data.history?.subtitle || '',
-          lead: data.history?.lead || '',
+          title: data.history?.title || 'Memperluas Akses Pendidikan Menengah di Wilayah Mauk',
+          subtitle: data.history?.subtitle || 'LATAR BELAKANG PENDIRIAN',
+          lead:
+            data.history?.lead ||
+            'MAS Raudlatul Hidayah didirikan pada tahun 2015 sebagai bagian dari ikhtiar Kementerian Agama bersama masyarakat Desa Tanjung Anom untuk menghadirkan layanan pendidikan menengah Islam yang berkualitas dan terjangkau bagi warga di wilayah Kecamatan Mauk, Kabupaten Tangerang, Provinsi Banten.\n\nKondisi geografis pesisir utara Kabupaten Tangerang yang berkembang pesat membuat para lulusan madrasah tsanawiyah dan sekolah menengah pertama di sekitar Tanjung Anom dan jalur Tanjung Kait sebelumnya harus menempuh jarak cukup jauh menuju sekolah lanjutan. Dukungan masyarakat setempat bersama tokoh agama kemudian mewujudkan berdirinya satuan pendidikan ini di Jl. Raya Tanjung Kait.\n\nSejak masa awal operasionalnya, MAS Raudlatul Hidayah secara bertahap melengkapi sarana ruang belajar, ruang perpustakaan, laboratorium komputer, serta lapangan olahraga dan upacara. Dengan nomor pokok sekolah nasional (NPSN) 69941777 dan izin operasional resmi Kementerian Agama, madrasah ini terus menjalankan perannya mendampingi peserta didik di wilayah Tangerang Utara.',
           paragraphs: data.history?.paragraphs || [],
           image: data.history?.image || '/halaman-sekolah.jpeg',
           imageCaptionTitle: data.history?.imageCaptionTitle || 'Lingkungan Gedung Utama MAS Raudlatul Hidayah',
@@ -225,7 +227,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
           stat2Value: data.history?.stat2Value || data.profile?.npsn || '69941777',
           periodSectionTitle: data.history?.periodSectionTitle || 'Periodisasi Perkembangan Sekolah',
           periodSectionSubtitle: data.history?.periodSectionSubtitle || 'Tahapan pertumbuhan kelembagaan dan pemenuhan sarana pendidikan sejak awal berdiri hingga saat ini.',
-          milestones: data.history?.milestones || [],
+          milestones: Array.isArray(data.history?.milestones) ? data.history.milestones : [],
         },
         facilities: data.facilities || [],
       });

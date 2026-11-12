@@ -25,6 +25,7 @@ import { PortalOverviewTab } from '@/components/admin/tabs/PortalOverviewTab';
 import { useIdleTimeout } from '@/hooks/useIdleTimeout';
 import { IdleTimeoutModal } from '@/components/auth/IdleTimeoutModal';
 import { supabase } from '@/lib/supabaseClient';
+import { clearProfileCache } from '@/lib/publicProfileClient';
 import {
   CheckCircle2,
   AlertCircle,
@@ -247,10 +248,10 @@ export default function AdminDashboardPage() {
       name: 'MAS Raudlatul Hidayah',
       formalName: 'Madrasah Aliyah Swasta Raudlatul Hidayah',
       level: 'Madrasah Aliyah Swasta (MAS)',
-      npsn: '6994888',
-      nsm: '131236030045',
+      npsn: '69941777',
+      nsm: '131236030069',
       accreditation: 'C',
-      foundedYear: '2012',
+      foundedYear: '2015',
       address: 'Jl. Raya Tanjung Kait No. 33, RT 02 / RW 01',
       district: 'Mauk',
       regency: 'Kabupaten Tangerang',
@@ -279,19 +280,38 @@ export default function AdminDashboardPage() {
       pillars: [],
     },
     history: {
-      title: 'Dedikasi Membangun Generasi di Mauk',
-      subtitle: 'Tonggak Sejarah',
-      lead: 'Bermula dari kepedulian tulus para tokoh masyarakat terhadap masa depan pendidikan generasi muda di pesisir utara Kabupaten Tangerang...',
+      title: 'Memperluas Akses Pendidikan Menengah di Wilayah Mauk',
+      subtitle: 'LATAR BELAKANG PENDIRIAN',
+      lead: 'MAS Raudlatul Hidayah didirikan pada tahun 2015 sebagai bagian dari ikhtiar Kementerian Agama bersama masyarakat Desa Tanjung Anom untuk menghadirkan layanan pendidikan menengah Islam yang berkualitas dan terjangkau bagi warga di wilayah Kecamatan Mauk, Kabupaten Tangerang, Provinsi Banten.\n\nKondisi geografis pesisir utara Kabupaten Tangerang yang berkembang pesat membuat para lulusan madrasah tsanawiyah dan sekolah menengah pertama di sekitar Tanjung Anom dan jalur Tanjung Kait sebelumnya harus menempuh jarak cukup jauh menuju sekolah lanjutan. Dukungan masyarakat setempat bersama tokoh agama kemudian mewujudkan berdirinya satuan pendidikan ini di Jl. Raya Tanjung Kait.\n\nSejak masa awal operasionalnya, MAS Raudlatul Hidayah secara bertahap melengkapi sarana ruang belajar, ruang perpustakaan, laboratorium komputer, serta lapangan olahraga dan upacara. Dengan nomor pokok sekolah nasional (NPSN) 69941777 dan izin operasional resmi Kementerian Agama, madrasah ini terus menjalankan perannya mendampingi peserta didik di wilayah Tangerang Utara.',
+      image: '/halaman-sekolah.jpeg',
+      imageCaptionTitle: 'Lingkungan Gedung Utama MAS Raudlatul Hidayah',
+      imageCaptionSubtitle: 'Jl. Raya Tanjung Kait No. 33, RT 02 / RW 01, Desa Tanjung Anom, Kec. Mauk',
+      stat1Label: 'Tahun Berdiri',
+      stat1Value: '2015',
+      stat2Label: 'NPSN Resmi',
+      stat2Value: '69941777',
+      periodSectionTitle: 'Periodisasi Perkembangan Sekolah',
+      periodSectionSubtitle: 'Tahapan pertumbuhan kelembagaan dan pemenuhan sarana pendidikan sejak awal berdiri hingga saat ini.',
       milestones: [
         {
-          title: 'Awal Mula Pendidikan Dasar (MIS Raudlatul Hidayah 01)',
-          badge: 'Pondasi Awal',
-          desc: "Perjalanan dimulai dengan pendirian MIS Raudlatul Hidayah 01 di Kampung Tanjung Anom, Kecamatan Mauk, guna memberikan pondasi akhlak yang kokoh, adab pergaulan, serta kemampuan baca tulis Al-Qur'an bagi putra-putri daerah sekitar.",
+          year: '2015',
+          title: 'Pendirian & Pembukaan Layanan Pendidikan',
+          desc: 'MAS Raudlatul Hidayah mulai beroperasi di Desa Tanjung Anom untuk menjawab kebutuhan akses pendidikan menengah Islam bagi lulusan sekolah dasar dan madrasah tsanawiyah di wilayah Kecamatan Mauk yang sebelumnya harus menempuh jarak jauh.',
         },
         {
-          title: 'Pendirian Resmi MA Raudlatul Hidayah',
-          badge: '17 September 2015',
-          desc: 'Guna menampung antusiasme para santri untuk melanjutkan pendidikan menengah yang kokoh dalam syariat dan adaptif dalam sains, MA Raudlatul Hidayah resmi berdiri pada 17 September 2015 dengan izin operasional lengkap Kementerian Agama dan NPSN 69941777.',
+          year: '2016 – 2020',
+          title: 'Penguatan Kelembagaan & Penataan Ruang Belajar',
+          desc: 'Penetapan kelembagaan resmi di bawah Kementerian Agama (NPSN 69941777) disertai pembangunan ruang kelas permanen, sarana musholla, serta penataan lapangan upacara dan olahraga.',
+        },
+        {
+          year: '2021 – 2023',
+          title: 'Peningkatan Sarana Penunjang & Akreditasi',
+          desc: 'Pemenuhan fasilitas perpustakaan, sarana praktikum komputer, serta pencapaian peringkat Akreditasi dari Badan Akreditasi Nasional Sekolah/Madrasah (BAN-S/M).',
+        },
+        {
+          year: '2024 – Sekarang',
+          title: 'Pelaksanaan Kurikulum Merdeka & Pembinaan Bakat',
+          desc: 'Penerapan Kurikulum Merdeka secara bertahap, penguatan kegiatan ekstrakurikuler kepanduan Pramuka, olahraga, seni Islami, serta penataan lingkungan belajar yang bersih dan asri.',
         },
       ],
     },
@@ -347,15 +367,15 @@ export default function AdminDashboardPage() {
       }
 
       // 5. Load Homepage & Full Profile via unified API
-      const profRes = await fetch('/api/profile', { cache: 'no-store' });
+      const profRes = await fetch('/api/profile?_t=' + Date.now(), { cache: 'no-store' });
       if (profRes.ok) {
         const profJson = await profRes.json();
         if (profJson.homepage) {
           setHomepageData((prev) => ({ ...prev, ...profJson.homepage }));
         }
-        if (profJson.profile) {
+        if (profJson.profile || profJson.history || profJson.visionMission || profJson.facilities) {
           setFullProfileData((prev) => ({
-            profile: { ...prev.profile, ...profJson.profile },
+            profile: { ...prev.profile, ...(profJson.profile || {}) },
             visionMission: { ...prev.visionMission, ...(profJson.visionMission || {}) },
             history: profJson.history
               ? {
@@ -675,6 +695,7 @@ export default function AdminDashboardPage() {
       const resJson = await res.json();
       if (res.ok && resJson.success) {
         setHomepageData(data);
+        clearProfileCache();
         showToast('success', 'Tampilan halaman depan berhasil disimpan & diperbarui langsung!');
       } else {
         showToast('error', resJson.message || 'Gagal menyimpan tampilan halaman depan.');
@@ -699,6 +720,7 @@ export default function AdminDashboardPage() {
       if (res.ok && resJson.success) {
         const saved = resJson.data || data;
         setFullProfileData(saved);
+        clearProfileCache();
         showToast('success', 'Seluruh data profil madrasah berhasil disimpan & diterapkan!');
       } else {
         showToast('error', resJson.message || 'Gagal menyimpan data profil.');

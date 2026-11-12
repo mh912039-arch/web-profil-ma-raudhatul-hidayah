@@ -76,27 +76,38 @@ export default function SejarahPage() {
   const [history, setHistory] = useState<HistoryData>(defaultHistory);
 
   useEffect(() => {
-    fetch('/api/profile', { cache: 'no-store' })
+    fetch('/api/profile?_t=' + Date.now(), { cache: 'no-store' })
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data?.history) {
           const h = data.history;
           setHistory((prev) => ({
             ...prev,
-            title: h.title || prev.title,
-            subtitle: h.subtitle || prev.subtitle,
-            lead: h.lead || prev.lead,
-            paragraphs: Array.isArray(h.paragraphs) && h.paragraphs.length > 0 ? h.paragraphs : prev.paragraphs,
+            title: typeof h.title === 'string' && h.title ? h.title : prev.title,
+            subtitle: typeof h.subtitle === 'string' ? h.subtitle : prev.subtitle,
+            lead: typeof h.lead === 'string' ? h.lead : prev.lead,
+            paragraphs:
+              Array.isArray(h.paragraphs) && h.paragraphs.length > 0
+                ? h.paragraphs
+                : h.lead
+                ? h.lead
+                    .split(/\n\s*\n/)
+                    .map((p: string) => p.trim())
+                    .filter(Boolean)
+                : prev.paragraphs,
             image: h.image || prev.image,
-            imageCaptionTitle: h.imageCaptionTitle || prev.imageCaptionTitle,
-            imageCaptionSubtitle: h.imageCaptionSubtitle || prev.imageCaptionSubtitle,
-            stat1Label: h.stat1Label || prev.stat1Label,
-            stat1Value: h.stat1Value || data.profile?.foundedYear || prev.stat1Value,
-            stat2Label: h.stat2Label || prev.stat2Label,
-            stat2Value: h.stat2Value || data.profile?.npsn || prev.stat2Value,
-            periodSectionTitle: h.periodSectionTitle || prev.periodSectionTitle,
-            periodSectionSubtitle: h.periodSectionSubtitle || prev.periodSectionSubtitle,
-            milestones: Array.isArray(h.milestones) && h.milestones.length > 0 ? h.milestones : prev.milestones,
+            imageCaptionTitle: typeof h.imageCaptionTitle === 'string' ? h.imageCaptionTitle : prev.imageCaptionTitle,
+            imageCaptionSubtitle:
+              typeof h.imageCaptionSubtitle === 'string' ? h.imageCaptionSubtitle : prev.imageCaptionSubtitle,
+            stat1Label: typeof h.stat1Label === 'string' ? h.stat1Label : prev.stat1Label,
+            stat1Value: typeof h.stat1Value === 'string' ? h.stat1Value : data.profile?.foundedYear || prev.stat1Value,
+            stat2Label: typeof h.stat2Label === 'string' ? h.stat2Label : prev.stat2Label,
+            stat2Value: typeof h.stat2Value === 'string' ? h.stat2Value : data.profile?.npsn || prev.stat2Value,
+            periodSectionTitle:
+              typeof h.periodSectionTitle === 'string' ? h.periodSectionTitle : prev.periodSectionTitle,
+            periodSectionSubtitle:
+              typeof h.periodSectionSubtitle === 'string' ? h.periodSectionSubtitle : prev.periodSectionSubtitle,
+            milestones: Array.isArray(h.milestones) ? h.milestones : prev.milestones,
           }));
         }
       })

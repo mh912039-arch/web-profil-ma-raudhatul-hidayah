@@ -96,7 +96,7 @@ export default function HomePage() {
   }, [heroImages.length]);
 
   useEffect(() => {
-    fetchPublicProfile().then((data) => {
+    fetchPublicProfile(true).then((data) => {
       if (data && data.homepage) {
         setHome((prev) => ({ ...prev, ...data.homepage }));
       }

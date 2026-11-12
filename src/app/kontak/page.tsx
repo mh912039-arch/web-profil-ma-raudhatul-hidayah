@@ -38,7 +38,7 @@ export default function KontakPage() {
   });
 
   useEffect(() => {
-    fetch('/api/profile', { cache: 'no-store' })
+    fetch('/api/profile?_t=' + Date.now(), { cache: 'no-store' })
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data?.profile) {

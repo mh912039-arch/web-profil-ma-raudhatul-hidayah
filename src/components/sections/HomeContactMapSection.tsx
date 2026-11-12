@@ -43,7 +43,7 @@ export function HomeContactMapSection() {
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    fetchPublicProfile().then((data) => {
+    fetchPublicProfile(true).then((data) => {
       if (data?.profile) {
         const p = data.profile;
         const fullAddr = [p.address, p.district, p.regency, p.province, p.postalCode]
@@ -51,13 +51,13 @@ export function HomeContactMapSection() {
           .join(', ');
         setProfile((prev) => ({
           ...prev,
-          contactTitle: p.contactTitle || prev.contactTitle,
-          contactSubtitle: p.contactSubtitle || prev.contactSubtitle,
+          contactTitle: typeof p.contactTitle === 'string' && p.contactTitle ? p.contactTitle : prev.contactTitle,
+          contactSubtitle: typeof p.contactSubtitle === 'string' ? p.contactSubtitle : prev.contactSubtitle,
           address: fullAddr || p.address || prev.address,
           phone: p.phone || prev.phone,
           whatsapp: (p.whatsapp || prev.whatsapp).replace(/\D/g, ''),
           email: p.email || prev.email,
-          mapsEmbedUrl: p.mapsEmbedUrl || prev.mapsEmbedUrl,
+          mapsEmbedUrl: typeof p.mapsEmbedUrl === 'string' && p.mapsEmbedUrl ? p.mapsEmbedUrl : prev.mapsEmbedUrl,
         }));
       }
     });
