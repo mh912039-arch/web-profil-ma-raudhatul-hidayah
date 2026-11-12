@@ -197,9 +197,8 @@ export async function POST(request: Request) {
 
     const mergedHistory = incoming.history
       ? {
-          title: incoming.history.title ?? currentProf.history?.title ?? currentFileData.history?.title ?? '',
-          subtitle: incoming.history.subtitle ?? currentProf.history?.subtitle ?? currentFileData.history?.subtitle ?? '',
-          lead: incoming.history.lead ?? currentProf.history?.lead ?? currentFileData.history?.lead ?? '',
+          ...(currentProf.history || currentFileData.history || {}),
+          ...incoming.history,
           milestones: Array.isArray(incoming.history.milestones)
             ? incoming.history.milestones
             : (currentProf.history?.milestones || currentFileData.history?.milestones || []),

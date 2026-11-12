@@ -19,6 +19,9 @@ import {
   Layers,
   Compass,
   Navigation,
+  ArrowUp,
+  ArrowDown,
+  Image as ImageIcon,
 } from 'lucide-react';
 import { uploadImageWithAutoCompression } from '@/lib/imageCompression';
 
@@ -32,8 +35,9 @@ export interface ProfileFacility {
 }
 
 export interface ProfileMilestone {
+  year?: string;
+  badge?: string;
   title: string;
-  badge: string;
   desc: string;
 }
 
@@ -77,6 +81,16 @@ export interface FullProfileData {
     title: string;
     subtitle: string;
     lead: string;
+    paragraphs?: string[];
+    image?: string;
+    imageCaptionTitle?: string;
+    imageCaptionSubtitle?: string;
+    stat1Label?: string;
+    stat1Value?: string;
+    stat2Label?: string;
+    stat2Value?: string;
+    periodSectionTitle?: string;
+    periodSectionSubtitle?: string;
     milestones: ProfileMilestone[];
   };
   facilities: ProfileFacility[];
@@ -135,14 +149,24 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
       pillars: data.visionMission?.pillars || [],
     },
     history: {
-      title: data.history?.title || 'Dedikasi Membangun Generasi di Mauk',
-      subtitle: data.history?.subtitle || 'Tonggak Sejarah',
-      lead: data.history?.lead || 'Bermula dari kepedulian tulus para tokoh masyarakat terhadap masa depan pendidikan generasi muda di pesisir utara Kabupaten Tangerang...',
+      title: data.history?.title || 'Memperluas Akses Pendidikan Menengah di Wilayah Mauk',
+      subtitle: data.history?.subtitle || 'Sejarah & Perjalanan Madrasah',
+      lead: data.history?.lead || 'MAS Raudlatul Hidayah didirikan pada tahun 2015 sebagai bagian dari ikhtiar Kementerian Agama bersama masyarakat Desa Tanjung Anom...',
+      paragraphs: data.history?.paragraphs || [],
+      image: data.history?.image || '/halaman-sekolah.jpeg',
+      imageCaptionTitle: data.history?.imageCaptionTitle || 'Lingkungan Gedung Utama MAS Raudlatul Hidayah',
+      imageCaptionSubtitle: data.history?.imageCaptionSubtitle || 'Jl. Raya Tanjung Kait No. 33, RT 02 / RW 01, Desa Tanjung Anom, Kec. Mauk',
+      stat1Label: data.history?.stat1Label || 'Tahun Berdiri',
+      stat1Value: data.history?.stat1Value || data.profile?.foundedYear || '2015',
+      stat2Label: data.history?.stat2Label || 'NPSN Resmi',
+      stat2Value: data.history?.stat2Value || data.profile?.npsn || '69941777',
+      periodSectionTitle: data.history?.periodSectionTitle || 'Periodisasi Perkembangan Sekolah',
+      periodSectionSubtitle: data.history?.periodSectionSubtitle || 'Tahapan pertumbuhan kelembagaan dan pemenuhan sarana pendidikan sejak awal berdiri hingga saat ini.',
       milestones: data.history?.milestones || [
         {
-          title: 'Awal Mula Pendidikan Dasar (MIS Raudlatul Hidayah 01)',
-          badge: 'Pondasi Awal',
-          desc: 'Perjalanan dimulai dengan pendirian MIS Raudlatul Hidayah 01 di Kampung Tanjung Anom.',
+          year: '2015',
+          title: 'Pendirian & Pembukaan Layanan Pendidikan',
+          desc: 'MAS Raudlatul Hidayah mulai beroperasi di Desa Tanjung Anom untuk menjawab kebutuhan akses pendidikan menengah Islam.',
         },
       ],
     },
@@ -191,6 +215,16 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
           title: data.history?.title || '',
           subtitle: data.history?.subtitle || '',
           lead: data.history?.lead || '',
+          paragraphs: data.history?.paragraphs || [],
+          image: data.history?.image || '/halaman-sekolah.jpeg',
+          imageCaptionTitle: data.history?.imageCaptionTitle || 'Lingkungan Gedung Utama MAS Raudlatul Hidayah',
+          imageCaptionSubtitle: data.history?.imageCaptionSubtitle || 'Jl. Raya Tanjung Kait No. 33, RT 02 / RW 01, Mauk, Kab. Tangerang',
+          stat1Label: data.history?.stat1Label || 'Tahun Berdiri',
+          stat1Value: data.history?.stat1Value || data.profile?.foundedYear || '2015',
+          stat2Label: data.history?.stat2Label || 'NPSN Resmi',
+          stat2Value: data.history?.stat2Value || data.profile?.npsn || '69941777',
+          periodSectionTitle: data.history?.periodSectionTitle || 'Periodisasi Perkembangan Sekolah',
+          periodSectionSubtitle: data.history?.periodSectionSubtitle || 'Tahapan pertumbuhan kelembagaan dan pemenuhan sarana pendidikan sejak awal berdiri hingga saat ini.',
           milestones: data.history?.milestones || [],
         },
         facilities: data.facilities || [],
@@ -285,8 +319,8 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
     }));
   };
 
-  // History lead change
-  const handleHistoryChange = (field: 'title' | 'subtitle' | 'lead', val: string) => {
+  // History text change
+  const handleHistoryChange = (field: keyof FullProfileData['history'], val: any) => {
     setFormData((prev) => ({
       ...prev,
       history: {
@@ -294,6 +328,23 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
         [field]: val,
       },
     }));
+  };
+
+  const [uploadingHistoryImage, setUploadingHistoryImage] = useState(false);
+
+  const handleHistoryImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingHistoryImage(true);
+    try {
+      const result = await uploadImageWithAutoCompression(file);
+      handleHistoryChange('image', result.url);
+    } catch (err: any) {
+      alert(err.message || 'Gagal mengunggah foto gedung sejarah');
+    } finally {
+      setUploadingHistoryImage(false);
+    }
   };
 
   // Milestone changes
@@ -312,13 +363,19 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
   };
 
   const handleAddMilestone = () => {
+    const curYear = new Date().getFullYear();
     setFormData((prev) => ({
       ...prev,
       history: {
         ...prev.history,
         milestones: [
           ...prev.history.milestones,
-          { title: 'Tonggak Baru', badge: 'Tahun', desc: 'Keterangan perkembangan' },
+          {
+            year: `${curYear}`,
+            badge: `${curYear}`,
+            title: 'Tahap Pertumbuhan Baru',
+            desc: 'Tuliskan deskripsi peristiwa atau pencapaian madrasah...',
+          },
         ],
       },
     }));
@@ -332,6 +389,24 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
         milestones: prev.history.milestones.filter((_, i) => i !== index),
       },
     }));
+  };
+
+  const handleMoveMilestone = (index: number, direction: 'up' | 'down') => {
+    setFormData((prev) => {
+      const next = [...prev.history.milestones];
+      const targetIndex = direction === 'up' ? index - 1 : index + 1;
+      if (targetIndex < 0 || targetIndex >= next.length) return prev;
+      const temp = next[index];
+      next[index] = next[targetIndex];
+      next[targetIndex] = temp;
+      return {
+        ...prev,
+        history: {
+          ...prev.history,
+          milestones: next,
+        },
+      };
+    });
   };
 
   // Facilities changes
@@ -1040,127 +1115,389 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
         </div>
       )}
 
-      {/* SUB-TAB 3: SEJARAH MADRASAH */}
+      {/* SUB-TAB 3: SEJARAH & PERIODISASI MADRASAH (SESUAI SSAN GAMBAR 1, 2, & 3) */}
       {activeSubTab === 'sejarah' && (
-        <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs space-y-6">
-          <h4 className="font-serif text-[16px] font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
-            <History className="w-5 h-5 text-amber-600" />
-            <span>Sejarah Madrasah (/profil/sejarah)</span>
-          </h4>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[12.5px] font-bold text-slate-700">Subjudul Tag</label>
-              <input
-                type="text"
-                value={formData.history.subtitle}
-                onChange={(e) => handleHistoryChange('subtitle', e.target.value)}
-                className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[13px]"
-                required
-              />
+        <div className="space-y-6">
+          {/* Bagian 1: Narasi Editorial & Judul Halaman (Sesuai Gambar 1 - Kiri) */}
+          <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs space-y-5">
+            <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
+              <h4 className="font-serif text-[16px] font-bold text-slate-900 flex items-center gap-2">
+                <History className="w-5 h-5 text-emerald-700" />
+                <span>1. Narasi Sejarah & Judul Halaman (/profil/sejarah)</span>
+              </h4>
+              <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                Gambar 1 (Kiri)
+              </span>
             </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[12.5px] font-bold text-slate-700">Subjudul Tag Pill</label>
+                <input
+                  type="text"
+                  value={formData.history.subtitle || ''}
+                  onChange={(e) => handleHistoryChange('subtitle', e.target.value)}
+                  placeholder="Sejarah & Perjalanan Madrasah"
+                  className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[13px] font-medium"
+                />
+              </div>
+              <div className="md:col-span-2 flex flex-col gap-1.5">
+                <label className="text-[12.5px] font-bold text-slate-700">Judul Besar Editorial</label>
+                <input
+                  type="text"
+                  value={formData.history.title || ''}
+                  onChange={(e) => handleHistoryChange('title', e.target.value)}
+                  placeholder="Memperluas Akses Pendidikan Menengah di Wilayah Mauk"
+                  className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[13.5px] font-bold"
+                  required
+                />
+              </div>
+            </div>
+
             <div className="flex flex-col gap-1.5">
-              <label className="text-[12.5px] font-bold text-slate-700">Judul Besar Halaman</label>
-              <input
-                type="text"
-                value={formData.history.title}
-                onChange={(e) => handleHistoryChange('title', e.target.value)}
-                className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[13.5px] font-bold"
+              <div className="flex items-center justify-between">
+                <label className="text-[12.5px] font-bold text-slate-700">
+                  Paragraf Narasi Sejarah (Bisa Multi-Paragraf)
+                </label>
+                <span className="text-[11.5px] text-slate-400">
+                  Pisahkan dengan baris kosong (enter 2x) untuk membuat paragraf baru
+                </span>
+              </div>
+              <textarea
+                rows={6}
+                value={formData.history.lead || ''}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  handleHistoryChange('lead', val);
+                  const splitParas = val.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+                  handleHistoryChange('paragraphs', splitParas);
+                }}
+                placeholder="Tuliskan kisah sejarah pendirian madrasah di sini..."
+                className="w-full p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-[13px] leading-relaxed resize-y font-sans"
                 required
               />
             </div>
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[12.5px] font-bold text-slate-700">Paragraf Pengantar Narasi</label>
-            <textarea
-              rows={4}
-              value={formData.history.lead}
-              onChange={(e) => handleHistoryChange('lead', e.target.value)}
-              className="w-full p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-[13px] leading-relaxed"
-              required
-            />
+          {/* Bagian 2: Foto Gedung Utama & 2 Kotak Statistik (Sesuai Gambar 1 - Kanan) */}
+          <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs space-y-5">
+            <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
+              <h4 className="font-serif text-[16px] font-bold text-slate-900 flex items-center gap-2">
+                <ImageIcon className="w-5 h-5 text-blue-700" />
+                <span>2. Foto Gedung & Kotak Statistik</span>
+              </h4>
+              <span className="text-[11px] font-bold text-blue-800 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-200">
+                Gambar 1 (Kanan)
+              </span>
+            </div>
+
+            {/* Unggah Foto Gedung & Keterangan */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-start">
+              <div className="md:col-span-4 flex flex-col gap-2">
+                <span className="text-[12.5px] font-bold text-slate-700">Foto Gedung Utama</span>
+                <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden border border-slate-200 bg-slate-100 group">
+                  <Image
+                    src={formData.history.image || '/halaman-sekolah.jpeg'}
+                    alt="Foto Gedung Sejarah"
+                    fill
+                    className="object-cover"
+                  />
+                  {uploadingHistoryImage && (
+                    <div className="absolute inset-0 bg-slate-900/60 flex flex-col items-center justify-center text-white text-xs gap-1">
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>Mengunggah...</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2 pt-1">
+                  <label className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-900 text-xs font-bold transition-all cursor-pointer border border-blue-200 shadow-2xs">
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>{uploadingHistoryImage ? 'Mengompres...' : 'Ganti Foto Gedung'}</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleHistoryImageUpload}
+                      disabled={uploadingHistoryImage}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+              </div>
+
+              <div className="md:col-span-8 space-y-4">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[12.5px] font-bold text-slate-700">URL Foto Manual (Opsional)</label>
+                  <input
+                    type="text"
+                    value={formData.history.image || ''}
+                    onChange={(e) => handleHistoryChange('image', e.target.value)}
+                    placeholder="/halaman-sekolah.jpeg atau https://..."
+                    className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[12.5px]"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[12.5px] font-bold text-slate-700">Judul Keterangan Foto</label>
+                    <input
+                      type="text"
+                      value={formData.history.imageCaptionTitle || ''}
+                      onChange={(e) => handleHistoryChange('imageCaptionTitle', e.target.value)}
+                      placeholder="Lingkungan Gedung Utama MAS Raudlatul Hidayah"
+                      className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[13px] font-semibold"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[12.5px] font-bold text-slate-700">Alamat / Lokasi Keterangan</label>
+                    <input
+                      type="text"
+                      value={formData.history.imageCaptionSubtitle || ''}
+                      onChange={(e) => handleHistoryChange('imageCaptionSubtitle', e.target.value)}
+                      placeholder="Jl. Raya Tanjung Kait No. 33, RT 02 / RW 01, Mauk"
+                      className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[13px]"
+                    />
+                  </div>
+                </div>
+
+                {/* 2 Kotak Statistik Berdampingan */}
+                <div className="pt-2 border-t border-slate-100">
+                  <span className="text-[12.5px] font-bold text-slate-700 block mb-2">
+                    Dua Kotak Statistik Bawah Foto
+                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Kotak 1: Tahun Berdiri */}
+                    <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/90 space-y-2">
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[11px] font-semibold text-slate-500">Label Kotak 1</label>
+                        <input
+                          type="text"
+                          value={formData.history.stat1Label || 'Tahun Berdiri'}
+                          onChange={(e) => handleHistoryChange('stat1Label', e.target.value)}
+                          className="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-medium"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[11px] font-semibold text-slate-500">Nilai / Angka Kotak 1</label>
+                        <input
+                          type="text"
+                          value={formData.history.stat1Value || '2015'}
+                          onChange={(e) => handleHistoryChange('stat1Value', e.target.value)}
+                          className="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-sm font-bold text-slate-900"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Kotak 2: NPSN Resmi */}
+                    <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/90 space-y-2">
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[11px] font-semibold text-slate-500">Label Kotak 2</label>
+                        <input
+                          type="text"
+                          value={formData.history.stat2Label || 'NPSN Resmi'}
+                          onChange={(e) => handleHistoryChange('stat2Label', e.target.value)}
+                          className="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-medium"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[11px] font-semibold text-slate-500">Nilai / Angka Kotak 2</label>
+                        <input
+                          type="text"
+                          value={formData.history.stat2Value || '69941777'}
+                          onChange={(e) => handleHistoryChange('stat2Value', e.target.value)}
+                          className="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-sm font-bold text-slate-900"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
           </div>
 
-          {/* Milestones */}
-          <div className="space-y-3 pt-3 border-t border-slate-100">
-            <div className="flex items-center justify-between">
-              <label className="text-[13px] font-bold text-slate-800">Tahapan / Tonggak Sejarah</label>
+          {/* Bagian 3: Periodisasi Perkembangan Sekolah (Sesuai Gambar 2 & 3) */}
+          <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs space-y-5">
+            <div className="border-b border-slate-100 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <h4 className="font-serif text-[16px] font-bold text-slate-900 flex items-center gap-2">
+                  <Layers className="w-5 h-5 text-amber-600" />
+                  <span>3. Periodisasi Perkembangan Sekolah</span>
+                </h4>
+                <p className="text-[12px] text-slate-500 mt-0.5">
+                  Daftar urutan garis waktu tahapan sekolah (Sesuai Gambar 2 & 3)
+                </p>
+              </div>
               <button
                 type="button"
                 onClick={handleAddMilestone}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-[12px] font-bold transition-colors"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 text-xs font-bold transition-all shadow-xs shrink-0 cursor-pointer"
               >
-                <Plus className="w-3.5 h-3.5" />
-                <span>Tambah Tonggak Sejarah</span>
+                <Plus className="w-4 h-4" />
+                <span>Tambah Periode Baru</span>
               </button>
             </div>
 
-            <div className="space-y-4">
+            {/* Judul & Subjudul Bagian Periodisasi */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200/80">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[12px] font-bold text-slate-700">Judul Bagian Periodisasi</label>
+                <input
+                  type="text"
+                  value={formData.history.periodSectionTitle || ''}
+                  onChange={(e) => handleHistoryChange('periodSectionTitle', e.target.value)}
+                  placeholder="Periodisasi Perkembangan Sekolah"
+                  className="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-bold"
+                />
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[12px] font-bold text-slate-700">Subjudul Penjelasan</label>
+                <input
+                  type="text"
+                  value={formData.history.periodSectionSubtitle || ''}
+                  onChange={(e) => handleHistoryChange('periodSectionSubtitle', e.target.value)}
+                  placeholder="Tahapan pertumbuhan kelembagaan dan pemenuhan sarana..."
+                  className="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs"
+                />
+              </div>
+            </div>
+
+            {/* Daftar Periode Garis Waktu */}
+            <div className="space-y-4 pt-2">
               {formData.history.milestones.length === 0 ? (
-                <div className="p-8 text-center rounded-xl border border-dashed border-slate-200 bg-slate-50/50">
-                  <p className="text-[13px] text-slate-500 mb-3">Belum ada tonggak sejarah yang ditambahkan.</p>
+                <div className="p-8 text-center rounded-2xl border border-dashed border-slate-200 bg-slate-50/50">
+                  <p className="text-[13px] text-slate-500 mb-3">Belum ada periode perkembangan sejarah.</p>
                   <button
                     type="button"
                     onClick={handleAddMilestone}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-[12px] font-bold transition-colors"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
                   >
-                    <Plus className="w-3.5 h-3.5" />
-                    <span>Tambah Tonggak Sejarah Pertama</span>
+                    <Plus className="w-4 h-4" />
+                    <span>Tambah Periode Pertama</span>
                   </button>
                 </div>
               ) : (
                 formData.history.milestones.map((m, idx) => (
-                  <div key={idx} className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3 relative">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-[12px] font-bold text-slate-700">Tahap #{idx + 1}</span>
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveMilestone(idx)}
-                        className="text-rose-500 hover:text-rose-700 text-[12px] font-semibold flex items-center gap-1 transition-colors"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                        <span>Hapus</span>
-                      </button>
+                  <div
+                    key={idx}
+                    className="p-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 shadow-2xs space-y-3 relative group/item hover:border-slate-300 transition-all"
+                  >
+                    {/* Header Baris Periode */}
+                    <div className="flex items-center justify-between gap-3 border-b border-slate-200/60 pb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-extrabold flex items-center justify-center">
+                          {idx + 1}
+                        </span>
+                        <span className="text-[12.5px] font-bold text-slate-800">
+                          {m.year || m.badge || 'Periode Baru'} · {m.title || 'Tanpa Judul'}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-1.5">
+                        {/* Tombol Geser Atas */}
+                        <button
+                          type="button"
+                          onClick={() => handleMoveMilestone(idx, 'up')}
+                          disabled={idx === 0}
+                          title="Geser ke atas"
+                          className="p-1 rounded-md text-slate-500 hover:text-slate-800 hover:bg-white disabled:opacity-30 disabled:hover:bg-transparent transition-all cursor-pointer"
+                        >
+                          <ArrowUp className="w-4 h-4" />
+                        </button>
+
+                        {/* Tombol Geser Bawah */}
+                        <button
+                          type="button"
+                          onClick={() => handleMoveMilestone(idx, 'down')}
+                          disabled={idx === formData.history.milestones.length - 1}
+                          title="Geser ke bawah"
+                          className="p-1 rounded-md text-slate-500 hover:text-slate-800 hover:bg-white disabled:opacity-30 disabled:hover:bg-transparent transition-all cursor-pointer"
+                        >
+                          <ArrowDown className="w-4 h-4" />
+                        </button>
+
+                        {/* Tombol Hapus Periode */}
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveMilestone(idx)}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-rose-600 hover:text-rose-700 hover:bg-rose-50 text-[11.5px] font-bold transition-all ml-2 cursor-pointer"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>Hapus</span>
+                        </button>
+                      </div>
                     </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div className="sm:col-span-2 flex flex-col gap-1">
-                      <label className="text-[11.5px] font-semibold text-slate-600">Judul Peristiwa</label>
-                      <input
-                        type="text"
-                        value={m.title}
-                        onChange={(e) => handleMilestoneChange(idx, 'title', e.target.value)}
-                        className="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-[13px] font-bold"
-                        required
-                      />
+                    {/* Input Data Periode */}
+                    <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-start">
+                      {/* Kolom Tahun / Rentang Waktu (Hijau Sesuai Gambar 2 & 3) */}
+                      <div className="sm:col-span-4 flex flex-col gap-1">
+                        <label className="text-[11.5px] font-semibold text-slate-600">
+                          Tahun / Rentang Waktu (Kolom Kiri)
+                        </label>
+                        <input
+                          type="text"
+                          value={m.year ?? m.badge ?? ''}
+                          onChange={(e) => {
+                            handleMilestoneChange(idx, 'year', e.target.value);
+                            handleMilestoneChange(idx, 'badge', e.target.value);
+                          }}
+                          placeholder="2015 atau 2016 – 2020 atau 2024 – Sekarang"
+                          className="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-[13px] font-bold text-emerald-800 focus:ring-1 focus:ring-emerald-700"
+                          required
+                        />
+                      </div>
+
+                      {/* Kolom Judul Peristiwa / Tahap */}
+                      <div className="sm:col-span-8 flex flex-col gap-1">
+                        <label className="text-[11.5px] font-semibold text-slate-600">
+                          Judul Peristiwa / Tahap (Tebal Kanan)
+                        </label>
+                        <input
+                          type="text"
+                          value={m.title || ''}
+                          onChange={(e) => handleMilestoneChange(idx, 'title', e.target.value)}
+                          placeholder="Pendirian & Pembukaan Layanan Pendidikan"
+                          className="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-[13px] font-bold text-slate-900"
+                          required
+                        />
+                      </div>
                     </div>
+
+                    {/* Uraian Lengkap Sejarah */}
                     <div className="flex flex-col gap-1">
-                      <label className="text-[11.5px] font-semibold text-slate-600">Tanggal / Badge</label>
-                      <input
-                        type="text"
-                        value={m.badge}
-                        onChange={(e) => handleMilestoneChange(idx, 'badge', e.target.value)}
-                        className="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-[12.5px]"
+                      <label className="text-[11.5px] font-semibold text-slate-600">
+                        Uraian Penjelasan Perkembangan
+                      </label>
+                      <textarea
+                        rows={2}
+                        value={m.desc || ''}
+                        onChange={(e) => handleMilestoneChange(idx, 'desc', e.target.value)}
+                        placeholder="Uraikan peristiwa atau pencapaian madrasah pada periode ini..."
+                        className="w-full px-3 py-2 rounded-lg bg-white border border-slate-200 text-[12.5px] text-slate-700 leading-relaxed"
                         required
                       />
                     </div>
                   </div>
-
-                  <div className="flex flex-col gap-1">
-                    <label className="text-[11.5px] font-semibold text-slate-600">Uraian Sejarah</label>
-                    <textarea
-                      rows={2}
-                      value={m.desc}
-                      onChange={(e) => handleMilestoneChange(idx, 'desc', e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg bg-white border border-slate-200 text-[12.5px]"
-                      required
-                    />
-                  </div>
-                </div>
-              ))
-            )}
+                ))
+              )}
             </div>
+
+            {/* Tombol Tambah di Bawah List */}
+            {formData.history.milestones.length > 0 && (
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={handleAddMilestone}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 text-xs font-bold transition-all shadow-2xs active:scale-95 cursor-pointer"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Tambah Periode Sejarah Lainnya</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
