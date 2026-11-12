@@ -113,15 +113,15 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
     <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3.5 transition-all">
       <div className="flex items-center justify-between gap-2.5 sm:gap-4">
         {/* Left: Mobile Toggle & Brand Header */}
-        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+        <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
           <button
             type="button"
             onClick={() => setIsOpenMobile(true)}
-            className="p-1.5 sm:p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 lg:hidden transition-colors shrink-0"
+            className="p-2 rounded-xl text-slate-700 hover:text-slate-900 bg-slate-50 hover:bg-slate-100 border border-slate-200/60 lg:hidden transition-all active:scale-95 shrink-0 shadow-2xs cursor-pointer"
             aria-label="Buka Menu Lengkap"
             title="Menu Navigasi"
           >
-            <Menu className="w-5 h-5" />
+            <Menu className="w-5 h-5 stroke-[2]" />
           </button>
 
           <div className="w-8 h-8 rounded-xl bg-blue-50 border border-blue-200/80 flex items-center justify-center p-1 shrink-0 shadow-2xs">
@@ -135,13 +135,13 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
           </div>
 
           <div className="flex flex-col min-w-0">
-            <div className="hidden sm:flex items-center gap-1.5 text-[9.5px] sm:text-[10.5px] font-bold text-blue-700 tracking-wider uppercase truncate">
+            <div className="flex items-center gap-1.5 text-[9.5px] sm:text-[10.5px] font-bold text-[#1e3a8a] tracking-wider uppercase truncate">
               <span>
                 {userRole === 'siswa'
-                  ? 'PORTAL TERPADU  /  SANTRI'
+                  ? 'Portal Santri'
                   : userRole === 'guru'
-                  ? 'PORTAL TERPADU  /  GURU'
-                  : 'PORTAL TERPADU  /  ADMIN'}
+                  ? 'Portal Dewan Guru'
+                  : 'Portal Admin'}
               </span>
             </div>
             <h1 className="font-serif text-[15px] sm:text-[20px] font-bold text-slate-900 tracking-tight leading-snug truncate">
@@ -156,11 +156,11 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
             <button
               type="button"
               onClick={onLogout}
-              className="sm:hidden p-2 rounded-xl text-slate-600 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+              className="sm:hidden p-2 rounded-xl text-slate-600 hover:text-rose-600 bg-slate-50 hover:bg-rose-50 border border-slate-200/60 transition-all active:scale-95 cursor-pointer shadow-2xs"
               title="Keluar dari Akun"
               aria-label="Keluar dari Akun"
             >
-              <LogOut className="w-5 h-5 text-slate-500 hover:text-rose-600" />
+              <LogOut className="w-4 h-4 text-slate-500 hover:text-rose-600" />
             </button>
           )}
         </div>

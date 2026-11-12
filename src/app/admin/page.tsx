@@ -1216,6 +1216,7 @@ export default function AdminDashboardPage() {
         setActiveTab={setActiveTab}
         userRole={userRole}
         unreadCount={unreadMessagesCount}
+        onOpenMenu={() => setIsOpenMobile(true)}
       />
 
       {/* PWA Floating Install Prompt (Diberi offset agar tidak menutupi Bottom Navigation) */}
