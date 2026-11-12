@@ -144,7 +144,7 @@ export function StitchNavbar() {
 
   const akademikSublinks = [
     { label: 'Ekstrakurikuler', href: '/akademik/ekstrakurikuler' },
-    { label: 'Foto Juara Ekstrakurikuler', href: '/akademik/foto-juara' },
+    { label: 'Prestasi Siswa', href: '/akademik/foto-juara' },
   ];
 
   const isActive = (href: string) => {

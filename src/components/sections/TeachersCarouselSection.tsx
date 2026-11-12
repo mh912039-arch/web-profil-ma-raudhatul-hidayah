@@ -67,7 +67,7 @@ interface TeachersCarouselSectionProps {
 }
 
 export const TeachersCarouselSection: React.FC<TeachersCarouselSectionProps> = ({
-  title = 'Guru',
+  title = 'Tenaga Pendidik',
   subtitle = 'Menyambut Anda ke Dunia Pembelajaran yang Dipandu Guru-guru Terbaik',
 }) => {
   const [teachers, setTeachers] = useState<TeacherItem[]>(initialTeachers);
@@ -190,12 +190,11 @@ export const TeachersCarouselSection: React.FC<TeachersCarouselSectionProps> = (
   return (
     <section className="py-16 sm:py-24 bg-[#f2f7fb] border-b border-slate-200/80 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header: Guru & Subtitle (Sesuai Referensi) */}
+        {/* Section Header: Tenaga Pendidik & Subtitle */}
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
           <h2 className="font-serif text-[32px] sm:text-[40px] font-bold text-slate-900 tracking-tight leading-tight">
             {title}
           </h2>
-          <div className="w-14 h-1 bg-amber-400 rounded-full mx-auto mt-2.5" />
           <p className="font-sans text-[14.5px] sm:text-[16px] text-slate-700 mt-3 leading-relaxed">
             {subtitle}
           </p>

@@ -239,7 +239,7 @@ export default function AdminDashboardPage() {
     stat2Label: 'Guru & Staf',
     stat3Value: '35+',
     stat3Label: 'Prestasi',
-    teachersSectionTitle: 'Guru',
+    teachersSectionTitle: 'Tenaga Pendidik',
     teachersSectionSubtitle: 'Menyambut Anda ke Dunia Pembelajaran yang Dipandu Guru-guru Terbaik',
   });
 

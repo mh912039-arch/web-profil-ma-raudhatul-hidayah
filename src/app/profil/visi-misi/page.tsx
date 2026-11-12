@@ -163,7 +163,7 @@ export default function VisiMisiPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* BAGIAN ATAS: RUMUSAN VISI SATUAN PENDIDIKAN & 4 INDIKATOR (SESUAI SS 2) */}
           <section className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-2xs p-6 sm:p-10 lg:p-12 transition-all">
-            <span className="text-[11px] sm:text-[12px] font-bold tracking-widest text-[#155e39] uppercase font-sans mb-3 sm:mb-4 inline-block">
+            <span className="font-sans font-bold text-[13px] sm:text-[14px] text-[#1e3a8a] tracking-[0.16em] uppercase mb-3 sm:mb-4 inline-block">
               {visionBadge}
             </span>
 

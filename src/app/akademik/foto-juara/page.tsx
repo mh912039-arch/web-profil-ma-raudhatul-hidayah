@@ -57,10 +57,10 @@ export default function FotoJuaraPage() {
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 pb-8 border-b border-slate-200/80">
               <div>
                 <h1 className="font-serif text-[28px] sm:text-[38px] font-bold text-slate-900 tracking-tight leading-tight">
-                  Foto Juara Ekstrakurikuler
+                  Prestasi Siswa
                 </h1>
                 <p className="font-sans text-[14.5px] sm:text-[15.5px] text-slate-600 max-w-xl leading-relaxed">
-                  Galeri apresiasi piala, medali, dan piagam kemenangan santri MA Raudlatul Hidayah dalam berbagai ajang kejuaraan ekstrakurikuler.
+                  Galeri apresiasi piala, medali, dan piagam kemenangan santri MA Raudlatul Hidayah dalam berbagai ajang kompetisi, perlombaan, dan kejuaraan.
                 </p>
               </div>
             </div>

@@ -61,7 +61,7 @@ export default function EkstrakurikulerPage() {
                     className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl text-[12.5px] font-bold transition-all shadow-xs hover:shadow-md cursor-pointer group"
                   >
                     <Trophy className="w-4 h-4 text-slate-950" />
-                    <span>Lihat Galeri Foto Juara Ekstrakurikuler</span>
+                    <span>Lihat Galeri Prestasi Siswa</span>
                     <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                   </Link>
                 </div>

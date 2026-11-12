@@ -1324,10 +1324,10 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
           <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs space-y-6">
             <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
               <h4 className="font-serif text-[16px] font-bold text-slate-900 flex items-center gap-2">
-                <Compass className="w-5 h-5 text-emerald-700" />
+                <Compass className="w-5 h-5 text-blue-700" />
                 <span>1. Rumusan Visi &amp; Indikator Capaian (Sesuai Tampilan Atas)</span>
               </h4>
-              <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+              <span className="text-[11px] font-bold text-blue-800 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-200">
                 Bento Grid
               </span>
             </div>
