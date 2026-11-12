@@ -32,7 +32,6 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
   showToast: parentShowToast,
 }) => {
   const [items, setItems] = useState<ExtracurricularItem[]>([]);
-  const [activeFilter, setActiveFilter] = useState('all');
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<ExtracurricularItem | null>(null);
@@ -274,10 +273,7 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
     }
   };
 
-  const filteredItems =
-    activeFilter === 'all'
-      ? items
-      : items.filter((item) => item.category === activeFilter);
+  const filteredItems = items;
 
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
@@ -336,29 +332,6 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
         </div>
       </div>
 
-      {/* Category Filter Tabs */}
-      <div className="flex flex-wrap items-center gap-2">
-        {[
-          { id: 'all', label: `Semua (${items.length})` },
-          { id: 'belanegara', label: 'Wajib & Bela Negara' },
-          { id: 'olahraga', label: 'Olahraga' },
-          { id: 'seni', label: 'Kesenian & Budaya' },
-          { id: 'literasi', label: 'Literasi & Jurnalistik' },
-        ].map((f) => (
-          <button
-            key={f.id}
-            type="button"
-            onClick={() => setActiveFilter(f.id)}
-            className={`px-4 py-2 rounded-xl text-[12.5px] font-semibold transition-all cursor-pointer ${
-              activeFilter === f.id
-                ? 'bg-[#1e3a8a] text-white shadow-xs'
-                : 'bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-50 border border-slate-200'
-            }`}
-          >
-            {f.label}
-          </button>
-        ))}
-      </div>
 
       {/* Extracurricular Cards Grid */}
       {isLoading ? (
