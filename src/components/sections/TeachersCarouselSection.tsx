@@ -188,7 +188,7 @@ export const TeachersCarouselSection: React.FC<TeachersCarouselSectionProps> = (
   if (teachers.length === 0) return null;
 
   return (
-    <section className="py-16 sm:py-24 bg-[#f2f7fb] border-b border-slate-200/80 relative overflow-hidden">
+    <section className="py-16 sm:py-24 bg-white border-b border-slate-200/80 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header: Tenaga Pendidik & Subtitle */}
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
@@ -236,7 +236,7 @@ export const TeachersCarouselSection: React.FC<TeachersCarouselSectionProps> = (
                         className="group flex flex-col items-center cursor-pointer w-full text-center"
                       >
                         {/* Circular Portrait Image (Sesuai Referensi Screenshot) */}
-                        <div className="relative w-36 h-36 sm:w-44 sm:h-44 md:w-48 md:h-48 rounded-full overflow-hidden mx-auto border-4 border-white shadow-[0_4px_16px_rgba(0,0,0,0.08)] bg-slate-100 group-hover:shadow-[0_8px_24px_rgba(0,163,224,0.25)] transition-all duration-300 transform group-hover:scale-105">
+                        <div className="relative w-36 h-36 sm:w-44 sm:h-44 md:w-48 md:h-48 rounded-full overflow-hidden mx-auto border-4 border-slate-100 shadow-[0_4px_16px_rgba(0,0,0,0.08)] bg-slate-100 group-hover:shadow-[0_8px_24px_rgba(0,163,224,0.25)] transition-all duration-300 transform group-hover:scale-105">
                           <Image
                             src={teacher.image_url || '/halaman-sekolah.jpeg'}
                             alt={teacher.name}

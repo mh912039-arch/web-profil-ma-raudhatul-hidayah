@@ -119,10 +119,10 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="min-h-[100dvh] flex flex-col bg-[#fbfbfa] font-sans text-slate-800 selection:bg-blue-600 selection:text-white relative">
+    <div className="min-h-[100dvh] flex flex-col bg-white font-sans text-slate-800 selection:bg-blue-600 selection:text-white relative">
       <StitchNavbar />
 
-      <main className="w-full bg-[#fbfbfa] flex-grow">
+      <main className="w-full bg-white flex-grow">
         {/* =========================================================
             1. HERO SECTION (Translucent Campus Backdrop with Rich Contrast)
         ========================================================= */}
@@ -226,7 +226,7 @@ export default function HomePage() {
         {/* =========================================================
             2. ABOUT SECTION (Editorial Split Stage with Negative Space)
         ========================================================= */}
-        <section className="py-20 sm:py-32 bg-[#f8fafc] relative border-b border-slate-200/70 overflow-hidden">
+        <section className="py-20 sm:py-32 bg-white relative border-b border-slate-200/70 overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             {/* Top Grid: Foto Kepala Madrasah di Kiri, Sambutan di Kanan */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
