@@ -1,5 +1,5 @@
 // Service Worker untuk Portal MA Raudlatul Hidayah (PWA)
-const CACHE_NAME = 'mrh-portal-cache-v6';
+const CACHE_NAME = 'mrh-portal-cache-v7';
 
 // Daftar aset inti yang dapat dicache awal
 const PRECACHE_ASSETS = [
@@ -116,8 +116,8 @@ self.addEventListener('push', (event) => {
     body: data.body,
     icon: data.icon || '/school-logo.png',
     badge: data.badge || '/badge-96.png',
-    vibrate: data.vibrate || [250, 100, 250],
-    silent: false, // Menjamin suara notifikasi aktif mengikuti nada dering default ponsel
+    vibrate: data.vibrate || [300, 100, 300, 100, 300],
+    silent: false, // Menjamin suara notifikasi aktif mengikuti nada dering bawaan ponsel
     tag: data.tag || `mrh-push-${Date.now()}`,
     renotify: true,
     timestamp: Date.now(),
@@ -127,7 +127,27 @@ self.addEventListener('push', (event) => {
     ],
   };
 
-  event.waitUntil(self.registration.showNotification(data.title, notificationOptions));
+  // Siarkan ke seluruh window/tab yang terbuka agar memutar nada notifikasi secara langsung
+  const notifyClientsPromise = self.clients
+    .matchAll({ type: 'window', includeUncontrolled: true })
+    .then((windowClients) => {
+      windowClients.forEach((client) => {
+        client.postMessage({
+          type: 'PUSH_NOTIFICATION_RECEIVED',
+          title: data.title,
+          body: data.body,
+          url: data.url,
+        });
+      });
+    })
+    .catch(() => {});
+
+  event.waitUntil(
+    Promise.all([
+      self.registration.showNotification(data.title, notificationOptions),
+      notifyClientsPromise,
+    ])
+  );
 });
 
 self.addEventListener('notificationclick', (event) => {

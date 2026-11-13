@@ -26,6 +26,7 @@ import { useIdleTimeout } from '@/hooks/useIdleTimeout';
 import { IdleTimeoutModal } from '@/components/auth/IdleTimeoutModal';
 import { supabase } from '@/lib/supabaseClient';
 import { clearProfileCache } from '@/lib/publicProfileClient';
+import { playNotificationSound } from '@/lib/notificationSound';
 import {
   CheckCircle2,
   AlertCircle,
@@ -104,6 +105,13 @@ export default function AdminDashboardPage() {
     return '';
   });
   const [activeTab, setActiveTab] = useState<AdminTab>('overview');
+
+  const effectiveActiveTab: AdminTab =
+    userRole === 'siswa' && !SISWA_ALLOWED_TABS.includes(activeTab)
+      ? 'overview'
+      : userRole === 'guru' && !GURU_ALLOWED_TABS.includes(activeTab)
+      ? 'overview'
+      : activeTab;
   const [isOpenMobile, setIsOpenMobile] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [supabaseConnected, setSupabaseConnected] = useState(true);
@@ -319,9 +327,10 @@ export default function AdminDashboardPage() {
 
   const [isSaving, setIsSaving] = useState(false);
 
-  // Show auto-dismissing toast
+  // Show auto-dismissing toast dengan nada dering notifikasi audio
   const showToast = (type: 'success' | 'error', text: string) => {
     setToastMessage({ type, text });
+    playNotificationSound(type === 'success' ? 'success' : 'alert');
     setTimeout(() => {
       setToastMessage(null);
     }, 4000);
@@ -432,19 +441,102 @@ export default function AdminDashboardPage() {
     loadData();
   }, [loadData]);
 
-  // Segarkan pesan masuk seketika saat admin membuka tab messages
+  // 1. Dengarkan pesan Push Notification dari Service Worker saat halaman sedang aktif di layar
   useEffect(() => {
-    if (activeTab === 'messages') {
-      fetch('/api/contact', { cache: 'no-store' })
+    if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+      const handleSwMessage = (event: MessageEvent) => {
+        if (event.data?.type === 'PUSH_NOTIFICATION_RECEIVED') {
+          playNotificationSound('success');
+          // Segarkan data artikel & agenda agar langsung tampil di list tanpa refresh
+          loadData();
+        }
+      };
+      navigator.serviceWorker.addEventListener('message', handleSwMessage);
+      return () => navigator.serviceWorker.removeEventListener('message', handleSwMessage);
+    }
+  }, [loadData]);
+
+  // 2. Sinkronisasi otomatis saat jendela browser kembali difokuskan (pindah tab atau buka HP kembali)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handleFocus = () => {
+      loadData();
+    };
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, [loadData]);
+
+  // 3. Sinkronisasi instan data terbaru setiap kali berpindah tab menu admin
+  useEffect(() => {
+    const t = Date.now();
+    if (effectiveActiveTab === 'articles') {
+      fetch(`/api/articles?_t=${t}`, { cache: 'no-store' })
         .then((res) => (res.ok ? res.json() : null))
         .then((data) => {
-          if (Array.isArray(data)) {
-            setMessages(data);
+          if (Array.isArray(data)) setArticles(data);
+        })
+        .catch(() => {});
+    } else if (effectiveActiveTab === 'teachers' || (effectiveActiveTab as string) === 'website-teachers') {
+      fetch(`/api/teachers?_t=${t}`, { cache: 'no-store' })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (Array.isArray(data) && data.length > 0) setTeachers(data);
+        })
+        .catch(() => {});
+    } else if (effectiveActiveTab === 'registrations') {
+      fetch(`/api/registrations?_t=${t}`, { cache: 'no-store' })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (Array.isArray(data)) setApplicants(data);
+        })
+        .catch(() => {});
+    } else if (effectiveActiveTab === 'messages') {
+      fetch(`/api/contact?_t=${t}`, { cache: 'no-store' })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (Array.isArray(data)) setMessages(data);
+        })
+        .catch(() => {});
+    } else if (effectiveActiveTab === 'achievements' || effectiveActiveTab === 'gallery') {
+      fetch(`/api/championships?_t=${t}`, { cache: 'no-store' })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (Array.isArray(data) && data.length > 0) setChampionshipPhotos(data);
+        })
+        .catch(() => {});
+    } else if (effectiveActiveTab === 'ppdb') {
+      fetch(`/api/ppdb?_t=${t}`, { cache: 'no-store' })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data) setPpdbData(data);
+        })
+        .catch(() => {});
+    } else if (
+      effectiveActiveTab === 'profile' ||
+      effectiveActiveTab === 'facilities' ||
+      effectiveActiveTab === 'contact' ||
+      effectiveActiveTab === 'homepage'
+    ) {
+      fetch(`/api/profile?_t=${t}`, { cache: 'no-store' })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((profJson) => {
+          if (profJson) {
+            if (profJson.homepage) {
+              setHomepageData((prev) => ({ ...prev, ...profJson.homepage }));
+            }
+            if (profJson.profile || profJson.history || profJson.visionMission || profJson.facilities) {
+              setFullProfileData((prev) => ({
+                profile: { ...prev.profile, ...(profJson.profile || {}) },
+                visionMission: { ...prev.visionMission, ...(profJson.visionMission || {}) },
+                history: profJson.history ? { ...prev.history, ...profJson.history } : prev.history,
+                facilities: Array.isArray(profJson.facilities) ? profJson.facilities : prev.facilities,
+              }));
+            }
           }
         })
         .catch(() => {});
     }
-  }, [activeTab]);
+  }, [effectiveActiveTab]);
 
   // Handler: Save PPDB
   const handleSavePpdb = async () => {
@@ -460,6 +552,12 @@ export default function AdminDashboardPage() {
         localStorage.setItem('ppdb_updated', Date.now().toString());
         try {
           localStorage.setItem('cached_ppdb_data', JSON.stringify(ppdbData));
+          // Sinkronisasi data mutakhir
+          const reload = await fetch(`/api/ppdb?_t=${Date.now()}`, { cache: 'no-store' });
+          if (reload.ok) {
+            const fresh = await reload.json();
+            setPpdbData(fresh);
+          }
         } catch (_) {}
       } else {
         showToast('error', 'Gagal menyimpan pembaruan PPDB.');
@@ -594,6 +692,15 @@ export default function AdminDashboardPage() {
           return [savedArt, ...prev];
         });
         showToast('success', `Artikel "${article.title}" berhasil disimpan & dipublikasikan!`);
+
+        // Sinkronisasi data mutakhir dari server seketika tanpa perlu refresh
+        try {
+          const reloadRes = await fetch(`/api/articles?_t=${Date.now()}`, { cache: 'no-store' });
+          if (reloadRes.ok) {
+            const fresh = await reloadRes.json();
+            if (Array.isArray(fresh)) setArticles(fresh);
+          }
+        } catch {}
       } else {
         showToast('error', resJson.message || 'Gagal menyimpan artikel.');
       }
@@ -621,6 +728,15 @@ export default function AdminDashboardPage() {
           )
         );
         showToast('success', 'Artikel berhasil dihapus.');
+
+        // Sinkronisasi data mutakhir dari server seketika tanpa perlu refresh
+        try {
+          const reloadRes = await fetch(`/api/articles?_t=${Date.now()}`, { cache: 'no-store' });
+          if (reloadRes.ok) {
+            const fresh = await reloadRes.json();
+            if (Array.isArray(fresh)) setArticles(fresh);
+          }
+        } catch {}
       } else {
         const errJson = await res.json().catch(() => null);
         showToast('error', errJson?.message || 'Gagal menghapus artikel.');
@@ -656,6 +772,15 @@ export default function AdminDashboardPage() {
           return [savedPhoto, ...prev];
         });
         showToast('success', `Foto juara "${photo.title}" berhasil disimpan & langsung aktif di web!`);
+
+        // Sinkronisasi data mutakhir dari server seketika tanpa perlu refresh
+        try {
+          const reloadRes = await fetch(`/api/championships?_t=${Date.now()}`, { cache: 'no-store' });
+          if (reloadRes.ok) {
+            const fresh = await reloadRes.json();
+            if (Array.isArray(fresh) && fresh.length > 0) setChampionshipPhotos(fresh);
+          }
+        } catch {}
       } else {
         showToast('error', resJson.message || 'Gagal menyimpan foto juara.');
       }
@@ -673,6 +798,15 @@ export default function AdminDashboardPage() {
       if (res.ok) {
         setChampionshipPhotos((prev) => prev.filter((p) => String(p.id) !== String(id)));
         showToast('success', 'Foto juara berhasil dihapus.');
+
+        // Sinkronisasi data mutakhir dari server seketika tanpa perlu refresh
+        try {
+          const reloadRes = await fetch(`/api/championships?_t=${Date.now()}`, { cache: 'no-store' });
+          if (reloadRes.ok) {
+            const fresh = await reloadRes.json();
+            setChampionshipPhotos(fresh);
+          }
+        } catch {}
       } else {
         const errJson = await res.json().catch(() => null);
         showToast('error', errJson?.message || 'Gagal menghapus foto.');
@@ -696,6 +830,15 @@ export default function AdminDashboardPage() {
         setHomepageData(data);
         clearProfileCache();
         showToast('success', 'Tampilan halaman depan berhasil disimpan & diperbarui langsung!');
+
+        // Sinkronisasi data mutakhir dari server seketika tanpa perlu refresh
+        try {
+          const reloadRes = await fetch(`/api/profile?_t=${Date.now()}`, { cache: 'no-store' });
+          if (reloadRes.ok) {
+            const profJson = await reloadRes.json();
+            if (profJson?.homepage) setHomepageData(profJson.homepage);
+          }
+        } catch {}
       } else {
         showToast('error', resJson.message || 'Gagal menyimpan tampilan halaman depan.');
       }
@@ -721,6 +864,22 @@ export default function AdminDashboardPage() {
         setFullProfileData(saved);
         clearProfileCache();
         showToast('success', 'Seluruh data profil madrasah berhasil disimpan & diterapkan!');
+
+        // Sinkronisasi data mutakhir dari server seketika tanpa perlu refresh
+        try {
+          const reloadRes = await fetch(`/api/profile?_t=${Date.now()}`, { cache: 'no-store' });
+          if (reloadRes.ok) {
+            const profJson = await reloadRes.json();
+            if (profJson) {
+              setFullProfileData((prev) => ({
+                profile: { ...prev.profile, ...(profJson.profile || {}) },
+                visionMission: { ...prev.visionMission, ...(profJson.visionMission || {}) },
+                history: profJson.history ? { ...prev.history, ...profJson.history } : prev.history,
+                facilities: Array.isArray(profJson.facilities) ? profJson.facilities : prev.facilities,
+              }));
+            }
+          }
+        } catch {}
       } else {
         showToast('error', resJson.message || 'Gagal menyimpan data profil.');
       }
@@ -758,6 +917,14 @@ export default function AdminDashboardPage() {
       if (res.ok && (resJson?.success ?? true)) {
         setMessages((prev) => prev.filter((m) => m.id !== id));
         showToast('success', 'Pesan kontak berhasil dihapus.');
+
+        try {
+          const reloadRes = await fetch(`/api/contact?_t=${Date.now()}`, { cache: 'no-store' });
+          if (reloadRes.ok) {
+            const fresh = await reloadRes.json();
+            if (Array.isArray(fresh)) setMessages(fresh);
+          }
+        } catch {}
       } else {
         const errMsg = resJson?.message || 'Gagal menghapus pesan.';
         showToast('error', errMsg);
@@ -814,6 +981,14 @@ export default function AdminDashboardPage() {
         };
         setMessages((prev) => [saved, ...prev]);
         showToast('success', `Pesan/aspirasi dari "${saved.name}" berhasil dicatat.`);
+
+        try {
+          const reloadRes = await fetch(`/api/contact?_t=${Date.now()}`, { cache: 'no-store' });
+          if (reloadRes.ok) {
+            const fresh = await reloadRes.json();
+            if (Array.isArray(fresh)) setMessages(fresh);
+          }
+        } catch {}
       } else {
         showToast('error', resJson.message || 'Gagal mencatat pesan.');
       }
@@ -840,6 +1015,14 @@ export default function AdminDashboardPage() {
         const saved = resJson.applicant || app;
         setApplicants((prev) => [saved, ...prev]);
         showToast('success', `Calon santri ${app.full_name} berhasil didaftarkan (No: ${saved.registration_number}).`);
+
+        try {
+          const reloadRes = await fetch(`/api/registrations?_t=${Date.now()}`, { cache: 'no-store' });
+          if (reloadRes.ok) {
+            const fresh = await reloadRes.json();
+            if (Array.isArray(fresh)) setApplicants(fresh);
+          }
+        } catch {}
       } else {
         const errMsg = resJson?.message || 'Gagal menyimpan data pendaftar.';
         showToast('error', errMsg);
@@ -876,6 +1059,14 @@ export default function AdminDashboardPage() {
           )
         );
         showToast('success', `Data calon santri "${app.full_name}" berhasil diperbarui.`);
+
+        try {
+          const reloadRes = await fetch(`/api/registrations?_t=${Date.now()}`, { cache: 'no-store' });
+          if (reloadRes.ok) {
+            const fresh = await reloadRes.json();
+            if (Array.isArray(fresh)) setApplicants(fresh);
+          }
+        } catch {}
       } else {
         const errMsg = resJson?.message || 'Gagal memperbarui data pendaftar.';
         showToast('error', errMsg);
@@ -913,6 +1104,14 @@ export default function AdminDashboardPage() {
           })
         );
         showToast('success', 'Data pendaftar berhasil dihapus dari sistem.');
+
+        try {
+          const reloadRes = await fetch(`/api/registrations?_t=${Date.now()}`, { cache: 'no-store' });
+          if (reloadRes.ok) {
+            const fresh = await reloadRes.json();
+            if (Array.isArray(fresh)) setApplicants(fresh);
+          }
+        } catch {}
       } else {
         showToast('error', resJson?.message || 'Gagal menghapus data pendaftar.');
       }
@@ -959,6 +1158,14 @@ export default function AdminDashboardPage() {
           prev.map((a) => (a.id === id || a.registration_number === id ? { ...a, status: newStatus } : a))
         );
         showToast('success', `Status pendaftar berhasil diperbarui.`);
+
+        try {
+          const reloadRes = await fetch(`/api/registrations?_t=${Date.now()}`, { cache: 'no-store' });
+          if (reloadRes.ok) {
+            const fresh = await reloadRes.json();
+            if (Array.isArray(fresh)) setApplicants(fresh);
+          }
+        } catch {}
       } else {
         showToast('error', 'Gagal memperbarui status pendaftar.');
       }
@@ -994,13 +1201,6 @@ export default function AdminDashboardPage() {
       handleLogout('timeout');
     },
   });
-
-  const effectiveActiveTab: AdminTab =
-    userRole === 'siswa' && !SISWA_ALLOWED_TABS.includes(activeTab)
-      ? 'overview'
-      : userRole === 'guru' && !GURU_ALLOWED_TABS.includes(activeTab)
-      ? 'overview'
-      : activeTab;
 
   const unreadMessagesCount = messages.filter((m) => m.status === 'unread').length;
 
