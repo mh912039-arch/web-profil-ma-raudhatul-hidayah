@@ -329,14 +329,6 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
 
                 {/* Kartu Formulir Masuk */}
                 <div className="bg-white rounded-3xl border border-slate-200/90 shadow-[0_12px_36px_rgba(15,23,42,0.06)] p-5 sm:p-6">
-                  <div className="mb-5 text-left border-b border-slate-100 pb-3">
-                    <h2 className="text-[17px] font-bold text-slate-900 tracking-tight">
-                      Masuk ke Akun Anda
-                    </h2>
-                    <p className="text-[12px] text-slate-500 mt-1 leading-relaxed">
-                      Silakan masukkan kredensial resmi untuk mengakses sistem.
-                    </p>
-                  </div>
 
                   {lockoutSeconds > 0 ? (
                     <div className="mb-4 p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex flex-col gap-2 animate-in fade-in duration-200">

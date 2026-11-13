@@ -335,7 +335,7 @@ export function PortalOverviewTab({
 
       {/* B. GURU: AGENDA MENGAJAR PRIBADI (Hero Bento) */}
       {userRole === 'guru' && (
-        <div className="rounded-2xl border border-blue-200 bg-linear-to-br from-blue-900 via-blue-800 to-slate-900 text-white p-4 sm:p-6 shadow-sm relative overflow-hidden">
+        <div className="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-900 via-blue-800 to-slate-900 text-white p-4 sm:p-6 shadow-sm relative overflow-hidden">
           <div className="relative z-10 space-y-3.5">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/10 backdrop-blur-md text-blue-100 text-[10px] font-bold uppercase tracking-wider border border-white/15">
@@ -393,8 +393,8 @@ export function PortalOverviewTab({
 
       {/* C. SISWA / SANTRI: PORTAL AKADEMIK (Hero Bento) */}
       {userRole === 'siswa' && (
-        <div className="rounded-2xl border border-blue-200 bg-linear-to-br from-blue-900 via-blue-800 to-slate-900 text-white p-4 sm:p-6 shadow-sm relative overflow-hidden">
-          <div className="relative z-10 space-y-3">
+        <div className="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-900 via-blue-800 to-slate-900 text-white p-4 sm:p-6 shadow-sm relative overflow-hidden">
+          <div className="relative z-10 space-y-2.5">
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/10 backdrop-blur-md text-blue-100 text-[10px] font-bold uppercase tracking-wider border border-white/15">
               <GraduationCap className="w-3 h-3 text-blue-300" />
               PORTAL AKADEMIK SANTRI
@@ -405,25 +405,6 @@ export function PortalOverviewTab({
             <p className="text-xs sm:text-sm text-blue-100/90 leading-relaxed max-w-xl">
               Lihat jadwal pelajaran mingguan, informasi ruang kelas dan wali kelas, serta agenda kegiatan penting madrasah.
             </p>
-
-            <div className="pt-1 flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={() => setActiveTab('schedules')}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white text-blue-900 font-bold text-xs shadow-sm hover:bg-blue-50 transition-all duration-150 active:scale-[0.98] cursor-pointer"
-              >
-                <CalendarClock className="w-3.5 h-3.5" />
-                <span>Lihat Jadwal Pelajaran</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveTab('classes')}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/15 backdrop-blur-md text-white font-bold text-xs border border-white/20 hover:bg-white/25 transition-all duration-150 active:scale-[0.98] cursor-pointer"
-              >
-                <Users className="w-3.5 h-3.5" />
-                <span>Informasi Kelas</span>
-              </button>
-            </div>
           </div>
         </div>
       )}
