@@ -32,6 +32,8 @@ export interface ProfileFacility {
   desc: string;
   image: string;
   badge: string;
+  location?: string;
+  capacity?: string;
 }
 
 export interface ProfileMilestone {
@@ -2146,12 +2148,35 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
                   </div>
                 </div>
 
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[11.5px] font-semibold text-slate-700">Subjudul Fasilitas</label>
+                    <input
+                      type="text"
+                      value={fac.subtitle}
+                      onChange={(e) => handleFacilityChange(idx, 'subtitle', e.target.value)}
+                      className="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-[12px]"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[11.5px] font-semibold text-slate-700">Kapasitas (Opsional)</label>
+                    <input
+                      type="text"
+                      placeholder="Contoh: 36 Siswa / 120 Jamaah"
+                      value={fac.capacity || ''}
+                      onChange={(e) => handleFacilityChange(idx, 'capacity', e.target.value)}
+                      className="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-[12px]"
+                    />
+                  </div>
+                </div>
+
                 <div className="flex flex-col gap-1">
-                  <label className="text-[11.5px] font-semibold text-slate-700">Subjudul Fasilitas</label>
+                  <label className="text-[11.5px] font-semibold text-slate-700">Lokasi Ruangan / Gedung (Opsional)</label>
                   <input
                     type="text"
-                    value={fac.subtitle}
-                    onChange={(e) => handleFacilityChange(idx, 'subtitle', e.target.value)}
+                    placeholder="Contoh: Gedung Pembelajaran Lantai 1"
+                    value={fac.location || ''}
+                    onChange={(e) => handleFacilityChange(idx, 'location', e.target.value)}
                     className="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-[12px]"
                   />
                 </div>

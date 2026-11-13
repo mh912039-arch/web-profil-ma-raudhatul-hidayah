@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import fs from 'fs/promises';
 import path from 'path';
 import { supabase, supabaseAdmin } from '@/lib/supabaseClient';
@@ -145,6 +146,9 @@ export async function GET() {
           desc: f.description !== undefined ? f.description : (matched?.desc || ''),
           image: f.image_url || matched?.image || '/kelas.jpeg',
           badge: matched?.badge || f.category || 'Fasilitas Unggulan',
+          location: matched?.location || '',
+          capacity: matched?.capacity || '',
+          specs: Array.isArray(matched?.specs) ? matched.specs : [],
         };
       });
     }
@@ -400,6 +404,14 @@ export async function POST(request: Request) {
       await supabaseAdmin.from('school_profile').upsert(profUpdate);
     } catch (spErr) {
       console.warn('Notice: school_profile upsert:', spErr);
+    }
+
+    try {
+      revalidatePath('/profil/fasilitas');
+      revalidatePath('/profil');
+      revalidatePath('/');
+    } catch {
+      // non-blocking
     }
 
     return NextResponse.json({

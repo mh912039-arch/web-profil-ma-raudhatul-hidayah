@@ -24,6 +24,9 @@ interface FacilityItem {
   desc: string;
   image: string;
   badge: string;
+  location?: string;
+  capacity?: string;
+  specs?: string[];
 }
 
 const defaultFacilities: FacilityItem[] = [
@@ -117,21 +120,56 @@ const FACILITY_METADATA: Record<
       'Sarana Kebugaran Jasmani & Senam Pagi Bersama',
     ],
   },
+  'lab komputer': {
+    capacity: '36 Unit Komputer PC & Jaringan LAN Gigabit',
+    location: 'Gedung Pembelajaran Lantai 2',
+    hours: 'Praktikum TIK, Asesmen Nasional, & Riset Mandiri',
+    specs: [
+      'Komputer PC Spesifikasi Modern untuk Pembelajaran TIK & Ujian',
+      'Koneksi Internet Dedicated Fiber Optic Madrasah Berkecepatan Tinggi',
+      'Proyektor LCD Instruktur & Screen Wall Interaktif',
+      'Pendingin Udara (AC) untuk Kenyamanan Riset Digital',
+      'Headset Audio & Perangkat Input Lengkap Setiap Meja Siswa',
+      'Sistem Keamanan Jaringan & Filter Konten Edukatif Terpadu',
+    ],
+  },
 };
 
 function getFacilityMeta(fac: FacilityItem) {
+  const customSpecs = Array.isArray(fac.specs) && fac.specs.length > 0 ? fac.specs : null;
+  const customLoc = fac.location?.trim();
+  const customCap = fac.capacity?.trim();
+
   const titleLower = (fac.title || '').toLowerCase();
+  let defaultMeta = null;
+
   for (const [key, val] of Object.entries(FACILITY_METADATA)) {
     if (titleLower.includes(key) || key.includes(titleLower)) {
-      return val;
+      defaultMeta = val;
+      break;
+    }
+  }
+
+  // Pencocokan kata kunci fleksibel jika judul diubah admin
+  if (!defaultMeta) {
+    if (titleLower.includes('kelas') || titleLower.includes('belajar')) {
+      defaultMeta = FACILITY_METADATA['ruang kelas'];
+    } else if (titleLower.includes('perpus') || titleLower.includes('baca') || titleLower.includes('literasi') || titleLower.includes('buku')) {
+      defaultMeta = FACILITY_METADATA['perpustakaan'];
+    } else if (titleLower.includes('musholla') || titleLower.includes('masjid') || titleLower.includes('ibadah') || titleLower.includes('salam')) {
+      defaultMeta = FACILITY_METADATA['musholla sekolah'];
+    } else if (titleLower.includes('lapangan') || titleLower.includes('olahraga') || titleLower.includes('halaman')) {
+      defaultMeta = FACILITY_METADATA['lapangan olahraga'];
+    } else if (titleLower.includes('komputer') || titleLower.includes('lab') || titleLower.includes('tik') || titleLower.includes('multimedia')) {
+      defaultMeta = FACILITY_METADATA['lab komputer'];
     }
   }
 
   return {
-    capacity: 'Sarana Representatif & Memadai',
-    location: 'Kompleks Kampus MA Raudlatul Hidayah',
-    hours: 'Hari Kerja & Jam Kegiatan Sekolah',
-    specs: [
+    capacity: customCap || defaultMeta?.capacity || 'Sarana Representatif & Memadai',
+    location: customLoc || defaultMeta?.location || 'Kompleks MA Raudlatul Hidayah',
+    hours: defaultMeta?.hours || 'Hari Kerja & Jam Kegiatan Sekolah',
+    specs: customSpecs || defaultMeta?.specs || [
       'Kondisi Fasilitas Bersih, Rapi, dan Terawat',
       'Penunjang Aktivitas Belajar dan Karakter Santri',
       'Standar Keamanan dan Kenyamanan Penggunaan Terjaga',
@@ -148,7 +186,7 @@ export default function FasilitasPage() {
     fetch('/api/profile?_t=' + Date.now(), { cache: 'no-store' })
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
-        if (data?.facilities && Array.isArray(data.facilities) && data.facilities.length > 0) {
+        if (data?.facilities && Array.isArray(data.facilities)) {
           setFacilities(data.facilities);
         }
       })
@@ -208,22 +246,10 @@ export default function FasilitasPage() {
         <section className="w-full py-12 sm:py-20 bg-[#fbfbfa]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Header Section */}
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 pb-8 border-b border-slate-200/80">
-              <div>
-                <span className="inline-block text-[11.5px] font-bold text-blue-700 uppercase tracking-widest bg-blue-50 px-3 py-1 rounded-full border border-blue-200/60 mb-3">
-                  Sarana &amp; Prasarana Madrasah
-                </span>
-                <h1 className="font-serif text-[28px] sm:text-[38px] font-bold text-slate-900 tracking-tight leading-tight">
-                  Fasilitas Belajar Santri
-                </h1>
-                <p className="font-sans text-[14.5px] sm:text-[15.5px] text-slate-600 max-w-xl leading-relaxed mt-2">
-                  Sarana dan prasarana representatif penunjang proses pembelajaran interaktif, penguatan literasi digital, pembiasaan ibadah harian, dan kebugaran santri.
-                </p>
-              </div>
-
-              <div className="text-xs text-slate-500 font-medium sm:text-right hidden sm:block">
-                <span>Klik kartu fasilitas untuk melihat foto resolusi penuh &amp; kelengkapan sarana.</span>
-              </div>
+            <div className="mb-10 pb-8 border-b border-slate-200/80">
+              <h1 className="font-serif text-[28px] sm:text-[38px] font-bold text-slate-900 tracking-tight leading-tight">
+                Fasilitas Belajar Siswa
+              </h1>
             </div>
 
             {/* Facility Cards Grid */}
