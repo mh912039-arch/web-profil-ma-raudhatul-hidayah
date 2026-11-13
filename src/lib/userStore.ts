@@ -48,15 +48,7 @@ export const usersFilePath = path.join(process.cwd(), 'src', 'data', 'usersData.
 export const sessionsFilePath = path.join(process.cwd(), 'src', 'data', 'userSessionsData.json');
 
 export async function readUsers(): Promise<UserAccountItem[]> {
-  let localList: UserAccountItem[] = [];
-  try {
-    const raw = await fs.readFile(usersFilePath, 'utf-8');
-    localList = JSON.parse(raw);
-  } catch {
-    localList = [];
-  }
-
-  // Sinkronisasi data overrides dari Supabase (persisten di Vercel)
+  // 1. Sinkronisasi data pengguna dari Supabase (persisten di Vercel serverless)
   try {
     const { data: supaRows } = await supabaseAdmin
       .from('teachers_staff')
@@ -68,25 +60,54 @@ export async function readUsers(): Promise<UserAccountItem[]> {
     const supaAuth = supaRows && supaRows.length > 0 ? supaRows[0] : null;
 
     if (supaAuth && supaAuth.education) {
-      const overrides: Record<string, Partial<UserAccountItem>> = JSON.parse(supaAuth.education);
-      const listMap = new Map<string, UserAccountItem>();
-      localList.forEach((u) => listMap.set(u.id, u));
+      const parsed = JSON.parse(supaAuth.education);
+      let userList: UserAccountItem[] = [];
 
-      for (const [id, ovr] of Object.entries(overrides)) {
-        if (listMap.has(id)) {
-          const cur = listMap.get(id)!;
-          listMap.set(id, { ...cur, ...ovr });
-        } else if (ovr && (ovr as any).name && (ovr as any).email) {
-          listMap.set(id, ovr as UserAccountItem);
+      if (Array.isArray(parsed)) {
+        userList = parsed;
+      } else if (parsed && typeof parsed === 'object') {
+        userList = Object.values(parsed);
+      }
+
+      // Pastikan akun Developer selalu ada demi keamanan akses sistem
+      const hasDev = userList.some(
+        (u) =>
+          u.id === 'usr-1' ||
+          u.username?.toLowerCase() === 'developer' ||
+          (u.email && ['admin@raudhatulhidayah.sch.id', 'admin@raudlatulhidayah.sch.id'].includes(u.email.toLowerCase()))
+      );
+
+      if (!hasDev) {
+        try {
+          const raw = await fs.readFile(usersFilePath, 'utf-8');
+          const localList: UserAccountItem[] = JSON.parse(raw);
+          const dev = localList.find(
+            (u) =>
+              u.id === 'usr-1' ||
+              u.username?.toLowerCase() === 'developer' ||
+              (u.email && ['admin@raudhatulhidayah.sch.id', 'admin@raudlatulhidayah.sch.id'].includes(u.email.toLowerCase()))
+          );
+          if (dev) {
+            userList.unshift(dev);
+          }
+        } catch {
+          // ignore
         }
       }
-      return Array.from(listMap.values());
+
+      return userList;
     }
   } catch (err) {
-    // Fallback ke localList jika Supabase error
+    console.warn('Gagal membaca data akun pengguna dari Supabase:', err);
   }
 
-  return localList;
+  // 2. Fallback baca file lokal jika Supabase tidak tersedia
+  try {
+    const raw = await fs.readFile(usersFilePath, 'utf-8');
+    return JSON.parse(raw);
+  } catch {
+    return [];
+  }
 }
 
 export async function writeUsers(data: UserAccountItem[]): Promise<void> {

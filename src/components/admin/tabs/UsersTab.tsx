@@ -172,6 +172,21 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
   const [statusFilter, setStatusFilter] = useState<'all' | 'Aktif' | 'Nonaktif'>('all');
   const [onlineFilter, setOnlineFilter] = useState<'all' | 'online' | 'offline'>('all');
 
+  // Helper identifikasi akun developer utama
+  const isDeveloperAccount = (u?: { id?: string; email?: string; username?: string } | null): boolean => {
+    if (!u) return false;
+    if (u.id === 'usr-1') return true;
+    if (u.username?.toLowerCase() === 'developer') return true;
+    const devEmails = [
+      'admin@raudhatulhidayah.sch.id',
+      'admin@raudlatulhidayah.sch.id',
+    ];
+    if (u.email && devEmails.includes(u.email.toLowerCase().trim())) {
+      return true;
+    }
+    return false;
+  };
+
   // Modals & Password states
   const [editingUser, setEditingUser] = useState<UserAccount | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<{
@@ -485,11 +500,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
 
   // Delete User Account
   const handleDeleteUser = (user: UserAccount) => {
-    if (
-      user.id === 'usr-1' ||
-      (user.email && ['admin@raudhatulhidayah.sch.id', 'admin@raudlatulhidayah.sch.id'].includes(user.email.toLowerCase())) ||
-      user.username?.toLowerCase() === 'developer'
-    ) {
+    if (isDeveloperAccount(user)) {
       showNotification('error', 'Akun Utama Developer tidak dapat dihapus demi keamanan sistem.');
       return;
     }
@@ -1054,11 +1065,11 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                               <span>Atur Akses &amp; Sandi</span>
                             </button>
 
-                            {user.role !== 'admin' && (
+                            {!isDeveloperAccount(user) && (
                               <button
                                 type="button"
                                 onClick={() => handleDeleteUser(user)}
-                                className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                                className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors border border-transparent hover:border-rose-100 active:scale-[0.98]"
                                 title="Hapus Akun Pengguna"
                               >
                                 <Trash2 className="w-4 h-4" />
@@ -1187,7 +1198,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
                           <span>Atur Akses</span>
                         </button>
 
-                        {user.role !== 'admin' && (
+                        {!isDeveloperAccount(user) && (
                           <button
                             type="button"
                             onClick={() => handleDeleteUser(user)}

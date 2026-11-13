@@ -223,12 +223,24 @@ export async function DELETE(request: Request) {
     }
 
     let users = await readUsers();
-    const targetUser = users.find((u) => u.id === id);
+    const targetUser = users.find(
+      (u) => u.id === id || (u.email && u.email.toLowerCase() === id.toLowerCase())
+    );
+
+    if (!targetUser) {
+      return NextResponse.json(
+        { success: false, message: 'Pengguna tidak ditemukan.' },
+        { status: 404 }
+      );
+    }
+
     if (
-      targetUser &&
-      ((targetUser.email && ['admin@raudhatulhidayah.sch.id', 'admin@raudlatulhidayah.sch.id'].includes(targetUser.email.toLowerCase())) ||
-        targetUser.username?.toLowerCase() === 'developer' ||
-        targetUser.id === 'usr-1')
+      targetUser.id === 'usr-1' ||
+      targetUser.username?.toLowerCase() === 'developer' ||
+      (targetUser.email &&
+        ['admin@raudhatulhidayah.sch.id', 'admin@raudlatulhidayah.sch.id'].includes(
+          targetUser.email.toLowerCase()
+        ))
     ) {
       return NextResponse.json(
         { success: false, message: 'Akun Utama Developer tidak dapat dihapus demi keamanan sistem.' },
@@ -237,7 +249,11 @@ export async function DELETE(request: Request) {
     }
 
     const beforeCount = users.length;
-    users = users.filter((u) => u.id !== id);
+    users = users.filter(
+      (u) =>
+        u.id !== targetUser.id &&
+        (!targetUser.email || !u.email || u.email.toLowerCase() !== targetUser.email.toLowerCase())
+    );
 
     if (users.length === beforeCount) {
       return NextResponse.json(
@@ -248,9 +264,24 @@ export async function DELETE(request: Request) {
 
     await writeUsers(users);
 
+    // Hapus juga sesi aktif terkait pengguna yang dihapus agar tidak tertinggal
+    try {
+      const sessions = await readSessions();
+      const updatedSessions = sessions.filter(
+        (s) =>
+          s.user_id !== targetUser.id &&
+          (!targetUser.email || !s.email || s.email.toLowerCase() !== targetUser.email.toLowerCase())
+      );
+      if (updatedSessions.length !== sessions.length) {
+        await writeSessions(updatedSessions);
+      }
+    } catch {
+      // non-blocking
+    }
+
     return NextResponse.json({
       success: true,
-      message: 'Akun pengguna berhasil dihapus.',
+      message: `Akun "${targetUser.name}" berhasil dihapus secara permanen.`,
     });
   } catch (err: any) {
     return NextResponse.json(
