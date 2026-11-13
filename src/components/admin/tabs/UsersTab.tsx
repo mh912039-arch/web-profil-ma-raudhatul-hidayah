@@ -1525,14 +1525,6 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
       ========================================================================= */}
       {activeSubTab === 'activation' && (
         <div className="space-y-4">
-          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-3">
-            <Key className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
-            <div className="text-xs text-amber-900 leading-relaxed">
-              <span className="font-bold block text-sm mb-0.5">Otorisasi &amp; Aktivasi Kredensial Pengguna</span>
-              Halaman ini menampilkan akun-akun yang baru didaftarkan, akun yang dinonaktifkan sementara, atau permohonan akses baru dari dewan guru dan tenaga kependidikan.
-            </div>
-          </div>
-
           <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
             <div className="p-4 border-b border-slate-100 flex items-center justify-between">
               <div>
