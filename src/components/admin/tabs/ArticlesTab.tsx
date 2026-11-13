@@ -19,6 +19,7 @@ import {
   Loader2,
 } from 'lucide-react';
 import { ConfirmDeleteModal } from '../ConfirmDeleteModal';
+import { checkIsDeveloper } from '@/lib/isDeveloperClient';
 
 // Compresses an image File to strictly below 100KB using HTML5 Canvas
 async function compressImageUnder100KB(file: File): Promise<{ blob: Blob; base64: string; sizeKb: number }> {
@@ -216,7 +217,7 @@ export const ArticlesTab: React.FC<ArticlesTabProps> = ({
           ...prev,
           cover_image: json.url || base64,
         }));
-        const storageLabel = json.storage === 'supabase' ? 'Supabase Storage' : 'Tersimpan';
+        const storageLabel = json.storage === 'supabase' && checkIsDeveloper() ? 'Supabase Storage' : 'Tersimpan';
         setCompressionStatus(`Kompresi berhasil: ${originalKb} KB → ${sizeKb} KB (< 100 KB • ${storageLabel})`);
       } else {
         // Fallback to base64

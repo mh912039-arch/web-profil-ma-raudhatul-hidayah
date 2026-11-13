@@ -21,12 +21,17 @@ import {
   X,
 } from 'lucide-react';
 import { PpdbData } from '@/components/sections/PpdbSection';
+import { checkIsDeveloper } from '@/lib/isDeveloperClient';
 
 interface PpdbTabProps {
   formData: PpdbData;
   setFormData: React.Dispatch<React.SetStateAction<PpdbData>>;
   onSave: () => Promise<void>;
   isSaving: boolean;
+  isDeveloper?: boolean;
+  currentUserId?: string;
+  currentUserEmail?: string;
+  currentUserName?: string;
 }
 
 export const PpdbTab: React.FC<PpdbTabProps> = ({
@@ -34,7 +39,17 @@ export const PpdbTab: React.FC<PpdbTabProps> = ({
   setFormData,
   onSave,
   isSaving,
+  isDeveloper,
+  currentUserId,
+  currentUserEmail,
+  currentUserName,
 }) => {
+  const devActive = isDeveloper ?? checkIsDeveloper({
+    id: currentUserId,
+    userId: currentUserId,
+    username: currentUserName,
+    email: currentUserEmail,
+  });
   const [newFeature, setNewFeature] = useState('');
   const [activeSubTab, setActiveSubTab] = useState<'form' | 'preview'>('form');
   const [isUploadingPoster, setIsUploadingPoster] = useState(false);
@@ -571,9 +586,13 @@ export const PpdbTab: React.FC<PpdbTabProps> = ({
 
             {/* Bottom Actions for Mobile & Desktop */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-slate-100">
-              <span className="text-xs text-slate-500 font-medium">
-                Pembaruan akan langsung tersimpan ke Supabase & aktif di website.
-              </span>
+              {devActive ? (
+                <span className="text-xs text-slate-500 font-medium">
+                  Pembaruan akan langsung tersimpan ke Supabase & aktif di website.
+                </span>
+              ) : (
+                <span />
+              )}
               <button
                 type="submit"
                 disabled={isSaving}

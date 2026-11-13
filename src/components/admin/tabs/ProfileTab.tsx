@@ -24,6 +24,7 @@ import {
   Image as ImageIcon,
 } from 'lucide-react';
 import { uploadImageWithAutoCompression } from '@/lib/imageCompression';
+import { checkIsDeveloper } from '@/lib/isDeveloperClient';
 
 export interface ProfileFacility {
   id: string;
@@ -198,6 +199,10 @@ interface ProfileTabProps {
   onSaveFullProfile: (data: FullProfileData) => Promise<void>;
   isSaving: boolean;
   activeTab?: 'profile' | 'facilities' | 'contact';
+  isDeveloper?: boolean;
+  currentUserId?: string;
+  currentUserEmail?: string;
+  currentUserName?: string;
 }
 
 export const ProfileTab: React.FC<ProfileTabProps> = ({
@@ -205,7 +210,17 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
   onSaveFullProfile,
   isSaving,
   activeTab = 'profile',
+  isDeveloper,
+  currentUserId,
+  currentUserEmail,
+  currentUserName,
 }) => {
+  const devActive = isDeveloper ?? checkIsDeveloper({
+    id: currentUserId,
+    userId: currentUserId,
+    username: currentUserName,
+    email: currentUserEmail,
+  });
   const [formData, setFormData] = useState<FullProfileData>({
     profile: {
       name: data.profile?.name || 'MAS Raudlatul Hidayah',
@@ -2199,9 +2214,13 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
 
       {/* Bottom Save Bar for Mobile & Desktop */}
       <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <span className="text-xs text-slate-500 font-medium">
-          Perubahan profil dan fasilitas akan langsung tersimpan ke Supabase &amp; diterapkan di seluruh web.
-        </span>
+        {devActive ? (
+          <span className="text-xs text-slate-500 font-medium">
+            Perubahan profil dan fasilitas akan langsung tersimpan ke Supabase &amp; diterapkan di seluruh web.
+          </span>
+        ) : (
+          <span />
+        )}
         <button
           type="submit"
           disabled={isSaving}

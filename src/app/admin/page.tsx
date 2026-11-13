@@ -27,6 +27,7 @@ import { IdleTimeoutModal } from '@/components/auth/IdleTimeoutModal';
 import { supabase } from '@/lib/supabaseClient';
 import { clearProfileCache } from '@/lib/publicProfileClient';
 import { playNotificationSound } from '@/lib/notificationSound';
+import { checkIsDeveloper } from '@/lib/isDeveloperClient';
 import {
   CheckCircle2,
   AlertCircle,
@@ -123,6 +124,14 @@ export default function AdminDashboardPage() {
   const [supabaseConnected, setSupabaseConnected] = useState(true);
   const [toastMessage, setToastMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [targetRombelForSchedule, setTargetRombelForSchedule] = useState<string | undefined>(undefined);
+
+  const isDeveloper = checkIsDeveloper({
+    id: currentUserId,
+    userId: currentUserId,
+    username: currentUserName,
+    name: currentUserName,
+    email: currentUserEmail,
+  });
 
   useEffect(() => {
     // Verifikasi sesi server-side (HttpOnly cookie)
@@ -1423,6 +1432,10 @@ export default function AdminDashboardPage() {
               homepage={homepageData}
               onSaveHomepage={handleSaveHomepage}
               isSaving={isSaving}
+              isDeveloper={isDeveloper}
+              currentUserId={currentUserId}
+              currentUserEmail={currentUserEmail}
+              currentUserName={currentUserName}
             />
           )}
 
@@ -1432,6 +1445,10 @@ export default function AdminDashboardPage() {
               setFormData={setPpdbData}
               onSave={handleSavePpdb}
               isSaving={isSaving}
+              isDeveloper={isDeveloper}
+              currentUserId={currentUserId}
+              currentUserEmail={currentUserEmail}
+              currentUserName={currentUserName}
             />
           )}
 
@@ -1486,6 +1503,10 @@ export default function AdminDashboardPage() {
               onSaveFullProfile={handleSaveFullProfile}
               isSaving={isSaving}
               activeTab={effectiveActiveTab === 'facilities' ? 'facilities' : effectiveActiveTab === 'contact' ? 'contact' : 'profile'}
+              isDeveloper={isDeveloper}
+              currentUserId={currentUserId}
+              currentUserEmail={currentUserEmail}
+              currentUserName={currentUserName}
             />
           )}
 

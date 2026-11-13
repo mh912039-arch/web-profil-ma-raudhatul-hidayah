@@ -41,6 +41,7 @@ export function HomeContactMapSection() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [isMapActive, setIsMapActive] = useState(false);
 
   useEffect(() => {
     fetchPublicProfile(true).then((data) => {
@@ -348,23 +349,84 @@ export function HomeContactMapSection() {
 
           {/* =========================================================
               KOLOM KANAN: Google Maps Interaktif (5 Cols)
+              (Menggunakan Pola Facade Cerdas agar Tidak Membebani PageSpeed)
           ========================================================= */}
           <div className="lg:col-span-5 flex flex-col">
             <div className="relative w-full h-full min-h-[440px] sm:min-h-[520px] rounded-3xl overflow-hidden border border-slate-200/90 shadow-lg bg-slate-100 flex flex-col">
               
-              {/* Iframe Google Maps */}
-              <div className="relative w-full flex-grow min-h-[360px]">
-                <iframe
-                  title="Peta Lokasi Google Maps MA Raudlatul Hidayah"
-                  src={profile.mapsEmbedUrl}
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  className="absolute inset-0 w-full h-full"
-                />
+              {/* Iframe Google Maps / Facade Preview */}
+              <div className="relative w-full flex-grow min-h-[360px] flex items-center justify-center">
+                {isMapActive ? (
+                  <iframe
+                    title="Peta Lokasi Google Maps MA Raudlatul Hidayah"
+                    src={profile.mapsEmbedUrl}
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    referrerPolicy="no-referrer-when-downgrade"
+                    className="absolute inset-0 w-full h-full animate-in fade-in duration-300"
+                  />
+                ) : (
+                  <div
+                    onClick={() => setIsMapActive(true)}
+                    className="absolute inset-0 w-full h-full bg-slate-900 flex flex-col items-center justify-center p-6 text-center cursor-pointer group select-none overflow-hidden"
+                  >
+                    {/* Stylized Map Grid Overlay */}
+                    <div
+                      className="absolute inset-0 opacity-20 pointer-events-none"
+                      style={{
+                        backgroundImage: `radial-gradient(circle at 50% 50%, #38bdf8 1px, transparent 1px), linear-gradient(to right, #ffffff0a 1px, transparent 1px), linear-gradient(to bottom, #ffffff0a 1px, transparent 1px)`,
+                        backgroundSize: '24px 24px, 48px 48px, 48px 48px',
+                      }}
+                    />
+
+                    {/* Central Location Card */}
+                    <div className="relative z-10 max-w-sm bg-white/95 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl flex flex-col items-center gap-3 group-hover:scale-[1.02] transition-transform duration-300">
+                      <div className="w-12 h-12 rounded-full bg-amber-500/15 text-amber-600 flex items-center justify-center border border-amber-500/30 shadow-xs">
+                        <MapPin className="w-6 h-6 stroke-[2.2]" />
+                      </div>
+
+                      <div>
+                        <h4 className="font-serif text-[17px] sm:text-[18px] font-bold text-slate-900">
+                          MA Raudlatul Hidayah
+                        </h4>
+                        <p className="font-sans text-[12.5px] text-slate-600 mt-1 leading-snug line-clamp-2">
+                          Jl. Raya Tanjung Kait No. 33, Tanjung Anom, Kec. Mauk, Kab. Tangerang
+                        </p>
+                      </div>
+
+                      <div className="pt-2 flex flex-col sm:flex-row items-center gap-2 w-full">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setIsMapActive(true);
+                          }}
+                          className="w-full py-2.5 px-4 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-sans text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
+                        >
+                          <MapPin className="w-3.5 h-3.5" />
+                          <span>Buka Peta Interaktif</span>
+                        </button>
+
+                        <a
+                          href={profile.mapsDirectUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="w-full py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-sans text-xs font-bold transition-all border border-slate-200 flex items-center justify-center gap-1.5"
+                        >
+                          <span>Google Maps</span>
+                          <Navigation className="w-3 h-3 text-blue-700" />
+                        </a>
+                      </div>
+                    </div>
+
+                    <span className="relative z-10 text-[11.5px] text-slate-400 font-medium mt-4 group-hover:text-slate-300 transition-colors">
+                      Klik untuk memuat peta Google Maps langsung di halaman
+                    </span>
+                  </div>
+                )}
               </div>
 
               {/* Footer Petunjuk Arah Singkat */}

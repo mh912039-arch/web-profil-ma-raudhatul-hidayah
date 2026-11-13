@@ -12,6 +12,7 @@ export default function KontakPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState<string>('');
   const [captchaError, setCaptchaError] = useState(false);
+  const [isMapActive, setIsMapActive] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     contact: '',
@@ -311,18 +312,81 @@ export default function KontakPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
               {/* Google Maps Embed Container (8 cols) */}
-              <div className="lg:col-span-8 overflow-hidden rounded-xl shadow-sm bg-surface-container-highest border border-surface-container relative">
-                <iframe
-                  title="Peta Lokasi MAS Raudlatul Hidayah Tanjung Anom Mauk"
-                  src={profileInfo.mapsEmbedUrl}
-                  width="100%"
-                  height="420"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  className="w-full h-80 sm:h-[420px]"
-                />
+              <div className="lg:col-span-8 overflow-hidden rounded-xl shadow-sm bg-surface-container-highest border border-surface-container relative min-h-[360px] sm:min-h-[420px] flex items-center justify-center">
+                {isMapActive ? (
+                  <iframe
+                    title="Peta Lokasi MAS Raudlatul Hidayah Tanjung Anom Mauk"
+                    src={profileInfo.mapsEmbedUrl}
+                    width="100%"
+                    height="420"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    className="w-full h-80 sm:h-[420px]"
+                  />
+                ) : (
+                  <div
+                    onClick={() => setIsMapActive(true)}
+                    className="w-full h-80 sm:h-[420px] bg-slate-900 text-white flex flex-col items-center justify-center p-6 text-center cursor-pointer group relative overflow-hidden"
+                  >
+                    <div
+                      className="absolute inset-0 opacity-20 pointer-events-none"
+                      style={{
+                        backgroundImage: `
+                          radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.4) 0%, transparent 65%),
+                          linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                          linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px)
+                        `,
+                        backgroundSize: '100% 100%, 24px 24px, 24px 24px',
+                      }}
+                    />
+
+                    <div className="relative z-10 max-w-sm bg-white/95 backdrop-blur-md text-slate-900 rounded-2xl p-6 border border-white/20 shadow-xl flex flex-col items-center gap-3 group-hover:scale-[1.02] transition-transform duration-300">
+                      <div className="w-12 h-12 rounded-full bg-amber-500/15 text-amber-600 flex items-center justify-center border border-amber-500/30 shadow-xs">
+                        <MapPin className="w-6 h-6 stroke-[2.2]" />
+                      </div>
+
+                      <div>
+                        <h4 className="font-serif text-[17px] sm:text-[18px] font-bold text-slate-900">
+                          MA Raudlatul Hidayah
+                        </h4>
+                        <p className="font-sans text-[12.5px] text-slate-600 mt-1 leading-snug line-clamp-2">
+                          {profileInfo.address}
+                        </p>
+                      </div>
+
+                      <div className="pt-2 flex flex-col sm:flex-row items-center gap-2 w-full">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setIsMapActive(true);
+                          }}
+                          className="w-full py-2.5 px-4 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-sans text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
+                        >
+                          <MapPin className="w-3.5 h-3.5" />
+                          <span>Buka Peta Interaktif</span>
+                        </button>
+
+                        <a
+                          href="https://maps.app.goo.gl/4dKTkXuw5VBhmgACA"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="w-full py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-sans text-xs font-bold transition-all border border-slate-200 flex items-center justify-center gap-1.5"
+                        >
+                          <span>Google Maps</span>
+                          <Navigation className="w-3 h-3 text-blue-700" />
+                        </a>
+                      </div>
+                    </div>
+
+                    <span className="relative z-10 text-[11.5px] text-slate-400 font-medium mt-4 group-hover:text-slate-300 transition-colors">
+                      Klik untuk memuat peta Google Maps langsung di halaman
+                    </span>
+                  </div>
+                )}
               </div>
 
               {/* Transportation & Access Guide (4 cols) */}

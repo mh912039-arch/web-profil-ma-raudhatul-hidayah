@@ -19,6 +19,7 @@ import {
   Users,
 } from 'lucide-react';
 import { uploadImageWithAutoCompression } from '@/lib/imageCompression';
+import { checkIsDeveloper } from '@/lib/isDeveloperClient';
 
 export interface HomepageConfig {
   heroTitle: string;
@@ -57,13 +58,27 @@ interface HomepageTabProps {
   homepage: HomepageConfig;
   onSaveHomepage: (data: HomepageConfig) => Promise<void>;
   isSaving: boolean;
+  isDeveloper?: boolean;
+  currentUserId?: string;
+  currentUserEmail?: string;
+  currentUserName?: string;
 }
 
 export const HomepageTab: React.FC<HomepageTabProps> = ({
   homepage,
   onSaveHomepage,
   isSaving,
+  isDeveloper,
+  currentUserId,
+  currentUserEmail,
+  currentUserName,
 }) => {
+  const devActive = isDeveloper ?? checkIsDeveloper({
+    id: currentUserId,
+    userId: currentUserId,
+    username: currentUserName,
+    email: currentUserEmail,
+  });
   const [formData, setFormData] = useState<HomepageConfig>(() => {
     const bgs = Array.isArray(homepage?.heroBackgrounds) && homepage.heroBackgrounds.length > 0
       ? homepage.heroBackgrounds
@@ -987,9 +1002,13 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
 
         {/* Bottom Save Action for Mobile & Desktop */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-slate-100">
-          <span className="text-xs text-slate-500 font-medium">
-            Perubahan tampilan beranda akan langsung aktif di web dan tersimpan ke Supabase.
-          </span>
+          {devActive ? (
+            <span className="text-xs text-slate-500 font-medium">
+              Perubahan tampilan beranda akan langsung aktif di web dan tersimpan ke Supabase.
+            </span>
+          ) : (
+            <span />
+          )}
           <button
             type="submit"
             disabled={isSaving}

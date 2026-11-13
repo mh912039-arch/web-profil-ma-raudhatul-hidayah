@@ -18,6 +18,7 @@ import {
 import { AdminTab } from '../AdminSidebar';
 import { VisitorAnalyticsSection } from '../analytics/VisitorAnalyticsSection';
 import { HomepageConfig } from './HomepageTab';
+import { checkIsDeveloper } from '@/lib/isDeveloperClient';
 
 interface OverviewTabProps {
   setActiveTab: (tab: AdminTab) => void;
@@ -47,16 +48,13 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
   currentUserEmail,
   currentUserName,
 }) => {
-  const isDeveloper = Boolean(
-    (currentUserId === 'usr-1') ||
-    (currentUserName?.toLowerCase() === 'developer') ||
-    (currentUserEmail && ['admin@raudhatulhidayah.sch.id', 'admin@raudlatulhidayah.sch.id'].includes(currentUserEmail.toLowerCase().trim())) ||
-    (typeof window !== 'undefined' && (
-      localStorage.getItem('mrh_user_id') === 'usr-1' ||
-      (localStorage.getItem('mrh_username') || '').toLowerCase() === 'developer' ||
-      ['admin@raudhatulhidayah.sch.id', 'admin@raudlatulhidayah.sch.id'].includes((localStorage.getItem('mrh_email') || '').toLowerCase().trim())
-    ))
-  );
+  const isDeveloper = checkIsDeveloper({
+    id: currentUserId,
+    userId: currentUserId,
+    username: currentUserName,
+    name: currentUserName,
+    email: currentUserEmail,
+  });
   const cards = [
     {
       label: 'Jadwal Pelajaran',
