@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { requireAuth } from '@/lib/auth';
+import { requireDeveloperAuth } from '@/lib/auth';
 import {
   getActiveLockouts,
   unlockTarget,
@@ -8,7 +8,7 @@ import {
 import { sendSecurityAlertEmail } from '@/lib/securityMailer';
 
 export async function GET() {
-  const auth = await requireAuth(['admin']);
+  const auth = await requireDeveloperAuth();
   if (!auth.authorized) {
     return auth.response;
   }
@@ -33,7 +33,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const auth = await requireAuth(['admin']);
+  const auth = await requireDeveloperAuth(request);
   if (!auth.authorized) {
     return auth.response;
   }

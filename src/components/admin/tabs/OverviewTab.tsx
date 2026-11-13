@@ -34,15 +34,29 @@ interface OverviewTabProps {
   homepageData?: HomepageConfig;
   onSaveHomepage?: (data: HomepageConfig) => Promise<void>;
   isSaving?: boolean;
+  currentUserId?: string;
   currentUserEmail?: string;
+  currentUserName?: string;
 }
 
 export const OverviewTab: React.FC<OverviewTabProps> = ({
   setActiveTab,
   stats,
   supabaseConnected,
+  currentUserId,
   currentUserEmail,
+  currentUserName,
 }) => {
+  const isDeveloper = Boolean(
+    (currentUserId === 'usr-1') ||
+    (currentUserName?.toLowerCase() === 'developer') ||
+    (currentUserEmail && ['admin@raudhatulhidayah.sch.id', 'admin@raudlatulhidayah.sch.id'].includes(currentUserEmail.toLowerCase().trim())) ||
+    (typeof window !== 'undefined' && (
+      localStorage.getItem('mrh_user_id') === 'usr-1' ||
+      (localStorage.getItem('mrh_username') || '').toLowerCase() === 'developer' ||
+      ['admin@raudhatulhidayah.sch.id', 'admin@raudlatulhidayah.sch.id'].includes((localStorage.getItem('mrh_email') || '').toLowerCase().trim())
+    ))
+  );
   const cards = [
     {
       label: 'Jadwal Pelajaran',
@@ -171,8 +185,8 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
       {/* 3. Live Traffic & Visitor Analytics (Domain & Public Profile Tracker) */}
       <VisitorAnalyticsSection />
 
-      {/* 4. Integrasi & Status Supabase Cloud (Hanya tampil untuk akun Developer: admin@raudhatulhidayah.sch.id) */}
-      {Boolean(currentUserEmail && ['admin@raudhatulhidayah.sch.id', 'admin@raudlatulhidayah.sch.id'].includes(currentUserEmail)) ? (
+      {/* 4. Integrasi & Status Supabase Cloud (Hanya tampil untuk akun Developer Utama) */}
+      {isDeveloper ? (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-8 bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs space-y-4">
             <div className="flex items-center justify-between">

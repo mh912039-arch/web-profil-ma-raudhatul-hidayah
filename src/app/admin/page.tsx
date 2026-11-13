@@ -92,6 +92,12 @@ const GURU_ALLOWED_TABS: AdminTab[] = [
 export default function AdminDashboardPage() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [userRole, setUserRole] = useState<'admin' | 'guru' | 'siswa'>('admin');
+  const [currentUserId, setCurrentUserId] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('mrh_user_id') || '';
+    }
+    return '';
+  });
   const [currentUserName, setCurrentUserName] = useState<string>(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('mrh_username') || '';
@@ -126,6 +132,12 @@ export default function AdminDashboardPage() {
         if (data.authenticated && data.role) {
           setIsAuthenticated(true);
           setUserRole(data.role);
+          if (data.userId) {
+            setCurrentUserId(data.userId);
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('mrh_user_id', data.userId);
+            }
+          }
           if (data.email) {
             setCurrentUserEmail(data.email);
             if (typeof window !== 'undefined') {
@@ -153,6 +165,7 @@ export default function AdminDashboardPage() {
           if (typeof window !== 'undefined') {
             localStorage.removeItem('mrh_admin_auth');
             localStorage.removeItem('mrh_user_role');
+            localStorage.removeItem('mrh_user_id');
             localStorage.removeItem('mrh_username');
             localStorage.removeItem('mrh_email');
           }
@@ -1181,6 +1194,7 @@ export default function AdminDashboardPage() {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('mrh_admin_auth');
       localStorage.removeItem('mrh_user_role');
+      localStorage.removeItem('mrh_user_id');
       localStorage.removeItem('mrh_username');
       localStorage.removeItem('mrh_email');
       localStorage.removeItem('mrh_last_active_time');
@@ -1188,6 +1202,7 @@ export default function AdminDashboardPage() {
     }
     setIsAuthenticated(false);
     setUserRole('admin');
+    setCurrentUserId('');
     setCurrentUserName('');
     setCurrentUserEmail('');
   }, []);
@@ -1332,6 +1347,8 @@ export default function AdminDashboardPage() {
                       onSaveHomepage={handleSaveHomepage}
                       isSaving={isSaving}
                       currentUserEmail={currentUserEmail}
+                      currentUserName={currentUserName}
+                      currentUserId={currentUserId}
                     />
                   </div>
                   <div className="block md:hidden">
@@ -1393,7 +1410,12 @@ export default function AdminDashboardPage() {
           )}
 
           {userRole === 'admin' && (effectiveActiveTab === 'users' || effectiveActiveTab === 'activation') && (
-            <UsersTab mode={effectiveActiveTab === 'activation' ? 'activation' : 'users'} />
+            <UsersTab
+              mode={effectiveActiveTab === 'activation' ? 'activation' : 'users'}
+              currentUserId={currentUserId}
+              currentUserEmail={currentUserEmail}
+              currentUserName={currentUserName}
+            />
           )}
 
           {userRole === 'admin' && effectiveActiveTab === 'homepage' && (

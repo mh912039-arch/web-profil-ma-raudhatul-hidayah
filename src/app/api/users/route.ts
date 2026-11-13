@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { requireAuth, hashPassword } from '@/lib/auth';
+import { requireAuth, hashPassword, isDeveloperSession } from '@/lib/auth';
 import {
   readUsers,
   writeUsers,
@@ -48,13 +48,14 @@ export async function GET() {
   }
 
   const totalUsers = users.length;
-  const activeSessions = sessions.filter((s) => s.status === 'active').length;
+  const isDev = isDeveloperSession(auth.session);
+  const activeSessions = isDev ? sessions.filter((s) => s.status === 'active').length : 0;
   const activeUsers = users.filter((u) => u.is_online).length;
 
   return NextResponse.json({
     success: true,
     users: users.map(sanitizeUser),
-    sessions,
+    sessions: isDev ? sessions : [],
     stats: {
       totalUsers,
       activeSessions,
@@ -143,8 +144,14 @@ export async function PATCH(request: Request) {
   try {
     const body = await request.json();
 
-    // 1. Aksi Cabut Sesi Login (Revoke Session)
+    // 1. Aksi Cabut Sesi Login (Revoke Session) - Khusus Developer Utama
     if (body.action === 'revoke_session' && body.session_id) {
+      if (!isDeveloperSession(auth.session)) {
+        return NextResponse.json(
+          { success: false, message: 'Akses Ditolak: Hanya akun Developer Utama yang berhak memutuskan sesi perangkat.' },
+          { status: 403 }
+        );
+      }
       const sessions = await readSessions();
       const updatedSessions = sessions.map((s) =>
         s.id === body.session_id ? { ...s, status: 'expired' as const } : s

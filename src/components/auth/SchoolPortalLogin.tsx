@@ -159,6 +159,9 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
       if (typeof window !== 'undefined') {
         localStorage.setItem('mrh_admin_auth', 'true');
         localStorage.setItem('mrh_user_role', data.role);
+        if (data.userId) {
+          localStorage.setItem('mrh_user_id', data.userId);
+        }
         if (data.username) {
           localStorage.setItem('mrh_username', data.username);
         }

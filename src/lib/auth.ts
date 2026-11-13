@@ -156,6 +156,54 @@ export async function requireAuth(allowedRoles?: UserRole[], request?: Request):
   return { authorized: true, session };
 }
 
+/**
+ * Helper identifikasi apakah sesi/pengguna merupakan Akun Developer Utama
+ */
+export function isDeveloperSession(session?: { userId?: string; username?: string; email?: string } | null): boolean {
+  if (!session) return false;
+  if (session.userId === 'usr-1') return true;
+  if (session.username?.toLowerCase() === 'developer') return true;
+  const devEmails = [
+    'admin@raudhatulhidayah.sch.id',
+    'admin@raudlatulhidayah.sch.id',
+  ];
+  if (session.email && devEmails.includes(session.email.toLowerCase().trim())) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Guard untuk API route khusus akun Developer Utama:
+ * Mengembalikan 403 Forbidden jika akun bukan Developer utama, sekalipun memiliki role admin.
+ */
+export async function requireDeveloperAuth(request?: Request): Promise<{
+  authorized: boolean;
+  session: SessionData | null;
+  response?: NextResponse;
+}> {
+  const auth = await requireAuth(['admin'], request);
+  if (!auth.authorized) {
+    return auth;
+  }
+
+  if (!isDeveloperSession(auth.session)) {
+    return {
+      authorized: false,
+      session: auth.session,
+      response: NextResponse.json(
+        {
+          success: false,
+          error: 'Akses Ditolak: Fitur pertahanan sistem dan audit sesi hanya dapat diakses oleh Akun Developer Utama.',
+        },
+        { status: 403 }
+      ),
+    };
+  }
+
+  return { authorized: true, session: auth.session };
+}
+
 export { COOKIE_NAME };
 
 /**

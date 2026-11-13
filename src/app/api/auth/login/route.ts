@@ -305,6 +305,7 @@ export async function POST(request: Request) {
       message: `Login berhasil sebagai ${detectedRole.toUpperCase()}.`,
       role: detectedRole,
       username,
+      userId: matchedUser ? matchedUser.id : undefined,
       email: matchedUser ? matchedUser.email : idLower,
       device: deviceInfo.display,
       permissions: matchedUser ? matchedUser.permissions : undefined,

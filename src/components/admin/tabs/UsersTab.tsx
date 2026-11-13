@@ -153,9 +153,17 @@ const generateMemorablePassphrase = (): string => {
 
 interface UsersTabProps {
   mode?: 'users' | 'activation';
+  currentUserId?: string;
+  currentUserEmail?: string;
+  currentUserName?: string;
 }
 
-export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
+export const UsersTab: React.FC<UsersTabProps> = ({
+  mode = 'users',
+  currentUserId,
+  currentUserEmail,
+  currentUserName,
+}) => {
   const [activeSubTab, setActiveSubTab] = useState<'directory' | 'sessions' | 'activation'>(
     mode === 'activation' ? 'activation' : 'directory'
   );
@@ -173,10 +181,11 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
   const [onlineFilter, setOnlineFilter] = useState<'all' | 'online' | 'offline'>('all');
 
   // Helper identifikasi akun developer utama
-  const isDeveloperAccount = (u?: { id?: string; email?: string; username?: string } | null): boolean => {
+  const isDeveloperAccount = (u?: { id?: string; userId?: string; email?: string; username?: string; name?: string } | null): boolean => {
     if (!u) return false;
-    if (u.id === 'usr-1') return true;
+    if (u.id === 'usr-1' || u.userId === 'usr-1') return true;
     if (u.username?.toLowerCase() === 'developer') return true;
+    if (u.name?.toLowerCase() === 'developer') return true;
     const devEmails = [
       'admin@raudhatulhidayah.sch.id',
       'admin@raudlatulhidayah.sch.id',
@@ -186,6 +195,49 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
     }
     return false;
   };
+
+  // Verifikasi apakah pengguna yang sedang login saat ini adalah Akun Developer Utama
+  const isCurrentDeveloper = useMemo(() => {
+    // 1. Cek dari properti sesi login aktif
+    if (
+      isDeveloperAccount({
+        id: currentUserId,
+        userId: currentUserId,
+        email: currentUserEmail,
+        username: currentUserName,
+        name: currentUserName,
+      })
+    ) {
+      return true;
+    }
+
+    // 2. Cek fallback dari localStorage peramban
+    if (typeof window !== 'undefined') {
+      const storedEmail = localStorage.getItem('mrh_email') || '';
+      const storedUsername = localStorage.getItem('mrh_username') || '';
+      const storedId = localStorage.getItem('mrh_user_id') || '';
+      if (
+        isDeveloperAccount({
+          id: storedId,
+          userId: storedId,
+          email: storedEmail,
+          username: storedUsername,
+          name: storedUsername,
+        })
+      ) {
+        return true;
+      }
+    }
+
+    return false;
+  }, [currentUserId, currentUserEmail, currentUserName]);
+
+  // Jamin akun non-developer tidak dapat mengakses sub-tab Sesi & Perangkat sama sekali
+  useEffect(() => {
+    if (!isCurrentDeveloper && activeSubTab === 'sessions') {
+      setActiveSubTab('directory');
+    }
+  }, [isCurrentDeveloper, activeSubTab]);
 
   // Modals & Password states
   const [editingUser, setEditingUser] = useState<UserAccount | null>(null);
@@ -289,6 +341,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
   };
 
   const fetchRateLimits = async () => {
+    if (!isCurrentDeveloper) return;
     try {
       const res = await fetch('/api/auth/rate-limit');
       if (res.ok) {
@@ -305,6 +358,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
   };
 
   const handleTestSecurityAlert = async () => {
+    if (!isCurrentDeveloper) return;
     setIsTestingAlert(true);
     try {
       const res = await fetch('/api/auth/rate-limit', {
@@ -332,6 +386,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
   };
 
   const handleUnlockTarget = async (key: string) => {
+    if (!isCurrentDeveloper) return;
     try {
       const res = await fetch('/api/auth/rate-limit', {
         method: 'POST',
@@ -351,20 +406,25 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
   };
 
   const handleClearAllRateLimits = () => {
+    if (!isCurrentDeveloper) return;
     setDeleteTarget({ type: 'rate-limits' });
   };
 
   useEffect(() => {
     fetchUsersAndSessions();
-    fetchRateLimits();
+    if (isCurrentDeveloper) {
+      fetchRateLimits();
+    }
 
     const pollInterval = setInterval(() => {
       fetchUsersAndSessions(true);
-      fetchRateLimits();
+      if (isCurrentDeveloper) {
+        fetchRateLimits();
+      }
     }, 15000);
 
     return () => clearInterval(pollInterval);
-  }, []);
+  }, [isCurrentDeveloper]);
 
   useEffect(() => {
     if (mode === 'activation') {
@@ -670,7 +730,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
       </div>
 
       {/* Metric Summary Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
+      <div className={`grid ${isCurrentDeveloper ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-1 sm:grid-cols-3'} gap-2.5 sm:gap-4`}>
         {/* Card 1: Total Pengguna */}
         <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white border border-slate-200/90 shadow-2xs flex flex-col justify-between min-w-0">
           <div className="flex items-center justify-between gap-1">
@@ -726,23 +786,25 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
           </div>
         </div>
 
-        {/* Card 4: Sesi Perangkat */}
-        <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white border border-slate-200/90 shadow-2xs flex flex-col justify-between min-w-0">
-          <div className="flex items-center justify-between gap-1">
-            <span className="text-[10.5px] sm:text-[11.5px] font-bold uppercase tracking-wide text-slate-500 truncate">
-              Sesi Login
-            </span>
-            <span className="text-[10px] sm:text-[11px] font-semibold text-blue-800 bg-blue-50 px-1.5 py-0.5 rounded shrink-0">
-              Koneksi
-            </span>
+        {/* Card 4: Sesi Perangkat (Hanya Tampil untuk Akun Developer Utama) */}
+        {isCurrentDeveloper && (
+          <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white border border-slate-200/90 shadow-2xs flex flex-col justify-between min-w-0">
+            <div className="flex items-center justify-between gap-1">
+              <span className="text-[10.5px] sm:text-[11.5px] font-bold uppercase tracking-wide text-slate-500 truncate">
+                Sesi Login
+              </span>
+              <span className="text-[10px] sm:text-[11px] font-semibold text-blue-800 bg-blue-50 px-1.5 py-0.5 rounded shrink-0">
+                Koneksi
+              </span>
+            </div>
+            <div className="mt-2 flex items-baseline justify-between">
+              <span className="text-xl sm:text-3xl font-extrabold text-blue-700">
+                {activeSessionsCount}
+              </span>
+              <span className="text-[10.5px] text-slate-400 font-medium hidden sm:inline">Perangkat</span>
+            </div>
           </div>
-          <div className="mt-2 flex items-baseline justify-between">
-            <span className="text-xl sm:text-3xl font-extrabold text-blue-700">
-              {activeSessionsCount}
-            </span>
-            <span className="text-[10.5px] text-slate-400 font-medium hidden sm:inline">Perangkat</span>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Sub-Tab Navigation Bar (Horizontal Touch-Scrollable) */}
@@ -763,21 +825,23 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
           </span>
         </button>
 
-        <button
-          type="button"
-          onClick={() => setActiveSubTab('sessions')}
-          className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-bold border-b-2 transition-colors shrink-0 whitespace-nowrap ${
-            activeSubTab === 'sessions'
-              ? 'border-blue-700 text-blue-700'
-              : 'border-transparent text-slate-500 hover:text-slate-900 hover:border-slate-300'
-          }`}
-        >
-          <Laptop className="w-4 h-4 shrink-0" />
-          <span>Sesi &amp; Perangkat</span>
-          <span className="px-1.5 py-0.5 text-[11px] rounded-full bg-emerald-100 text-emerald-800 font-extrabold">
-            {activeSessionsCount} Aktif
-          </span>
-        </button>
+        {isCurrentDeveloper && (
+          <button
+            type="button"
+            onClick={() => setActiveSubTab('sessions')}
+            className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-bold border-b-2 transition-colors shrink-0 whitespace-nowrap ${
+              activeSubTab === 'sessions'
+                ? 'border-blue-700 text-blue-700'
+                : 'border-transparent text-slate-500 hover:text-slate-900 hover:border-slate-300'
+            }`}
+          >
+            <Laptop className="w-4 h-4 shrink-0" />
+            <span>Sesi &amp; Perangkat</span>
+            <span className="px-1.5 py-0.5 text-[11px] rounded-full bg-emerald-100 text-emerald-800 font-extrabold">
+              {activeSessionsCount} Aktif
+            </span>
+          </button>
+        )}
 
         <button
           type="button"
@@ -1219,9 +1283,9 @@ export const UsersTab: React.FC<UsersTabProps> = ({ mode = 'users' }) => {
       )}
 
       {/* =========================================================================
-          TAB 2: RIWAYAT SESI & PERANGKAT LOGIN (SIAPA AJA YANG LOGIN & DEVICE)
+          TAB 2: RIWAYAT SESI & PERANGKAT LOGIN (HANYA KHUSUS AKUN DEVELOPER UTAMA)
       ========================================================================= */}
-      {activeSubTab === 'sessions' && (
+      {isCurrentDeveloper && activeSubTab === 'sessions' && (
         <div className="space-y-4">
           {/* Widget Pertahanan Anti-Brute Force */}
           <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
