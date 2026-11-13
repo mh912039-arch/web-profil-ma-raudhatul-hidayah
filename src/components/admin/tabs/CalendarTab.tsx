@@ -20,7 +20,7 @@ export interface AcademicEvent {
   id: string;
   title: string;
   date_range: string;
-  semester: string;
+  semester?: string;
   category: 'ujian' | 'libur' | 'ppdb' | 'kegiatan';
   description: string;
 }
@@ -110,7 +110,6 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
   const [formData, setFormData] = useState<Partial<AcademicEvent>>({
     title: '',
     date_range: '',
-    semester: 'Semester Ganjil',
     category: 'kegiatan',
     description: '',
   });
@@ -142,7 +141,6 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
     setFormData({
       title: '',
       date_range: '',
-      semester: 'Semester Ganjil',
       category: 'kegiatan',
       description: '',
     });
@@ -345,7 +343,9 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
                     >
                       {categoryLabels}
                     </span>
-                    <span className="text-xs font-semibold text-slate-500">{event.semester}</span>
+                    {event.semester ? (
+                      <span className="text-xs font-semibold text-slate-500">{event.semester}</span>
+                    ) : null}
                   </div>
                   <h3 className="font-bold text-slate-900 text-base group-hover:text-blue-900 transition-colors">
                     {event.title}
@@ -445,39 +445,24 @@ export const CalendarTab: React.FC<CalendarTabProps> = ({ readOnly = false }) =>
                 />
               </div>
 
-              {/* Field 3 & 4: Semester & Kategori */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="space-y-1.5">
-                  <label className="block font-bold text-slate-700">Semester</label>
-                  <select
-                    value={formData.semester || 'Semester Ganjil'}
-                    onChange={(e) => setFormData({ ...formData, semester: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-blue-600 text-slate-800 bg-white"
-                  >
-                    <option value="Semester Ganjil">Semester Ganjil</option>
-                    <option value="Semester Genap">Semester Genap</option>
-                    <option value="Tahunan / Sepanjang Tahun">Tahunan / Sepanjang Tahun</option>
-                  </select>
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="block font-bold text-slate-700">Kategori Kegiatan</label>
-                  <select
-                    value={formData.category || 'kegiatan'}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        category: e.target.value as AcademicEvent['category'],
-                      })
-                    }
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-blue-600 text-slate-800 bg-white"
-                  >
-                    <option value="ujian">Ujian</option>
-                    <option value="kegiatan">Kegiatan Belajar</option>
-                    <option value="libur">Libur Sekolah</option>
-                    <option value="ppdb">Agenda PPDB</option>
-                  </select>
-                </div>
+              {/* Field 3: Kategori Kegiatan */}
+              <div className="space-y-1.5">
+                <label className="block font-bold text-slate-700">Kategori Kegiatan</label>
+                <select
+                  value={formData.category || 'kegiatan'}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      category: e.target.value as AcademicEvent['category'],
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-blue-600 text-slate-800 bg-white"
+                >
+                  <option value="ujian">Ujian</option>
+                  <option value="kegiatan">Kegiatan Belajar</option>
+                  <option value="libur">Libur Sekolah</option>
+                  <option value="ppdb">Agenda PPDB</option>
+                </select>
               </div>
 
               {/* Field 5: Deskripsi */}

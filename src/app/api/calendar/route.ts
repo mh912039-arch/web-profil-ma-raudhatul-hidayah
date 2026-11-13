@@ -20,7 +20,7 @@ export interface AcademicEvent {
   id: string;
   title: string;
   date_range: string;
-  semester: string;
+  semester?: string;
   category: 'ujian' | 'libur' | 'ppdb' | 'kegiatan';
   description: string;
 }
@@ -123,7 +123,7 @@ export async function POST(req: Request) {
       id: body.id || `ev-${Date.now()}`,
       title: body.title?.trim() || 'Agenda Baru',
       date_range: body.date_range?.trim() || 'Waktu Belum Ditentukan',
-      semester: body.semester || 'Semester Ganjil',
+      semester: body.semester ? body.semester.trim() : undefined,
       category: body.category || 'kegiatan',
       description: body.description?.trim() || '',
     };
@@ -132,9 +132,13 @@ export async function POST(req: Request) {
     await saveEvents(events);
 
     // Kirim notifikasi push ke seluruh perangkat mobile PWA yang terdaftar
+    const notifBody = newEvent.semester
+      ? `Jadwal: ${newEvent.date_range} (${newEvent.semester}). Buka aplikasi untuk melihat rincian agenda.`
+      : `Jadwal: ${newEvent.date_range}. Buka aplikasi untuk melihat rincian agenda.`;
+
     broadcastPushNotification({
       title: `Kalender Akademik: ${newEvent.title}`,
-      body: `Jadwal: ${newEvent.date_range} (${newEvent.semester}). Buka aplikasi untuk melihat rincian agenda.`,
+      body: notifBody,
       url: '/admin',
       data: {
         eventId: newEvent.id,
