@@ -428,20 +428,6 @@ export function HomeContactMapSection() {
                   </div>
                 )}
               </div>
-
-              {/* Footer Petunjuk Arah Singkat */}
-              <div className="p-3 bg-slate-50 border-t border-slate-200/80 flex items-center justify-between text-[11.5px] text-slate-600 shrink-0">
-                <span className="truncate">Kawasan Jl. Raya Tanjung Kait No. 33, Tanjung Anom</span>
-                <a
-                  href={profile.mapsDirectUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-bold text-blue-700 hover:text-blue-900 transition-colors shrink-0 flex items-center gap-1"
-                >
-                  <span>Petunjuk Arah</span>
-                  <Navigation className="w-3 h-3" />
-                </a>
-              </div>
             </div>
           </div>
 
