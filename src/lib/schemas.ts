@@ -46,12 +46,12 @@ export const contactFormSchema = z.object({
 export type ContactFormInput = z.infer<typeof contactFormSchema>;
 
 /**
- * Skema Validasi Formulir Pendaftaran Santri Baru (PPDB Online)
+ * Skema Validasi Formulir Pendaftaran Siswa dan Siswi Baru (PPDB Online)
  * Memverifikasi integritas data calon peserta didik madrasah sebelum disimpan ke database.
  */
 export const ppdbRegistrationSchema = z.object({
   full_name: z
-    .string('Nama lengkap calon santri wajib diisi.')
+    .string('Nama lengkap calon siswa dan siswi wajib diisi.')
     .trim()
     .min(3, 'Nama lengkap minimal 3 karakter.')
     .max(100, 'Nama lengkap maksimal 100 karakter.'),

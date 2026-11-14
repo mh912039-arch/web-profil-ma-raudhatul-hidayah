@@ -103,8 +103,8 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
     },
     {
       label: 'Pendaftar PPDB Online',
-      value: `${stats.registrationsCount} Santri`,
-      detail: 'Calon santri terdata',
+      value: `${stats.registrationsCount} Siswa dan Siswi`,
+      detail: 'Calon siswa dan siswi terdata',
       icon: UserCheck,
       color: 'bg-blue-50 text-blue-900 border-blue-200',
       iconColor: 'text-blue-700',

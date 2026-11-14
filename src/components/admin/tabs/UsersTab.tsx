@@ -74,7 +74,7 @@ export interface UserSession {
 const AVAILABLE_MODULES: { id: string; label: string; group: 'ppdb' | 'akademik' | 'konten' | 'sistem' }[] = [
   // PPDB
   { id: 'ppdb', label: 'Pengaturan Alur & Info PPDB', group: 'ppdb' },
-  { id: 'registrations', label: 'Data & Verifikasi Calon Santri PPDB', group: 'ppdb' },
+  { id: 'registrations', label: 'Data & Verifikasi Calon Siswa dan Siswi PPDB', group: 'ppdb' },
 
   // Akademik
   { id: 'teachers', label: 'Data Dewan Guru & Tendik', group: 'akademik' },
@@ -701,7 +701,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({
             Kelola Pengguna, Perangkat &amp; Hak Akses
           </h2>
           <p className="text-xs text-slate-500 mt-0.5">
-            Manajemen akun admin, pendidik, santri, dan kontrol keamanan sesi login.
+            Manajemen akun admin, pendidik, siswa dan siswi, dan kontrol keamanan sesi login.
           </p>
         </div>
 

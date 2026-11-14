@@ -89,7 +89,7 @@ export function generatePpdbWhatsAppMessage(
   applicant: PpdbApplicant,
   status: PpdbApplicant['status']
 ): string {
-  const candidateName = applicant.full_name || 'Calon Santri';
+  const candidateName = applicant.full_name || 'Calon Siswa dan Siswi';
   const regNum = applicant.registration_number || '-';
   const parentName = applicant.parent_name || 'Bapak/Ibu';
   const schoolOrigin = applicant.previous_school || '-';
@@ -105,7 +105,7 @@ Assalamu'alaikum Warahmatullahi Wabarakatuh.
 Yth. Bapak/Ibu *${parentName}*,
 Orang Tua / Wali dari ananda:
 
-• Nama Calon Santri: *${candidateName}*
+• Nama Calon Siswa dan Siswi: *${candidateName}*
 • No. Registrasi: *${regNum}*
 • Jalur Pendaftaran: *${jalur}*
 • Asal Sekolah: ${schoolOrigin}
@@ -113,7 +113,7 @@ Orang Tua / Wali dari ananda:
 Alhamdulillah, setelah melalui tahapan seleksi dan verifikasi berkas, panitia Penerimaan Peserta Didik Baru (PPDB) MA Raudlatul Hidayah menyatakan bahwa ananda dinyatakan:
 
 *DITERIMA (LULUS SELEKSI)*
-Sebagai Calon Santri Baru MA Raudlatul Hidayah Tahun Ajaran 2027/2028.
+Sebagai Calon Siswa dan Siswi Baru MA Raudlatul Hidayah Tahun Ajaran 2027/2028.
 
 *Tahapan Selanjutnya (Daftar Ulang):*
 1. Membawa bukti cetak formulir pendaftaran ini ke sekretariat madrasah.
@@ -139,7 +139,7 @@ Assalamu'alaikum Warahmatullahi Wabarakatuh.
 Yth. Bapak/Ibu *${parentName}*,
 Orang Tua / Wali dari ananda:
 
-• Nama Calon Santri: *${candidateName}*
+• Nama Calon Siswa dan Siswi: *${candidateName}*
 • No. Registrasi: *${regNum}*
 • Jalur Pendaftaran: *${jalur}*
 • Asal Sekolah: ${schoolOrigin}
@@ -149,7 +149,7 @@ Kami mengucapkan terima kasih yang sebesar-besarnya atas kepercayaan Bapak/Ibu y
 Berdasarkan hasil seleksi berkas dan mempertimbangkan keterbatasan kapasitas kuota rombongan belajar tahun ajaran ini, dengan berat hati kami menyampaikan bahwa ananda:
 
 *BELUM DAPAT DITERIMA*
-Pada penerimaan santri baru MA Raudlatul Hidayah Tahun Ajaran 2027/2028.
+Pada penerimaan siswa dan siswi baru MA Raudlatul Hidayah Tahun Ajaran 2027/2028.
 
 Kami senantiasa mendoakan ananda agar selalu diberikan kelancaran, kemudahan, dan kesuksesan dalam melanjutkan pendidikan di madrasah/sekolah pilihan terbaik lainnya.
 
@@ -296,7 +296,7 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
       setDeleteTarget(null);
     } catch (err) {
       console.error('Failed to delete applicant:', err);
-      alert('Gagal menghapus data calon santri.');
+      alert('Gagal menghapus data calon siswa dan siswi.');
     } finally {
       setIsDeleting(false);
     }
@@ -534,7 +534,7 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
               Belum Ada Pendaftar
             </h4>
             <p className="text-[13px] text-slate-500 max-w-sm mx-auto">
-              Data pendaftaran online atau formulir manual calon santri baru akan tercatat dan ditampilkan di sini.
+              Data pendaftaran online atau formulir manual calon siswa dan siswi baru akan tercatat dan ditampilkan di sini.
             </p>
           </div>
         ) : (
@@ -545,7 +545,7 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
               <thead>
                 <tr className="bg-slate-50/90 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500 select-none">
                   <th className="py-3.5 px-4 whitespace-nowrap w-[140px]">No. Registrasi</th>
-                  <th className="py-3.5 px-4 whitespace-nowrap min-w-[220px]">Nama Calon Santri</th>
+                  <th className="py-3.5 px-4 whitespace-nowrap min-w-[220px]">Nama Calon Siswa dan Siswi</th>
                   <th className="py-3.5 px-4 whitespace-nowrap w-[130px]">Jalur</th>
                   <th className="py-3.5 px-4 whitespace-nowrap min-w-[160px]">Asal Sekolah</th>
                   <th className="py-3.5 px-4 whitespace-nowrap min-w-[180px]">Orang Tua &amp; Kontak</th>
@@ -568,7 +568,7 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
                         </span>
                       </td>
 
-                      {/* Nama Calon Santri: Single-Line Title with Clean Subtext */}
+                      {/* Nama Calon Siswa dan Siswi: Single-Line Title with Clean Subtext */}
                       <td className="py-3.5 px-4 whitespace-nowrap">
                         <div className="flex flex-col gap-0.5 whitespace-nowrap">
                           <span className="font-bold text-slate-900 text-[13.5px] leading-snug whitespace-nowrap">
@@ -681,7 +681,7 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
                             type="button"
                             onClick={() => handleOpenEdit(app)}
                             className="p-1.5 rounded-lg text-slate-500 hover:text-[#1e3a8a] hover:bg-blue-50 transition-colors cursor-pointer"
-                            title="Edit Lengkap Data Calon Santri"
+                            title="Edit Lengkap Data Calon Siswa dan Siswi"
                           >
                             <Edit2 className="w-3.5 h-3.5" />
                           </button>
@@ -692,7 +692,7 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
                               type="button"
                               onClick={() => handleDelete(app)}
                               className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
-                              title="Hapus Data Calon Santri"
+                              title="Hapus Data Calon Siswa dan Siswi"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
                             </button>
@@ -801,7 +801,7 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
                         type="button"
                         onClick={() => handleOpenEdit(app)}
                         className="p-1.5 rounded-lg text-slate-500 hover:text-blue-700 hover:bg-blue-50 transition-colors"
-                        title="Edit Data Santri"
+                        title="Edit Data Siswa dan Siswi"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
                       </button>
@@ -811,7 +811,7 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
                           type="button"
                           onClick={() => handleDelete(app)}
                           className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
-                          title="Hapus Data Santri"
+                          title="Hapus Data Siswa dan Siswi"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -1071,7 +1071,7 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
                   }}
                   className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[12.5px] transition-all active:scale-95 shadow-xs"
                 >
-                  Terima Santri &amp; Kirim WA
+                  Terima Siswa dan Siswi &amp; Kirim WA
                 </button>
 
                 <button
@@ -1084,7 +1084,7 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
                   }}
                   className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-[12.5px] transition-all active:scale-95 shadow-xs"
                 >
-                  Tolak Santri &amp; Kirim WA
+                  Tolak Siswa dan Siswi &amp; Kirim WA
                 </button>
               </div>
 
@@ -1143,7 +1143,7 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
             <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-3 text-[12.5px]">
               <div>
                 <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">
-                  Calon Santri
+                  Calon Siswa dan Siswi
                 </span>
                 <span className="font-bold text-slate-900 block mt-0.5">
                   {waModal.applicant.full_name}{' '}
@@ -1229,8 +1229,8 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
             <div className="flex items-center justify-between border-b border-slate-100 pb-3 shrink-0">
               <h4 className="font-serif text-[18px] font-bold text-slate-900">
                 {modalMode === 'edit'
-                  ? `Edit Data Calon Santri: ${formData.full_name || formData.registration_number}`
-                  : 'Pendaftaran Calon Santri Baru (Manual)'}
+                  ? `Edit Data Calon Siswa dan Siswi: ${formData.full_name || formData.registration_number}`
+                  : 'Pendaftaran Calon Siswa dan Siswi Baru (Manual)'}
               </h4>
               <button
                 type="button"
@@ -1270,12 +1270,12 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="flex flex-col gap-1">
-                  <label className="text-[12px] font-bold text-slate-700">Nama Lengkap Santri</label>
+                  <label className="text-[12px] font-bold text-slate-700">Nama Lengkap Siswa dan Siswi</label>
                   <input
                     type="text"
                     value={formData.full_name}
                     onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                    placeholder="Nama calon santri..."
+                    placeholder="Nama calon siswa dan siswi..."
                     className="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[12.5px]"
                     required
                   />
@@ -1405,21 +1405,21 @@ export const RegistrationsTab: React.FC<RegistrationsTabProps> = ({
         isOpen={!!deleteTarget}
         onClose={() => setDeleteTarget(null)}
         onConfirm={handleConfirmDelete}
-        title="Hapus Data Calon Santri"
-        description="Apakah Anda yakin ingin menghapus data calon santri ini? Seluruh berkas pendaftaran dan riwayat seleksi santri akan dihapus dari sistem PPDB."
+        title="Hapus Data Calon Siswa dan Siswi"
+        description="Apakah Anda yakin ingin menghapus data calon siswa dan siswi ini? Seluruh berkas pendaftaran dan riwayat seleksi siswa dan siswi akan dihapus dari sistem PPDB."
         itemName={deleteTarget ? `${deleteTarget.full_name} (No: ${deleteTarget.registration_number})` : undefined}
         itemType="Data PPDB Online"
         isLoading={isDeleting}
       />
 
-      {/* Modal Konfirmasi Hapus Seluruh Calon Santri & Berkas */}
+      {/* Modal Konfirmasi Hapus Seluruh Calon Siswa dan Siswi & Berkas */}
       <ConfirmDeleteModal
         isOpen={isDeleteAllOpen}
         onClose={() => setIsDeleteAllOpen(false)}
         onConfirm={handleConfirmDeleteAll}
         title="Hapus Seluruh Pendaftar & Berkas"
-        description="Apakah Anda yakin ingin menghapus seluruh pendaftar PPDB? Tindakan ini akan menghapus permanen seluruh data calon santri di database dan seluruh berkas fisik terunggah (KK, Akta, Ijazah, Afirmasi, Prestasi) dari server storage."
-        itemName={`Semua ${applicants.length} Calon Santri & Berkas Terunggah`}
+        description="Apakah Anda yakin ingin menghapus seluruh pendaftar PPDB? Tindakan ini akan menghapus permanen seluruh data calon siswa dan siswi di database dan seluruh berkas fisik terunggah (KK, Akta, Ijazah, Afirmasi, Prestasi) dari server storage."
+        itemName={`Semua ${applicants.length} Calon Siswa dan Siswi & Berkas Terunggah`}
         itemType="Semua Data PPDB & Berkas Storage"
         confirmLabel="Hapus Semua Permanen"
         isLoading={isDeletingAll}

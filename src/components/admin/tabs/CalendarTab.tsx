@@ -32,7 +32,7 @@ const defaultEvents: AcademicEvent[] = [
     date_range: '14 – 16 Juli 2026',
     semester: 'Semester Ganjil',
     category: 'kegiatan',
-    description: 'Masa Ta’aruf Santri Madrasah (MATSAMA) bagi peserta didik baru kelas VII & X.',
+    description: 'Masa Ta’aruf Siswa dan Siswi Madrasah (MATSAMA) bagi peserta didik baru kelas VII & X.',
   },
   {
     id: 'ev-2',
@@ -56,7 +56,7 @@ const defaultEvents: AcademicEvent[] = [
     date_range: '19 Desember 2026 – 2 Januari 2027',
     semester: 'Semester Ganjil',
     category: 'libur',
-    description: 'Penyerahan laporan hasil belajar santri kepada wali murid dilanjutkan libur sekolah.',
+    description: 'Penyerahan laporan hasil belajar siswa dan siswi kepada wali murid dilanjutkan libur sekolah.',
   },
   {
     id: 'ev-5',
@@ -80,7 +80,7 @@ const defaultEvents: AcademicEvent[] = [
     date_range: '12 – 19 April 2027',
     semester: 'Semester Genap',
     category: 'ujian',
-    description: 'Penentu kelulusan santri jenjang madrasah aliyah dan sanawiyah.',
+    description: 'Penentu kelulusan siswa dan siswi jenjang madrasah aliyah dan sanawiyah.',
   },
   {
     id: 'ev-8',

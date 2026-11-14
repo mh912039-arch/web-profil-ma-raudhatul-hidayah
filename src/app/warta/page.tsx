@@ -66,7 +66,7 @@ export default function WartaPage() {
     'Berita Utama',
     'Prestasi',
     'Kurikulum Merdeka',
-    'Santri Berkarakter',
+    'Siswa dan Siswi Berkarakter',
     'LDK OSIS',
     'Tahfidz',
     'P5-PPRA',
@@ -150,7 +150,7 @@ export default function WartaPage() {
                 Portal Berita &amp; Artikel
               </h1>
               <p className="font-sans text-[15px] sm:text-[16px] text-slate-600 mt-2 leading-relaxed">
-                Publikasi berkala seputar dinamika madrasah, prestasi santri, agenda kegiatan keislaman, dan siaran pengumuman resmi kelembagaan.
+                Publikasi berkala seputar dinamika madrasah, prestasi siswa dan siswi, agenda kegiatan keislaman, dan siaran pengumuman resmi kelembagaan.
               </p>
             </div>
           </div>

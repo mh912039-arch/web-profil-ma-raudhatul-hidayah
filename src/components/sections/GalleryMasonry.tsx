@@ -31,7 +31,7 @@ export const GalleryMasonry: React.FC = () => {
               Galeri Kehidupan Madrasah
             </h2>
             <p className="font-sans text-[14.5px] text-on-surface-variant mt-1">
-              Merekam setiap langkah khidmah, keceriaan santri, serta kekhidmatan suasana belajar di sekolah.
+              Merekam setiap langkah khidmah, keceriaan siswa dan siswi, serta kekhidmatan suasana belajar di sekolah.
             </p>
           </div>
 

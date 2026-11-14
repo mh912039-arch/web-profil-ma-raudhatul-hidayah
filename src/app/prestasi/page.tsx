@@ -11,8 +11,8 @@ import initialChampionships from '@/data/championshipsData.json';
 const defaultAchievements = (initialChampionships as any[]).map((d: any) => ({
   id: d.id,
   title: d.title,
-  student: d.sub || 'Santri MA Raudlatul Hidayah',
-  grade: d.category || 'Prestasi Santri',
+  student: d.sub || 'Siswa dan Siswi MA Raudlatul Hidayah',
+  grade: d.category || 'Prestasi Siswa dan Siswi',
   year: d.date_label || '2026',
   badge: d.badge || 'Juara',
   medalIcon: 'workspace_premium',
@@ -27,7 +27,7 @@ const defaultAchievements = (initialChampionships as any[]).map((d: any) => ({
   organizer: d.event_name || 'Kemenag & Kwarran',
   level: 'Tingkat Wilayah',
   image: d.image_url || '/foto-juara.jpeg',
-  desc: d.caption || 'Prestasi membanggakan yang diraih santri dalam ajang kejuaraan resmi.',
+  desc: d.caption || 'Prestasi membanggakan yang diraih siswa dan siswi dalam ajang kejuaraan resmi.',
 }));
 
 export default function PrestasiPage() {
@@ -42,8 +42,8 @@ export default function PrestasiPage() {
           const mapped = data.map((d: any) => ({
             id: d.id,
             title: d.title,
-            student: d.sub || 'Santri MA Raudlatul Hidayah',
-            grade: d.category || 'Prestasi Santri',
+            student: d.sub || 'Siswa dan Siswi MA Raudlatul Hidayah',
+            grade: d.category || 'Prestasi Siswa dan Siswi',
             year: d.date_label || '2026',
             badge: d.badge || 'Juara',
             medalIcon: 'workspace_premium',
@@ -58,7 +58,7 @@ export default function PrestasiPage() {
             organizer: d.event_name || 'Kemenag & Kwarran',
             level: 'Tingkat Wilayah',
             image: d.image_url || '/foto-juara.jpeg',
-            desc: d.caption || 'Prestasi membanggakan yang diraih santri dalam ajang kejuaraan resmi.',
+            desc: d.caption || 'Prestasi membanggakan yang diraih siswa dan siswi dalam ajang kejuaraan resmi.',
           }));
           setItems(mapped);
         }
@@ -100,10 +100,10 @@ export default function PrestasiPage() {
                   </span>
                 </div>
                 <h1 className="font-display text-[30px] sm:text-[40px] font-extrabold text-on-primary tracking-tight leading-tight">
-                  Galeri Prestasi &amp; Jejak Juara Santri MA Raudlatul Hidayah
+                  Galeri Prestasi &amp; Jejak Juara Siswa dan Siswi MA Raudlatul Hidayah
                 </h1>
                 <p className="font-sans text-[15.5px] text-on-primary-container leading-relaxed">
-                  Menempa keunggulan intelektual, ketangkasan raga, dan budi pekerti luhur santri madrasah aliyah untuk peradaban masa depan.
+                  Menempa keunggulan intelektual, ketangkasan raga, dan budi pekerti luhur siswa dan siswi madrasah aliyah untuk peradaban masa depan.
                 </p>
               </div>
 

@@ -20,7 +20,7 @@ const defaultData = {
   title: "Membentuk Generasi Berkarakter, Cerdas & Berakhlak Mulia",
   academicYear: "2027/2028",
   badgeText: "TELAH DIBUKA!",
-  description: "MAS Raudlatul Hidayah hadir sebagai kawah candradimuka yang mendampingi setiap murid untuk bertumbuh menjadi generasi yang tangguh, unggul, dan berkarakter islami. Melalui pembelajaran kontekstual berbasis Kurikulum Merdeka yang bermakna serta pembiasaan adab luhur kepesantrenan, santri didorong untuk menemukan potensi, mengembangkan bakat, dan meraih prestasi terbaiknya.",
+  description: "MAS Raudlatul Hidayah hadir sebagai kawah candradimuka yang mendampingi setiap murid untuk bertumbuh menjadi generasi yang tangguh, unggul, dan berkarakter islami. Melalui pembelajaran kontekstual berbasis Kurikulum Merdeka yang bermakna serta pembiasaan adab luhur kepesantrenan, siswa dan siswi didorong untuk menemukan potensi, mengembangkan bakat, dan meraih prestasi terbaiknya.",
   features: [
     "Kurikulum Merdeka Terpadu (Fase E & F)",
     "Pembentukan Karakter & Adab Islami",

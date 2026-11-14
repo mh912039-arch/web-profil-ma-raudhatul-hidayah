@@ -78,7 +78,7 @@ function unpackApplicant(row: any): PpdbApplicantItem {
 }
 
 export async function GET(request: Request) {
-  // Keamanan Endpoint: Kunci ketat data privat calon santri hanya untuk Administrator
+  // Keamanan Endpoint: Kunci ketat data privat calon siswa dan siswi hanya untuk Administrator
   const auth = await requireAuth(['admin'], request);
   if (!auth.authorized) {
     return auth.response!;

@@ -42,7 +42,7 @@ const defaultFacilities: FacilityItem[] = [
     id: 'fac-2',
     title: 'Perpustakaan',
     subtitle: 'Literasi & Khazanah Ilmu',
-    desc: 'Koleksi buku Kurikulum Merdeka terlengkap, ensiklopedia sains, referensi umum, ruang baca berkarpet, serta khazanah kitab keagamaan untuk menunjang budaya riset santri.',
+    desc: 'Koleksi buku Kurikulum Merdeka terlengkap, ensiklopedia sains, referensi umum, ruang baca berkarpet, serta khazanah kitab keagamaan untuk menunjang budaya riset siswa dan siswi.',
     image: '/perpus2.jpeg',
     badge: 'Pusat Sumber Belajar',
   },
@@ -50,7 +50,7 @@ const defaultFacilities: FacilityItem[] = [
     id: 'fac-3',
     title: 'Musholla Sekolah',
     subtitle: 'Ibadah & Pembiasaan Adab',
-    desc: 'Sarana ibadah representatif untuk pelaksanaan salat fardhu berjamaah, salat dhuha rutin, tadarus dan tahfidz Al-Qur’an harian, serta pembinaan adab santun santri.',
+    desc: 'Sarana ibadah representatif untuk pelaksanaan salat fardhu berjamaah, salat dhuha rutin, tadarus dan tahfidz Al-Qur’an harian, serta pembinaan adab santun siswa dan siswi.',
     image: '/musholla.jpg',
     badge: 'Karakter & Spiritual',
   },
@@ -69,7 +69,7 @@ const FACILITY_METADATA: Record<
   { specs: string[]; capacity: string; location: string; hours?: string }
 > = {
   'ruang kelas': {
-    capacity: '32 - 36 Meja & Kursi Santri per Kelas',
+    capacity: '32 - 36 Meja & Kursi Siswa dan Siswi per Kelas',
     location: 'Gedung Pembelajaran Lantai 1 & 2',
     hours: 'Setiap Hari Efektif KBM (07.00 - 15.00 WIB)',
     specs: [
@@ -104,7 +104,7 @@ const FACILITY_METADATA: Record<
       'Sistem Tata Suara Akustik Jernih untuk Adzan & Doa',
       'Penyediaan Kitab Suci Al-Qur’an Standar Kemenag',
       'Sentra Pembiasaan Salat Dhuha & Dzuhur Berjamaah',
-      'Jadwal Halaqah Tahfidz & Kultum Santri Mingguan',
+      'Jadwal Halaqah Tahfidz & Kultum Siswa dan Siswi Mingguan',
     ],
   },
   'lapangan olahraga': {
@@ -171,7 +171,7 @@ function getFacilityMeta(fac: FacilityItem) {
     hours: defaultMeta?.hours || 'Hari Kerja & Jam Kegiatan Sekolah',
     specs: customSpecs || defaultMeta?.specs || [
       'Kondisi Fasilitas Bersih, Rapi, dan Terawat',
-      'Penunjang Aktivitas Belajar dan Karakter Santri',
+      'Penunjang Aktivitas Belajar dan Karakter Siswa dan Siswi',
       'Standar Keamanan dan Kenyamanan Penggunaan Terjaga',
       'Pemeliharaan dan Perawatan Sarana Secara Berkala',
     ],

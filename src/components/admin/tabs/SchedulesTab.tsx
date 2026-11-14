@@ -1313,7 +1313,7 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
                   {activeTeacherName}
                 </h3>
                 <p className="text-xs text-slate-500">
-                  Agenda tatap muka harian di kelas santri Madrasah Raudlatul Hidayah
+                  Agenda tatap muka harian di kelas siswa dan siswi Madrasah Raudlatul Hidayah
                 </p>
               </div>
 

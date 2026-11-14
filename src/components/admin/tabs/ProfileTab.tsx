@@ -271,7 +271,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
       pageTitle: data.visionMission?.pageTitle || 'Visi & Misi Madrasah',
       pageSubtitle:
         data.visionMission?.pageSubtitle ||
-        'Arah haluan nilai pendidikan, visi kelembagaan, misi pembelajaran kontekstual, dan pilar keunggulan santri MAS Raudlatul Hidayah.',
+        'Arah haluan nilai pendidikan, visi kelembagaan, misi pembelajaran kontekstual, dan pilar keunggulan siswa dan siswi MAS Raudlatul Hidayah.',
       pillars: data.visionMission?.pillars || [],
     },
     history: {
@@ -351,7 +351,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
           pageTitle: data.visionMission?.pageTitle || 'Visi & Misi Madrasah',
           pageSubtitle:
             data.visionMission?.pageSubtitle ||
-            'Arah haluan nilai pendidikan, visi kelembagaan, misi pembelajaran kontekstual, dan pilar keunggulan santri MAS Raudlatul Hidayah.',
+            'Arah haluan nilai pendidikan, visi kelembagaan, misi pembelajaran kontekstual, dan pilar keunggulan siswa dan siswi MAS Raudlatul Hidayah.',
           pillars: data.visionMission?.pillars || [],
         },
         history: {
@@ -752,7 +752,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
           id: newId,
           title: 'Fasilitas Baru',
           subtitle: 'Keterangan Singkat',
-          desc: 'Deskripsi lengkap sarana dan prasarana penunjang kegiatan santri.',
+          desc: 'Deskripsi lengkap sarana dan prasarana penunjang kegiatan siswa dan siswi.',
           image: '/kelas.jpeg',
           badge: 'Sarana Akademik',
         },

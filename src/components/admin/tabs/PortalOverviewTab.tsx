@@ -142,7 +142,7 @@ export function PortalOverviewTab({
                 ? `Selamat Datang, ${currentUserName || 'Administrator'}`
                 : userRole === 'guru'
                 ? `Selamat Bertugas, ${effectiveGuruName}`
-                : "Assalamu'alaikum, Santri & Siswa"}
+                : "Assalamu'alaikum, Siswa dan Siswi & Siswa"}
             </h2>
             <p className="text-xs sm:text-sm text-slate-600">
               {userRole === 'admin'
@@ -224,7 +224,7 @@ export function PortalOverviewTab({
                   Pendaftar PPDB
                 </div>
                 <div className="text-base sm:text-lg font-bold text-slate-900 mt-0.5 group-hover:text-amber-700 transition-colors">
-                  {registrationsCount > 0 ? `${registrationsCount} Santri` : isPpdbOpen ? 'Buka' : 'Tutup'}
+                  {registrationsCount > 0 ? `${registrationsCount} Siswa dan Siswi` : isPpdbOpen ? 'Buka' : 'Tutup'}
                 </div>
                 <div className="text-[10.5px] text-slate-500 truncate mt-0.5">
                   Tahun Ajaran {academicYear}
@@ -292,7 +292,7 @@ export function PortalOverviewTab({
                   <div className="flex items-center gap-2.5 min-w-0">
                     <Mail className="w-4 h-4 text-blue-700 shrink-0" />
                     <span className="font-semibold truncate">
-                      Ada {unreadMessagesCount} pesan baru dari tamu/wali santri
+                      Ada {unreadMessagesCount} pesan baru dari tamu/wali siswa dan siswi
                     </span>
                   </div>
                   <span className="text-[11px] font-bold text-blue-700 shrink-0 inline-flex items-center gap-0.5">
@@ -309,7 +309,7 @@ export function PortalOverviewTab({
                   <div className="flex items-center gap-2.5 min-w-0">
                     <GraduationCap className="w-4 h-4 text-amber-700 shrink-0" />
                     <span className="font-semibold truncate">
-                      {registrationsCount} berkas calon santri PPDB perlu verifikasi
+                      {registrationsCount} berkas calon siswa dan siswi PPDB perlu verifikasi
                     </span>
                   </div>
                   <span className="text-[11px] font-bold text-amber-700 shrink-0 inline-flex items-center gap-0.5">
@@ -410,7 +410,7 @@ export function PortalOverviewTab({
                       ? 'Agenda mengajar & seluruh kelas'
                       : userRole === 'admin'
                       ? 'Kelola matriks jadwal seluruh kelas'
-                      : 'Jadwal belajar harian santri'}
+                      : 'Jadwal belajar harian siswa dan siswi'}
                   </div>
                 </div>
               </div>
@@ -508,7 +508,7 @@ export function PortalOverviewTab({
                         Pendaftar PPDB Online
                       </div>
                       <div className="text-[11px] text-slate-500 truncate">
-                        {registrationsCount > 0 ? `${registrationsCount} calon santri masuk` : 'Daftar calon santri baru'}
+                        {registrationsCount > 0 ? `${registrationsCount} calon siswa dan siswi masuk` : 'Daftar calon siswa dan siswi baru'}
                       </div>
                     </div>
                   </div>
@@ -572,7 +572,7 @@ export function PortalOverviewTab({
                     Dokumentasi Juara
                   </div>
                   <div className="text-[11px] text-slate-500 truncate">
-                    {achievementsCount > 0 ? `${achievementsCount} arsip prestasi` : 'Jejak prestasi santri'}
+                    {achievementsCount > 0 ? `${achievementsCount} arsip prestasi` : 'Jejak prestasi siswa dan siswi'}
                   </div>
                 </div>
               </div>
@@ -593,7 +593,7 @@ export function PortalOverviewTab({
                     Ekstrakurikuler
                   </div>
                   <div className="text-[11px] text-slate-500 truncate">
-                    Kegiatan minat &amp; bakat santri
+                    Kegiatan minat &amp; bakat siswa dan siswi
                   </div>
                 </div>
               </div>

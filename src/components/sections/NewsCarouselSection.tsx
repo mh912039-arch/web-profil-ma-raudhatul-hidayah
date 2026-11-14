@@ -25,7 +25,7 @@ const newsList: NewsItem[] = [
     title: 'Pekan Gelar Karya Projek Penguatan Profil Pelajar Pancasila (P5) dan Kewirausahaan Siswa',
     date: '18 Okt 2026',
     image: '/kelas.jpeg',
-    excerpt: 'Santri jenjang kelas VII hingga IX memamerkan kreasi kolaboratif berbasis kearifan lokal pesisir Mauk dan kepedulian lingkungan hidup.',
+    excerpt: 'Siswa dan Siswi jenjang kelas VII hingga IX memamerkan kreasi kolaboratif berbasis kearifan lokal pesisir Mauk dan kepedulian lingkungan hidup.',
     href: '/warta/gelar-karya-p5-ppra-kearifan-lokal',
   },
   {
@@ -33,7 +33,7 @@ const newsList: NewsItem[] = [
     title: 'Torehan Juara Kompetisi Sains Madrasah (KSM) dan Turnamen Olahraga Pelajar Tingkat Kabupaten',
     date: '12 Okt 2026',
     image: '/piala.jpeg',
-    excerpt: 'Kebanggaan madrasah atas dedikasi dan kerja keras santri di bidang sains terapan, olimpiade matematika, dan turnamen futsal pelajar.',
+    excerpt: 'Kebanggaan madrasah atas dedikasi dan kerja keras siswa dan siswi di bidang sains terapan, olimpiade matematika, dan turnamen futsal pelajar.',
     href: '/prestasi',
   },
   {
@@ -41,7 +41,7 @@ const newsList: NewsItem[] = [
     title: 'Pemberdayaan Perpustakaan Madrasah & Pojok Literasi Digital Remaja Menyongsong Kurikulum Merdeka',
     date: '05 Okt 2026',
     image: '/perpus2.jpeg',
-    excerpt: 'Penambahan ratusan koleksi referensi Kurikulum Merdeka Fase D guna mengasah minat baca santri sejak usia dini.',
+    excerpt: 'Penambahan ratusan koleksi referensi Kurikulum Merdeka Fase D guna mengasah minat baca siswa dan siswi sejak usia dini.',
     href: '/warta',
   },
   {
@@ -57,7 +57,7 @@ const newsList: NewsItem[] = [
     title: 'Peringatan Maulid Nabi Muhammad SAW: Meneladani Adab dan Akhlak Rasulullah dalam Menuntut Ilmu',
     date: '16 Sep 2026',
     image: '/hero/slide-2.jpg',
-    excerpt: 'Ratusan santri dan dewan guru larut dalam lantunan shalawat serta tausiyah pembinaan adab keseharian di lingkungan madrasah.',
+    excerpt: 'Ratusan siswa dan siswi dan dewan guru larut dalam lantunan shalawat serta tausiyah pembinaan adab keseharian di lingkungan madrasah.',
     href: '/warta/peringatan-maulid-nabi-dan-pengajian-akbar',
   },
   {

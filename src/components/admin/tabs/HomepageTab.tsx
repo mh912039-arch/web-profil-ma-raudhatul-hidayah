@@ -868,7 +868,7 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                 {formData.stat1Value || '152'}
               </span>
               <span className="font-sans text-[12px] sm:text-[13px] text-slate-500 font-medium block mt-1">
-                {formData.stat1Label || 'Santri Aktif MA'}
+                {formData.stat1Label || 'Siswa dan Siswi Aktif MA'}
               </span>
             </div>
             <div className="pl-4 sm:pl-6">
@@ -895,7 +895,7 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
           <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider block">
-                Metrik 1: Siswa / Santri
+                Metrik 1: Siswa dan Siswi
               </span>
               <span className="text-[10px] px-2 py-0.5 rounded-md bg-blue-100 text-blue-800 font-bold">
                 Kesiswaan
@@ -920,7 +920,7 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                 name="stat1Label"
                 value={formData.stat1Label}
                 onChange={handleChange}
-                placeholder="Contoh: Santri Aktif MA"
+                placeholder="Contoh: Siswa dan Siswi Aktif MA"
                 className="w-full px-3 py-2 rounded-lg bg-white border border-slate-200 text-[12.5px] focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
                 required
               />

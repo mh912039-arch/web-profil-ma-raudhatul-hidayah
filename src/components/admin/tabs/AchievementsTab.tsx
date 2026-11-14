@@ -152,7 +152,7 @@ export const AchievementsTab: React.FC<AchievementsTabProps> = ({
             Dokumentasi Juara
           </h3>
           <p className="text-[13px] text-slate-500">
-            Galeri piala kejuaraan, piagam prestasi, dan foto dokumentasi kemenangan santri madrasah
+            Galeri piala kejuaraan, piagam prestasi, dan foto dokumentasi kemenangan siswa dan siswi madrasah
           </p>
         </div>
 
@@ -321,12 +321,12 @@ export const AchievementsTab: React.FC<AchievementsTabProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[12px] font-bold text-slate-700">Penerima / Kontingen Santri</label>
+                  <label className="text-[12px] font-bold text-slate-700">Penerima / Kontingen Siswa dan Siswi</label>
                   <input
                     type="text"
                     value={formData.sub}
                     onChange={(e) => setFormData({ ...formData, sub: e.target.value })}
-                    placeholder="Contoh: Santri Putra & Putri MA Raudlatul Hidayah"
+                    placeholder="Contoh: Siswa dan Siswi Putra & Putri MA Raudlatul Hidayah"
                     className="px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[13px]"
                   />
                 </div>
@@ -398,7 +398,7 @@ export const AchievementsTab: React.FC<AchievementsTabProps> = ({
                   rows={3}
                   value={formData.caption}
                   onChange={(e) => setFormData({ ...formData, caption: e.target.value })}
-                  placeholder="Uraian prestasi yang berhasil diraih santri..."
+                  placeholder="Uraian prestasi yang berhasil diraih siswa dan siswi..."
                   className="px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[13px] leading-relaxed"
                 />
               </div>

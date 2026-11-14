@@ -314,7 +314,7 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
             </h3>
           </div>
           <p className="text-[13px] text-slate-500 mt-1">
-            Kelola cabang ekstrakurikuler santri, pembina resmi, jadwal latihan, dan foto kegiatan
+            Kelola cabang ekstrakurikuler siswa dan siswi, pembina resmi, jadwal latihan, dan foto kegiatan
           </p>
         </div>
 
@@ -536,7 +536,7 @@ export const ExtracurricularTab: React.FC<ExtracurricularTabProps> = ({
                   rows={3}
                   value={formData.desc || ''}
                   onChange={(e) => setFormData({ ...formData, desc: e.target.value })}
-                  placeholder="Jelaskan fokus pembinaan, materi kegiatan, dan manfaat bagi santri..."
+                  placeholder="Jelaskan fokus pembinaan, materi kegiatan, dan manfaat bagi siswa dan siswi..."
                   className="px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#1e3a8a] leading-relaxed"
                   required
                 />

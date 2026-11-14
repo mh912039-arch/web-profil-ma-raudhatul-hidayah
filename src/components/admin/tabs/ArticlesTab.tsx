@@ -404,7 +404,7 @@ export const ArticlesTab: React.FC<ArticlesTabProps> = ({
                   type="text"
                   value={formData.title}
                   onChange={(e) => handleTitleChange(e.target.value)}
-                  placeholder="Contoh: Santri MA Raudlatul Hidayah Meraih Juara 1..."
+                  placeholder="Contoh: Siswa dan Siswi MA Raudlatul Hidayah Meraih Juara 1..."
                   className="px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[13.5px] font-bold"
                   required
                 />

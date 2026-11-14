@@ -60,7 +60,7 @@ export default function FotoJuaraPage() {
                   Prestasi Siswa
                 </h1>
                 <p className="font-sans text-[14.5px] sm:text-[15.5px] text-slate-600 max-w-xl leading-relaxed">
-                  Galeri apresiasi piala, medali, dan piagam kemenangan santri MA Raudlatul Hidayah dalam berbagai ajang kompetisi, perlombaan, dan kejuaraan.
+                  Galeri apresiasi piala, medali, dan piagam kemenangan siswa dan siswi MA Raudlatul Hidayah dalam berbagai ajang kompetisi, perlombaan, dan kejuaraan.
                 </p>
               </div>
             </div>

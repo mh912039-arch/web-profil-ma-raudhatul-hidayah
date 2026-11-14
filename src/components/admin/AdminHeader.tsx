@@ -32,7 +32,7 @@ const tabTitles: Record<AdminTab, { title: string; subtitle: string }> = {
   },
   classes: {
     title: 'Kelas & Wali Kelas',
-    subtitle: 'Manajemen ruang kelas, penetapan wali kelas, dan kuota santri',
+    subtitle: 'Manajemen ruang kelas, penetapan wali kelas, dan kuota siswa dan siswi',
   },
   calendar: {
     title: 'Kalender Akademik',
@@ -40,7 +40,7 @@ const tabTitles: Record<AdminTab, { title: string; subtitle: string }> = {
   },
   users: {
     title: 'Direktori Pengguna',
-    subtitle: 'Daftar akun terdaftar dewan guru, staf TU, santri, dan pimpinan madrasah',
+    subtitle: 'Daftar akun terdaftar dewan guru, staf TU, siswa dan siswi, dan pimpinan madrasah',
   },
   activation: {
     title: 'Aktivasi Akun Pengguna',
@@ -64,7 +64,7 @@ const tabTitles: Record<AdminTab, { title: string; subtitle: string }> = {
   },
   achievements: {
     title: 'Dokumentasi Juara',
-    subtitle: 'Galeri piala kejuaraan, piagam prestasi, dan foto dokumentasi kemenangan santri madrasah',
+    subtitle: 'Galeri piala kejuaraan, piagam prestasi, dan foto dokumentasi kemenangan siswa dan siswi madrasah',
   },
   facilities: {
     title: 'Fasilitas Madrasah',
@@ -72,15 +72,15 @@ const tabTitles: Record<AdminTab, { title: string; subtitle: string }> = {
   },
   gallery: {
     title: 'Dokumentasi Juara',
-    subtitle: 'Galeri piala kejuaraan, piagam prestasi, dan foto dokumentasi kemenangan santri madrasah',
+    subtitle: 'Galeri piala kejuaraan, piagam prestasi, dan foto dokumentasi kemenangan siswa dan siswi madrasah',
   },
   extracurricular: {
     title: 'Ekstrakurikuler',
-    subtitle: 'Kelola cabang ekstrakurikuler santri, pembina resmi, jadwal latihan, dan foto kegiatan',
+    subtitle: 'Kelola cabang ekstrakurikuler siswa dan siswi, pembina resmi, jadwal latihan, dan foto kegiatan',
   },
   ppdb: {
     title: 'Alur Pendaftaran PPDB',
-    subtitle: 'Kelola informasi pendaftaran santri baru, brosur resmi, dan kontak WhatsApp',
+    subtitle: 'Kelola informasi pendaftaran siswa dan siswi baru, brosur resmi, dan kontak WhatsApp',
   },
   registrations: {
     title: 'Pendaftar PPDB Online',
@@ -131,7 +131,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
             <div className="flex items-center gap-1.5 text-[9.5px] sm:text-[10.5px] font-bold text-[#1e3a8a] tracking-wider uppercase truncate">
               <span>
                 {userRole === 'siswa'
-                  ? 'Portal Santri'
+                  ? 'Portal Siswa dan Siswi'
                   : userRole === 'guru'
                   ? 'Portal Dewan Guru'
                   : 'Portal Admin'}

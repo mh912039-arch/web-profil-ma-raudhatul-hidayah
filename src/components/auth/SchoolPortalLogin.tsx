@@ -466,7 +466,7 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
 
                   <div className="mt-5 text-center pt-1 border-t border-slate-100">
                     <p className="text-[12px] text-slate-600">
-                      Belum memiliki akun dewan guru atau santri?{' '}
+                      Belum memiliki akun dewan guru atau siswa dan siswi?{' '}
                       <button
                         type="button"
                         onClick={() => {
@@ -493,7 +493,7 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
                     Pengajuan Akses Portal
                   </h2>
                   <p className="text-[12px] text-slate-500 mt-0.5 leading-relaxed">
-                    Khusus Dewan Guru dan Santri. Akun akan ditinjau langsung oleh Admin Madrasah.
+                    Khusus Dewan Guru dan Siswa dan Siswi. Akun akan ditinjau langsung oleh Admin Madrasah.
                   </p>
                 </div>
 

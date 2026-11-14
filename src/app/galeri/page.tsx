@@ -25,10 +25,10 @@ export default function GaleriPage() {
                 <span>Dokumentasi Visual Sekolah</span>
               </div>
               <h1 className="font-display text-[32px] sm:text-[44px] font-extrabold text-primary tracking-tight leading-tight">
-                Galeri Kegiatan &amp; Dinamika Santri
+                Galeri Kegiatan &amp; Dinamika Siswa dan Siswi
               </h1>
               <p className="font-sans text-[16px] text-on-surface-variant mt-2 leading-relaxed">
-                Merekam jejak khidmah, keceriaan santri, serta kekhidmatan majelis ilmu di lingkungan sekolah MA Raudlatul Hidayah, Kecamatan Mauk, Kabupaten Tangerang.
+                Merekam jejak khidmah, keceriaan siswa dan siswi, serta kekhidmatan majelis ilmu di lingkungan sekolah MA Raudlatul Hidayah, Kecamatan Mauk, Kabupaten Tangerang.
               </p>
             </div>
           </div>

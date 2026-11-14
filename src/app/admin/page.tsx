@@ -66,7 +66,7 @@ const initial22Teachers: TeacherRecord[] = [
   { order_no: 22, code: '22', name: 'MADROSYID, S.Pd', subject_name: 'TIKOM', class_level: 'Semua Kelas', category_label: 'Teknologi Informasi & Komunikasi', image_url: '/halaman-sekolah.jpeg', is_active: true },
 ];
 
-// Tabs yang boleh diakses oleh Siswa / Santri (Hanya Baca)
+// Tabs yang boleh diakses oleh Siswa dan Siswi (Hanya Baca)
 const SISWA_ALLOWED_TABS: AdminTab[] = [
   'overview',
   'schedules',
@@ -260,11 +260,11 @@ export default function AdminDashboardPage() {
     headmasterRole: 'Kepala Madrasah MAS Raudlatul Hidayah',
     headmasterPhoto: '/kepala-madrasah.jpg',
     sambutanText1: 'Bismillah walhamdulillah. Assalamu’alaikum Warahmatullahi Wabarakatuh. Selamat datang di portal resmi MAS Raudlatul Hidayah jenjang Madrasah Aliyah Swasta (MAS). Kami meyakini bahwa pendidikan sejati tidak hanya mengasah kecerdasan kognitif, tetapi juga merawat adab, keteguhan akidah, serta budi pekerti luhur sejak usia transisi remaja.',
-    sambutanText2: 'Melalui integrasi Kurikulum Merdeka yang kontekstual dan kultur pembiasaan Islami, kami berikhtiar membimbing seluruh santri agar aktif bernalar, mencintai ilmu pengetahuan, dan terlatih hidup berdisiplin dalam lingkungan yang aman, ramah anak, serta penuh kehangatan persaudaraan.',
+    sambutanText2: 'Melalui integrasi Kurikulum Merdeka yang kontekstual dan kultur pembiasaan Islami, kami berikhtiar membimbing seluruh siswa dan siswi agar aktif bernalar, mencintai ilmu pengetahuan, dan terlatih hidup berdisiplin dalam lingkungan yang aman, ramah anak, serta penuh kehangatan persaudaraan.',
     ctaText: 'Pelajari Profil & Budaya Sekolah',
     ctaLink: '/profil/sejarah',
     stat1Value: '152',
-    stat1Label: 'Santri Aktif MA',
+    stat1Label: 'Siswa dan Siswi Aktif MA',
     stat2Value: '22',
     stat2Label: 'Guru & Staf',
     stat3Value: '35+',
@@ -304,7 +304,7 @@ export default function AdminDashboardPage() {
       goalsSubtitle: 'Capaian nyata yang ditargetkan dalam penyelenggaraan kurikulum.',
       pageTitle: 'Visi & Misi Madrasah',
       pageSubtitle:
-        'Arah haluan nilai pendidikan, visi kelembagaan, misi pembelajaran kontekstual, dan pilar keunggulan santri MA Raudlatul Hidayah.',
+        'Arah haluan nilai pendidikan, visi kelembagaan, misi pembelajaran kontekstual, dan pilar keunggulan siswa dan siswi MA Raudlatul Hidayah.',
       missions: [],
       pillars: [],
     },
@@ -1036,7 +1036,7 @@ export default function AdminDashboardPage() {
       if (res.ok && resJson?.success) {
         const saved = resJson.applicant || app;
         setApplicants((prev) => [saved, ...prev]);
-        showToast('success', `Calon santri ${app.full_name} berhasil didaftarkan (No: ${saved.registration_number}).`);
+        showToast('success', `Calon siswa dan siswi ${app.full_name} berhasil didaftarkan (No: ${saved.registration_number}).`);
 
         try {
           const reloadRes = await fetch(`/api/registrations?_t=${Date.now()}`, { cache: 'no-store' });
@@ -1080,7 +1080,7 @@ export default function AdminDashboardPage() {
               : a
           )
         );
-        showToast('success', `Data calon santri "${app.full_name}" berhasil diperbarui.`);
+        showToast('success', `Data calon siswa dan siswi "${app.full_name}" berhasil diperbarui.`);
 
         try {
           const reloadRes = await fetch(`/api/registrations?_t=${Date.now()}`, { cache: 'no-store' });
@@ -1376,7 +1376,7 @@ export default function AdminDashboardPage() {
                   </div>
                 </>
               ) : (
-                /* Untuk Guru & Santri: Tampilkan Modern App Hub */
+                /* Untuk Guru & Siswa-Siswi: Tampilkan Modern App Hub */
                 <PortalOverviewTab
                   userRole={userRole}
                   currentUserName={currentUserName}

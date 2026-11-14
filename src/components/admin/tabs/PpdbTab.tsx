@@ -198,7 +198,7 @@ export const PpdbTab: React.FC<PpdbTabProps> = ({
             Alur Pendaftaran PPDB
           </h3>
           <p className="text-[13px] text-slate-500">
-            Kelola informasi pendaftaran santri baru, brosur resmi, dan kontak WhatsApp
+            Kelola informasi pendaftaran siswa dan siswi baru, brosur resmi, dan kontak WhatsApp
           </p>
         </div>
 

@@ -23,11 +23,11 @@
     "headmasterRole": "Kepala Madrasah MAS Raudlatul Hidayah",
     "headmasterPhoto": "/kepala-madrasah.jpg",
     "sambutanText1": "Bismillah walhamdulillah. Assalamu’alaikum Warahmatullahi Wabarakatuh. Selamat datang di portal resmi MAS Raudlatul Hidayah jenjang Madrasah Aliyah Swasta (MAS). Kami meyakini bahwa pendidikan sejati tidak hanya mengasah kecerdasan kognitif, tetapi juga merawat adab, keteguhan akidah, serta budi pekerti luhur sejak usia transisi remaja.",
-    "sambutanText2": "Melalui integrasi Kurikulum Merdeka yang kontekstual dan kultur pembiasaan Islami, kami berikhtiar membimbing seluruh santri agar aktif bernalar, mencintai ilmu pengetahuan, dan terlatih hidup berdisiplin dalam lingkungan yang aman, ramah anak, serta penuh kehangatan persaudaraan.",
+    "sambutanText2": "Melalui integrasi Kurikulum Merdeka yang kontekstual dan kultur pembiasaan Islami, kami berikhtiar membimbing seluruh siswa dan siswi agar aktif bernalar, mencintai ilmu pengetahuan, dan terlatih hidup berdisiplin dalam lingkungan yang aman, ramah anak, serta penuh kehangatan persaudaraan.",
     "ctaText": "Pelajari Profil & Budaya Sekolah",
     "ctaLink": "/profil/sejarah",
     "stat1Value": "152",
-    "stat1Label": "Santri Aktif MA",
+    "stat1Label": "Siswa dan Siswi Aktif MA",
     "stat2Value": "70",
     "stat2Label": "Guru & Staf",
     "stat3Value": "10",
@@ -63,7 +63,7 @@
   },
   "visionMission": {
     "pageTitle": "Visi & Misi Madrasah",
-    "pageSubtitle": "Arah haluan nilai pendidikan, visi kelembagaan, misi pembelajaran kontekstual, dan pilar keunggulan santri MA Raudlatul Hidayah.",
+    "pageSubtitle": "Arah haluan nilai pendidikan, visi kelembagaan, misi pembelajaran kontekstual, dan pilar keunggulan siswa dan siswi MA Raudlatul Hidayah.",
     "visionBadge": "RUMUSAN VISI SATUAN PENDIDIKAN",
     "vision": "Terwujudnya insan pembelajar yang berakhlak mulia, unggul dalam prestasi, terampil dalam teknologi, dan peduli kelestarian lingkungan hidup.",
     "visionIndicators": [
@@ -185,7 +185,7 @@
       "id": "fac-2",
       "title": "Perpustakaan",
       "subtitle": "Literasi & Khazanah Ilmu",
-      "desc": "Koleksi buku Kurikulum Merdeka terlengkap, ensiklopedia sains, referensi umum, ruang baca berkarpet, serta khazanah kitab keagamaan untuk menunjang budaya riset santri.",
+      "desc": "Koleksi buku Kurikulum Merdeka terlengkap, ensiklopedia sains, referensi umum, ruang baca berkarpet, serta khazanah kitab keagamaan untuk menunjang budaya riset siswa dan siswi.",
       "image": "/perpus2.jpeg",
       "badge": "Pusat Sumber Belajar"
     },
@@ -193,7 +193,7 @@
       "id": "fac-3",
       "title": "Musholla Sekolah",
       "subtitle": "Ibadah ",
-      "desc": "Sarana ibadah representatif untuk pelaksanaan salat fardhu berjamaah, salat dhuha rutin, tadarus dan tahfidz Al-Qur’an harian, serta pembinaan adab santun santri.",
+      "desc": "Sarana ibadah representatif untuk pelaksanaan salat fardhu berjamaah, salat dhuha rutin, tadarus dan tahfidz Al-Qur’an harian, serta pembinaan adab santun siswa dan siswi.",
       "image": "/musholla.jpg",
       "badge": "Karakter & Spiritual"
     },

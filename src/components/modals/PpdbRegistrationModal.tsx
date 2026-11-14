@@ -236,7 +236,7 @@ export const PpdbRegistrationModal: React.FC<PpdbRegistrationModalProps> = ({
 
   const waPanitiaUrl = registeredData
     ? `https://wa.me/628176614723?text=${encodeURIComponent(
-        `Assalamu'alaikum Panitia PPDB MA Raudlatul Hidayah,\nSaya orang tua/wali dari santri *${registeredData.full_name}* ingin konfirmasi pendaftaran online.\nNo. Registrasi: *${registeredData.registration_number}* (${jalurNameMap[registeredData.registration_path] || 'PPDB Online'}).\nMohon informasi tahapan verifikasi berkas selanjutnya. Terima kasih.`
+        `Assalamu'alaikum Panitia PPDB MA Raudlatul Hidayah,\nSaya orang tua/wali dari siswa dan siswi *${registeredData.full_name}* ingin konfirmasi pendaftaran online.\nNo. Registrasi: *${registeredData.registration_number}* (${jalurNameMap[registeredData.registration_path] || 'PPDB Online'}).\nMohon informasi tahapan verifikasi berkas selanjutnya. Terima kasih.`
       )}`
     : 'https://wa.me/628176614723';
 
@@ -268,7 +268,7 @@ export const PpdbRegistrationModal: React.FC<PpdbRegistrationModalProps> = ({
             </div>
           </div>
           <p className="font-sans text-[12.5px] text-slate-300 max-w-2xl">
-            MA Raudlatul Hidayah Mauk • Lengkapi identitas, pilih jalur seleksi, dan unggah berkas persyaratan calon santri.
+            MA Raudlatul Hidayah Mauk • Lengkapi identitas, pilih jalur seleksi, dan unggah berkas persyaratan calon siswa dan siswi.
           </p>
         </div>
 
@@ -306,7 +306,7 @@ export const PpdbRegistrationModal: React.FC<PpdbRegistrationModalProps> = ({
 
                 <div className="space-y-1.5 text-[13px] text-slate-800">
                   <div className="flex justify-between">
-                    <span className="text-slate-700 font-medium">Nama Calon Santri:</span>
+                    <span className="text-slate-700 font-medium">Nama Calon Siswa dan Siswi:</span>
                     <span className="font-bold text-slate-900">{registeredData.full_name}</span>
                   </div>
                   <div className="flex justify-between">
@@ -370,13 +370,13 @@ export const PpdbRegistrationModal: React.FC<PpdbRegistrationModalProps> = ({
               )}
 
               {/* =========================================================
-                  1. IDENTITAS CALON SISWA / SANTRI
+                  1. IDENTITAS CALON SISWA DAN SISWI
               ========================================================= */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2 border-b border-slate-100 pb-1.5">
                   <User className="w-4 h-4 text-blue-700" />
                   <span className="text-[12.5px] font-bold text-slate-900 uppercase tracking-wide">
-                    1. Identitas Calon Siswa / Santri
+                    1. Identitas Calon Siswa dan Siswi
                   </span>
                 </div>
 
@@ -545,7 +545,7 @@ export const PpdbRegistrationModal: React.FC<PpdbRegistrationModalProps> = ({
                 </div>
 
                 <p className="text-[12px] text-slate-500">
-                  Pilih salah satu jalur pendaftaran yang sesuai dengan calon siswa / santri:
+                  Pilih salah satu jalur pendaftaran yang sesuai dengan calon siswa dan siswi:
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -599,7 +599,7 @@ export const PpdbRegistrationModal: React.FC<PpdbRegistrationModalProps> = ({
                       />
                     </div>
                     <p className="text-[11.5px] text-slate-600 leading-relaxed">
-                      Calon santri dari keluarga prasejahtera (pemegang KIP, PKH, KKS, atau SKTM).
+                      Calon siswa dan siswi dari keluarga prasejahtera (pemegang KIP, PKH, KKS, atau SKTM).
                     </p>
                   </label>
 
@@ -705,7 +705,7 @@ export const PpdbRegistrationModal: React.FC<PpdbRegistrationModalProps> = ({
                           </span>
                         </div>
                         <span className="text-[11.5px] text-slate-500 block mt-0.5">
-                          Foto atau scan asli Kartu Keluarga calon santri.
+                          Foto atau scan asli Kartu Keluarga calon siswa dan siswi.
                         </span>
                       </div>
 
@@ -772,7 +772,7 @@ export const PpdbRegistrationModal: React.FC<PpdbRegistrationModalProps> = ({
                           </span>
                         </div>
                         <span className="text-[11.5px] text-slate-500 block mt-0.5">
-                          Foto atau scan asli Akta Kelahiran calon santri.
+                          Foto atau scan asli Akta Kelahiran calon siswa dan siswi.
                         </span>
                       </div>
 
