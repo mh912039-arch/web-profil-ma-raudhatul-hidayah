@@ -237,7 +237,7 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
 
       setRegSuccess({
         name: regName.trim(),
-        roleLabel: regRole === 'guru' ? 'Dewan Guru' : 'Santri / Siswa',
+        roleLabel: regRole === 'guru' ? 'Dewan Guru' : 'Siswa dan Siswi',
         email: regEmail.trim(),
       });
 
@@ -529,7 +529,7 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
                         }`}
                       >
                         <GraduationCap className="w-3.5 h-3.5" />
-                        <span>Santri / Siswa</span>
+                        <span>Siswa dan Siswi</span>
                       </button>
                     </div>
                   </div>
@@ -543,7 +543,7 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
                       placeholder={
                         regRole === 'guru'
                           ? 'Nama Lengkap & Gelar (Cth: Jakaria, S.Pd.I)'
-                          : 'Nama Lengkap Santri / Siswa'
+                          : 'Nama Lengkap Siswa dan Siswi'
                       }
                       className="w-full px-3.5 py-3 rounded-2xl border border-slate-200 bg-slate-50/50 text-slate-900 text-xs placeholder:text-slate-400 focus:outline-none focus:border-[#1e3a8a] focus:bg-white focus:ring-4 focus:ring-blue-100/60 transition-all"
                     />
@@ -919,7 +919,7 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
                   Daftar Akses Portal
                 </h2>
                 <p className="text-[12px] text-slate-500 mt-1 leading-relaxed">
-                  Khusus Dewan Guru dan Santri/Siswa. Akun akan ditinjau dan dikonfirmasi langsung oleh Administrator.
+                  Khusus Dewan Guru dan Siswa dan Siswi. Akun akan ditinjau dan dikonfirmasi langsung oleh Administrator.
                 </p>
               </div>
 
@@ -958,14 +958,14 @@ export const SchoolPortalLogin: React.FC<SchoolPortalLoginProps> = ({
                       }`}
                     >
                       <GraduationCap className="w-3.5 h-3.5" />
-                      <span>Santri / Siswa</span>
+                      <span>Siswa dan Siswi</span>
                     </button>
                   </div>
                 </div>
 
                 <div className="space-y-1">
                   <label className="block text-[11.5px] font-bold text-slate-700">
-                    Nama Lengkap {regRole === 'guru' ? '& Gelar' : 'Santri/Siswa'}{' '}
+                    Nama Lengkap {regRole === 'guru' ? '& Gelar' : 'Siswa dan Siswi'}{' '}
                     <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative">

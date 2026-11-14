@@ -160,7 +160,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
               </span>
               <span className="text-[11px] font-semibold text-blue-700 tracking-wide">
                 {userRole === 'siswa'
-                  ? 'Portal Santri / Siswa'
+                  ? 'Portal Siswa dan Siswi'
                   : userRole === 'guru'
                   ? 'Portal Dewan Guru'
                   : 'PORTAL ADMIN AKADEMIK'}
@@ -184,7 +184,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             <div className="space-y-4">
               <div>
                 <div className="px-3 pb-2 text-[10.5px] font-bold uppercase tracking-wider text-slate-400">
-                  MENU SANTRI / SISWA
+                  MENU SISWA DAN SISWI
                 </div>
 
                 <div className="space-y-1">

@@ -55,7 +55,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           success: false,
-          message: 'Pendaftaran publik hanya diperuntukkan bagi Dewan Guru atau Santri/Siswa. Peran Administrator hanya dapat dibuat oleh pengelola sekolah.',
+          message: 'Pendaftaran publik hanya diperuntukkan bagi Dewan Guru atau Siswa dan Siswi. Peran Administrator hanya dapat dibuat oleh pengelola sekolah.',
         },
         { status: 403 }
       );

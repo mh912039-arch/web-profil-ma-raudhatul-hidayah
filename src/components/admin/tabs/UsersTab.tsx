@@ -655,7 +655,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({
         return (
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-200">
             <Users className="w-3.5 h-3.5 text-amber-700" />
-            Santri / Siswa
+            Siswa dan Siswi
           </span>
         );
       default:
@@ -1878,7 +1878,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({
                     [
                       { id: 'admin', label: 'Administrator', desc: 'Akses penuh seluruh sistem' },
                       { id: 'guru', label: 'Dewan Guru', desc: 'Akademik & publikasi warta' },
-                      { id: 'siswa', label: 'Santri / Siswa', desc: 'Hanya baca jadwal & kalender' },
+                      { id: 'siswa', label: 'Siswa dan Siswi', desc: 'Hanya baca jadwal & kalender' },
                     ] as const
                   ).map((r) => {
                     const isSelected = editingUser.role === r.id;
@@ -2185,7 +2185,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({
                   >
                     <option value="admin">Administrator</option>
                     <option value="guru">Dewan Guru</option>
-                    <option value="siswa">Santri / Siswa</option>
+                    <option value="siswa">Siswa dan Siswi</option>
                   </select>
                 </div>
 
