@@ -142,7 +142,7 @@ export function PortalOverviewTab({
                 ? `Selamat Datang, ${currentUserName || 'Administrator'}`
                 : userRole === 'guru'
                 ? `Selamat Bertugas, ${effectiveGuruName}`
-                : "Assalamu'alaikum, Siswa dan Siswi & Siswa"}
+                : "Assalamu'alaikum, Siswa dan Siswi"}
             </h2>
             <p className="text-xs sm:text-sm text-slate-600">
               {userRole === 'admin'
