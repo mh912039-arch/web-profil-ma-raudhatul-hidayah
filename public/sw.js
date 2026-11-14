@@ -1,11 +1,9 @@
-// Service Worker untuk Portal MA Raudlatul Hidayah (PWA)
-const CACHE_NAME = 'mrh-portal-cache-v7';
+// Service Worker untuk Portal MA Raudlatul Hidayah (PWA & Web Push)
+const CACHE_NAME = 'mrh-portal-cache-v8';
 
-// Daftar aset inti yang dapat dicache awal
+// Daftar aset branding statis yang dapat dipre-cache
 const PRECACHE_ASSETS = [
   '/',
-  '/admin',
-  '/masuk',
   '/school-logo.png',
   '/badge-96.png',
   '/icon-192.png',
@@ -39,32 +37,38 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Network-First untuk navigasi & rute dinamis (/api/*), cache fallback untuk aset statis
+// Strategi fetch yang ramah Google Lighthouse & Web Vitals:
+// 1. Aset kompilasi Next.js (_next/*) & API TIDAK dicegat oleh Service Worker agar browser & CDN Vercel melayani langsung secara native dengan HTTP/2 & Brotli.
+// 2. CSS/JS tidak dicegat dengan custom respondWith agar Chrome DevTools Protocol (CSSUsage, JsUsage, Trace) dapat berjalan tanpa error.
 self.addEventListener('fetch', (event) => {
   const { request } = event;
 
-  // Jangan sentuh request API atau POST/PUT/DELETE
+  // Jangan sentuh request non-GET, API, Next.js chunk/data/static, atau URL eksternal
   if (
     request.method !== 'GET' ||
     request.url.includes('/api/') ||
-    request.url.includes('/_next/data/')
+    request.url.includes('/_next/')
   ) {
     return;
   }
 
-  // Untuk navigasi halaman (HTML), selalu ambil dari network terlebih dahulu
+  // Untuk navigasi halaman (HTML): Network-First, fallback ke cache '/' jika offline
   if (request.mode === 'navigate') {
     event.respondWith(
-      fetch(request).catch(() => caches.match(request).then((cached) => cached || caches.match('/admin')))
+      fetch(request).catch(() =>
+        caches.match(request).then((cached) => cached || caches.match('/'))
+      )
     );
     return;
   }
 
-  // Untuk gambar dan aset statis lainnya: Cache First dengan Network Update
+  // Cache-First hanya untuk gambar ikon & logo statis lokal
   if (
-    request.destination === 'image' ||
-    request.destination === 'style' ||
-    request.destination === 'font'
+    request.destination === 'image' &&
+    (request.url.includes('/school-logo.png') ||
+      request.url.includes('/icon-') ||
+      request.url.includes('/badge-') ||
+      request.url.includes('/favicon.ico'))
   ) {
     event.respondWith(
       caches.match(request).then((cachedResponse) => {
@@ -85,8 +89,8 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Default passthrough fetch
-  event.respondWith(fetch(request));
+  // PENTING: Untuk seluruh script, css, dan resource lain, BIARKAN BROWSER MENANGANI SECARA NATIVE.
+  // Jangan panggil event.respondWith(fetch(request)) karena akan merusak profiling DevTools & PageSpeed Insights.
 });
 
 // ============================================================================

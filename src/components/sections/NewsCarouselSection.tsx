@@ -79,14 +79,18 @@ export function NewsCarouselSection() {
   const [startX, setStartX] = useState(0);
   const [scrollLeftState, setScrollLeftState] = useState(0);
   const [hasDragged, setHasDragged] = useState(false);
+  const isCheckingRef = useRef(false);
 
   const checkScroll = useCallback(() => {
-    if (!scrollRef.current) return;
+    if (!scrollRef.current || isCheckingRef.current) return;
+    isCheckingRef.current = true;
     requestAnimationFrame(() => {
-      if (!scrollRef.current) return;
-      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
-      setCanScrollLeft(scrollLeft > 10);
-      setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 10);
+      if (scrollRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+        setCanScrollLeft(scrollLeft > 10);
+        setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 10);
+      }
+      isCheckingRef.current = false;
     });
   }, []);
 
@@ -113,12 +117,7 @@ export function NewsCarouselSection() {
       }
     }
     fetchLatestNews();
-
-    window.addEventListener('resize', checkScroll, { passive: true });
-    return () => {
-      window.removeEventListener('resize', checkScroll);
-    };
-  }, [checkScroll]);
+  }, []);
 
   const scroll = (direction: 'left' | 'right') => {
     if (!scrollRef.current) return;

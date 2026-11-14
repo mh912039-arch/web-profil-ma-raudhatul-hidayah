@@ -27,9 +27,9 @@ import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 import { fetchPublicProfile } from '@/lib/publicProfileClient';
 
 const defaultHomeConfig = {
-  heroTitle: 'MA Raudlatul Hidayah',
-  heroTagline: 'Membentuk Generasi Berkarakter, Beradab, dan Unggul Bernalar',
-  heroBadge: 'Portal Resmi MA Raudlatul Hidayah',
+  heroTitle: 'MAS Raudlatul Hidayah',
+  heroTagline: 'MEMBENTUK GENERASI BERKARAKTER, UNGGUL DALAM PRESTASI, SANTUN DALAM BERPERILAKU',
+  heroBadge: 'Portal Resmi MAS Raudlatul Hidayah',
   heroBackground: '/foto-semua.jpeg',
   heroBackgrounds: [
     '/foto-semua.jpeg',
@@ -158,8 +158,8 @@ export default function HomePage() {
             <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-900/50 to-slate-950/85 z-20 pointer-events-none" />
           </div>
 
-          {/* Center Emblem Crest & Grand Serif Title Branding */}
-          <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center my-auto">
+          {/* Center Emblem Crest & Grand Serif Title Branding (Stable Layout with min-h to prevent CLS) */}
+          <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center my-auto min-h-[220px] sm:min-h-[260px] justify-center">
             {/* School Crest Container */}
             <div className="relative mb-3 flex flex-col items-center">
               <div className="relative w-20 h-20 sm:w-24 sm:h-24 drop-shadow-[0_8px_24px_rgba(0,0,0,0.4)]">
@@ -169,6 +169,7 @@ export default function HomePage() {
                   fill
                   sizes="(max-width: 640px) 80px, 96px"
                   className="object-contain"
+                  priority
                 />
               </div>
             </div>

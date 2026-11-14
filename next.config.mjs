@@ -1,13 +1,8 @@
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false, // Menghilangkan header 'X-Powered-By' agar tidak dapat di-fingerprint
+  compress: true, // Kompresi Gzip/Brotli otomatis untuk seluruh respons aset statis & dinamis
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -37,88 +32,6 @@ const nextConfig = {
   },
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
-  },
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      const emptyPolyfill = path.resolve(__dirname, 'src/empty-polyfill.js');
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        [path.resolve(__dirname, 'node_modules/next/dist/build/polyfills/polyfill-module.js')]: emptyPolyfill,
-        [path.resolve(__dirname, 'node_modules/next/dist/build/polyfills/polyfill-module')]: emptyPolyfill,
-        [path.resolve(__dirname, 'node_modules/next/dist/build/polyfills/polyfill-nomodule.js')]: emptyPolyfill,
-        [path.resolve(__dirname, 'node_modules/next/dist/build/polyfills/polyfill-nomodule')]: emptyPolyfill,
-        '../build/polyfills/polyfill-module': emptyPolyfill,
-        '../build/polyfills/polyfill-nomodule': emptyPolyfill,
-      };
-    }
-    return config;
-  },
-  async headers() {
-    return [
-      {
-        // Terapkan header keamanan komprehensif ke seluruh rute halaman dan admin
-        source: '/((?!_next/static|_next/image|favicon.ico).*)',
-        headers: [
-          // 0. Content Security Policy (CSP) Menyeluruh - Mencegah XSS & Script Injection
-          {
-            key: 'Content-Security-Policy',
-            value: [
-              "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://cdn.jsdelivr.net https://challenges.cloudflare.com",
-              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-              "img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com https://picsum.photos https://api.dicebear.com https://*.google.com https://*.googleapis.com https://*.gstatic.com",
-              "font-src 'self' data: https://fonts.gstatic.com",
-              "connect-src 'self' https://*.supabase.co https://api.dicebear.com https://vitals.vercel-insights.com https://challenges.cloudflare.com",
-              "frame-src 'self' https://www.google.com https://maps.google.com https://*.google.com https://challenges.cloudflare.com",
-              "frame-ancestors 'none'",
-              "object-src 'none'",
-              "base-uri 'self'",
-              "form-action 'self'",
-            ].join('; '),
-          },
-          // 1. HTTP Strict Transport Security (HSTS) - Standar Maksimal A+ / Sucuri Minimal Risk
-          {
-            key: 'Strict-Transport-Security',
-            value: 'max-age=63072000; includeSubDomains; preload',
-          },
-          // 2. Proteksi Clickjacking (Anti-Iframe Abuse)
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY',
-          },
-          // 3. Pencegahan Eksploitasi MIME Type Sniffing
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          // 4. Filter Perlindungan Cross-Site Scripting (XSS)
-          {
-            key: 'X-XSS-Protection',
-            value: '1; mode=block',
-          },
-          // 5. Pembatasan Pengiriman Informasi Referrer
-          {
-            key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin',
-          },
-          // 6. Pembatasan Izin Akses Perangkat Keras (Hardware Sandbox)
-          {
-            key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=(), browsing-topics=(), payment=(), usb=()',
-          },
-          // 7. Kontrol Kebijakan Cross-Domain Dokumen
-          {
-            key: 'X-Permitted-Cross-Domain-Policies',
-            value: 'none',
-          },
-          // 8. Kontrol Prefetch DNS Aman
-          {
-            key: 'X-DNS-Prefetch-Control',
-            value: 'on',
-          },
-        ],
-      },
-    ];
   },
 };
 
