@@ -1288,6 +1288,7 @@ export default function AdminDashboardPage() {
         setIsOpenMobile={setIsOpenMobile}
         supabaseConnected={supabaseConnected}
         userRole={userRole}
+        isDeveloper={isDeveloper}
         onLogout={handleLogout}
       />
 

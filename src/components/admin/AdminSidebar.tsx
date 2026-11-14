@@ -28,6 +28,7 @@ import {
   ExternalLink,
   LogOut,
 } from 'lucide-react';
+import { checkIsDeveloper } from '@/lib/isDeveloperClient';
 
 export type AdminTab =
   | 'overview'
@@ -61,6 +62,7 @@ interface AdminSidebarProps {
   setIsOpenMobile: (open: boolean) => void;
   supabaseConnected: boolean;
   userRole?: 'admin' | 'guru' | 'siswa';
+  isDeveloper?: boolean;
   onLogout?: () => void;
 }
 
@@ -74,8 +76,18 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   setIsOpenMobile,
   supabaseConnected,
   userRole = 'admin',
+  isDeveloper,
   onLogout,
 }) => {
+  const [devActive, setDevActive] = useState<boolean>(Boolean(isDeveloper));
+
+  useEffect(() => {
+    if (isDeveloper !== undefined) {
+      setDevActive(isDeveloper);
+    } else {
+      setDevActive(checkIsDeveloper());
+    }
+  }, [isDeveloper]);
   // Accordion open/close states
   const [openAkademik, setOpenAkademik] = useState(true);
   const [openPengguna, setOpenPengguna] = useState(
@@ -704,13 +716,15 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             </button>
           )}
 
-          <div className="flex items-center justify-between px-1 text-[11px] text-slate-500">
-            <span className="flex items-center gap-1.5 font-medium">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Online Cloud Aktif</span>
-            </span>
-            <span className="font-mono text-[10px] text-slate-400">v2.5.0</span>
-          </div>
+          {devActive && (
+            <div className="flex items-center justify-between px-1 text-[11px] text-slate-500">
+              <span className="flex items-center gap-1.5 font-medium">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>Online Cloud Aktif</span>
+              </span>
+              <span className="font-mono text-[10px] text-slate-400">v2.5.0</span>
+            </div>
+          )}
         </div>
       </aside>
     </>

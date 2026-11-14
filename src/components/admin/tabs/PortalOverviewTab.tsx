@@ -27,6 +27,7 @@ import {
 import { AdminTab } from '../AdminSidebar';
 import { TeacherRecord } from './TeachersTab';
 import { ScheduleItem } from './SchedulesTab';
+import { checkIsDeveloper } from '@/lib/isDeveloperClient';
 
 interface PortalOverviewTabProps {
   userRole: 'admin' | 'guru' | 'siswa';
@@ -158,7 +159,7 @@ export function PortalOverviewTab({
               <Clock className="w-3.5 h-3.5 text-slate-500" />
               <span>{todayDayName}</span>
             </span>
-            {userRole === 'admin' && (
+            {checkIsDeveloper() && (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 text-[11px] font-bold border border-emerald-200">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 <span>Cloud Aktif</span>
