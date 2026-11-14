@@ -391,23 +391,7 @@ export function PortalOverviewTab({
         </div>
       )}
 
-      {/* C. SISWA / SANTRI: PORTAL AKADEMIK (Hero Bento) */}
-      {userRole === 'siswa' && (
-        <div className="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-900 via-blue-800 to-slate-900 text-white p-4 sm:p-6 shadow-sm relative overflow-hidden">
-          <div className="relative z-10 space-y-2.5">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/10 backdrop-blur-md text-blue-100 text-[10px] font-bold uppercase tracking-wider border border-white/15">
-              <GraduationCap className="w-3 h-3 text-blue-300" />
-              PORTAL AKADEMIK SANTRI
-            </span>
-            <h3 className="text-lg sm:text-xl font-bold font-serif text-white">
-              Madrasah Aliyah Raudlatul Hidayah
-            </h3>
-            <p className="text-xs sm:text-sm text-blue-100/90 leading-relaxed max-w-xl">
-              Lihat jadwal pelajaran mingguan, informasi ruang kelas dan wali kelas, serta agenda kegiatan penting madrasah.
-            </p>
-          </div>
-        </div>
-      )}
+
 
       {/* =========================================================================
           3. GRID MENU CEPAT (QUICK ACTION HUB - SIMPLE, RAPIH & MUDAH DIKLIK)
