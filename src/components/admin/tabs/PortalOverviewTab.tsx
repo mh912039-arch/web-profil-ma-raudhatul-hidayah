@@ -10,7 +10,6 @@ import {
   Activity,
   ArrowRight,
   Clock,
-  School,
   CheckCircle2,
   Users,
   ChevronRight,
@@ -138,16 +137,6 @@ export function PortalOverviewTab({
       <div className="hidden md:block bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-5 shadow-2xs">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="space-y-1">
-            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-blue-50 border border-blue-200/80 text-blue-800 text-[10px] font-bold tracking-wider uppercase">
-              <School className="w-3.5 h-3.5 text-blue-700" />
-              <span>
-                {userRole === 'admin'
-                  ? 'PORTAL TERPADU / ADMIN'
-                  : userRole === 'guru'
-                  ? 'PORTAL TERPADU / GURU'
-                  : 'PORTAL TERPADU / SANTRI'}
-              </span>
-            </div>
             <h2 className="text-xl sm:text-2xl font-bold font-serif text-slate-900 tracking-tight">
               {userRole === 'admin'
                 ? `Selamat Datang, ${currentUserName || 'Administrator'}`
