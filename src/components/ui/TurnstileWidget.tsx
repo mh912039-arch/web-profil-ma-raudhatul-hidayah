@@ -17,10 +17,14 @@ declare global {
           size?: 'normal' | 'compact' | 'flexible';
           action?: string;
           cData?: string;
+          appearance?: 'always' | 'execute' | 'interaction-only';
+          execution?: 'render' | 'execute';
         }
       ) => string;
       reset: (widgetId?: string) => void;
       remove: (widgetId?: string) => void;
+      execute: (container?: string | HTMLElement, options?: any) => void;
+      getResponse: (widgetId?: string) => string | undefined;
     };
     onloadTurnstileCallback?: () => void;
   }
@@ -33,6 +37,7 @@ interface TurnstileWidgetProps {
   className?: string;
   theme?: 'light' | 'dark' | 'auto';
   action?: string;
+  appearance?: 'always' | 'execute' | 'interaction-only';
 }
 
 export const TurnstileWidget: React.FC<TurnstileWidgetProps> = ({
@@ -42,6 +47,7 @@ export const TurnstileWidget: React.FC<TurnstileWidgetProps> = ({
   className = '',
   theme = 'light',
   action,
+  appearance = 'interaction-only',
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
@@ -100,6 +106,7 @@ export const TurnstileWidget: React.FC<TurnstileWidgetProps> = ({
           sitekey: siteKey,
           theme,
           size: 'normal',
+          appearance,
           action,
           callback: (token: string) => {
             if (isMounted) {
@@ -166,7 +173,7 @@ export const TurnstileWidget: React.FC<TurnstileWidgetProps> = ({
         } catch (_) {}
       }
     };
-  }, [siteKey, theme, action, isVisible]);
+  }, [siteKey, theme, action, appearance, isVisible]);
 
   const handleManualRetry = () => {
     setHasError(false);
@@ -176,12 +183,12 @@ export const TurnstileWidget: React.FC<TurnstileWidgetProps> = ({
   };
 
   return (
-    <div className={`relative min-h-[65px] ${className}`}>
+    <div className={`relative ${appearance === 'always' ? 'min-h-[65px]' : ''} ${className}`}>
       {/* Container where Cloudflare mounts iframe */}
       <div ref={containerRef} id={`turnstile-${uniqueId}`} />
 
-      {/* Loading Placeholder */}
-      {!isLoaded && !hasError && (
+      {/* Loading Placeholder (hanya tampil jika mode 'always') */}
+      {appearance === 'always' && !isLoaded && !hasError && (
         <div className="w-full max-w-[300px] h-[65px] bg-slate-50 border border-slate-200 rounded-lg flex items-center px-4 gap-3 text-slate-500 animate-pulse">
           <div className="w-5 h-5 rounded-full border-2 border-slate-300 border-t-blue-600 animate-spin shrink-0" />
           <div className="flex flex-col gap-1">
