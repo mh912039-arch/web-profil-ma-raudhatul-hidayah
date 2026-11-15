@@ -24,16 +24,31 @@ export function VisitorMetricsSection() {
   const [data, setData] = useState<VisitorData | null>(null);
 
   useEffect(() => {
+    let isMounted = true;
     const loadMetrics = () => {
-      fetch('/api/visitors', { cache: 'no-store' })
+      fetch('/api/visitors')
         .then((res) => (res.ok ? res.json() : null))
         .then((json) => {
-          if (json) setData(json);
+          if (json && isMounted) setData(json);
         })
         .catch((err) => console.warn('Could not load public visitor metrics:', err));
     };
 
-    loadMetrics();
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      const handle = (window as any).requestIdleCallback(loadMetrics, { timeout: 6000 });
+      return () => {
+        isMounted = false;
+        try {
+          (window as any).cancelIdleCallback(handle);
+        } catch (_) {}
+      };
+    } else {
+      const timer = setTimeout(loadMetrics, 3000);
+      return () => {
+        isMounted = false;
+        clearTimeout(timer);
+      };
+    }
   }, []);
 
   const distribution = data?.distribution || [

@@ -95,10 +95,11 @@ export function NewsCarouselSection() {
   }, []);
 
   useEffect(() => {
+    let isMounted = true;
     async function fetchLatestNews() {
       try {
-        const res = await fetch('/api/articles', { cache: 'no-store' });
-        if (res.ok) {
+        const res = await fetch('/api/articles');
+        if (res.ok && isMounted) {
           const json = await res.json();
           if (Array.isArray(json) && json.length > 0) {
             const mapped: NewsItem[] = json.map((art: any) => ({
@@ -116,7 +117,22 @@ export function NewsCarouselSection() {
         console.warn('Fallback to default news list:', err);
       }
     }
-    fetchLatestNews();
+
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      const handle = (window as any).requestIdleCallback(fetchLatestNews, { timeout: 4000 });
+      return () => {
+        isMounted = false;
+        try {
+          (window as any).cancelIdleCallback(handle);
+        } catch (_) {}
+      };
+    } else {
+      const timer = setTimeout(fetchLatestNews, 2000);
+      return () => {
+        isMounted = false;
+        clearTimeout(timer);
+      };
+    }
   }, []);
 
   const scroll = (direction: 'left' | 'right') => {

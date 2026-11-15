@@ -92,11 +92,12 @@ export const TeachersCarouselSection: React.FC<TeachersCarouselSectionProps> = (
 
   // Fetch updated teachers from API during idle time
   useEffect(() => {
+    let isMounted = true;
     const syncTeachers = () => {
-      fetch('/api/teachers', { cache: 'no-store' })
+      fetch('/api/teachers')
         .then((res) => (res.ok ? res.json() : null))
         .then((data) => {
-          if (Array.isArray(data) && data.length > 0) {
+          if (isMounted && Array.isArray(data) && data.length > 0) {
             const active = data.filter((t: any) => t.is_active !== false);
             if (active.length > 0) {
               setTeachers(active);
@@ -106,7 +107,21 @@ export const TeachersCarouselSection: React.FC<TeachersCarouselSectionProps> = (
         .catch((err) => console.warn('TeachersCarousel sync notice:', err));
     };
 
-    syncTeachers();
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      const handle = (window as any).requestIdleCallback(syncTeachers, { timeout: 5000 });
+      return () => {
+        isMounted = false;
+        try {
+          (window as any).cancelIdleCallback(handle);
+        } catch (_) {}
+      };
+    } else {
+      const timer = setTimeout(syncTeachers, 2500);
+      return () => {
+        isMounted = false;
+        clearTimeout(timer);
+      };
+    }
   }, []);
 
   // Responsive items count using matchMedia (prevents forced reflow)

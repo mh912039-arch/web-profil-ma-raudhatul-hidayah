@@ -42,16 +42,35 @@ export function StitchNavbar() {
   });
 
   useEffect(() => {
-    fetchPublicProfile().then((data) => {
-      if (data?.profile) {
-        setNavProfile({
-          phone: data.profile.phone || '0817-6614-723',
-          whatsapp: data.profile.whatsapp || '628176614723',
-          email: data.profile.email || 'info@maraudlatulhidayah.sch.id',
-          hoursWeekdays: data.profile.hoursWeekdays || '07.00 - 15.30 WIB',
-        });
-      }
-    });
+    let isMounted = true;
+    const syncNav = () => {
+      fetchPublicProfile().then((data) => {
+        if (isMounted && data?.profile) {
+          setNavProfile({
+            phone: data.profile.phone || '0817-6614-723',
+            whatsapp: data.profile.whatsapp || '628176614723',
+            email: data.profile.email || 'info@maraudlatulhidayah.sch.id',
+            hoursWeekdays: data.profile.hoursWeekdays || '07.00 - 15.30 WIB',
+          });
+        }
+      });
+    };
+
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      const handle = (window as any).requestIdleCallback(syncNav, { timeout: 8000 });
+      return () => {
+        isMounted = false;
+        try {
+          (window as any).cancelIdleCallback(handle);
+        } catch (_) {}
+      };
+    } else {
+      const timer = setTimeout(syncNav, 4000);
+      return () => {
+        isMounted = false;
+        clearTimeout(timer);
+      };
+    }
   }, []);
 
   useEffect(() => {

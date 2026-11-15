@@ -55,16 +55,35 @@ export function StitchFooter() {
   const [profile, setProfile] = useState<FooterProfile>(defaultProfile);
 
   useEffect(() => {
-    fetchPublicProfile().then((data) => {
-      if (data?.profile) {
-        setProfile((prev) => ({
-          ...prev,
-          ...data.profile,
-          accreditation: data.profile.accreditation || prev.accreditation,
-          npsn: data.profile.npsn || prev.npsn,
-        }));
-      }
-    });
+    let isMounted = true;
+    const syncFooter = () => {
+      fetchPublicProfile().then((data) => {
+        if (isMounted && data?.profile) {
+          setProfile((prev) => ({
+            ...prev,
+            ...data.profile,
+            accreditation: data.profile.accreditation || prev.accreditation,
+            npsn: data.profile.npsn || prev.npsn,
+          }));
+        }
+      });
+    };
+
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      const handle = (window as any).requestIdleCallback(syncFooter, { timeout: 9000 });
+      return () => {
+        isMounted = false;
+        try {
+          (window as any).cancelIdleCallback(handle);
+        } catch (_) {}
+      };
+    } else {
+      const timer = setTimeout(syncFooter, 4500);
+      return () => {
+        isMounted = false;
+        clearTimeout(timer);
+      };
+    }
   }, []);
 
   return (
