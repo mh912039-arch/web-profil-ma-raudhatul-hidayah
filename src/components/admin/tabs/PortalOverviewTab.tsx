@@ -55,6 +55,15 @@ function isTeacherMatch(scheduleTeacher: string, currentTeacher: string): boolea
   if (!scheduleTeacher || !currentTeacher) return false;
   const sNorm = normalizeText(scheduleTeacher);
   const cNorm = normalizeText(currentTeacher);
+  if (!sNorm || !cNorm) return false;
+  if (
+    sNorm === 'semua dewan guru' ||
+    sNorm.includes('semua dewan guru') ||
+    sNorm === 'dewan guru'
+  ) {
+    return true;
+  }
+  if (sNorm === '-' || sNorm === 'tanpa guru') return false;
   if (sNorm === cNorm) return true;
   if (sNorm.includes(cNorm) || cNorm.includes(sNorm)) return true;
   const sParts = scheduleTeacher.toLowerCase().split(/[\s,.]+/).filter((p) => p.length > 2);

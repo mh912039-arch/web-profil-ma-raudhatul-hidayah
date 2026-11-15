@@ -29,6 +29,8 @@ import {
   Radio,
   Layers,
   Sparkles,
+  Coffee,
+  Flag,
 } from 'lucide-react';
 import { TeacherRecord } from './TeachersTab';
 import { compressImageBelow100Kb } from '@/lib/imageCompression';
@@ -108,6 +110,19 @@ export function isTeacherMatch(scheduleTeacher?: string, currentTeacherNameOrUse
   const cleanA = cleanTeacherName(scheduleTeacher);
   const cleanB = cleanTeacherName(currentTeacherNameOrUsername);
   if (!cleanA || !cleanB) return false;
+
+  // Sesi bersama seluruh guru (seperti Upacara Bendera) otomatis tampil untuk setiap akun guru
+  if (
+    cleanA === 'semua dewan guru' ||
+    cleanA.includes('semua dewan guru') ||
+    cleanA === 'dewan guru'
+  ) {
+    return true;
+  }
+
+  // Sesi istirahat tanpa guru pengampu
+  if (cleanA === '-' || cleanA === 'tanpa guru') return false;
+
   if (cleanA === cleanB) return true;
   if (cleanA.includes(cleanB) || cleanB.includes(cleanA)) return true;
 
@@ -363,7 +378,7 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
     const fromTeachers = (teachers || []).map((t) => t.name).filter(Boolean);
     const fromSchedules = schedules
       .map((s) => s.teacher_name)
-      .filter((n) => n && n !== 'Dewan Guru' && n !== 'Pembina Pramuka');
+      .filter((n) => n && n !== 'Dewan Guru' && n !== 'Pembina Pramuka' && n !== 'Semua Dewan Guru' && n !== '-');
     const set = new Set([...fromTeachers, ...fromSchedules]);
     return Array.from(set).sort((a, b) => a.localeCompare(b));
   }, [teachers, schedules]);
@@ -781,18 +796,22 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
 
     setIsSubmitting(true);
     try {
-      const itemsToSave: ScheduleItem[] = validSessions.map((s, idx) => ({
-        id: `sch-${dayForm.class_rombel.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${dayForm.day.toLowerCase()}-${idx + 1}-${Date.now()}`,
-        class_rombel: dayForm.class_rombel,
-        day: dayForm.day,
-        session_no: idx + 1,
-        time_start: s.time_start.trim(),
-        time_end: s.time_end.trim(),
-        subject_name: s.subject_name.trim(),
-        category: 'Pelajaran Reguler',
-        teacher_name: s.teacher_name || teachers[0]?.name || 'Dewan Guru',
-        room: `Ruang ${dayForm.class_rombel.replace(/^(SD|SMP|SMA)\s*-\s*/, '')}`,
-      }));
+      const itemsToSave: ScheduleItem[] = validSessions.map((s, idx) => {
+        const isBreak = s.subject_name.trim().toLowerCase().includes('istirahat');
+        const isUpacara = s.subject_name.trim().toLowerCase().includes('upacara');
+        return {
+          id: `sch-${dayForm.class_rombel.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${dayForm.day.toLowerCase()}-${idx + 1}-${Date.now()}`,
+          class_rombel: dayForm.class_rombel,
+          day: dayForm.day,
+          session_no: idx + 1,
+          time_start: s.time_start.trim(),
+          time_end: s.time_end.trim(),
+          subject_name: s.subject_name.trim(),
+          category: isBreak ? 'Istirahat' : isUpacara ? 'Upacara' : 'Pelajaran Reguler',
+          teacher_name: isBreak ? '-' : isUpacara ? 'Semua Dewan Guru' : (s.teacher_name || teachers[0]?.name || 'Dewan Guru'),
+          room: isBreak ? '-' : isUpacara ? 'Lapangan Madrasah' : `Ruang ${dayForm.class_rombel.replace(/^(SD|SMP|SMA)\s*-\s*/, '')}`,
+        };
+      });
 
       const res = await fetch('/api/schedules/batch', {
         method: 'POST',
@@ -823,11 +842,22 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
     e.preventDefault();
     setIsSubmitting(true);
     try {
+      const rawSub = formData.subject_name || '';
+      const isBreak = rawSub.trim().toLowerCase().includes('istirahat');
+      const isUpacara = rawSub.trim().toLowerCase().includes('upacara');
+      const payload: Partial<ScheduleItem> = {
+        ...formData,
+        subject_name: rawSub.trim(),
+        category: isBreak ? 'Istirahat' : isUpacara ? 'Upacara' : (formData.category || 'Pelajaran Reguler'),
+        teacher_name: isBreak ? '-' : isUpacara ? 'Semua Dewan Guru' : (formData.teacher_name || teachers[0]?.name || 'Dewan Guru'),
+        room: isBreak ? '-' : isUpacara ? 'Lapangan Madrasah' : (formData.room || `Ruang ${(formData.class_rombel || '').replace(/^(SD|SMP|SMA)\s*-\s*/, '')}`),
+      };
+
       if (editingItem) {
         const res = await fetch('/api/schedules', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...formData, id: editingItem.id }),
+          body: JSON.stringify({ ...payload, id: editingItem.id }),
         });
         if (res.ok) {
           const result = await res.json();
@@ -842,7 +872,7 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
         const res = await fetch('/api/schedules', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(payload),
         });
         if (res.ok) {
           const result = await res.json();
@@ -1764,70 +1794,106 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
                   </td>
                 </tr>
               ) : (
-                currentSchedules.map((item) => (
-                  <tr
-                    key={item.id}
-                    className="hover:bg-slate-50/80 transition-colors group"
-                  >
-                    {/* WAKTU & JAM */}
-                    <td className="py-4 px-4 sm:px-6">
-                      <div className="flex flex-col gap-1.5">
-                        <div className="flex items-center gap-1.5 font-semibold text-slate-800 text-[12.5px]">
-                          <Clock className="w-3.5 h-3.5 text-slate-400" />
-                          <span>
-                            {item.time_start} – {item.time_end}
-                          </span>
-                        </div>
-                        <div>
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 border border-slate-200">
-                            SESI KE-{item.session_no}
-                          </span>
-                        </div>
-                      </div>
-                    </td>
+                currentSchedules.map((item) => {
+                  const isBreak = item.subject_name.toLowerCase().includes('istirahat') || item.category === 'Istirahat';
+                  const isUpacara = item.subject_name.toLowerCase().includes('upacara') || item.category === 'Upacara' || item.teacher_name === 'Semua Dewan Guru';
 
-                    {/* MATA PELAJARAN */}
-                    <td className="py-4 px-4">
-                      <span className="font-bold text-slate-900 text-sm">
-                        {item.subject_name}
-                      </span>
-                    </td>
-
-                    {/* GURU PENGAMPU */}
-                    <td className="py-4 px-4">
-                      <div className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />
-                        <span className="font-medium text-slate-800 text-xs truncate max-w-xs">
-                          {item.teacher_name}
-                        </span>
-                      </div>
-                    </td>
-
-                    {/* AKSI (Hanya untuk Admin / Guru) */}
-                    {!readOnly && (
-                      <td className="py-4 px-4 text-right">
-                        <div className="flex items-center justify-end gap-1.5">
-                          <button
-                            type="button"
-                            onClick={() => handleOpenEdit(item)}
-                            className="p-1.5 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                            title="Sunting Sesi"
-                          >
-                            <Edit2 className="w-3.5 h-3.5" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleDelete(item.id)}
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
-                            title="Hapus Sesi"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
+                  return (
+                    <tr
+                      key={item.id}
+                      className={`hover:bg-slate-50/80 transition-colors group ${
+                        isBreak ? 'bg-amber-50/20' : isUpacara ? 'bg-indigo-50/15' : ''
+                      }`}
+                    >
+                      {/* WAKTU & JAM */}
+                      <td className="py-4 px-4 sm:px-6">
+                        <div className="flex flex-col gap-1.5">
+                          <div className="flex items-center gap-1.5 font-semibold text-slate-800 text-[12.5px]">
+                            <Clock className={`w-3.5 h-3.5 ${isBreak ? 'text-amber-500' : isUpacara ? 'text-indigo-500' : 'text-slate-400'}`} />
+                            <span>
+                              {item.time_start} – {item.time_end}
+                            </span>
+                          </div>
+                          <div>
+                            {isBreak ? (
+                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-100/80 text-amber-800 border border-amber-200">
+                                ISTIRAHAT
+                              </span>
+                            ) : (
+                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 border border-slate-200">
+                                SESI KE-{item.session_no}
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </td>
-                    )}
-                  </tr>
-                ))
+
+                      {/* MATA PELAJARAN */}
+                      <td className="py-4 px-4">
+                        {isBreak ? (
+                          <div className="inline-flex items-center gap-1.5 font-bold text-amber-900 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200/80 text-sm">
+                            <Coffee className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                            <span>{item.subject_name || 'Istirahat'}</span>
+                          </div>
+                        ) : isUpacara ? (
+                          <div className="inline-flex items-center gap-1.5 font-bold text-indigo-900 text-sm">
+                            <Flag className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
+                            <span>{item.subject_name}</span>
+                          </div>
+                        ) : (
+                          <span className="font-bold text-slate-900 text-sm">
+                            {item.subject_name}
+                          </span>
+                        )}
+                      </td>
+
+                      {/* GURU PENGAMPU */}
+                      <td className="py-4 px-4">
+                        {isBreak ? (
+                          <span className="font-normal text-slate-400 text-xs italic">
+                            — (Tanpa Guru Pengampu)
+                          </span>
+                        ) : isUpacara ? (
+                          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-800 text-xs font-semibold">
+                            <Users className="w-3 h-3 text-indigo-600" />
+                            <span>Semua Dewan Guru</span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />
+                            <span className="font-medium text-slate-800 text-xs truncate max-w-xs">
+                              {item.teacher_name}
+                            </span>
+                          </div>
+                        )}
+                      </td>
+
+                      {/* AKSI (Hanya untuk Admin / Guru) */}
+                      {!readOnly && (
+                        <td className="py-4 px-4 text-right">
+                          <div className="flex items-center justify-end gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() => handleOpenEdit(item)}
+                              className="p-1.5 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                              title="Sunting Sesi"
+                            >
+                              <Edit2 className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDelete(item.id)}
+                              className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                              title="Hapus Sesi"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </td>
+                      )}
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
@@ -1856,54 +1922,89 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
               )}
             </div>
           ) : (
-            currentSchedules.map((item) => (
-              <div key={item.id} className="p-4 space-y-2.5 hover:bg-slate-50/80 transition-colors">
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2 font-mono text-xs font-bold text-slate-800">
-                    <Clock className="w-3.5 h-3.5 text-blue-600" />
-                    <span>{item.time_start} – {item.time_end}</span>
-                  </div>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-blue-50 text-blue-700 border border-blue-200">
-                    Jam ke-{item.session_no}
-                  </span>
-                </div>
+            currentSchedules.map((item) => {
+              const isBreak = item.subject_name.toLowerCase().includes('istirahat') || item.category === 'Istirahat';
+              const isUpacara = item.subject_name.toLowerCase().includes('upacara') || item.category === 'Upacara' || item.teacher_name === 'Semua Dewan Guru';
 
-                <div>
-                  <h4 className="font-bold text-slate-900 text-sm leading-tight">{item.subject_name}</h4>
-                  <p className="text-xs text-slate-600 font-medium mt-0.5 flex items-center gap-1">
-                    <span className="text-slate-400">Guru:</span>
-                    <span>{item.teacher_name}</span>
-                  </p>
-                </div>
-
-                <div className="flex items-center justify-between text-xs pt-1 border-t border-slate-100">
-                  <span className="text-[11px] text-slate-400">
-                    {item.room || 'Ruang Kelas'} {item.category ? `• ${item.category}` : ''}
-                  </span>
-
-                  {!readOnly && (
-                    <div className="flex items-center gap-1">
-                      <button
-                        type="button"
-                        onClick={() => handleOpenEdit(item)}
-                        className="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 text-xs font-bold transition-colors inline-flex items-center gap-1"
-                      >
-                        <Edit2 className="w-3 h-3" />
-                        <span>Edit</span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleDelete(item.id)}
-                        className="p-1 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
-                        title="Hapus Sesi"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+              return (
+                <div
+                  key={item.id}
+                  className={`p-4 space-y-2.5 transition-colors ${
+                    isBreak ? 'bg-amber-50/20' : isUpacara ? 'bg-indigo-50/15' : 'hover:bg-slate-50/80'
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 font-mono text-xs font-bold text-slate-800">
+                      <Clock className={`w-3.5 h-3.5 ${isBreak ? 'text-amber-500' : isUpacara ? 'text-indigo-500' : 'text-blue-600'}`} />
+                      <span>{item.time_start} – {item.time_end}</span>
                     </div>
-                  )}
+                    {isBreak ? (
+                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                        Istirahat
+                      </span>
+                    ) : (
+                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                        Jam ke-{item.session_no}
+                      </span>
+                    )}
+                  </div>
+
+                  <div>
+                    {isBreak ? (
+                      <div className="inline-flex items-center gap-1.5 font-bold text-amber-900 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200 text-sm">
+                        <Coffee className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                        <span>{item.subject_name || 'Istirahat'}</span>
+                      </div>
+                    ) : isUpacara ? (
+                      <div className="inline-flex items-center gap-1.5 font-bold text-slate-900 text-sm">
+                        <Flag className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
+                        <span>{item.subject_name}</span>
+                      </div>
+                    ) : (
+                      <h4 className="font-bold text-slate-900 text-sm leading-tight">{item.subject_name}</h4>
+                    )}
+
+                    {!isBreak && (
+                      <p className="text-xs text-slate-600 font-medium mt-1 flex items-center gap-1">
+                        <span className="text-slate-400">Guru:</span>
+                        {isUpacara ? (
+                          <span className="font-semibold text-indigo-700">Semua Dewan Guru</span>
+                        ) : (
+                          <span>{item.teacher_name}</span>
+                        )}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="flex items-center justify-between text-xs pt-1 border-t border-slate-100">
+                    <span className="text-[11px] text-slate-400">
+                      {isBreak ? 'Waktu Istirahat' : (item.room || 'Ruang Kelas')} {item.category && !isBreak ? `• ${item.category}` : ''}
+                    </span>
+
+                    {!readOnly && (
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => handleOpenEdit(item)}
+                          className="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 text-xs font-bold transition-colors inline-flex items-center gap-1"
+                        >
+                          <Edit2 className="w-3 h-3" />
+                          <span>Edit</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(item.id)}
+                          className="p-1 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                          title="Hapus Sesi"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
 
@@ -2160,139 +2261,335 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
 
                   {/* Tabel Baris Sesi Harian */}
                   <div className="space-y-2 pt-1">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
                       <label className="block text-xs font-bold text-slate-900">
                         Daftar Sesi Pelajaran Hari {dayForm.day} ({dayForm.sessions.length} Sesi):
                       </label>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const nextIdx = dayForm.sessions.length + 1;
-                          const slot = defaultMaSlots[Math.min(nextIdx - 1, defaultMaSlots.length - 1)] || {
-                            start: '13:00',
-                            end: '14:10',
-                          };
-                          setDayForm({
-                            ...dayForm,
-                            sessions: [
-                              ...dayForm.sessions,
-                              {
-                                session_no: nextIdx,
-                                time_start: slot.start,
-                                time_end: slot.end,
-                                subject_name: '',
-                                teacher_name: teachers[0]?.name || 'Dewan Guru',
-                              },
-                            ],
-                          });
-                        }}
-                        className="inline-flex items-center gap-1 text-[11px] font-semibold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-2.5 py-1 rounded-lg transition-colors"
-                      >
-                        <Plus className="w-3.5 h-3.5" />
-                        <span>Tambah Baris Sesi</span>
-                      </button>
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const nextIdx = dayForm.sessions.length + 1;
+                            const slot = defaultMaSlots[Math.min(nextIdx - 1, defaultMaSlots.length - 1)] || {
+                              start: '13:00',
+                              end: '14:10',
+                            };
+                            setDayForm({
+                              ...dayForm,
+                              sessions: [
+                                ...dayForm.sessions,
+                                {
+                                  session_no: nextIdx,
+                                  time_start: slot.start,
+                                  time_end: slot.end,
+                                  subject_name: '',
+                                  teacher_name: teachers[0]?.name || 'Dewan Guru',
+                                },
+                              ],
+                            });
+                          }}
+                          className="inline-flex items-center gap-1 text-[11px] font-semibold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-2.5 py-1 rounded-lg transition-colors border border-indigo-200/60"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                          <span>+ Tambah Baris Sesi</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const nextIdx = dayForm.sessions.length + 1;
+                            let defaultStart = '09:30';
+                            let defaultEnd = '10:00';
+                            if (dayForm.sessions.length > 0) {
+                              const last = dayForm.sessions[dayForm.sessions.length - 1];
+                              if (last.time_end) {
+                                defaultStart = last.time_end;
+                                if (last.time_end === '09:30') defaultEnd = '10:00';
+                                else if (last.time_end === '12:20') defaultEnd = '13:00';
+                                else {
+                                  const [h, m] = last.time_end.split(':').map((x) => parseInt(x, 10));
+                                  if (!isNaN(h) && !isNaN(m)) {
+                                    const tot = h * 60 + m + 30;
+                                    defaultEnd = `${String(Math.floor(tot / 60)).padStart(2, '0')}:${String(tot % 60).padStart(2, '0')}`;
+                                  }
+                                }
+                              }
+                            }
+                            setDayForm({
+                              ...dayForm,
+                              sessions: [
+                                ...dayForm.sessions,
+                                {
+                                  session_no: nextIdx,
+                                  time_start: defaultStart,
+                                  time_end: defaultEnd,
+                                  subject_name: 'Istirahat',
+                                  teacher_name: '-',
+                                },
+                              ],
+                            });
+                          }}
+                          className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-700 hover:text-amber-800 bg-amber-50 hover:bg-amber-100 px-2.5 py-1 rounded-lg transition-colors border border-amber-200/60"
+                          title="Tambah baris istirahat tanpa guru pengampu"
+                        >
+                          <Coffee className="w-3.5 h-3.5 text-amber-600" />
+                          <span>+ Tambah Istirahat</span>
+                        </button>
+                      </div>
                     </div>
 
                     <div className="space-y-2 max-h-[48vh] overflow-y-auto pr-1">
-                      {dayForm.sessions.map((sess, idx) => (
-                        <div
-                          key={idx}
-                          className="p-3 bg-white border border-slate-200 rounded-xl shadow-2xs space-y-2"
-                        >
-                          <div className="flex items-center justify-between">
-                            <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700">
-                              Sesi Ke-{idx + 1}
-                            </span>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setDayForm({
-                                  ...dayForm,
-                                  sessions: dayForm.sessions.filter((_, i) => i !== idx),
-                                });
-                              }}
-                              className="text-slate-400 hover:text-red-600 p-1 rounded-md transition-colors"
-                              title="Hapus sesi ini"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
+                      {dayForm.sessions.map((sess, idx) => {
+                        const isBreak = sess.subject_name.trim().toLowerCase().includes('istirahat');
+                        const isUpacara = sess.subject_name.trim().toLowerCase().includes('upacara');
 
-                          <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
-                            <div className="sm:col-span-1 grid grid-cols-2 gap-1.5">
-                              <div>
-                                <label className="block text-[10px] text-slate-500">Mulai</label>
-                                <input
-                                  type="text"
-                                  value={sess.time_start}
-                                  onChange={(e) => {
-                                    const next = [...dayForm.sessions];
-                                    next[idx].time_start = e.target.value;
-                                    setDayForm({ ...dayForm, sessions: next });
-                                  }}
-                                  placeholder="07:30"
-                                  className="w-full px-2 py-1 text-xs rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                  required
-                                />
+                        return (
+                          <div
+                            key={idx}
+                            className={`p-3 bg-white border rounded-xl shadow-2xs space-y-2 transition-colors ${
+                              isBreak
+                                ? 'border-amber-200 bg-amber-50/20'
+                                : isUpacara
+                                ? 'border-indigo-200 bg-indigo-50/20'
+                                : 'border-slate-200'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-1.5 flex-wrap">
+                                <span
+                                  className={`text-[11px] font-bold px-2 py-0.5 rounded-md ${
+                                    isBreak
+                                      ? 'bg-amber-100 text-amber-800'
+                                      : isUpacara
+                                      ? 'bg-indigo-100 text-indigo-800'
+                                      : 'bg-slate-100 text-slate-700'
+                                  }`}
+                                >
+                                  {isBreak ? 'Istirahat' : isUpacara ? 'Upacara' : `Sesi Ke-${idx + 1}`}
+                                </span>
+
+                                {/* Quick Type Preset Chips */}
+                                <div className="inline-flex items-center p-0.5 bg-slate-100 rounded-lg text-[10px]">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const next = [...dayForm.sessions];
+                                      next[idx].subject_name = isBreak || isUpacara ? '' : next[idx].subject_name;
+                                      next[idx].teacher_name = teachers[0]?.name || 'Dewan Guru';
+                                      setDayForm({ ...dayForm, sessions: next });
+                                    }}
+                                    className={`px-2 py-0.5 rounded-md font-semibold transition-colors ${
+                                      !isBreak && !isUpacara
+                                        ? 'bg-white text-slate-900 shadow-2xs'
+                                        : 'text-slate-600 hover:text-slate-900'
+                                    }`}
+                                  >
+                                    Pelajaran
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const next = [...dayForm.sessions];
+                                      next[idx].subject_name = 'Istirahat';
+                                      next[idx].teacher_name = '-';
+                                      setDayForm({ ...dayForm, sessions: next });
+                                    }}
+                                    className={`px-2 py-0.5 rounded-md font-semibold transition-colors inline-flex items-center gap-1 ${
+                                      isBreak
+                                        ? 'bg-amber-500 text-white shadow-2xs'
+                                        : 'text-slate-600 hover:text-slate-900'
+                                    }`}
+                                  >
+                                    <Coffee className="w-3 h-3" />
+                                    <span>Istirahat</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const next = [...dayForm.sessions];
+                                      next[idx].subject_name = 'Upacara Bendera';
+                                      next[idx].teacher_name = 'Semua Dewan Guru';
+                                      setDayForm({ ...dayForm, sessions: next });
+                                    }}
+                                    className={`px-2 py-0.5 rounded-md font-semibold transition-colors inline-flex items-center gap-1 ${
+                                      isUpacara
+                                        ? 'bg-indigo-600 text-white shadow-2xs'
+                                        : 'text-slate-600 hover:text-slate-900'
+                                    }`}
+                                  >
+                                    <Flag className="w-3 h-3" />
+                                    <span>Upacara</span>
+                                  </button>
+                                </div>
                               </div>
-                              <div>
-                                <label className="block text-[10px] text-slate-500">Selesai</label>
-                                <input
-                                  type="text"
-                                  value={sess.time_end}
-                                  onChange={(e) => {
-                                    const next = [...dayForm.sessions];
-                                    next[idx].time_end = e.target.value;
-                                    setDayForm({ ...dayForm, sessions: next });
-                                  }}
-                                  placeholder="08:55"
-                                  className="w-full px-2 py-1 text-xs rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                  required
-                                />
-                              </div>
-                            </div>
 
-                            <div className="sm:col-span-2">
-                              <label className="block text-[10px] text-slate-500">
-                                Mata Pelajaran
-                              </label>
-                              <input
-                                type="text"
-                                value={sess.subject_name}
-                                onChange={(e) => {
-                                  const next = [...dayForm.sessions];
-                                  next[idx].subject_name = e.target.value;
-                                  setDayForm({ ...dayForm, sessions: next });
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setDayForm({
+                                    ...dayForm,
+                                    sessions: dayForm.sessions.filter((_, i) => i !== idx),
+                                  });
                                 }}
-                                placeholder="Nama Mata Pelajaran"
-                                className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                required
-                              />
-                            </div>
-
-                            <div className="sm:col-span-1">
-                              <label className="block text-[10px] text-slate-500">
-                                Guru Pengampu
-                              </label>
-                              <select
-                                value={sess.teacher_name}
-                                onChange={(e) => {
-                                  const next = [...dayForm.sessions];
-                                  next[idx].teacher_name = e.target.value;
-                                  setDayForm({ ...dayForm, sessions: next });
-                                }}
-                                className="w-full px-2 py-1 text-xs rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+                                className="text-slate-400 hover:text-red-600 p-1 rounded-md transition-colors"
+                                title="Hapus sesi ini"
                               >
-                                {teachers.map((t) => (
-                                  <option key={t.order_no} value={t.name}>
-                                    {t.name}
-                                  </option>
-                                ))}
-                              </select>
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
                             </div>
+
+                            {/* Baris Input Form Sesi */}
+                            {isBreak ? (
+                              <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 items-center">
+                                <div className="sm:col-span-2 grid grid-cols-2 gap-1.5">
+                                  <div>
+                                    <label className="block text-[10px] text-slate-500">Mulai</label>
+                                    <input
+                                      type="text"
+                                      value={sess.time_start}
+                                      onChange={(e) => {
+                                        const next = [...dayForm.sessions];
+                                        next[idx].time_start = e.target.value;
+                                        setDayForm({ ...dayForm, sessions: next });
+                                      }}
+                                      placeholder="09:30"
+                                      className="w-full px-2 py-1 text-xs rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white"
+                                      required
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="block text-[10px] text-slate-500">Selesai</label>
+                                    <input
+                                      type="text"
+                                      value={sess.time_end}
+                                      onChange={(e) => {
+                                        const next = [...dayForm.sessions];
+                                        next[idx].time_end = e.target.value;
+                                        setDayForm({ ...dayForm, sessions: next });
+                                      }}
+                                      placeholder="10:00"
+                                      className="w-full px-2 py-1 text-xs rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white"
+                                      required
+                                    />
+                                  </div>
+                                </div>
+
+                                <div className="sm:col-span-2">
+                                  <label className="block text-[10px] text-amber-700 font-medium">Sesi</label>
+                                  <div className="flex items-center gap-2 px-2.5 py-1 text-xs rounded-lg border border-amber-300 bg-amber-50 text-amber-900 font-semibold">
+                                    <Coffee className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                                    <input
+                                      type="text"
+                                      value={sess.subject_name}
+                                      onChange={(e) => {
+                                        const next = [...dayForm.sessions];
+                                        next[idx].subject_name = e.target.value;
+                                        setDayForm({ ...dayForm, sessions: next });
+                                      }}
+                                      placeholder="Istirahat"
+                                      className="w-full bg-transparent border-0 p-0 text-xs font-semibold text-amber-900 focus:outline-none"
+                                      required
+                                    />
+                                    <span className="text-[10px] text-amber-700/80 font-normal whitespace-nowrap">
+                                      Tanpa Guru
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                                <div className="sm:col-span-1 grid grid-cols-2 gap-1.5">
+                                  <div>
+                                    <label className="block text-[10px] text-slate-500">Mulai</label>
+                                    <input
+                                      type="text"
+                                      value={sess.time_start}
+                                      onChange={(e) => {
+                                        const next = [...dayForm.sessions];
+                                        next[idx].time_start = e.target.value;
+                                        setDayForm({ ...dayForm, sessions: next });
+                                      }}
+                                      placeholder="07:30"
+                                      className="w-full px-2 py-1 text-xs rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                      required
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="block text-[10px] text-slate-500">Selesai</label>
+                                    <input
+                                      type="text"
+                                      value={sess.time_end}
+                                      onChange={(e) => {
+                                        const next = [...dayForm.sessions];
+                                        next[idx].time_end = e.target.value;
+                                        setDayForm({ ...dayForm, sessions: next });
+                                      }}
+                                      placeholder="08:55"
+                                      className="w-full px-2 py-1 text-xs rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                      required
+                                    />
+                                  </div>
+                                </div>
+
+                                <div className="sm:col-span-2">
+                                  <label className="block text-[10px] text-slate-500">
+                                    Mata Pelajaran
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={sess.subject_name}
+                                    onChange={(e) => {
+                                      const next = [...dayForm.sessions];
+                                      const val = e.target.value;
+                                      next[idx].subject_name = val;
+                                      if (val.toLowerCase().includes('istirahat')) {
+                                        next[idx].teacher_name = '-';
+                                      } else if (val.toLowerCase().includes('upacara')) {
+                                        next[idx].teacher_name = 'Semua Dewan Guru';
+                                      }
+                                      setDayForm({ ...dayForm, sessions: next });
+                                    }}
+                                    placeholder="Nama Mata Pelajaran"
+                                    className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    required
+                                  />
+                                </div>
+
+                                <div className="sm:col-span-1">
+                                  <label className="block text-[10px] text-slate-500">
+                                    Guru Pengampu
+                                  </label>
+                                  {isUpacara ? (
+                                    <select
+                                      value="Semua Dewan Guru"
+                                      disabled
+                                      className="w-full px-2 py-1 text-xs rounded-lg border border-indigo-200 bg-indigo-50/70 font-semibold text-indigo-900 cursor-not-allowed"
+                                    >
+                                      <option value="Semua Dewan Guru">Semua Dewan Guru</option>
+                                    </select>
+                                  ) : (
+                                    <select
+                                      value={sess.teacher_name}
+                                      onChange={(e) => {
+                                        const next = [...dayForm.sessions];
+                                        next[idx].teacher_name = e.target.value;
+                                        setDayForm({ ...dayForm, sessions: next });
+                                      }}
+                                      className="w-full px-2 py-1 text-xs rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+                                    >
+                                      {teachers.map((t) => (
+                                        <option key={t.order_no} value={t.name}>
+                                          {t.name}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  )}
+                                </div>
+                              </div>
+                            )}
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
 
@@ -2426,35 +2723,132 @@ export const SchedulesTab: React.FC<SchedulesTabProps> = ({
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      Mata Pelajaran
-                    </label>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block text-xs font-semibold text-slate-700">
+                        Mata Pelajaran
+                      </label>
+                      {/* Pilihan Cepat Presets */}
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setFormData({
+                              ...formData,
+                              subject_name:
+                                formData.subject_name === 'Istirahat' || formData.subject_name === 'Upacara Bendera'
+                                  ? ''
+                                  : formData.subject_name,
+                              teacher_name:
+                                formData.teacher_name === '-' || formData.teacher_name === 'Semua Dewan Guru'
+                                  ? teachers[0]?.name || 'Dewan Guru'
+                                  : formData.teacher_name,
+                            })
+                          }
+                          className="px-2 py-0.5 text-[10px] rounded-md border border-slate-200 text-slate-600 hover:bg-slate-100 transition-colors"
+                        >
+                          Pelajaran
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setFormData({
+                              ...formData,
+                              subject_name: 'Istirahat',
+                              teacher_name: '-',
+                            })
+                          }
+                          className="px-2 py-0.5 text-[10px] rounded-md border border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100 transition-colors inline-flex items-center gap-1"
+                        >
+                          <Coffee className="w-3 h-3 text-amber-600" />
+                          <span>Istirahat</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setFormData({
+                              ...formData,
+                              subject_name: 'Upacara Bendera',
+                              teacher_name: 'Semua Dewan Guru',
+                            })
+                          }
+                          className="px-2 py-0.5 text-[10px] rounded-md border border-indigo-300 bg-indigo-50 text-indigo-800 hover:bg-indigo-100 transition-colors inline-flex items-center gap-1"
+                        >
+                          <Flag className="w-3 h-3 text-indigo-600" />
+                          <span>Upacara</span>
+                        </button>
+                      </div>
+                    </div>
                     <input
                       type="text"
                       value={formData.subject_name}
-                      onChange={(e) => setFormData({ ...formData, subject_name: e.target.value })}
-                      placeholder="Contoh: Matematika, Fiqih, Bahasa Inggris, dll"
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        const isBrk = val.toLowerCase().includes('istirahat');
+                        const isUpc = val.toLowerCase().includes('upacara');
+                        setFormData({
+                          ...formData,
+                          subject_name: val,
+                          teacher_name: isBrk
+                            ? '-'
+                            : isUpc
+                            ? 'Semua Dewan Guru'
+                            : formData.teacher_name === '-' || formData.teacher_name === 'Semua Dewan Guru'
+                            ? teachers[0]?.name || 'Dewan Guru'
+                            : formData.teacher_name,
+                        });
+                      }}
+                      placeholder="Contoh: Matematika, Fiqih, Istirahat, Upacara Bendera, dll"
                       className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      Guru Pengampu
-                    </label>
-                    <select
-                      value={formData.teacher_name}
-                      onChange={(e) => setFormData({ ...formData, teacher_name: e.target.value })}
-                      className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                      required
-                    >
-                      {teachers.map((t) => (
-                        <option key={t.order_no} value={t.name}>
-                          {t.name} ({t.subject_name})
-                        </option>
-                      ))}
-                    </select>
+                    {(formData.subject_name || '').toLowerCase().includes('istirahat') ? (
+                      <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl flex items-center justify-between text-xs text-amber-900">
+                        <span className="font-semibold flex items-center gap-2">
+                          <Coffee className="w-4 h-4 text-amber-600 shrink-0" />
+                          <span>Waktu Istirahat (Tanpa Guru Pengampu)</span>
+                        </span>
+                        <span className="text-[10px] font-medium text-amber-700 bg-white/80 px-2 py-0.5 rounded-md border border-amber-200">
+                          Otomatis Tanpa Guru
+                        </span>
+                      </div>
+                    ) : (formData.subject_name || '').toLowerCase().includes('upacara') ? (
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-700 mb-1">
+                          Guru Pengampu
+                        </label>
+                        <select
+                          value="Semua Dewan Guru"
+                          disabled
+                          className="w-full px-3 py-2 text-xs rounded-xl border border-indigo-200 bg-indigo-50/70 font-semibold text-indigo-900 cursor-not-allowed"
+                        >
+                          <option value="Semua Dewan Guru">Semua Dewan Guru</option>
+                        </select>
+                        <p className="text-[10px] text-slate-500 mt-1">
+                          Khusus sesi Upacara Bendera, seluruh dewan guru bertugas mendampingi.
+                        </p>
+                      </div>
+                    ) : (
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-700 mb-1">
+                          Guru Pengampu
+                        </label>
+                        <select
+                          value={formData.teacher_name}
+                          onChange={(e) => setFormData({ ...formData, teacher_name: e.target.value })}
+                          className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                          required
+                        >
+                          {teachers.map((t) => (
+                            <option key={t.order_no} value={t.name}>
+                              {t.name} ({t.subject_name})
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
                   </div>
 
                   <div className="pt-3 border-t border-slate-200 flex items-center justify-end gap-2 shrink-0">

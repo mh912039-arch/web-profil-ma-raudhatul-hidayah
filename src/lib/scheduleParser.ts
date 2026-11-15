@@ -37,7 +37,8 @@ export const standardSmpTimeSlots = universalDefaultTimeSlots;
 export const standardSmaTimeSlots = universalDefaultTimeSlots;
 
 export const matrixSubjectKeywords: { pattern: RegExp; name: string; cat: string; defaultTeacher: string }[] = [
-  { pattern: /\bupacara(\s*bendera)?\b/i, name: 'Upacara Bendera', cat: 'Pembiasaan Karakter', defaultTeacher: 'Dewan Guru' },
+  { pattern: /\bupacara(\s*bendera)?\b/i, name: 'Upacara Bendera', cat: 'Pembiasaan Karakter', defaultTeacher: 'Semua Dewan Guru' },
+  { pattern: /\bistirahat\b/i, name: 'Istirahat', cat: 'Istirahat', defaultTeacher: '-' },
   { pattern: /\b(do['’]?a\s*(dan|&)?\s*tadarus|tadarus|doa\s*pagi)\b/i, name: "Do'a dan Tadarus", cat: 'Pembiasaan Karakter', defaultTeacher: 'Dewan Guru' },
   { pattern: /\b(literasi|numerasi)\b/i, name: 'Literasi / Numerasi', cat: 'Pembiasaan Karakter', defaultTeacher: 'Dewan Guru' },
   { pattern: /\b(imtaq|tadarus|doa)\b/i, name: 'Imtaq & Sholat Dhuha', cat: 'Pembiasaan Karakter', defaultTeacher: 'Dewan Guru' },
@@ -81,7 +82,9 @@ export function resolveTeacherForSubject(
   const isSd = targetRombel.toLowerCase().startsWith('sd');
   const sub = subjectName.toLowerCase();
 
-  if (/upacara|tadarus|doa/i.test(sub)) return 'Dewan Guru';
+  if (/istirahat/i.test(sub)) return '-';
+  if (/upacara/i.test(sub)) return 'Semua Dewan Guru';
+  if (/tadarus|doa/i.test(sub)) return 'Dewan Guru';
   if (/pramuka/i.test(sub)) return 'Pembina Pramuka';
 
   // 1. Cek kecocokan subjek spesifik di database guru
