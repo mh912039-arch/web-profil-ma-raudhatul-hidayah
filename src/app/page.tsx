@@ -20,7 +20,6 @@ import { StitchNavbar } from '@/components/layout/StitchNavbar';
 import { StitchFooter } from '@/components/layout/StitchFooter';
 import { PpdbSection } from '@/components/sections/PpdbSection';
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
-import { fetchPublicProfile } from '@/lib/publicProfileClient';
 
 // Dynamic code-splitting to minimize critical-path JS bundle & TBT on initial page load
 const PpdbRegistrationModal = dynamic(
@@ -118,30 +117,6 @@ export default function HomePage() {
   }, [slidesReady, heroImages.length]);
 
   useEffect(() => {
-    let isMounted = true;
-    const syncProfile = () => {
-      fetchPublicProfile().then((data) => {
-        if (isMounted && data && data.homepage) {
-          setHome((prev) => {
-            let hasDiff = false;
-            for (const k of Object.keys(data.homepage)) {
-              if ((prev as any)[k] !== data.homepage[k]) {
-                hasDiff = true;
-                break;
-              }
-            }
-            return hasDiff ? { ...prev, ...data.homepage } : prev;
-          });
-        }
-      });
-    };
-
-    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
-      const handle = (window as any).requestIdleCallback(syncProfile, { timeout: 8000 });
-    } else {
-      setTimeout(syncProfile, 4000);
-    }
-
     const handleOpenModal = () => setIsRegModalOpen(true);
     window.addEventListener('open-ppdb-registration', handleOpenModal);
 
