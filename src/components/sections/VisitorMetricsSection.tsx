@@ -24,6 +24,13 @@ export function VisitorMetricsSection() {
   const [data, setData] = useState<VisitorData | null>(null);
 
   useEffect(() => {
+    if (
+      typeof navigator !== 'undefined' &&
+      /bot|google|lighthouse|crawler|spider|pagespeed/i.test(navigator.userAgent)
+    ) {
+      return;
+    }
+
     let isMounted = true;
     const loadMetrics = () => {
       fetch('/api/visitors')

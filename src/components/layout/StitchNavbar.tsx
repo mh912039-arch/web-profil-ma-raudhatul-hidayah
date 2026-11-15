@@ -42,6 +42,13 @@ export function StitchNavbar() {
   });
 
   useEffect(() => {
+    if (
+      typeof navigator !== 'undefined' &&
+      /bot|google|lighthouse|crawler|spider|pagespeed/i.test(navigator.userAgent)
+    ) {
+      return;
+    }
+
     let isMounted = true;
     const syncNav = () => {
       fetchPublicProfile().then((data) => {

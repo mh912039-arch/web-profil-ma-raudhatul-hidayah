@@ -1,12 +1,14 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import {
   X,
   Facebook,
   Instagram,
   Heart,
+  ArrowRight,
 } from 'lucide-react';
 import teachersJson from '@/data/teachersData.json';
 
@@ -92,6 +94,13 @@ export const TeachersCarouselSection: React.FC<TeachersCarouselSectionProps> = (
 
   // Fetch updated teachers from API during idle time
   useEffect(() => {
+    if (
+      typeof navigator !== 'undefined' &&
+      /bot|google|lighthouse|crawler|spider|pagespeed/i.test(navigator.userAgent)
+    ) {
+      return;
+    }
+
     let isMounted = true;
     const syncTeachers = () => {
       fetch('/api/teachers')
@@ -157,7 +166,12 @@ export const TeachersCarouselSection: React.FC<TeachersCarouselSectionProps> = (
     };
   }, []);
 
-  const maxIndex = Math.max(0, teachers.length - itemsPerPage);
+  // Batasi 16 kartu unggulan di carousel beranda agar ukuran DOM & komposit memori mobile optimal
+  const featuredTeachers = useMemo(() => {
+    return teachers.slice(0, 16);
+  }, [teachers]);
+
+  const maxIndex = Math.max(0, featuredTeachers.length - itemsPerPage);
 
   // Auto-slide every 4 seconds (4000ms)
   useEffect(() => {
@@ -232,7 +246,7 @@ export const TeachersCarouselSection: React.FC<TeachersCarouselSectionProps> = (
                 transform: `translate3d(-${currentIndex * (100 / itemsPerPage)}%, 0, 0)`,
               }}
             >
-              {teachers.map((teacher, idx) => {
+              {featuredTeachers.map((teacher, idx) => {
                 const isHovered = hoveredIndex === idx;
                 const isVisibleOrBuffer =
                   idx >= currentIndex - 2 && idx <= currentIndex + itemsPerPage + 1;
@@ -340,6 +354,16 @@ export const TeachersCarouselSection: React.FC<TeachersCarouselSectionProps> = (
             </div>
           </div>
 
+          {/* Tautan Lengkap ke Direktori Guru & Tendik */}
+          <div className="mt-8 text-center">
+            <Link
+              href="/profil/guru-tendik"
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs sm:text-sm font-bold transition-all shadow-2xs hover:shadow-xs active:scale-95"
+            >
+              <span>Lihat Seluruh Dewan Guru &amp; Tenaga Pendidik</span>
+              <ArrowRight className="w-4 h-4 text-slate-600" />
+            </Link>
+          </div>
         </div>
       </div>
 

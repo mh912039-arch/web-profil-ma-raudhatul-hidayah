@@ -8,6 +8,14 @@ export function VisitorTracker() {
   const lastPath = useRef<string | null>(null);
 
   useEffect(() => {
+    // 0. Do not track bots, automated audit tools, or Lighthouse / PageSpeed runners
+    if (
+      typeof navigator !== 'undefined' &&
+      /bot|google|lighthouse|crawler|spider|pagespeed/i.test(navigator.userAgent)
+    ) {
+      return;
+    }
+
     // 1. Do not track admin panels or backend APIs
     if (!pathname || pathname.startsWith('/admin') || pathname.startsWith('/api')) {
       return;
