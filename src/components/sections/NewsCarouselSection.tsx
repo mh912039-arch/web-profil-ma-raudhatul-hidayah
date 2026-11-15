@@ -95,13 +95,6 @@ export function NewsCarouselSection() {
   }, []);
 
   useEffect(() => {
-    if (
-      typeof navigator !== 'undefined' &&
-      /bot|google|lighthouse|crawler|spider|pagespeed/i.test(navigator.userAgent)
-    ) {
-      return;
-    }
-
     let isMounted = true;
     async function fetchLatestNews() {
       try {

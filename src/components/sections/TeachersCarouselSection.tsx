@@ -94,13 +94,6 @@ export const TeachersCarouselSection: React.FC<TeachersCarouselSectionProps> = (
 
   // Fetch updated teachers from API during idle time
   useEffect(() => {
-    if (
-      typeof navigator !== 'undefined' &&
-      /bot|google|lighthouse|crawler|spider|pagespeed/i.test(navigator.userAgent)
-    ) {
-      return;
-    }
-
     let isMounted = true;
     const syncTeachers = () => {
       fetch('/api/teachers')

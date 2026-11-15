@@ -150,7 +150,9 @@ export default function HomePage() {
               return (
                 <div
                   key={`${imgSrc}-${index}`}
-                  className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                  className={`absolute inset-0 ${
+                    slidesReady ? 'transition-opacity duration-1000 ease-in-out' : ''
+                  } ${
                     index === currentHeroIndex ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
                   }`}
                 >

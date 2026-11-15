@@ -161,11 +161,12 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * Terapkan middleware ke rute /admin, /api, dan halaman publik
-     * Kecuali static assets (_next/static, _next/image, favicon.ico, images)
+     * Terapkan middleware ke rute terproteksi /admin, /api, dan autentikasi
+     * Halaman publik dilayani langsung secara native & cepat oleh CDN Vercel
      */
     '/admin/:path*',
     '/api/:path*',
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/masuk',
+    '/login',
   ],
 };

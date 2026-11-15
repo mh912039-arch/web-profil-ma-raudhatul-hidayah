@@ -57,7 +57,7 @@
 .animate-marquee {
   display: flex;
   width: max-content;
-  contain: layout style;
+  will-change: transform;
   animation: marquee 30s linear infinite;
 }
 

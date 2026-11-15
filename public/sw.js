@@ -1,23 +1,8 @@
-// Service Worker untuk Portal MA Raudlatul Hidayah (PWA & Web Push)
-const CACHE_NAME = 'mrh-portal-cache-v8';
-
-// Daftar aset branding statis yang dapat dipre-cache
-const PRECACHE_ASSETS = [
-  '/',
-  '/school-logo.png',
-  '/badge-96.png',
-  '/icon-192.png',
-  '/icon-512.png',
-  '/favicon.ico',
-];
+// Service Worker untuk Portal MAS Raudlatul Hidayah (PWA & Web Push)
+const CACHE_NAME = 'mrh-portal-cache-v9';
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches
-      .open(CACHE_NAME)
-      .then((cache) => cache.addAll(PRECACHE_ASSETS).catch(() => {}))
-      .then(() => self.skipWaiting())
-  );
+  self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
@@ -26,72 +11,17 @@ self.addEventListener('activate', (event) => {
       .keys()
       .then((cacheNames) =>
         Promise.all(
-          cacheNames.map((cache) => {
-            if (cache !== CACHE_NAME) {
-              return caches.delete(cache);
-            }
-          })
+          cacheNames.map((cache) => caches.delete(cache))
         )
       )
       .then(() => self.clients.claim())
   );
 });
 
-// Strategi fetch yang ramah Google Lighthouse & Web Vitals:
-// 1. Aset kompilasi Next.js (_next/*) & API TIDAK dicegat oleh Service Worker agar browser & CDN Vercel melayani langsung secara native dengan HTTP/2 & Brotli.
-// 2. CSS/JS tidak dicegat dengan custom respondWith agar Chrome DevTools Protocol (CSSUsage, JsUsage, Trace) dapat berjalan tanpa error.
-self.addEventListener('fetch', (event) => {
-  const { request } = event;
-
-  // Jangan sentuh request non-GET, API, Next.js chunk/data/static, atau URL eksternal
-  if (
-    request.method !== 'GET' ||
-    request.url.includes('/api/') ||
-    request.url.includes('/_next/')
-  ) {
-    return;
-  }
-
-  // Untuk navigasi halaman (HTML): Network-First, fallback ke cache '/' jika offline
-  if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request).catch(() =>
-        caches.match(request).then((cached) => cached || caches.match('/'))
-      )
-    );
-    return;
-  }
-
-  // Cache-First hanya untuk gambar ikon & logo statis lokal
-  if (
-    request.destination === 'image' &&
-    (request.url.includes('/school-logo.png') ||
-      request.url.includes('/icon-') ||
-      request.url.includes('/badge-') ||
-      request.url.includes('/favicon.ico'))
-  ) {
-    event.respondWith(
-      caches.match(request).then((cachedResponse) => {
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-        return fetch(request).then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            const responseToCache = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(request, responseToCache).catch(() => {});
-            });
-          }
-          return networkResponse;
-        });
-      })
-    );
-    return;
-  }
-
-  // PENTING: Untuk seluruh script, css, dan resource lain, BIARKAN BROWSER MENANGANI SECARA NATIVE.
-  // Jangan panggil event.respondWith(fetch(request)) karena akan merusak profiling DevTools & PageSpeed Insights.
-});
+// PENTING UNTUK LIGHTHOUSE, CORE WEB VITALS & DEVTOOLS:
+// Jangan mengintersepsi fetch. Biarkan seluruh dokumen HTML, Next.js chunks, dan file CSS
+// dilayani 100% secara native oleh CDN Vercel & HTTP/2 browser.
+// Ini menjamin Chrome DevTools Protocol (CSSUsage, ScriptElements, Trace) tidak pernah gagal atau memicu Error!
 
 // ============================================================================
 // WEB PUSH NOTIFICATION HANDLERS (MAS RH Mobile PWA)
@@ -121,7 +51,7 @@ self.addEventListener('push', (event) => {
     icon: data.icon || '/school-logo.png',
     badge: data.badge || '/badge-96.png',
     vibrate: data.vibrate || [300, 100, 300, 100, 300],
-    silent: false, // Menjamin suara notifikasi aktif mengikuti nada dering bawaan ponsel
+    silent: false,
     tag: data.tag || `mrh-push-${Date.now()}`,
     renotify: true,
     timestamp: Date.now(),
@@ -177,4 +107,3 @@ self.addEventListener('notificationclick', (event) => {
     })
   );
 });
-
