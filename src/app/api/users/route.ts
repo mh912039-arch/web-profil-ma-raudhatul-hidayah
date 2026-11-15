@@ -5,6 +5,8 @@ import {
   writeUsers,
   readSessions,
   writeSessions,
+  revokeUserAccounts,
+  unrevokeUserAccounts,
   isUserOnline,
   UserAccountItem,
   UserSessionItem,
@@ -120,6 +122,7 @@ export async function POST(request: Request) {
     };
 
     users.unshift(newUser);
+    await unrevokeUserAccounts([newUser.id, newUser.email, newUser.username]);
     await writeUsers(users);
 
     return NextResponse.json({
@@ -230,13 +233,17 @@ export async function DELETE(request: Request) {
     }
 
     let users = await readUsers();
+    const cleanId = id.trim().toLowerCase();
     const targetUser = users.find(
-      (u) => u.id === id || (u.email && u.email.toLowerCase() === id.toLowerCase())
+      (u) =>
+        u.id.toLowerCase() === cleanId ||
+        (u.email && u.email.toLowerCase() === cleanId) ||
+        (u.username && u.username.toLowerCase() === cleanId)
     );
 
     if (!targetUser) {
       return NextResponse.json(
-        { success: false, message: 'Pengguna tidak ditemukan.' },
+        { success: false, message: 'Pengguna tidak ditemukan atau sudah dihapus.' },
         { status: 404 }
       );
     }
@@ -255,12 +262,23 @@ export async function DELETE(request: Request) {
       );
     }
 
+    // 1. Masukkan seluruh pengidentifikasi akun ke daftar hitam pencabutan permanen (Tombstone Revocation)
+    const revokedKeys = [
+      targetUser.id,
+      targetUser.email,
+      targetUser.username,
+    ].filter(Boolean) as string[];
+
+    await revokeUserAccounts(revokedKeys);
+
+    // 2. Filter ketat akun dari daftar pengguna aktif
     const beforeCount = users.length;
-    users = users.filter(
-      (u) =>
-        u.id !== targetUser.id &&
-        (!targetUser.email || !u.email || u.email.toLowerCase() !== targetUser.email.toLowerCase())
-    );
+    users = users.filter((u) => {
+      if (u.id.toLowerCase() === targetUser.id.toLowerCase()) return false;
+      if (targetUser.email && u.email && u.email.toLowerCase() === targetUser.email.toLowerCase()) return false;
+      if (targetUser.username && u.username && u.username.toLowerCase() === targetUser.username.toLowerCase()) return false;
+      return true;
+    });
 
     if (users.length === beforeCount) {
       return NextResponse.json(
@@ -271,14 +289,17 @@ export async function DELETE(request: Request) {
 
     await writeUsers(users);
 
-    // Hapus juga sesi aktif terkait pengguna yang dihapus agar tidak tertinggal
+    // 3. Cabut & hapus juga seluruh sesi aktif terkait pengguna yang dihapus agar tidak tertinggal
     try {
       const sessions = await readSessions();
-      const updatedSessions = sessions.filter(
-        (s) =>
-          s.user_id !== targetUser.id &&
-          (!targetUser.email || !s.email || s.email.toLowerCase() !== targetUser.email.toLowerCase())
-      );
+      const targetEmail = targetUser.email?.toLowerCase();
+      const targetUsername = targetUser.username?.toLowerCase();
+      const updatedSessions = sessions.filter((s) => {
+        if (s.user_id && s.user_id.toLowerCase() === targetUser.id.toLowerCase()) return false;
+        if (targetEmail && s.email && s.email.toLowerCase() === targetEmail) return false;
+        if (targetUsername && s.user_name && s.user_name.toLowerCase() === targetUsername) return false;
+        return true;
+      });
       if (updatedSessions.length !== sessions.length) {
         await writeSessions(updatedSessions);
       }
@@ -288,7 +309,7 @@ export async function DELETE(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: `Akun "${targetUser.name}" berhasil dihapus secara permanen.`,
+      message: `Akun "${targetUser.name}" berhasil dihapus secara permanen. Akun ini tidak akan dapat login lagi.`,
     });
   } catch (err: any) {
     return NextResponse.json(

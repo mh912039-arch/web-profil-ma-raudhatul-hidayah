@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
+import { readUsers, readRevokedUserKeys } from '@/lib/userStore';
 
 export type UserRole = 'admin' | 'guru' | 'siswa';
 
@@ -116,6 +117,59 @@ export async function getServerSession(request?: Request): Promise<SessionData |
 }
 
 /**
+ * Validasi ketat integritas sesi pengguna:
+ * Memastikan akun yang tertera di session token MASIH ADA dan AKTIF di direktori pengguna,
+ * dan TIDAK PERNAH dicabut/dihapus (Tombstone Blacklist).
+ */
+export async function validateSessionUser(
+  session: SessionData | null
+): Promise<{ valid: boolean; reason?: 'no_session' | 'account_revoked' | 'account_deleted' | 'account_disabled' | 'verification_failed' }> {
+  if (!session) return { valid: false, reason: 'no_session' };
+
+  // Akun Developer Utama selalu sah demi keamanan dan pemulihan darurat sistem
+  if (isDeveloperSession(session)) return { valid: true };
+
+  try {
+    const revokedKeys = await readRevokedUserKeys();
+
+    const sessUserId = session.userId?.toLowerCase().trim();
+    const sessEmail = session.email?.toLowerCase().trim();
+    const sessUsername = session.username?.toLowerCase().trim();
+
+    // 1. Cek apakah ada di daftar hitam akun dicabut/dihapus
+    if (
+      (sessUserId && revokedKeys.has(sessUserId)) ||
+      (sessEmail && revokedKeys.has(sessEmail)) ||
+      (sessUsername && revokedKeys.has(sessUsername))
+    ) {
+      return { valid: false, reason: 'account_revoked' };
+    }
+
+    // 2. Cek apakah akun masih ada di direktori pengguna aktif
+    const users = await readUsers();
+    const activeUser = users.find((u) => {
+      if (sessUserId && u.id.toLowerCase() === sessUserId) return true;
+      if (sessEmail && u.email && u.email.toLowerCase() === sessEmail) return true;
+      if (sessUsername && u.username && u.username.toLowerCase() === sessUsername) return true;
+      return false;
+    });
+
+    if (!activeUser) {
+      return { valid: false, reason: 'account_deleted' };
+    }
+
+    if (activeUser.status === 'Nonaktif') {
+      return { valid: false, reason: 'account_disabled' };
+    }
+
+    return { valid: true };
+  } catch (err) {
+    console.warn('Gagal memvalidasi sesi terhadap direktori pengguna:', err);
+    return { valid: false, reason: 'verification_failed' };
+  }
+}
+
+/**
  * Guard untuk API route: pastikan request memiliki autentikasi valid dan peran (role) yang diizinkan
  */
 export async function requireAuth(allowedRoles?: UserRole[], request?: Request): Promise<{
@@ -136,6 +190,30 @@ export async function requireAuth(allowedRoles?: UserRole[], request?: Request):
         },
         { status: 401 }
       ),
+    };
+  }
+
+  // VALIDASI KETAT: Pastikan akun login pengguna masih ada dan aktif di direktori pengguna
+  const validation = await validateSessionUser(session);
+  if (!validation.valid) {
+    const res = NextResponse.json(
+      {
+        success: false,
+        error:
+          validation.reason === 'account_disabled'
+            ? 'Akses Ditolak: Akun Anda sedang dinonaktifkan oleh Administrator.'
+            : 'Akses Ditolak: Akun Anda telah dihapus dari direktori pengguna dan tidak dapat lagi mengakses portal.',
+        accountStatus: validation.reason,
+      },
+      { status: 401 }
+    );
+    try {
+      res.cookies.delete(COOKIE_NAME);
+    } catch {}
+    return {
+      authorized: false,
+      session: null,
+      response: res,
     };
   }
 

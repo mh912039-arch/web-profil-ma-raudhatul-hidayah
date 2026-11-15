@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { readUsers, writeUsers, UserAccountItem } from '@/lib/userStore';
+import { readUsers, writeUsers, readRevokedUserKeys, UserAccountItem } from '@/lib/userStore';
 import { hashPassword } from '@/lib/auth';
 import { checkEndpointRateLimit } from '@/lib/rateLimiter';
 import { sanitizeText, sanitizeEmail } from '@/lib/sanitizer';
@@ -68,6 +68,17 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { success: false, message: 'Format alamat email tidak valid.' },
         { status: 400 }
+      );
+    }
+
+    const revokedKeys = await readRevokedUserKeys();
+    if (revokedKeys.has(cleanEmail) || revokedKeys.has(cleanEmail.split('@')[0])) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Alamat email atau identitas ini telah dinonaktifkan/dihapus oleh Administrator. Silakan hubungi pihak madrasah untuk informasi lebih lanjut.',
+        },
+        { status: 403 }
       );
     }
 

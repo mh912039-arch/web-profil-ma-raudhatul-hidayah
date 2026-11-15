@@ -1,9 +1,12 @@
 import { NextResponse } from 'next/server';
 import { createSessionToken, COOKIE_NAME, UserRole, verifyPassword, hashPassword } from '@/lib/auth';
 import { parseUserAgent } from '@/lib/deviceParser';
-import { readUsers, writeUsers, readSessions, writeSessions, UserSessionItem } from '@/lib/userStore';
+import { readUsers, writeUsers, readSessions, writeSessions, readRevokedUserKeys, UserSessionItem } from '@/lib/userStore';
 import { checkRateLimit, recordFailedAttempt, resetRateLimit } from '@/lib/rateLimiter';
 import { sendSecurityAlertEmail } from '@/lib/securityMailer';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function POST(request: Request) {
   try {
@@ -93,20 +96,44 @@ export async function POST(request: Request) {
       });
     };
 
-    // 2. Baca data akun pengguna (tersinkronisasi lokal & Supabase)
+    // 2. Baca daftar akun dicabut (Tombstone Blacklist) & daftar akun aktif
+    const revokedKeys = await readRevokedUserKeys();
+    if (revokedKeys.has(idLower)) {
+      await recordFailedAttempt(clientIp, idLower);
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Akun ini telah dihapus oleh Administrator dan tidak dapat digunakan lagi untuk masuk ke portal.',
+        },
+        { status: 403 }
+      );
+    }
+
     const users = await readUsers();
 
     const matchedUser = users.find(
       (u) =>
         (u.email && u.email.toLowerCase() === idLower) ||
         (u.username && u.username.toLowerCase() === idLower) ||
-        (idLower === 'admin' && (u.username?.toLowerCase() === 'developer' || u.role === 'admin'))
+        (idLower === 'admin' && (u.username?.toLowerCase() === 'developer' || u.id === 'usr-1' || u.email?.toLowerCase() === 'admin@raudhatulhidayah.sch.id'))
     );
 
     let detectedRole: UserRole | null = null;
     let username = idLower;
 
     if (matchedUser) {
+      // Periksa apakah akun ada di daftar dicabut
+      if (revokedKeys.has(matchedUser.id.toLowerCase())) {
+        await recordFailedAttempt(clientIp, idLower);
+        return NextResponse.json(
+          {
+            success: false,
+            message: 'Akun ini telah dihapus oleh Administrator dan tidak dapat digunakan lagi untuk masuk ke portal.',
+          },
+          { status: 403 }
+        );
+      }
+
       // Periksa status aktif
       if (matchedUser.status === 'Nonaktif') {
         return NextResponse.json(

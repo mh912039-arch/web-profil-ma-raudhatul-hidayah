@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from '@/lib/auth';
+import { getServerSession, validateSessionUser, COOKIE_NAME } from '@/lib/auth';
 import { readUsers, writeUsers } from '@/lib/userStore';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function POST(request: Request) {
   try {
@@ -11,6 +14,19 @@ export async function POST(request: Request) {
         { success: false, authenticated: false },
         { status: 401 }
       );
+    }
+
+    // Pastikan akun belum dihapus
+    const validation = await validateSessionUser(session);
+    if (!validation.valid) {
+      const res = NextResponse.json(
+        { success: false, authenticated: false, message: 'Akun telah dihapus atau dinonaktifkan.' },
+        { status: 401 }
+      );
+      try {
+        res.cookies.delete(COOKIE_NAME);
+      } catch {}
+      return res;
     }
 
     let bodyUserId: string | null = null;
@@ -43,6 +59,16 @@ export async function POST(request: Request) {
 
     if (matched) {
       await writeUsers(users);
+    } else {
+      // Jika akun tidak ditemukan sama sekali di daftar pengguna aktif
+      const res = NextResponse.json(
+        { success: false, authenticated: false, message: 'Akun tidak lagi terdaftar.' },
+        { status: 401 }
+      );
+      try {
+        res.cookies.delete(COOKIE_NAME);
+      } catch {}
+      return res;
     }
 
     return NextResponse.json({
