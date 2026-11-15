@@ -160,7 +160,7 @@ export default function HomePage() {
                     fill
                     sizes="100vw"
                     quality={60}
-                    className="object-cover object-center scale-105 transition-transform duration-[12000ms] ease-out"
+                    className="object-cover object-center"
                     priority={index === 0}
                     fetchPriority={index === 0 ? 'high' : 'auto'}
                     loading={index === 0 ? undefined : 'lazy'}
@@ -177,7 +177,7 @@ export default function HomePage() {
           <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center my-auto min-h-[220px] sm:min-h-[260px] justify-center">
             {/* School Crest Container */}
             <div className="relative mb-3 flex flex-col items-center">
-              <div className="relative w-20 h-20 sm:w-24 sm:h-24 drop-shadow-[0_8px_24px_rgba(0,0,0,0.4)]">
+              <div className="relative w-20 h-20 sm:w-24 sm:h-24">
                 <Image
                   src={home.schoolLogo || '/school-logo.png'}
                   alt={home.heroTitle}
@@ -190,12 +190,12 @@ export default function HomePage() {
             </div>
 
             {/* Main Serif Headline */}
-            <h1 className="font-serif text-[40px] sm:text-[60px] lg:text-[76px] font-bold text-white tracking-tight leading-[1.08] drop-shadow-xl">
+            <h1 className="font-serif text-[40px] sm:text-[60px] lg:text-[76px] font-bold text-white tracking-tight leading-[1.08] [text-shadow:_0_4px_16px_rgba(0,0,0,0.6)]">
               {home.heroTitle}
             </h1>
 
             {/* Tagline Motto */}
-            <p className="font-sans text-[13px] sm:text-[15.5px] font-medium tracking-[0.16em] text-slate-100 uppercase mt-2.5 max-w-2xl drop-shadow-md">
+            <p className="font-sans text-[13px] sm:text-[15.5px] font-medium tracking-[0.16em] text-slate-100 uppercase mt-2.5 max-w-2xl [text-shadow:_0_2px_8px_rgba(0,0,0,0.5)]">
               {home.heroTagline}
             </p>
           </div>
