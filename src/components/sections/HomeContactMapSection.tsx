@@ -44,24 +44,43 @@ export function HomeContactMapSection() {
   const [isMapActive, setIsMapActive] = useState(false);
 
   useEffect(() => {
-    fetchPublicProfile().then((data) => {
-      if (data?.profile) {
-        const p = data.profile;
-        const fullAddr = [p.address, p.district, p.regency, p.province, p.postalCode]
-          .filter(Boolean)
-          .join(', ');
-        setProfile((prev) => ({
-          ...prev,
-          contactTitle: typeof p.contactTitle === 'string' && p.contactTitle ? p.contactTitle : prev.contactTitle,
-          contactSubtitle: typeof p.contactSubtitle === 'string' ? p.contactSubtitle : prev.contactSubtitle,
-          address: fullAddr || p.address || prev.address,
-          phone: p.phone || prev.phone,
-          whatsapp: (p.whatsapp || prev.whatsapp).replace(/\D/g, ''),
-          email: p.email || prev.email,
-          mapsEmbedUrl: typeof p.mapsEmbedUrl === 'string' && p.mapsEmbedUrl ? p.mapsEmbedUrl : prev.mapsEmbedUrl,
-        }));
-      }
-    });
+    let isMounted = true;
+    const syncProfile = () => {
+      fetchPublicProfile().then((data) => {
+        if (isMounted && data?.profile) {
+          const p = data.profile;
+          const fullAddr = [p.address, p.district, p.regency, p.province, p.postalCode]
+            .filter(Boolean)
+            .join(', ');
+          setProfile((prev) => ({
+            ...prev,
+            contactTitle: typeof p.contactTitle === 'string' && p.contactTitle ? p.contactTitle : prev.contactTitle,
+            contactSubtitle: typeof p.contactSubtitle === 'string' ? p.contactSubtitle : prev.contactSubtitle,
+            address: fullAddr || p.address || prev.address,
+            phone: p.phone || prev.phone,
+            whatsapp: (p.whatsapp || prev.whatsapp).replace(/\D/g, ''),
+            email: p.email || prev.email,
+            mapsEmbedUrl: typeof p.mapsEmbedUrl === 'string' && p.mapsEmbedUrl ? p.mapsEmbedUrl : prev.mapsEmbedUrl,
+          }));
+        }
+      });
+    };
+
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      const handle = (window as any).requestIdleCallback(syncProfile, { timeout: 12000 });
+      return () => {
+        isMounted = false;
+        try {
+          (window as any).cancelIdleCallback(handle);
+        } catch (_) {}
+      };
+    } else {
+      const timer = setTimeout(syncProfile, 10000);
+      return () => {
+        isMounted = false;
+        clearTimeout(timer);
+      };
+    }
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {

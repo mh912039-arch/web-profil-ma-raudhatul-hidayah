@@ -57,7 +57,7 @@ export function StitchNavbar() {
     };
 
     if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
-      const handle = (window as any).requestIdleCallback(syncNav, { timeout: 8000 });
+      const handle = (window as any).requestIdleCallback(syncNav, { timeout: 12000 });
       return () => {
         isMounted = false;
         try {
@@ -65,7 +65,7 @@ export function StitchNavbar() {
         } catch (_) {}
       };
     } else {
-      const timer = setTimeout(syncNav, 4000);
+      const timer = setTimeout(syncNav, 10000);
       return () => {
         isMounted = false;
         clearTimeout(timer);

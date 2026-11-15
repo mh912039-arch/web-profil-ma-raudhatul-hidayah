@@ -70,7 +70,7 @@ export function StitchFooter() {
     };
 
     if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
-      const handle = (window as any).requestIdleCallback(syncFooter, { timeout: 9000 });
+      const handle = (window as any).requestIdleCallback(syncFooter, { timeout: 12000 });
       return () => {
         isMounted = false;
         try {
@@ -78,7 +78,7 @@ export function StitchFooter() {
         } catch (_) {}
       };
     } else {
-      const timer = setTimeout(syncFooter, 4500);
+      const timer = setTimeout(syncFooter, 10000);
       return () => {
         isMounted = false;
         clearTimeout(timer);

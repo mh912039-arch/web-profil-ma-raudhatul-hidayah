@@ -35,7 +35,7 @@ export function VisitorMetricsSection() {
     };
 
     if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
-      const handle = (window as any).requestIdleCallback(loadMetrics, { timeout: 6000 });
+      const handle = (window as any).requestIdleCallback(loadMetrics, { timeout: 12000 });
       return () => {
         isMounted = false;
         try {
@@ -43,7 +43,7 @@ export function VisitorMetricsSection() {
         } catch (_) {}
       };
     } else {
-      const timer = setTimeout(loadMetrics, 3000);
+      const timer = setTimeout(loadMetrics, 10000);
       return () => {
         isMounted = false;
         clearTimeout(timer);

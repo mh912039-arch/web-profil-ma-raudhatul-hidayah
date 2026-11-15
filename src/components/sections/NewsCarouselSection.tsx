@@ -119,7 +119,7 @@ export function NewsCarouselSection() {
     }
 
     if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
-      const handle = (window as any).requestIdleCallback(fetchLatestNews, { timeout: 4000 });
+      const handle = (window as any).requestIdleCallback(fetchLatestNews, { timeout: 12000 });
       return () => {
         isMounted = false;
         try {
@@ -127,7 +127,7 @@ export function NewsCarouselSection() {
         } catch (_) {}
       };
     } else {
-      const timer = setTimeout(fetchLatestNews, 2000);
+      const timer = setTimeout(fetchLatestNews, 10000);
       return () => {
         isMounted = false;
         clearTimeout(timer);

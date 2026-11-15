@@ -89,9 +89,9 @@ export function PpdbSection({ onOpenRegister }: PpdbSectionProps) {
     }
 
     if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
-      const handle = (window as any).requestIdleCallback(fetchPpdbData, { timeout: 4000 });
+      const handle = (window as any).requestIdleCallback(fetchPpdbData, { timeout: 12000 });
     } else {
-      setTimeout(fetchPpdbData, 2000);
+      setTimeout(fetchPpdbData, 10000);
     }
 
     // Listen to local storage updates if updated from admin tab

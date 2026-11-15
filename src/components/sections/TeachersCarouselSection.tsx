@@ -108,7 +108,7 @@ export const TeachersCarouselSection: React.FC<TeachersCarouselSectionProps> = (
     };
 
     if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
-      const handle = (window as any).requestIdleCallback(syncTeachers, { timeout: 5000 });
+      const handle = (window as any).requestIdleCallback(syncTeachers, { timeout: 12000 });
       return () => {
         isMounted = false;
         try {
@@ -116,7 +116,7 @@ export const TeachersCarouselSection: React.FC<TeachersCarouselSectionProps> = (
         } catch (_) {}
       };
     } else {
-      const timer = setTimeout(syncTeachers, 2500);
+      const timer = setTimeout(syncTeachers, 10000);
       return () => {
         isMounted = false;
         clearTimeout(timer);
