@@ -15,16 +15,38 @@ import {
   Calendar,
   Megaphone,
 } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { StitchNavbar } from '@/components/layout/StitchNavbar';
 import { StitchFooter } from '@/components/layout/StitchFooter';
 import { PpdbSection } from '@/components/sections/PpdbSection';
-import { NewsCarouselSection } from '@/components/sections/NewsCarouselSection';
-import { TeachersCarouselSection } from '@/components/sections/TeachersCarouselSection';
-import { HomeContactMapSection } from '@/components/sections/HomeContactMapSection';
-import { VisitorMetricsSection } from '@/components/sections/VisitorMetricsSection';
-import { PpdbRegistrationModal } from '@/components/modals/PpdbRegistrationModal';
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 import { fetchPublicProfile } from '@/lib/publicProfileClient';
+
+// Dynamic code-splitting to minimize critical-path JS bundle & TBT on initial page load
+const PpdbRegistrationModal = dynamic(
+  () => import('@/components/modals/PpdbRegistrationModal').then((m) => m.PpdbRegistrationModal),
+  { ssr: false }
+);
+
+const NewsCarouselSection = dynamic(
+  () => import('@/components/sections/NewsCarouselSection').then((m) => m.NewsCarouselSection),
+  { ssr: true }
+);
+
+const TeachersCarouselSection = dynamic(
+  () => import('@/components/sections/TeachersCarouselSection').then((m) => m.TeachersCarouselSection),
+  { ssr: true }
+);
+
+const HomeContactMapSection = dynamic(
+  () => import('@/components/sections/HomeContactMapSection').then((m) => m.HomeContactMapSection),
+  { ssr: true }
+);
+
+const VisitorMetricsSection = dynamic(
+  () => import('@/components/sections/VisitorMetricsSection').then((m) => m.VisitorMetricsSection),
+  { ssr: true }
+);
 
 const defaultHomeConfig = {
   heroTitle: 'MAS Raudlatul Hidayah',
@@ -55,7 +77,7 @@ const defaultHomeConfig = {
   ctaLink: '/profil/sejarah',
   stat1Value: '152',
   stat1Label: 'Siswa dan Siswi Aktif MA',
-  stat2Value: '47',
+  stat2Value: '70',
   stat2Label: 'Guru & Staf',
   stat3Value: '10',
   stat3Label: 'Prestasi',
@@ -70,10 +92,10 @@ export default function HomePage() {
   const [slidesReady, setSlidesReady] = useState(false);
 
   useEffect(() => {
-    // Defer secondary hero slides so initial mobile LCP and bandwidth are 100% focused on slide 0
+    // Kunci penuh slide utama (Slide 0) selama jendela awal agar LCP tercepat (< 1.5s) tercapai stabil
     const timer = setTimeout(() => {
       setSlidesReady(true);
-    }, 4500);
+    }, 12000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -88,17 +110,26 @@ export default function HomePage() {
   }, [home.heroBackgrounds, home.heroBackground]);
 
   useEffect(() => {
-    if (heroImages.length <= 1) return;
+    if (!slidesReady || heroImages.length <= 1) return;
     const interval = setInterval(() => {
       setCurrentHeroIndex((prev) => (prev + 1) % heroImages.length);
-    }, 6000);
+    }, 8000);
     return () => clearInterval(interval);
-  }, [heroImages.length]);
+  }, [slidesReady, heroImages.length]);
 
   useEffect(() => {
-    fetchPublicProfile(true).then((data) => {
+    fetchPublicProfile().then((data) => {
       if (data && data.homepage) {
-        setHome((prev) => ({ ...prev, ...data.homepage }));
+        setHome((prev) => {
+          let hasDiff = false;
+          for (const k of Object.keys(data.homepage)) {
+            if ((prev as any)[k] !== data.homepage[k]) {
+              hasDiff = true;
+              break;
+            }
+          }
+          return hasDiff ? { ...prev, ...data.homepage } : prev;
+        });
       }
     });
 
@@ -247,9 +278,9 @@ export default function HomePage() {
 
                   {/* Name & Title Directly Underneath Photo */}
                   <div className="pt-4 pb-2 px-2 text-center">
-                    <h3 className="font-serif text-[19px] sm:text-[21px] font-bold text-slate-900 tracking-tight">
+                    <p className="font-serif text-[19px] sm:text-[21px] font-bold text-slate-900 tracking-tight">
                       {home.headmasterName}
-                    </h3>
+                    </p>
                     <p className="font-sans text-[13px] font-semibold text-blue-700 tracking-wide mt-0.5">
                       {home.headmasterRole}
                     </p>

@@ -19,25 +19,39 @@ export function VisitorTracker() {
     }
     lastPath.current = pathname;
 
-    try {
-      const payload = JSON.stringify({
-        path: pathname,
-        referrer: typeof document !== 'undefined' ? document.referrer || '' : '',
-      });
+    const track = () => {
+      try {
+        const payload = JSON.stringify({
+          path: pathname,
+          referrer: typeof document !== 'undefined' ? document.referrer || '' : '',
+        });
 
-      if (typeof navigator !== 'undefined' && typeof navigator.sendBeacon === 'function') {
-        const blob = new Blob([payload], { type: 'application/json' });
-        navigator.sendBeacon('/api/visitors', blob);
-      } else {
-        fetch('/api/visitors', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: payload,
-          keepalive: true,
-        }).catch(() => {});
+        if (typeof navigator !== 'undefined' && typeof navigator.sendBeacon === 'function') {
+          const blob = new Blob([payload], { type: 'application/json' });
+          navigator.sendBeacon('/api/visitors', blob);
+        } else {
+          fetch('/api/visitors', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: payload,
+            keepalive: true,
+          }).catch(() => {});
+        }
+      } catch {
+        // Ignore client fetch errors
       }
-    } catch {
-      // Ignore client fetch errors
+    };
+
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      const handle = (window as any).requestIdleCallback(track, { timeout: 3000 });
+      return () => {
+        try {
+          (window as any).cancelIdleCallback(handle);
+        } catch (_) {}
+      };
+    } else {
+      const timer = setTimeout(track, 1500);
+      return () => clearTimeout(timer);
     }
   }, [pathname]);
 

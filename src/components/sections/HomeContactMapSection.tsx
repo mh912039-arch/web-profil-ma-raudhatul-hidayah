@@ -44,7 +44,7 @@ export function HomeContactMapSection() {
   const [isMapActive, setIsMapActive] = useState(false);
 
   useEffect(() => {
-    fetchPublicProfile(true).then((data) => {
+    fetchPublicProfile().then((data) => {
       if (data?.profile) {
         const p = data.profile;
         const fullAddr = [p.address, p.district, p.regency, p.province, p.postalCode]
@@ -388,9 +388,9 @@ export function HomeContactMapSection() {
                       </div>
 
                       <div>
-                        <h4 className="font-serif text-[17px] sm:text-[18px] font-bold text-slate-900">
+                        <p className="font-serif text-[17px] sm:text-[18px] font-bold text-slate-900">
                           MA Raudlatul Hidayah
-                        </h4>
+                        </p>
                         <p className="font-sans text-[12.5px] text-slate-600 mt-1 leading-snug line-clamp-2">
                           Jl. Raya Tanjung Kait No. 33, Tanjung Anom, Kec. Mauk, Kab. Tangerang
                         </p>

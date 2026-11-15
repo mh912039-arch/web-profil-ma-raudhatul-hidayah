@@ -15,7 +15,7 @@ export function AnimatedCounter({
   className = '',
   triggerOnce = true,
 }: AnimatedCounterProps) {
-  const [displayValue, setDisplayValue] = useState<string>('0');
+  const [displayValue, setDisplayValue] = useState<string>(() => String(value ?? '0'));
   const elementRef = useRef<HTMLSpanElement>(null);
   const hasAnimatedRef = useRef<boolean>(false);
   const prevNumRef = useRef<number>(0);

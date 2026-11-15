@@ -15,12 +15,8 @@ export async function fetchPublicProfile(forceFresh: boolean = false): Promise<a
   if (cachedProfileData) return cachedProfileData;
   if (inFlightPromise) return inFlightPromise;
 
-  inFlightPromise = fetch(`/api/profile?_t=${Date.now()}`, {
-    cache: 'no-store',
-    headers: {
-      'Cache-Control': 'no-cache, no-store, must-revalidate',
-      Pragma: 'no-cache',
-    },
+  inFlightPromise = fetch(forceFresh ? `/api/profile?_t=${Date.now()}` : '/api/profile', {
+    cache: forceFresh ? 'no-store' : 'default',
   })
     .then((res) => (res.ok ? res.json() : null))
     .then((data) => {

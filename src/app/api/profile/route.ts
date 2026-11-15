@@ -8,7 +8,11 @@ import { requireAuth } from '@/lib/auth';
 const dataFilePath = path.join(process.cwd(), 'src', 'data', 'homeProfileData.json');
 
 export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 60;
+
+const publicCacheHeaders = {
+  'Cache-Control': 'public, s-maxage=120, stale-while-revalidate=600',
+};
 
 const noCacheHeaders = {
   'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
@@ -156,7 +160,7 @@ export async function GET() {
     // Non-blocking
   }
 
-  return NextResponse.json(data, { headers: noCacheHeaders });
+  return NextResponse.json(data, { headers: publicCacheHeaders });
 }
 
 export async function POST(request: Request) {
