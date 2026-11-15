@@ -46,15 +46,9 @@ export const metadata: Metadata = {
     ],
   },
   icons: {
-    icon: [
-      { url: '/school-logo.png', sizes: '32x32', type: 'image/png' },
-      { url: '/school-logo.png', sizes: '192x192', type: 'image/png' },
-      { url: '/favicon.ico', sizes: 'any' },
-    ],
-    shortcut: '/school-logo.png',
-    apple: [
-      { url: '/icon-192.png', sizes: '180x180', type: 'image/png' },
-    ],
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/favicon.ico',
   },
   appleWebApp: {
     capable: true,
@@ -110,9 +104,6 @@ export default function RootLayout({
   return (
     <html lang="id" className={`${playfair.variable} ${workSans.variable}`}>
       <head>
-        <link rel="icon" href="/school-logo.png" type="image/png" />
-        <link rel="shortcut icon" href="/school-logo.png" type="image/png" />
-        <link rel="apple-touch-icon" href="/school-logo.png" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schoolJsonLd) }}

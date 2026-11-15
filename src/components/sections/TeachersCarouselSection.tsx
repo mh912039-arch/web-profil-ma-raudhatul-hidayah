@@ -373,7 +373,7 @@ export const TeachersCarouselSection: React.FC<TeachersCarouselSectionProps> = (
                   fill
                   className="object-cover object-top"
                   sizes="(max-width: 768px) 100vw, 240px"
-                  priority
+                  loading="lazy"
                 />
               </div>
 

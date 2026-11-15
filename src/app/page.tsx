@@ -158,8 +158,8 @@ export default function HomePage() {
                     src={imgSrc}
                     alt={`${home.heroTitle} Latar ${index + 1}`}
                     fill
-                    sizes="100vw"
-                    quality={60}
+                    sizes="(max-width: 640px) 100vw, 100vw"
+                    quality={55}
                     className="object-cover object-center"
                     priority={index === 0}
                     fetchPriority={index === 0 ? 'high' : 'auto'}
@@ -182,9 +182,8 @@ export default function HomePage() {
                   src={home.schoolLogo || '/school-logo.png'}
                   alt={home.heroTitle}
                   fill
-                  sizes="(max-width: 640px) 80px, 96px"
+                  sizes="96px"
                   className="object-contain"
-                  priority
                 />
               </div>
             </div>
@@ -256,6 +255,8 @@ export default function HomePage() {
                       alt={`${home.headmasterName} - ${home.headmasterRole}`}
                       fill
                       sizes="(max-width: 640px) 90vw, (max-width: 1024px) 400px, 448px"
+                      quality={65}
+                      loading="lazy"
                       className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
                     />
                   </div>

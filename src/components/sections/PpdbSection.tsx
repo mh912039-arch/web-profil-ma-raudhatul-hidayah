@@ -233,7 +233,7 @@ export function PpdbSection({ onOpenRegister }: PpdbSectionProps) {
                 fill
                 sizes="(max-width: 768px) 100vw, 672px"
                 className="object-contain"
-                priority
+                loading="lazy"
               />
             </div>
           </div>

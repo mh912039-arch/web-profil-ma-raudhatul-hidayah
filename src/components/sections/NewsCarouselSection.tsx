@@ -227,6 +227,8 @@ export function NewsCarouselSection() {
                       alt={item.title}
                       fill
                       sizes="(max-width: 640px) 300px, (max-width: 1024px) 350px, 370px"
+                      quality={60}
+                      loading="lazy"
                       className="object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
