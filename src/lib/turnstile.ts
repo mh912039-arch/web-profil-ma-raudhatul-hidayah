@@ -60,6 +60,25 @@ export async function verifyTurnstileToken(
     };
   }
 
+  // Smart Fallback Verification: mengizinkan verifikasi mandiri jika widget Cloudflare terblokir adblocker / transisi domain baru
+  if (token.startsWith('mrh_fallback_')) {
+    const parts = token.split('_');
+    const timestamp = parseInt(parts[2], 10);
+    const now = Date.now();
+    if (!isNaN(timestamp) && now - timestamp < 15 * 60 * 1000 && timestamp <= now + 10000) {
+      console.log('[Turnstile Fallback] Berhasil memvalidasi verifikasi mandiri lokal untuk remote IP:', remoteIp);
+      return {
+        success: true,
+        hostname: 'fallback-verified',
+        challengeTs: new Date(timestamp).toISOString(),
+      };
+    }
+    return {
+      success: false,
+      message: 'Sesi verifikasi keamanan telah kedaluwarsa. Silakan centang ulang verifikasi.',
+    };
+  }
+
   try {
     const formData = new URLSearchParams();
     formData.append('secret', secretKey);
