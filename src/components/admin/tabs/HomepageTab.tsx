@@ -95,8 +95,32 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
     status: 'idle',
   });
 
-  // Keep form data synchronized when homepage loads from API
+  // Pelindung status dirty agar input formulir tidak tertimpa re-fetch latar belakang sebelum disimpan
+  const isDirtyRef = useRef(false);
+  const [isDirty, setIsDirty] = useState(false);
+
+  const markDirty = () => {
+    if (!isDirtyRef.current) {
+      isDirtyRef.current = true;
+      setIsDirty(true);
+    }
+  };
+
+  // Peringatkan pengguna jika ingin menutup atau memuat ulang halaman saat ada editan belum disimpan
   useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isDirtyRef.current) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, []);
+
+  // Keep form data synchronized when homepage loads from API (hanya jika pengguna belum mengubah input)
+  useEffect(() => {
+    if (isDirtyRef.current) return;
     if (homepage) {
       const bgs = Array.isArray(homepage.heroBackgrounds) && homepage.heroBackgrounds.length > 0
         ? homepage.heroBackgrounds
@@ -118,6 +142,7 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
   const heroInputRefs = [heroBgInputRef0, heroBgInputRef1, heroBgInputRef2];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    markDirty();
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -129,6 +154,7 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
     const file = e.target.files?.[0];
     if (!file) return;
 
+    markDirty();
     const fieldKey = `heroBackground_${slotIndex}`;
     setUploadStatus({ field: fieldKey, status: 'uploading' });
 
@@ -164,6 +190,7 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
   };
 
   const handleHeroBgUrlChange = (url: string, slotIndex: number) => {
+    markDirty();
     setFormData((prev) => {
       const currentList = Array.isArray(prev.heroBackgrounds) ? [...prev.heroBackgrounds] : [prev.heroBackground || '/foto-semua.jpeg'];
       currentList[slotIndex] = url;
@@ -177,6 +204,7 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
   };
 
   const handleRemoveHeroBg = (slotIndex: number) => {
+    markDirty();
     setFormData((prev) => {
       const currentList = Array.isArray(prev.heroBackgrounds) ? [...prev.heroBackgrounds] : [prev.heroBackground || '/foto-semua.jpeg'];
       const updated = currentList.filter((_, idx) => idx !== slotIndex);
@@ -190,6 +218,7 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
   };
 
   const handleAddHeroBgSlot = () => {
+    markDirty();
     setFormData((prev) => {
       const currentList = Array.isArray(prev.heroBackgrounds) ? [...prev.heroBackgrounds] : [prev.heroBackground || '/foto-semua.jpeg'];
       if (currentList.length >= 3) return prev;
@@ -208,6 +237,7 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
     const file = e.target.files?.[0];
     if (!file) return;
 
+    markDirty();
     setUploadStatus({ field: String(fieldName), status: 'uploading' });
 
     try {
@@ -248,6 +278,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
       heroBackground: finalBackgrounds[0] || '/foto-semua.jpeg',
     };
     await onSaveHomepage(payload);
+    isDirtyRef.current = false;
+    setIsDirty(false);
   };
 
   return (
@@ -263,14 +295,22 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
           </p>
         </div>
 
-        <button
-          type="submit"
-          disabled={isSaving}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#1e3a8a] hover:bg-[#172554] text-white font-sans text-[13px] font-bold transition-all shadow-xs active:scale-95 disabled:opacity-50 cursor-pointer"
-        >
-          <Save className="w-4 h-4" />
-          <span>{isSaving ? 'Menyimpan...' : 'Simpan Pengaturan Hero'}</span>
-        </button>
+        <div className="flex items-center gap-3">
+          {isDirty && (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[12px] font-semibold bg-amber-50 text-amber-800 border border-amber-200 shadow-2xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+              Perubahan belum disimpan
+            </span>
+          )}
+          <button
+            type="submit"
+            disabled={isSaving}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#1e3a8a] hover:bg-[#172554] text-white font-sans text-[13px] font-bold transition-all shadow-xs active:scale-95 disabled:opacity-50 cursor-pointer"
+          >
+            <Save className="w-4 h-4" />
+            <span>{isSaving ? 'Menyimpan...' : 'Simpan Pengaturan Hero'}</span>
+          </button>
+        </div>
       </div>
 
       {/* Quick Navigation Pills */}

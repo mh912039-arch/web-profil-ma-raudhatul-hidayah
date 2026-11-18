@@ -299,7 +299,31 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
     facilities: data.facilities || [],
   });
 
+  // Pelindung status dirty agar input formulir profil tidak tertimpa re-fetch latar belakang sebelum disimpan
+  const isDirtyRef = useRef(false);
+  const [isDirty, setIsDirty] = useState(false);
+
+  const markDirty = () => {
+    if (!isDirtyRef.current) {
+      isDirtyRef.current = true;
+      setIsDirty(true);
+    }
+  };
+
+  // Peringatkan pengguna jika ingin menutup atau memuat ulang browser saat ada editan belum disimpan
   useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isDirtyRef.current) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, []);
+
+  useEffect(() => {
+    if (isDirtyRef.current) return;
     if (data && data.profile) {
       setFormData({
         profile: {
@@ -394,6 +418,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
 
   // Profile text change
   const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    markDirty();
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -406,6 +431,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
 
   // Vision change
   const handleVisionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    markDirty();
     const val = e.target.value;
     setFormData((prev) => ({
       ...prev,
@@ -419,6 +445,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
   const handleVisionMissionFieldChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
+    markDirty();
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -431,6 +458,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
 
   // Mission changes
   const handleMissionChange = (index: number, val: string) => {
+    markDirty();
     setFormData((prev) => {
       const nextMissions = [...prev.visionMission.missions];
       nextMissions[index] = val;
@@ -445,6 +473,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
   };
 
   const handleAddMission = () => {
+    markDirty();
     setFormData((prev) => ({
       ...prev,
       visionMission: {
@@ -455,6 +484,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
   };
 
   const handleRemoveMission = (index: number) => {
+    markDirty();
     setFormData((prev) => ({
       ...prev,
       visionMission: {
@@ -470,6 +500,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
     field: keyof VisionIndicator,
     val: string
   ) => {
+    markDirty();
     setFormData((prev) => {
       const currentList =
         prev.visionMission.visionIndicators && prev.visionMission.visionIndicators.length > 0
@@ -487,6 +518,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
   };
 
   const handleAddVisionIndicator = () => {
+    markDirty();
     setFormData((prev) => {
       const currentList =
         prev.visionMission.visionIndicators && prev.visionMission.visionIndicators.length > 0
@@ -504,6 +536,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
   };
 
   const handleRemoveVisionIndicator = (index: number) => {
+    markDirty();
     setFormData((prev) => {
       const currentList =
         prev.visionMission.visionIndicators && prev.visionMission.visionIndicators.length > 0
@@ -525,6 +558,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
     field: keyof StructuredMission,
     val: string
   ) => {
+    markDirty();
     setFormData((prev) => {
       const currentList =
         prev.visionMission.structuredMissions && prev.visionMission.structuredMissions.length > 0
@@ -542,6 +576,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
   };
 
   const handleAddStructuredMission = () => {
+    markDirty();
     setFormData((prev) => {
       const currentList =
         prev.visionMission.structuredMissions && prev.visionMission.structuredMissions.length > 0
@@ -559,6 +594,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
   };
 
   const handleRemoveStructuredMission = (index: number) => {
+    markDirty();
     setFormData((prev) => {
       const currentList =
         prev.visionMission.structuredMissions && prev.visionMission.structuredMissions.length > 0
@@ -576,6 +612,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
 
   // Goal handlers
   const handleGoalChange = (index: number, field: keyof SchoolGoal, val: string) => {
+    markDirty();
     setFormData((prev) => {
       const currentList =
         prev.visionMission.goals && prev.visionMission.goals.length > 0
@@ -593,6 +630,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
   };
 
   const handleAddGoal = () => {
+    markDirty();
     setFormData((prev) => {
       const currentList =
         prev.visionMission.goals && prev.visionMission.goals.length > 0
@@ -610,6 +648,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
   };
 
   const handleRemoveGoal = (index: number) => {
+    markDirty();
     setFormData((prev) => {
       const currentList =
         prev.visionMission.goals && prev.visionMission.goals.length > 0
@@ -627,6 +666,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
 
   // History text change
   const handleHistoryChange = (field: keyof FullProfileData['history'], val: any) => {
+    markDirty();
     setFormData((prev) => ({
       ...prev,
       history: {
@@ -642,6 +682,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
     const file = e.target.files?.[0];
     if (!file) return;
 
+    markDirty();
     setUploadingHistoryImage(true);
     try {
       const result = await uploadImageWithAutoCompression(file);
@@ -655,6 +696,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
 
   // Milestone changes
   const handleMilestoneChange = (index: number, field: keyof ProfileMilestone, val: string) => {
+    markDirty();
     setFormData((prev) => {
       const nextMilestones = [...prev.history.milestones];
       nextMilestones[index] = { ...nextMilestones[index], [field]: val };
@@ -669,6 +711,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
   };
 
   const handleAddMilestone = () => {
+    markDirty();
     const curYear = new Date().getFullYear();
     setFormData((prev) => ({
       ...prev,
@@ -688,6 +731,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
   };
 
   const handleRemoveMilestone = (index: number) => {
+    markDirty();
     setFormData((prev) => ({
       ...prev,
       history: {
@@ -698,6 +742,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
   };
 
   const handleMoveMilestone = (index: number, direction: 'up' | 'down') => {
+    markDirty();
     setFormData((prev) => {
       const next = [...prev.history.milestones];
       const targetIndex = direction === 'up' ? index - 1 : index + 1;
@@ -717,6 +762,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
 
   // Facilities changes
   const handleFacilityChange = (index: number, field: keyof ProfileFacility, val: string) => {
+    markDirty();
     setFormData((prev) => {
       const nextFacs = [...prev.facilities];
       nextFacs[index] = { ...nextFacs[index], [field]: val };
@@ -731,6 +777,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
     const file = e.target.files?.[0];
     if (!file) return;
 
+    markDirty();
     setUploadingFacilityId(facId);
     try {
       const result = await uploadImageWithAutoCompression(file);
@@ -743,6 +790,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
   };
 
   const handleAddFacility = () => {
+    markDirty();
     const newId = `fac-${Date.now()}`;
     setFormData((prev) => ({
       ...prev,
@@ -761,6 +809,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
   };
 
   const handleRemoveFacility = (index: number) => {
+    markDirty();
     setFormData((prev) => ({
       ...prev,
       facilities: prev.facilities.filter((_, i) => i !== index),
@@ -798,6 +847,8 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
       },
     };
     await onSaveFullProfile(payload);
+    isDirtyRef.current = false;
+    setIsDirty(false);
   };
 
   return (
@@ -829,26 +880,34 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
           </p>
         </div>
 
-        <button
-          type="submit"
-          disabled={isSaving}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-sans text-[13px] font-bold transition-all shadow-xs active:scale-95 disabled:opacity-50"
-        >
-          <Save className="w-4 h-4" />
-          <span>
-            {isSaving
-              ? 'Menyimpan...'
-              : activeSubTab === 'kontak'
-              ? 'Simpan Halaman Kontak'
-              : activeSubTab === 'visi'
-              ? 'Simpan Visi & Misi'
-              : activeSubTab === 'sejarah'
-              ? 'Simpan Sejarah Madrasah'
-              : activeSubTab === 'fasilitas'
-              ? 'Simpan Fasilitas Madrasah'
-              : 'Simpan Profil Web'}
-          </span>
-        </button>
+        <div className="flex items-center gap-3">
+          {isDirty && (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[12px] font-semibold bg-amber-50 text-amber-800 border border-amber-200 shadow-2xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+              Perubahan belum disimpan
+            </span>
+          )}
+          <button
+            type="submit"
+            disabled={isSaving}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-sans text-[13px] font-bold transition-all shadow-xs active:scale-95 disabled:opacity-50"
+          >
+            <Save className="w-4 h-4" />
+            <span>
+              {isSaving
+                ? 'Menyimpan...'
+                : activeSubTab === 'kontak'
+                ? 'Simpan Halaman Kontak'
+                : activeSubTab === 'visi'
+                ? 'Simpan Visi & Misi'
+                : activeSubTab === 'sejarah'
+                ? 'Simpan Sejarah Madrasah'
+                : activeSubTab === 'fasilitas'
+                ? 'Simpan Fasilitas Madrasah'
+                : 'Simpan Profil Web'}
+            </span>
+          </button>
+        </div>
       </div>
 
       {/* Sub-navigation Tabs */}

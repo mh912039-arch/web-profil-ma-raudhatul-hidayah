@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import {
   Save,
@@ -60,9 +60,33 @@ export const PpdbTab: React.FC<PpdbTabProps> = ({
   const [showPosterZoom, setShowPosterZoom] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  // Pelindung status dirty agar input formulir PPDB tidak hilang
+  const isDirtyRef = useRef(false);
+  const [isDirty, setIsDirty] = useState(false);
+
+  const markDirty = () => {
+    if (!isDirtyRef.current) {
+      isDirtyRef.current = true;
+      setIsDirty(true);
+    }
+  };
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isDirtyRef.current) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, []);
+
   const handlePosterUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    markDirty();
 
     const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
     if (!validTypes.includes(file.type)) {
@@ -145,6 +169,7 @@ export const PpdbTab: React.FC<PpdbTabProps> = ({
   };
 
   const handleResetDefaultPoster = () => {
+    markDirty();
     const defaultUrl = 'https://zzgobrlhnnqvspuwugkz.supabase.co/storage/v1/object/public/articles/img-1793069689752-1bguos.jpeg';
     setFormData((prev) => ({
       ...prev,
@@ -157,6 +182,7 @@ export const PpdbTab: React.FC<PpdbTabProps> = ({
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    markDirty();
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -165,6 +191,7 @@ export const PpdbTab: React.FC<PpdbTabProps> = ({
   };
 
   const handleFeatureChange = (index: number, val: string) => {
+    markDirty();
     setFormData((prev) => {
       const updated = [...prev.features];
       updated[index] = val;
@@ -175,6 +202,7 @@ export const PpdbTab: React.FC<PpdbTabProps> = ({
   const handleAddFeature = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newFeature.trim()) return;
+    markDirty();
     setFormData((prev) => ({
       ...prev,
       features: [...prev.features, newFeature.trim()],
@@ -183,10 +211,17 @@ export const PpdbTab: React.FC<PpdbTabProps> = ({
   };
 
   const handleRemoveFeature = (index: number) => {
+    markDirty();
     setFormData((prev) => ({
       ...prev,
       features: prev.features.filter((_, i) => i !== index),
     }));
+  };
+
+  const handleSaveWrapper = async () => {
+    await onSave();
+    isDirtyRef.current = false;
+    setIsDirty(false);
   };
 
   return (
@@ -203,9 +238,15 @@ export const PpdbTab: React.FC<PpdbTabProps> = ({
         </div>
 
         <div className="flex items-center gap-3">
+          {isDirty && (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[12px] font-semibold bg-amber-50 text-amber-800 border border-amber-200 shadow-2xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+              Perubahan belum disimpan
+            </span>
+          )}
           <button
             type="button"
-            onClick={onSave}
+            onClick={handleSaveWrapper}
             disabled={isSaving}
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-sans text-[13px] font-bold shadow-sm transition-all active:scale-95 disabled:opacity-50"
           >

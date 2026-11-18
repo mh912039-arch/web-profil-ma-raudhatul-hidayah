@@ -469,26 +469,21 @@ export default function AdminDashboardPage() {
       const handleSwMessage = (event: MessageEvent) => {
         if (event.data?.type === 'PUSH_NOTIFICATION_RECEIVED') {
           playNotificationSound('success');
-          // Segarkan data artikel & agenda agar langsung tampil di list tanpa refresh
-          loadData();
+          // Segarkan data artikel & agenda di background tanpa menimpa formulir yang sedang diedit
+          fetch(`/api/articles?_t=${Date.now()}`, { cache: 'no-store' })
+            .then((res) => (res.ok ? res.json() : null))
+            .then((data) => {
+              if (Array.isArray(data)) setArticles(data);
+            })
+            .catch(() => {});
         }
       };
       navigator.serviceWorker.addEventListener('message', handleSwMessage);
       return () => navigator.serviceWorker.removeEventListener('message', handleSwMessage);
     }
-  }, [loadData]);
+  }, []);
 
-  // 2. Sinkronisasi otomatis saat jendela browser kembali difokuskan (pindah tab atau buka HP kembali)
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const handleFocus = () => {
-      loadData();
-    };
-    window.addEventListener('focus', handleFocus);
-    return () => window.removeEventListener('focus', handleFocus);
-  }, [loadData]);
-
-  // 3. Sinkronisasi instan data terbaru setiap kali berpindah tab menu admin
+  // 2. Sinkronisasi instan data list terbaru setiap kali berpindah tab menu admin (hanya tab berbasis daftar)
   useEffect(() => {
     const t = Date.now();
     if (effectiveActiveTab === 'articles') {
@@ -524,37 +519,6 @@ export default function AdminDashboardPage() {
         .then((res) => (res.ok ? res.json() : null))
         .then((data) => {
           if (Array.isArray(data) && data.length > 0) setChampionshipPhotos(data);
-        })
-        .catch(() => {});
-    } else if (effectiveActiveTab === 'ppdb') {
-      fetch(`/api/ppdb?_t=${t}`, { cache: 'no-store' })
-        .then((res) => (res.ok ? res.json() : null))
-        .then((data) => {
-          if (data) setPpdbData(data);
-        })
-        .catch(() => {});
-    } else if (
-      effectiveActiveTab === 'profile' ||
-      effectiveActiveTab === 'facilities' ||
-      effectiveActiveTab === 'contact' ||
-      effectiveActiveTab === 'homepage'
-    ) {
-      fetch(`/api/profile?_t=${t}`, { cache: 'no-store' })
-        .then((res) => (res.ok ? res.json() : null))
-        .then((profJson) => {
-          if (profJson) {
-            if (profJson.homepage) {
-              setHomepageData((prev) => ({ ...prev, ...profJson.homepage }));
-            }
-            if (profJson.profile || profJson.history || profJson.visionMission || profJson.facilities) {
-              setFullProfileData((prev) => ({
-                profile: { ...prev.profile, ...(profJson.profile || {}) },
-                visionMission: { ...prev.visionMission, ...(profJson.visionMission || {}) },
-                history: profJson.history ? { ...prev.history, ...profJson.history } : prev.history,
-                facilities: Array.isArray(profJson.facilities) ? profJson.facilities : prev.facilities,
-              }));
-            }
-          }
         })
         .catch(() => {});
     }
