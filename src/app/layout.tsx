@@ -38,12 +38,18 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/halaman-sekolah.jpeg',
-        width: 1200,
-        height: 630,
-        alt: 'Kampus MAS Raudlatul Hidayah Mauk',
+        url: '/school-logo.png',
+        width: 512,
+        height: 512,
+        alt: 'Logo Resmi MAS Raudlatul Hidayah',
       },
     ],
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Mas Raudlatul Hidayah | Website Resmi Satuan Pendidikan Wilayah Mauk',
+    description: 'Portal Resmi MAS Raudlatul Hidayah (Madrasah Aliyah Swasta). NPSN: 69941777, Mauk Tangerang Banten.',
+    images: ['/school-logo.png'],
   },
   icons: {
     icon: '/favicon.ico',
