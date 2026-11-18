@@ -127,7 +127,7 @@ function buildSecurityAlertHtml(
 
       <!-- Admin Portal CTA Link -->
       <div style="text-align: center;">
-        <a href="https://web-profil-ma-raudlatul-hidayah.vercel.app/admin" style="font-size: 12px; color: #1e3a8a; text-decoration: underline; font-weight: 600;">
+        <a href="https://www.masraudlatulhidayah.sch.id/admin" style="font-size: 12px; color: #1e3a8a; text-decoration: underline; font-weight: 600;">
           Kunjungi Panel Admin CMS MA Raudlatul Hidayah
         </a>
       </div>

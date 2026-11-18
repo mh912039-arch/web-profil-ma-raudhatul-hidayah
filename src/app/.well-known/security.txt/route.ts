@@ -4,10 +4,10 @@ const SECURITY_TXT_CONTENT = `Contact: mailto:admin@raudlatulhidayah.sch.id
 Contact: https://wa.me/628176614723
 Expires: 2027-12-31T23:59:59.000Z
 Preferred-Languages: id, en
-Canonical: https://web-profil-ma-raudlatul-hidayah.vercel.app/.well-known/security.txt
-Policy: https://web-profil-ma-raudlatul-hidayah.vercel.app/kontak
-Hiring: https://web-profil-ma-raudlatul-hidayah.vercel.app/profil
-Acknowledgments: https://web-profil-ma-raudlatul-hidayah.vercel.app/
+Canonical: https://www.masraudlatulhidayah.sch.id/.well-known/security.txt
+Policy: https://www.masraudlatulhidayah.sch.id/kontak
+Hiring: https://www.masraudlatulhidayah.sch.id/profil
+Acknowledgments: https://www.masraudlatulhidayah.sch.id/
 `;
 
 export async function GET() {

@@ -268,7 +268,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({
   const copyCredentials = (user: { name?: string; email: string; password?: string; role?: string }) => {
     const isHashed = user.password?.startsWith('h256:');
     const pass = isHashed ? '(Tersimpan aman terenkripsi - atur sandi baru di tombol Atur Sandi jika lupa)' : (user.password || '-');
-    const text = `Kredensial Login Portal MA Raudlatul Hidayah:\nNama: ${user.name || '-'}\nEmail/ID: ${user.email}\nKata Sandi: ${pass}\nAlamat Portal: https://web-profil-ma-raudlatul-hidayah.vercel.app/masuk`;
+    const text = `Kredensial Login Portal MA Raudlatul Hidayah:\nNama: ${user.name || '-'}\nEmail/ID: ${user.email}\nKata Sandi: ${pass}\nAlamat Portal: https://www.masraudlatulhidayah.sch.id/masuk`;
     navigator.clipboard.writeText(text);
     showNotification('success', `Kredensial untuk "${user.email}" berhasil disalin.`);
   };
