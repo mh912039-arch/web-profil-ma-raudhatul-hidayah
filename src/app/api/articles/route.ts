@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import fs from 'fs/promises';
 import path from 'path';
 import { supabaseServer } from '@/lib/supabaseServer';
@@ -272,6 +273,13 @@ export async function POST(request: Request) {
       });
     }
 
+    try {
+      revalidatePath('/warta');
+      revalidatePath(`/warta/${slug}`);
+      revalidatePath('/');
+      revalidatePath('/admin');
+    } catch {}
+
     return NextResponse.json({ success: true, article: newArticle }, { headers: noCacheHeaders });
   } catch (error) {
     console.error('Error saving article:', error);
@@ -339,6 +347,13 @@ export async function DELETE(request: Request) {
     } catch (err) {
       console.warn('Error updating articlesData.json after deletion:', err);
     }
+
+    try {
+      revalidatePath('/warta');
+      if (slug) revalidatePath(`/warta/${slug}`);
+      revalidatePath('/');
+      revalidatePath('/admin');
+    } catch {}
 
     return NextResponse.json({ success: true, id, slug }, { headers: noCacheHeaders });
   } catch (error) {

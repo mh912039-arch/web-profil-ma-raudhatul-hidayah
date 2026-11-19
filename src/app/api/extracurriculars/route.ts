@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import fs from 'fs/promises';
 import path from 'path';
 import { supabaseServer } from '@/lib/supabaseServer';
@@ -226,6 +227,12 @@ export async function POST(request: Request) {
       await fs.writeFile(dataFilePath, JSON.stringify(items, null, 2), 'utf-8');
     } catch (_) {}
 
+    try {
+      revalidatePath('/akademik/ekstrakurikuler');
+      revalidatePath('/');
+      revalidatePath('/admin');
+    } catch {}
+
     return NextResponse.json(
       {
         success: true,
@@ -301,6 +308,12 @@ export async function DELETE(request: Request) {
       const filtered = items.filter((i) => String(i.id) !== String(id));
       await fs.writeFile(dataFilePath, JSON.stringify(filtered, null, 2), 'utf-8');
     } catch (_) {}
+
+    try {
+      revalidatePath('/akademik/ekstrakurikuler');
+      revalidatePath('/');
+      revalidatePath('/admin');
+    } catch {}
 
     return NextResponse.json(
       {

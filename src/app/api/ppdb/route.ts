@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import fs from 'fs/promises';
 import path from 'path';
 import { supabaseAdmin } from '@/lib/supabaseClient';
@@ -133,6 +134,12 @@ export async function POST(request: Request) {
     } catch (fsErr) {
       // Safely ignore EROFS in serverless environment
     }
+
+    try {
+      revalidatePath('/ppdb');
+      revalidatePath('/');
+      revalidatePath('/admin');
+    } catch {}
 
     return NextResponse.json({ success: true, data: updatedData }, { headers: noCacheHeaders });
   } catch (error) {

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import fs from 'fs/promises';
 import path from 'path';
 import { supabase, supabaseAdmin } from '@/lib/supabaseClient';
@@ -319,6 +320,12 @@ export async function POST(request: Request) {
     currentList.sort((a, b) => a.order_no - b.order_no);
     await writeTeachersUnified(currentList);
 
+    try {
+      revalidatePath('/profil/guru-tendik');
+      revalidatePath('/');
+      revalidatePath('/admin');
+    } catch {}
+
     return NextResponse.json(
       {
         success: true,
@@ -373,6 +380,12 @@ export async function DELETE(request: Request) {
       (t) => String(t.id) !== String(id) && String(t.order_no) !== String(id)
     );
     await writeTeachersUnified(filtered);
+
+    try {
+      revalidatePath('/profil/guru-tendik');
+      revalidatePath('/');
+      revalidatePath('/admin');
+    } catch {}
 
     return NextResponse.json({
       success: true,

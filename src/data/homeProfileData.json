@@ -1,7 +1,7 @@
 {
   "homepage": {
     "heroTitle": "MAS Raudlatul Hidayah",
-    "heroTagline": "Membentuk Generasi Berkarakter, Beradab, dan Unggul Bernalar",
+    "heroTagline": "Membentuk Generasi Berkarakter,Unggul dalam Prestasi, Santun dalam Pekerti",
     "heroBadge": "Portal Resmi MAS Raudlatul Hidayah",
     "heroBackground": "/foto-semua.jpeg",
     "heroBackgrounds": [
@@ -20,17 +20,17 @@
     "sambutanSubtitle": "Membina Integritas & Mutu Akademik",
     "sambutanBadge": "Pimpinan Satuan Pendidikan",
     "headmasterName": "A. Khutbi. AR, S.Pd",
-    "headmasterRole": "Kepala Madrasah MAS Raudlatul Hidayah",
+    "headmasterRole": "Kepala Madrasah Raudlatul Hidayah",
     "headmasterPhoto": "/kepala-madrasah.jpg",
-    "sambutanText1": "Bismillah walhamdulillah. Assalamu’alaikum Warahmatullahi Wabarakatuh. Selamat datang di portal resmi MAS Raudlatul Hidayah jenjang Madrasah Aliyah Swasta (MAS). Kami meyakini bahwa pendidikan sejati tidak hanya mengasah kecerdasan kognitif, tetapi juga merawat adab, keteguhan akidah, serta budi pekerti luhur sejak usia transisi remaja.",
-    "sambutanText2": "Melalui integrasi Kurikulum Merdeka yang kontekstual dan kultur pembiasaan Islami, kami berikhtiar membimbing seluruh siswa dan siswi agar aktif bernalar, mencintai ilmu pengetahuan, dan terlatih hidup berdisiplin dalam lingkungan yang aman, ramah anak, serta penuh kehangatan persaudaraan.",
-    "ctaText": "Pelajari Profil & Budaya Sekolah",
+    "sambutanText1": "Bismillah walhamdulillah. Assalamu’alaikum Warahmatullahi Wabarakatuh. Selamat datang di portal resmi MAS Raudlatul Hidayah jenjang Madrasah Aliyah (MA). Kami meyakini bahwa pendidikan sejati tidak hanya mengasah kecerdasan kognitif, tetapi juga merawat adab, keteguhan akidah, serta budi pekerti luhur sejak usia transisi remaja.",
+    "sambutanText2": "Melalui integrasi Kurikulum Merdeka yang kontekstual dan kultur pembiasaan Islami, kami berikhtiar membimbing seluruh santri agar aktif bernalar, mencintai ilmu pengetahuan, dan terlatih hidup berdisiplin dalam lingkungan yang aman, ramah anak, serta penuh kehangatan persaudaraan.",
+    "ctaText": "Profil & Budaya Sekolah",
     "ctaLink": "/profil/sejarah",
-    "stat1Value": "152",
-    "stat1Label": "Siswa dan Siswi Aktif MA",
-    "stat2Value": "70",
+    "stat1Value": "159",
+    "stat1Label": "Santri Aktif MA",
+    "stat2Value": "47",
     "stat2Label": "Guru & Staf",
-    "stat3Value": "10",
+    "stat3Value": "5",
     "stat3Label": "Prestasi",
     "teachersSectionTitle": "Tenaga Pendidik",
     "teachersSectionSubtitle": "Menyambut Anda ke Dunia Pembelajaran yang Dipandu Guru-guru Terbaik"
@@ -63,14 +63,14 @@
   },
   "visionMission": {
     "pageTitle": "Visi & Misi Madrasah",
-    "pageSubtitle": "Arah haluan nilai pendidikan, visi kelembagaan, misi pembelajaran kontekstual, dan pilar keunggulan siswa dan siswi MA Raudlatul Hidayah.",
+    "pageSubtitle": "Arah haluan nilai pendidikan, visi kelembagaan, misi pembelajaran kontekstual, dan pilar keunggulan santri MA Raudlatul Hidayah.",
     "visionBadge": "RUMUSAN VISI SATUAN PENDIDIKAN",
-    "vision": "Terwujudnya insan pembelajar yang berakhlak mulia, unggul dalam prestasi, terampil dalam teknologi, dan peduli kelestarian lingkungan hidup.",
+    "vision": "TERWUJUDNYA LULUSAN YANG BERIMAN, BERTAKWA, BERAKHLAK MULIA, BERPRESTASI, BERKARAKTER KUAT, PEDULI LINGKUNGAN DAN BERDAYA SAING GLOBAL",
     "visionIndicators": [
       {
         "number": "01",
-        "title": "Berakhlak Mulia",
-        "desc": "Pembiasaan ibadah, kejujuran, sopan santun, dan sikap saling menghormati dalam keseharian di sekolah."
+        "title": "Keimanan & Akhlak Mulia",
+        "desc": "Pembiasaan ibadah rutin, kejujuran, sopan santun, serta penanaman karakter kuat dan sikap saling menghormati dalam keseharian di madrasah."
       },
       {
         "number": "02",
@@ -79,13 +79,13 @@
       },
       {
         "number": "03",
-        "title": "Terampil dalam Teknologi",
-        "desc": "Penguasaan perangkat komputer dasar dan pemanfaatan media digital untuk mendukung pembelajaran."
+        "title": "Adaptif & Teknologi",
+        "desc": "Penguasaan perangkat digital dasar serta pemanfaatan teknologi untuk mempersiapkan lulusan yang adaptif dan berdaya saing global."
       },
       {
         "number": "04",
         "title": "Peduli Lingkungan Hidup",
-        "desc": "Penataan lingkungan sekolah yang bersih, hijau, sehat, dan bebas dari perundungan."
+        "desc": "Penataan lingkungan madrasah yang bersih, hijau, sehat, asri, dan menciptakan iklim belajar yang aman serta bebas dari perundungan."
       }
     ],
     "missionTitle": "Misi Satuan Pendidikan",
@@ -94,23 +94,23 @@
       {
         "number": "01",
         "title": "Pembinaan Keimanan & Budi Pekerti",
-        "desc": "Menanamkan keimanan, ketakwaan, dan akhlak mulia melalui pembiasaan ibadah rutin serta keteladanan sikap warga sekolah."
+        "desc": "Menanamkan keimanan, ketakwaan, serta budi pekerti luhur melalui pembiasaan ibadah rutin, kedisiplinan, sopan santun, dan keteladanan jiwa kepemimpinan."
       },
       {
         "number": "02",
         "title": "Pelaksanaan Pembelajaran Kurikulum Merdeka",
-        "desc": "Menyelenggarakan kegiatan belajar mengajar yang aktif, terstruktur, dan memperhatikan perkembangan kompetensi setiap peserta didik."
+        "desc": "Menyelenggarakan kegiatan belajar mengajar yang kreatif, inovatif, terstruktur, serta memanfaatkan teknologi digital untuk mempersiapkan lulusan yang adaptif dan berdaya saing global."
       },
       {
         "number": "03",
         "title": "Pengembangan Minat & Bakat Siswa",
-        "desc": "Memfasilitasi latihan rutin ekstrakurikuler kepanduan Pramuka, olahraga, kesenian tradisional, dan kegiatan kesiswaan."
+        "desc": "Mengembangkan potensi peserta didik secara optimal di bidang akademik maupun non-akademik melalui kegiatan kesiswaan, serta membangun budaya madrasah yang peduli dan berwawasan lingkungan."
       }
     ],
     "missions": [
-      "Pembinaan Keimanan & Budi Pekerti: Menanamkan keimanan, ketakwaan, dan akhlak mulia melalui pembiasaan ibadah rutin serta keteladanan sikap warga sekolah.",
-      "Pelaksanaan Pembelajaran Kurikulum Merdeka: Menyelenggarakan kegiatan belajar mengajar yang aktif, terstruktur, dan memperhatikan perkembangan kompetensi setiap peserta didik.",
-      "Pengembangan Minat & Bakat Siswa: Memfasilitasi latihan rutin ekstrakurikuler kepanduan Pramuka, olahraga, kesenian tradisional, dan kegiatan kesiswaan."
+      "Pembinaan Keimanan & Budi Pekerti: Menanamkan keimanan, ketakwaan, serta budi pekerti luhur melalui pembiasaan ibadah rutin, kedisiplinan, sopan santun, dan keteladanan jiwa kepemimpinan.",
+      "Pelaksanaan Pembelajaran Kurikulum Merdeka: Menyelenggarakan kegiatan belajar mengajar yang kreatif, inovatif, terstruktur, serta memanfaatkan teknologi digital untuk mempersiapkan lulusan yang adaptif dan berdaya saing global.",
+      "Pengembangan Minat & Bakat Siswa: Mengembangkan potensi peserta didik secara optimal di bidang akademik maupun non-akademik melalui kegiatan kesiswaan, serta membangun budaya madrasah yang peduli dan berwawasan lingkungan."
     ],
     "goalsTitle": "Tujuan Sekolah",
     "goalsSubtitle": "Capaian nyata yang ditargetkan dalam penyelenggaraan kurikulum.",
@@ -131,14 +131,15 @@
         "number": "04",
         "text": "Terwujudnya prestasi siswa pada ajang perlombaan tingkat Kecamatan Cibeber maupun tingkat Kabupaten Lebak."
       }
-    ]
+    ],
+    "pillars": []
   },
   "history": {
     "title": "Dedikasi Membangun Generasi di Mauk",
     "subtitle": "Tonggak Sejarah",
-    "lead": "Bermula dari kepedulian tulus para tokoh masyarakat terhadap masa depan pendidikan generasi muda di pesisir utara Kabupaten Tangerang, yayasan telah melangkah konsisten menghadirkan akses pendidikan Islam yang berkualitas, beradab, dan terjangkau.",
+    "lead": "MAS Raudlatul Hidayah didirikan sebagai bagian dari upaya Yayasan Pendidikan Islam (YPI) Raudlatul Hidayah bersama masyarakat Desa Tanjung Anom untuk menghadirkan layanan pendidikan menengah atas berciri khas Islam yang lebih dekat dan terjangkau bagi warga di wilayah Kecamatan Mauk, Kabupaten Tangerang, Provinsi Banten.\nKebutuhan akan pendidikan lanjutan tingkat aliyah bagi lulusan MTs dan SMP di wilayah pesisir utara Tangerang—khususnya di sekitar Desa Tanjung Anom serta jalur Jl. RE. Martadinata dan Jl. Raya Tanjung Kait—melatarbelakangi hadirnya satuan pendidikan ini sebagai kelanjutan dari jenjang MI dan MTs yang telah lebih dulu berjalan di bawah naungan yayasan.\nSejak masa awal operasionalnya, MAS Raudlatul Hidayah secara bertahap melengkapi sarana ruang belajar, fasilitas penunjang kegiatan akademik, serta kegiatan pembinaan karakter dan ekstrakurikuler siswa. Dengan Nomor Pokok Sekolah Nasional (NPSN) 69941777 dan peringkat Akreditasi C dari BAN-PDM, madrasah ini terus menjalankan perannya mendampingi peserta didik di wilayah Kecamatan Mauk dalam memadukan ilmu pengetahuan umum dan nilai-nilai keislaman.",
     "paragraphs": [
-      "Bermula dari kepedulian tulus para tokoh masyarakat terhadap masa depan pendidikan generasi muda di pesisir utara Kabupaten Tangerang, yayasan telah melangkah konsisten menghadirkan akses pendidikan Islam yang berkualitas, beradab, dan terjangkau."
+      "MAS Raudlatul Hidayah didirikan sebagai bagian dari upaya Yayasan Pendidikan Islam (YPI) Raudlatul Hidayah bersama masyarakat Desa Tanjung Anom untuk menghadirkan layanan pendidikan menengah atas berciri khas Islam yang lebih dekat dan terjangkau bagi warga di wilayah Kecamatan Mauk, Kabupaten Tangerang, Provinsi Banten.\nKebutuhan akan pendidikan lanjutan tingkat aliyah bagi lulusan MTs dan SMP di wilayah pesisir utara Tangerang—khususnya di sekitar Desa Tanjung Anom serta jalur Jl. RE. Martadinata dan Jl. Raya Tanjung Kait—melatarbelakangi hadirnya satuan pendidikan ini sebagai kelanjutan dari jenjang MI dan MTs yang telah lebih dulu berjalan di bawah naungan yayasan.\nSejak masa awal operasionalnya, MAS Raudlatul Hidayah secara bertahap melengkapi sarana ruang belajar, fasilitas penunjang kegiatan akademik, serta kegiatan pembinaan karakter dan ekstrakurikuler siswa. Dengan Nomor Pokok Sekolah Nasional (NPSN) 69941777 dan peringkat Akreditasi C dari BAN-PDM, madrasah ini terus menjalankan perannya mendampingi peserta didik di wilayah Kecamatan Mauk dalam memadukan ilmu pengetahuan umum dan nilai-nilai keislaman."
     ],
     "image": "/halaman-sekolah.jpeg",
     "imageCaptionTitle": "Lingkungan Gedung Utama MAS Raudlatul Hidayah",
@@ -151,59 +152,78 @@
     "periodSectionSubtitle": "Tahapan pertumbuhan kelembagaan dan pemenuhan sarana pendidikan sejak awal berdiri hingga saat ini.",
     "milestones": [
       {
-        "year": "2015",
-        "title": "Pendirian & Pembukaan Layanan Pendidikan",
-        "desc": "MAS Raudlatul Hidayah mulai beroperasi di Desa Tanjung Anom untuk menjawab kebutuhan akses pendidikan menengah Islam bagi lulusan sekolah dasar dan madrasah tsanawiyah di wilayah Kecamatan Mauk yang sebelumnya harus menempuh jarak jauh."
+        "title": "Awal Mula Pendidikan Dasar (MIS Raudlatul Hidayah 01)",
+        "badge": "Pondasi Awal",
+        "desc": "Perjalanan dimulai dengan pendirian MIS Raudlatul Hidayah 01 di Kampung Tanjung Anom, Kecamatan Mauk, guna memberikan pondasi akhlak yang kokoh, adab pergaulan, serta kemampuan baca tulis Al-Qur'an bagi putra-putri daerah sekitar."
       },
       {
-        "year": "2016 – 2020",
-        "title": "Penguatan Kelembagaan & Penataan Ruang Belajar",
-        "desc": "Penetapan kelembagaan resmi di bawah Kementerian Agama (NPSN 69941777) disertai pembangunan ruang kelas permanen, sarana musholla, serta penataan lapangan upacara dan olahraga."
+        "title": "Pendirian Resmi MA Raudlatul Hidayah",
+        "badge": "17 September 2015",
+        "desc": "Guna menampung antusiasme para santri untuk melanjutkan pendidikan menengah yang kokoh dalam syariat dan adaptif dalam sains, MA Raudlatul Hidayah resmi berdiri pada 17 September 2015 dengan izin operasional lengkap Kementerian Agama dan NPSN 69941777."
       },
       {
-        "year": "2021 – 2023",
-        "title": "Peningkatan Sarana Penunjang & Akreditasi",
-        "desc": "Pemenuhan fasilitas perpustakaan, sarana praktikum komputer, serta pencapaian peringkat Akreditasi dari Badan Akreditasi Nasional Sekolah/Madrasah (BAN-S/M)."
-      },
-      {
-        "year": "2024 – Sekarang",
-        "title": "Pelaksanaan Kurikulum Merdeka & Pembinaan Bakat",
-        "desc": "Penerapan Kurikulum Merdeka secara bertahap, penguatan kegiatan ekstrakurikuler kepanduan Pramuka, olahraga, seni Islami, serta penataan lingkungan belajar yang bersih dan asri."
+        "year": "2026",
+        "badge": "2026",
+        "title": "Tahap Pertumbuhan Baru",
+        "desc": "Tuliskan deskripsi peristiwa atau pencapaian madrasah..."
       }
     ]
   },
   "facilities": [
     {
-      "id": "fac-1",
-      "title": "Ruang Kelas",
-      "subtitle": "KBM Interaktif & Nyaman",
-      "desc": "Ruang kelas yang bersih, sejuk, dan kondusif dengan pencahayaan alami optimal, proyektor multimedia, serta tata letak meja fleksibel untuk kegiatan diskusi dan belajar aktif.",
+      "id": "f2d90130-b351-41a6-9d77-354abb847fc7",
+      "title": "Ruang Kelas Ber-AC & Multimedia",
+      "subtitle": "Ruang Belajar",
+      "desc": "Ruang kelas representatif berlantai keramik bersih, pencahayaan alami optimal, dan sarana proyektor interaktif.",
       "image": "/kelas.jpeg",
-      "badge": "Sarana Akademik"
+      "badge": "Ruang Belajar",
+      "location": "",
+      "capacity": "",
+      "specs": []
     },
     {
-      "id": "fac-2",
-      "title": "Perpustakaan",
-      "subtitle": "Literasi & Khazanah Ilmu",
-      "desc": "Koleksi buku Kurikulum Merdeka terlengkap, ensiklopedia sains, referensi umum, ruang baca berkarpet, serta khazanah kitab keagamaan untuk menunjang budaya riset siswa dan siswi.",
+      "id": "fe356360-87a9-4ce6-bb18-c38ba05adec1",
+      "title": "Perpustakaan & Ruang Baca Turots",
+      "subtitle": "Pusat Sumber Belajar",
+      "desc": "Koleksi ribuan buku pelajaran, ensiklopedia umum, referensi sains, dan kitab kajian keislaman yang nyaman.",
       "image": "/perpus2.jpeg",
-      "badge": "Pusat Sumber Belajar"
+      "badge": "Pusat Sumber Belajar",
+      "location": "",
+      "capacity": "",
+      "specs": []
     },
     {
-      "id": "fac-3",
-      "title": "Musholla Sekolah",
-      "subtitle": "Ibadah ",
-      "desc": "Sarana ibadah representatif untuk pelaksanaan salat fardhu berjamaah, salat dhuha rutin, tadarus dan tahfidz Al-Qur’an harian, serta pembinaan adab santun siswa dan siswi.",
+      "id": "0ecda444-2c95-42d7-98aa-da3d78108707",
+      "title": "Musholla As-Salam Madrasah",
+      "subtitle": "Sarana Ibadah",
+      "desc": "Tempat ibadah shalat berjamaah zhuhur-ashar, pembiasaan shalat dhuha, dan halaqah tahsin Al-Qur'an.",
       "image": "/musholla.jpg",
-      "badge": "Karakter & Spiritual"
+      "badge": "Sarana Ibadah",
+      "location": "",
+      "capacity": "",
+      "specs": []
     },
     {
-      "id": "fac-4",
-      "title": "Lapangan Olahraga",
-      "subtitle": "Kebugaran & Prestasi Terbuka",
-      "desc": "Area lapangan terbuka multifungsi berstandar untuk kegiatan olahraga futsal, basket, voli, upacara bendera mingguan, apel kesiapsiagaan, dan latihan kepanduan pramuka.",
+      "id": "3298bc5a-76a6-4989-bdfb-5983b8357e56",
+      "title": "Halaman & Lapangan Olahraga Serbaguna",
+      "subtitle": "Sarana Olahraga",
+      "desc": "Lapangan paving luas untuk upacara bendera, apel santri, latihan pramuka, futsal, dan bola voli.",
       "image": "/halaman-sekolah.jpeg",
-      "badge": "Area Multifungsi"
+      "badge": "Sarana Olahraga",
+      "location": "",
+      "capacity": "",
+      "specs": []
+    },
+    {
+      "id": "dc605fa9-3d1e-4b28-b837-d98796e0f599",
+      "title": "Lab Komputer",
+      "subtitle": "Sarana Belajar",
+      "desc": "Lab komputer yang memadai untuk para siswa dan siswi belajar menggunakan komputer",
+      "image": "/kelas.jpeg",
+      "badge": "Sarana Akademik",
+      "location": "",
+      "capacity": "",
+      "specs": []
     }
   ]
 }
