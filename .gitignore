@@ -32,4 +32,5 @@ Thumbs.db
 *.py
 figma_embed.html
 *.pdf
+!public/dokumen-publikasi-mas-rh.pdf
 *.traineddata
